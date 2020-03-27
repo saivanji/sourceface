@@ -1,0 +1,38 @@
+{
+  "name": "agora",
+  "license": "MIT",
+  "scripts": {
+    "format": "prettier --write \"src/**/*.js\"",
+    "lint": "",
+    "start": "nodemon --exec 'babel-node ./src/index.js'",
+    "migrate:create": "migrate create",
+    "migrate:list": "migrate list --store='./migration-store'",
+    "migrate:up": "migrate up --store='./migration-store'",
+    "migrate:down": "migrate down --store='./migration-store'"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "camelcase-keys": "^6.2.1",
+    "core-js": "^3.1.4",
+    "dataloader": "^2.0.0",
+    "graphql": "^14.6.0",
+    "graphql-iso-date": "^3.6.1",
+    "graphql-tools": "^4.0.7",
+    "graphql-yoga": "^1.18.3",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.24.0",
+    "pg-promise": "^10.4.4",
+    "ramda": "^0.27.0",
+    "regenerator-runtime": "^0.13.3"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.4.3",
+    "babel-plugin-import-graphql": "^2.7.0",
+    "babel-plugin-module-resolver": "^3.2.0",
+    "migrate": "^1.6.2",
+    "nodemon": "^1.18.11"
+  }
+}

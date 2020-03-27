@@ -1,0 +1,35 @@
+version: "3.4"
+services:
+  # sunwell:
+  #   build: ./sunwell
+  #   command: "yarn start"
+  #   volumes:
+  #     - ./sunwell:/var/www
+  #     - /var/www/node_modules
+  #   environment:
+  #     - REACT_APP_AGORA_HOST=${AGORA_HOST}
+  #   ports:
+  #     - "3000:3000"
+
+  agora:
+    build: ./agora
+    command: "yarn start"
+    volumes:
+      - ./agora:/var/www
+      - /var/www/node_modules
+    environment:
+      - NODE_ENV=development
+      - POSTGRES_URL
+    ports:
+      - "4000:4000"
+      - "5000:5000"
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:9.5
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
