@@ -1,10 +1,10 @@
 version: "3.4"
 services:
   # sunwell:
-  #   build: ./sunwell
+  #   build: ./apps/sunwell
   #   command: "yarn start"
   #   volumes:
-  #     - ./sunwell:/var/www
+  #     - ./apps/sunwell:/var/www
   #     - /var/www/node_modules
   #   environment:
   #     - REACT_APP_AGORA_HOST=${AGORA_HOST}
@@ -12,10 +12,10 @@ services:
   #     - "3000:3000"
 
   agora:
-    build: ./agora
+    build: ./apps/agora
     command: "yarn start"
     volumes:
-      - ./agora:/var/www
+      - ./apps/agora:/var/www
       - /var/www/node_modules
     environment:
       - NODE_ENV=development
