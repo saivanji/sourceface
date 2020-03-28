@@ -8,7 +8,8 @@
     "migrate:create": "migrate create",
     "migrate:list": "migrate list --store='./migration-store'",
     "migrate:up": "migrate up --store='./migration-store'",
-    "migrate:down": "migrate down --store='./migration-store'"
+    "migrate:down": "migrate down --store='./migration-store'",
+    "postinstall": ""
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
