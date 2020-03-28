@@ -7,6 +7,12 @@
         "root": ["./src"]
       }
     ],
+    [
+      "transform-inline-environment-variables",
+      {
+        "include": ["NODE_ENV"]
+      }
+    ],
     "import-graphql"
   ]
 }

@@ -9,9 +9,9 @@ services:
     environment:
       - NODE_ENV=development
       - POSTGRES_URL
+      - PORT=4000
     ports:
       - "4000:4000"
-      - "5000:5000"
     depends_on:
       - postgres
 

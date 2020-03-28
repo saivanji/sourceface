@@ -1,8 +1,43 @@
-# Dependencies
+# Running in development mode
 
-Postgres 9.5
-nodejs 13
+## Dependencies
 
-# Bootstrapping in development mode
+- docker
+- docker-compose
 
-Run `docker-compose up` and after it finishes run `docker-compose exec agora yarn migrate`
+## Command
+
+```
+docker-compose up
+```
+
+# Building the app
+
+## Dependencies
+
+docker
+tar
+zip
+
+## Command
+
+```
+make build
+```
+
+# Running in production mode
+
+## Dependencies
+
+postgres@9.5
+node@13
+
+## Command
+
+```
+PORT=80 POSTGRES_URL=postgresql://admin:admin@postgres:5432/postgres node index.js
+```
+
+# Deploying to github
+
+# Deploying to dockerhub
