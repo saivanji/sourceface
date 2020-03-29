@@ -16,6 +16,8 @@ services:
       - postgres
 
   sunwell:
+    # temporary option in order webpack not to exit
+    stdin_open: true
     build: ./apps/sunwell
     command: "yarn start"
     volumes:
