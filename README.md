@@ -37,7 +37,7 @@ node@13
 
 ```
 yarn migrate:up &&
-PORT=80 POSTGRES_URL=postgresql://admin:admin@postgres:5432/postgres node index.js
+PORT=80 POSTGRES_URL=postgresql://admin:admin@postgres:5432/postgres node app/index.js
 ```
 
 # Deploying to github

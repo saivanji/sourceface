@@ -19,12 +19,14 @@ AGORA_ID=$(docker container create sourceface-agora)
 SUNWELL_ID=$(docker container create sourceface-sunwell)
 mkdir $TEMP_DIR
 
-for ITEM in build/index.js package.json yarn.lock migrations postgres.js
+for ITEM in package.json yarn.lock migrations postgres.js
 do
   docker container cp $AGORA_ID:/var/www/$ITEM $TEMP_DIR
 done
-docker container cp $SUNWELL_ID:/var/www/build $TEMP_DIR/public
+docker container cp $AGORA_ID:/var/www/build $TEMP_DIR/app
+docker container cp $SUNWELL_ID:/var/www/build $TEMP_DIR/app/public
 
+# FIX: archives temp dir
 tar -zcvf ./sourceface-$APP_VERSION.tar.gz $TEMP_DIR
 zip -r ./sourceface-$APP_VERSION.zip $TEMP_DIR
 
