@@ -11,8 +11,7 @@
     "migrate:create": "migrate create",
     "migrate:list": "migrate list --store='./migration-store'",
     "migrate:up": "migrate up --store='./migration-store'",
-    "migrate:down": "migrate down --store='./migration-store'",
-    "postinstall": "yarn migrate:up"
+    "migrate:down": "migrate down --store='./migration-store'"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

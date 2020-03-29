@@ -8,7 +8,7 @@ const PORT = process.env.PORT
 
 const app = express()
 
-if (process.env.NODE_ENV === "production") {
+if (NODE_ENV === "production") {
   app.use(express.static(path.resolve(__dirname, "public")))
 } else {
   // graphql playground on .get("/graphql")

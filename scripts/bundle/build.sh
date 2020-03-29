@@ -26,9 +26,8 @@ done
 docker container cp $AGORA_ID:/var/www/build $TEMP_DIR/app
 docker container cp $SUNWELL_ID:/var/www/build $TEMP_DIR/app/public
 
-# FIX: archives temp dir
-tar -zcvf ./sourceface-$APP_VERSION.tar.gz $TEMP_DIR
-zip -r ./sourceface-$APP_VERSION.zip $TEMP_DIR
+tar -zcvf ./sourceface-$APP_VERSION.tar.gz -C $TEMP_DIR .
+zip -r -D ./sourceface-$APP_VERSION.zip $TEMP_DIR/*
 
 docker container rm -f $AGORA_ID
 docker container rm -f $SUNWELL_ID
