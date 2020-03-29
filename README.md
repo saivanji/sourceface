@@ -8,7 +8,8 @@
 ## Command
 
 ```
-docker-compose up
+docker-compose up &
+docker-compose exec agora yarn migrate:up
 ```
 
 # Building the app
@@ -35,6 +36,7 @@ node@13
 ## Command
 
 ```
+yarn migrate:up &&
 PORT=80 POSTGRES_URL=postgresql://admin:admin@postgres:5432/postgres node index.js
 ```
 
