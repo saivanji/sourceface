@@ -1,6 +1,5 @@
 #!/bin/sh
 export NODE_ENV=production
-export PORT=80
 # get from git version
 export APP_VERSION=0.0.1
 
@@ -9,10 +8,7 @@ rm -rf $TEMP_DIR
 rm -f sourceface-*.zip
 rm -f sourceface-*.tar.gz
 
-docker build \
-  --build-arg NODE_ENV \
-  --build-arg PORT \
-  -t sourceface-agora apps/agora
+docker build --build-arg NODE_ENV -t sourceface-agora apps/agora
 docker build --build-arg NODE_ENV -t sourceface-sunwell apps/sunwell
 
 AGORA_ID=$(docker container create sourceface-agora)
