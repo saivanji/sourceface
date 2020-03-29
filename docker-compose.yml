@@ -9,9 +9,9 @@ services:
     environment:
       - NODE_ENV=development
       - POSTGRES_URL
-      - PORT=4000
+      - PORT=5000
     ports:
-      - "4000:4000"
+      - "5000:5000"
     depends_on:
       - postgres
 
@@ -27,6 +27,7 @@ services:
       - REACT_APP_AGORA_HOST=${AGORA_HOST}
     ports:
       - "3000:3000"
+      - "4000:4000"
 
   postgres:
     image: postgres:9.5

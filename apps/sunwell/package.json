@@ -3,7 +3,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "react-scripts start",
+    "start": "concurrently \"react-scripts start\" \"start-storybook -p 4000 --quiet\"",
     "format": "prettier --write \"src/**/*.js\"",
     "lint": "prettier --check \"src/**/*.js\" && eslint \"src/**/*.js\"",
     "build": "react-scripts build",
@@ -21,6 +21,8 @@
     "yup": "^0.28.3"
   },
   "devDependencies": {
+    "@storybook/react": "^5.3.17",
+    "concurrently": "^5.1.0",
     "prettier": "^2.0.2",
     "tailwindcss": "^1.2.0"
   },
