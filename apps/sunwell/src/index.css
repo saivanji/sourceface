@@ -1,3 +1,9 @@
 body {
-  font-family: "Source Sans Pro", sans-serif;
+  font-family: "Nunito Sans", sans-serif;
+}
+
+@keyframes rotate {
+  to {
+    transform: rotate(360deg);
+  }
 }

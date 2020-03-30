@@ -24,7 +24,8 @@
     "@storybook/react": "^5.3.17",
     "concurrently": "^5.1.0",
     "prettier": "^2.0.2",
-    "tailwindcss": "^1.2.0"
+    "tailwindcss": "^1.2.0",
+    "values.js": "^1.1.0"
   },
   "browserslist": {
     "production": [
