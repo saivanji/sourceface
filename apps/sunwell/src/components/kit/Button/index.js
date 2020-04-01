@@ -1,6 +1,6 @@
 import React from "react"
 import cx from "classnames"
-import Spinner from "../Spinner"
+import CircleSpinner from "../CircleSpinner"
 
 export default ({
   children,
@@ -25,7 +25,9 @@ export default ({
     disabled={isDisabled}
     type={type}
   >
-    {isLoading && <Spinner appearance="dark" className={sizes[size].spinner} />}
+    {isLoading && (
+      <CircleSpinner appearance="dark" className={sizes[size].spinner} />
+    )}
     {children}
   </button>
 )

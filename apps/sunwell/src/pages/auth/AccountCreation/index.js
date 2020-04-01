@@ -1,15 +1,16 @@
 import React from "react"
 import { Input } from "components/form/native"
 import { Label } from "components/form/generic"
-import { Button, Stack, Link } from "components/kit"
+import { Button, Stack, Link, Spinner } from "components/kit"
 import { Layout, Box } from "components/common/auth"
+import Strength from "./Strength"
 
 export default () => {
   return (
     <Layout>
       <Box
-        title="Create your account"
-        description="Enter your credentials into the form below"
+        title="Welcome aboard"
+        description="Enter your credentials into the form below in order to create your account"
       >
         <Stack stretchItem spacing={4}>
           <Label title="Username">
@@ -18,6 +19,7 @@ export default () => {
               type="text"
               size="loose"
               shouldFitContainer
+              iconAfter="error"
             />
           </Label>
           <Label title="Email">
@@ -26,18 +28,18 @@ export default () => {
               type="text"
               size="loose"
               shouldFitContainer
+              iconAfter="done"
             />
           </Label>
-          <Label
-            title="Password"
-            helperMessage="At least 6 aphanumerical characters."
-          >
+          <Label title="Password">
             <Input
               placeholder="********"
               type="password"
               size="loose"
               shouldFitContainer
+              iconAfter={<Spinner />}
             />
+            <Strength />
           </Label>
           <Label title="Confirmation">
             <Input

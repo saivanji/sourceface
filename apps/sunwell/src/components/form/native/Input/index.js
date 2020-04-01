@@ -1,5 +1,6 @@
 import React from "react"
 import cx from "classnames"
+import { Icon } from "components/kit"
 
 export default ({
   size = "normal",
@@ -11,17 +12,30 @@ export default ({
   ...props
 }) => (
   <>
-    <input
-      className={cx(
-        root,
-        sizes[size],
-        shouldFitContainer && fullContainer,
-        error ? errorBorder : border
-      )}
-      {...props}
-    />
-    <div className="text-xs text-error mt-1">{error}</div>
+    <div className="relative">
+      <input
+        className={cx(
+          root,
+          sizes[size],
+          shouldFitContainer && fullContainer,
+          error ? errorBorder : border
+        )}
+        {...props}
+      />
+      {iconAfter && <IconAfter value={iconAfter} />}
+    </div>
+    {error && <div className="text-xs text-error mt-1">{error}</div>}
   </>
+)
+
+const IconAfter = ({ value }) => (
+  <div className="absolute top-0 bottom-0 right-0 mr-3 flex items-center">
+    {typeof value === "string" ? (
+      <Icon name={value} />
+    ) : (
+      <div className="w-3">{value}</div>
+    )}
+  </div>
 )
 
 const root =
