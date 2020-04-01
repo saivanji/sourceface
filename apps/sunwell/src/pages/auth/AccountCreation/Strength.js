@@ -4,11 +4,11 @@ import cx from "classnames"
 export default () => {
   return (
     <div className="text-gray mt-1 text-xs flex flex-col">
-      <Row>At least 6 charachters</Row>
+      <Row>At least 6 characters</Row>
       <Row isCompleted>
         Should contain letters at least one uppercase letter
       </Row>
-      <Row>Should contain letters at least one number</Row>
+      <Row>Should contain at least one number</Row>
     </div>
   )
 }

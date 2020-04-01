@@ -53,13 +53,16 @@ export default () => {
         <Button className="mt-5" type="submit" size="loose" shouldFitContainer>
           Get started
         </Button>
-        <div className="mt-4 flex justify-center">
-          <span className="text-gray-tint-10 mr-2">
-            Already have an account?
-          </span>
-          <Link>Sign in</Link>
-        </div>
+        <Terms />
       </Box>
     </Layout>
   )
 }
+
+const Terms = () => (
+  <div className="mt-4 text-center text-gray-tint-10 px-4">
+    By signing up I agree with
+    <Link className="text-gray-shade-80 mx-1">Terms and Conditions</Link>
+    of the application and service it provides
+  </div>
+)
