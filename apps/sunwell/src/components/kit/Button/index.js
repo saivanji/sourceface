@@ -6,34 +6,33 @@ export default ({
   children,
   appearance = "primary",
   size = "normal",
-  action = "button",
+  type = "button",
   shouldFitContainer = false,
   iconAfter,
   iconBefore,
   isDisabled,
   isLoading,
+  className,
 }) => (
   <button
     className={cx(
+      className,
       root,
       shouldFitContainer && fullContainer,
       !isDisabled ? appearances[appearance] : disabled,
       sizes[size].base
     )}
     disabled={isDisabled}
-    type={action}
+    type={type}
   >
-    {isLoading && (
-      <Spinner appearance="light" className={sizes[size].spinner} />
-    )}
+    {isLoading && <Spinner appearance="dark" className={sizes[size].spinner} />}
     {children}
   </button>
 )
 
-const root =
-  "focus:outline-none flex justify-center items-center rounded-sm text-sm"
+const root = "focus:outline-none flex justify-center items-center rounded-sm"
 const fullContainer = "w-full"
-const disabled = "bg-gray-tint-40 text-gray-shade-10 cursor-not-allowed"
+const disabled = "bg-gray-tint-80 text-gray-shade-10 cursor-not-allowed"
 
 const sizes = {
   compact: {
@@ -52,7 +51,7 @@ const sizes = {
 
 const appearances = {
   primary:
-    "bg-primary hover:bg-primary-shade-10 active:bg-primary-shade-20 text-white focus:shadow-primary-outline",
+    "bg-gray-tint-70 hover:bg-gray-tint-40 active:bg-gray-tint-20 text-gray-shade-80 focus:shadow-gray-outline",
   secondary: "",
   danger: "",
 }

@@ -5,6 +5,8 @@ export default ({
   size = "normal",
   action = "button",
   shouldFitContainer = false,
+  iconAfter,
+  iconBefore,
   error,
   ...props
 }) => (
@@ -16,7 +18,6 @@ export default ({
         shouldFitContainer && fullContainer,
         error ? errorBorder : border
       )}
-      type="text"
       {...props}
     />
     <div className="text-xs text-error mt-1">{error}</div>
@@ -24,10 +25,11 @@ export default ({
 )
 
 const root =
-  "focus:outline-none rounded-sm text-sm text-primary-shade-110 placeholder-gray border"
+  "focus:outline-none focus:bg-white rounded-sm text-gray-shade-110 placeholder-gray border bg-gray-tint-130"
 const border =
-  "border-gray-tint-10 focus:border-primary-tint-30 focus:shadow-primary-outline"
-const errorBorder = "border-error-shade-10 focus:shadow-error-outline"
+  "border-gray-tint-50 focus:border-gray-tint-10 focus:shadow-gray-outline"
+// const errorBorder = "border-error-shade-100 focus:shadow-error-outline"
+const errorBorder = "border-gray-shade-100"
 const fullContainer = "w-full"
 
 const sizes = {

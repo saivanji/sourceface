@@ -1,5 +1,5 @@
 import React from "react"
-import { Input } from "components/form"
+import { Input } from "components/form/native"
 
 export default { title: "Input" }
 

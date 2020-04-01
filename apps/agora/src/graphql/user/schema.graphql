@@ -15,7 +15,12 @@ type AuthPayload {
 
 extend type Query {
   myself: User! @authenticated
+  # environment. google/facebook/twitter auth available, sendgrid
+
   # Should we move it to general app query where we get also information whether google auth is available(based on env variable user provided)?
+  # fetch that info on unauthenticated pages only
+  # but keep in on root query
+  # or name `hasUsers` and keep here?
   isOnboarding: Boolean!
 }
 

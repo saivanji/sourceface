@@ -5,9 +5,9 @@ export default ({
   children,
   spacing = 1,
   direction = "col",
-  stretchItem,
   alignItems = "start",
   justifyContent = "start",
+  stretchItem,
   className,
   onClick,
   ...props
