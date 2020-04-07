@@ -39,7 +39,7 @@ const IconAfter = ({ value }) => (
 )
 
 const root =
-  "focus:outline-none focus:bg-white rounded-sm text-gray-shade-110 placeholder-gray border bg-gray-tint-130"
+  "focus:outline-none focus:bg-white rounded text-gray-shade-110 placeholder-gray border bg-gray-tint-130"
 const border =
   "border-gray-tint-50 focus:border-gray-tint-10 focus:shadow-gray-outline"
 // const errorBorder = "border-error-shade-100 focus:shadow-error-outline"

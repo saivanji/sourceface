@@ -1,6 +1,7 @@
 import React from "react"
 import ReactDOM from "react-dom"
 import "./index.css"
-import * as auth from "./pages/auth"
+// import * as auth from "./pages/auth"
+import { Layout } from "components/common/dashboard"
 
-ReactDOM.render(<auth.AccountCreation />, document.getElementById("root"))
+ReactDOM.render(<Layout />, document.getElementById("root"))

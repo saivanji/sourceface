@@ -32,7 +32,7 @@ export default ({
   </button>
 )
 
-const root = "focus:outline-none flex justify-center items-center rounded-sm"
+const root = "focus:outline-none flex justify-center items-center rounded"
 const fullContainer = "w-full"
 const disabled = "bg-gray-tint-80 text-gray-shade-10 cursor-not-allowed"
 

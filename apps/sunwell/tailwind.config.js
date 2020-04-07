@@ -1,3 +1,4 @@
+// import colors (including generated) from '@sourceface/kit'
 const Values = require("values.js")
 // const primary = "#1D64DE"
 // const secondary = "#17AD3F"

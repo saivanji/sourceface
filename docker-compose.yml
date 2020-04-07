@@ -29,6 +29,10 @@ services:
       - "3000:3000"
       - "4000:4000"
 
+  # # storybook
+  # components:
+  #   build: ./packages/@sourceface/components
+
   postgres:
     image: postgres:9.5
     ports:
