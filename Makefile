@@ -1,2 +1,5 @@
 build:
-	./scripts/bundle/build.sh
+	./scripts/build/run.sh
+
+test:
+	./scripts/test/run.sh

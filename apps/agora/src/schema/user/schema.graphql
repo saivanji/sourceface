@@ -3,14 +3,13 @@ type User {
   createdAt: DateTime!
   email: String!
   username: String!
-  role: String!
-  permissions: [Permissions!]
+  # role: String!
+  # permissions: [Permissions!]
 }
 
 type AuthPayload {
   user: User!
   token: String!
-  refreshToken: String!
 }
 
 extend type Query {
@@ -28,13 +27,13 @@ extend type Mutation {
   signInLocal(email: String!, password: String!): AuthPayload!
     @not_authenticated
   signInGoogle(code: String!): AuthPayload! @not_authenticated
+  signOut: Boolean
   signUp(
     username: String!
     email: String!
     password: String!
     invitation: String
   ): AuthPayload! @not_authenticated
-  refreshToken(refreshToken: String!): AuthPayload! @authenticated
   invite(email: String!): String!
     @authenticated
     @authorized(permissions: [INVITE])
