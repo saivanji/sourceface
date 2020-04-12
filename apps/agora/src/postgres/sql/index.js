@@ -3,6 +3,7 @@ import { QueryFile } from "pg-promise"
 
 export const users = {
   create: sql("users/create.sql"),
+  changePassword: sql("users/changePassword.sql"),
   byId: sql("users/byId.sql"),
   byUsername: sql("users/byUsername.sql"),
 }

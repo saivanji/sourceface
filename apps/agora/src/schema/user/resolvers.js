@@ -1,6 +1,7 @@
-import bcrypt from "bcryptjs"
+import util from "util"
 import * as sql from "postgres/sql"
 import * as constraints from "postgres/constraints"
+import * as userService from "services/user"
 
 const signUp = async (
   parent,
@@ -8,7 +9,7 @@ const signUp = async (
   { pg, session }
 ) => {
   try {
-    const hash = await bcrypt.hash(password, 10)
+    const hash = await userService.hashPassword(password)
     const user = await pg.one(sql.users.create, [username, email, hash])
 
     session.userId = user.id
@@ -29,25 +30,40 @@ const signUp = async (
 
 const signInLocal = async (parent, { username, password }, { pg, session }) => {
   const user = await pg.oneOrNone(sql.users.byUsername, [username])
-  const valid = await bcrypt.compare(password, user.password)
+  const valid = await userService.validatePassword(password, user.password)
 
   if (!user || !valid) throw new Error("Username or password is invalid")
-
   session.userId = user.id
 
   return user
 }
 
 const signOut = async (parent, _args, { session }) => {
-  await new Promise((resolve, reject) => {
-    try {
-      session.destroy(resolve)
-    } catch (err) {
-      reject(err)
-    }
-  })
-
+  await util.promisify(session.destroy.bind(session))()
   return true
+}
+
+const changePassword = async (
+  parent,
+  { oldPassword, newPassword },
+  // not using destructuring for `context`. Since pg-session deletes `session` object
+  // upon calling `regenerate` and spawning a new instance afterwards.
+  context
+) => {
+  return await context.pg.task(async (t) => {
+    const user = await t.one(sql.users.byId, [context.session.userId])
+    const valid = await userService.validatePassword(oldPassword, user.password)
+
+    if (!valid) throw new Error("Wrong old password")
+
+    const hash = await userService.hashPassword(newPassword)
+    await t.one(sql.users.changePassword, [user.id, hash])
+
+    await util.promisify(context.session.regenerate.bind(context.session))()
+    context.session.userId = user.id
+
+    return true
+  })
 }
 
 const myself = async (parent, _args, { pg, session }) => {
@@ -62,5 +78,6 @@ export default {
     signUp,
     signInLocal,
     signOut,
+    changePassword,
   },
 }

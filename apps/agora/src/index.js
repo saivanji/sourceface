@@ -31,10 +31,7 @@ app.post(
   GRAPHQL_ENDPOINT,
   graphqlHTTP((req) => ({
     schema,
-    context: {
-      pg,
-      session: req.session,
-    },
+    context: Object.assign(req, { pg }),
   }))
 )
 

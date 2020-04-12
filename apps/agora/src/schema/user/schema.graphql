@@ -2,9 +2,10 @@ directive @notAuthenticated on FIELD_DEFINITION
 directive @authenticated on FIELD_DEFINITION
 # directive @authorized(permissions: [Permissions]) on FIELD_DEFINITION
 
+## Should all permissions be in the database?
 # enum Permissions {
 #   INVITE
-#   CHANGE_PASSWORD
+#   CHANGE_USER_PASSWORD
 # }
 
 type User {
@@ -18,13 +19,7 @@ type User {
 
 extend type Query {
   myself: User! @authenticated
-  # environment. google/facebook/twitter auth available, sendgrid
-
-  # Should we move it to general app query where we get also information whether google auth is available(based on env variable user provided)?
-  # fetch that info on unauthenticated pages only
-  # but keep in on root query
-  # or name `hasUsers` and keep here?
-  isOnboarding: Boolean!
+  hasUsers: Boolean! @notAuthenticated
 }
 
 extend type Mutation {
@@ -40,9 +35,9 @@ extend type Mutation {
   # invite(email: String!): String!
   #   @authenticated
   #   @authorized(permissions: [INVITE])
-  # changePassword(email: String!, password: String!): Boolean!
+  # changeUserPassword(email: String!, password: String!): Boolean!
   #   @authenticated
-  #   @authorized(permissions: [CHANGE_PASSWORD])
-  # changeSelfPassword(oldPassword: String!, newPassword: String!): Boolean!
-  #   @authenticated
+  #   @authorized(permissions: [CHANGE_USER_PASSWORD])
+  changePassword(oldPassword: String!, newPassword: String!): Boolean!
+    @authenticated
 }

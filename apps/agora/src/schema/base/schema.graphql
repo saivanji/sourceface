@@ -1,3 +1,5 @@
+# environment. google/facebook/twitter auth available, sendgrid
+# define field for information whether google auth is available(based on env variable user provided)?
 type Query
 
 type Mutation
