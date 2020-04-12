@@ -6,6 +6,7 @@ import session from "express-session"
 import connectPgSimple from "connect-pg-simple"
 import postgres from "./postgres/connect"
 import schema from "./schema"
+import loaders from "./loaders"
 
 const NODE_ENV = process.env.NODE_ENV
 const GRAPHQL_ENDPOINT = "/graphql"
@@ -31,7 +32,7 @@ app.post(
   GRAPHQL_ENDPOINT,
   graphqlHTTP((req) => ({
     schema,
-    context: Object.assign(req, { pg }),
+    context: Object.assign(req, { pg, loaders: loaders(pg) }),
   }))
 )
 

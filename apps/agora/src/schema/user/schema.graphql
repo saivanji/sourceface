@@ -1,11 +1,15 @@
-directive @notAuthenticated on FIELD_DEFINITION
 directive @authenticated on FIELD_DEFINITION
 # directive @authorized(permissions: [Permissions]) on FIELD_DEFINITION
+directive @hasNoUsers on FIELD_DEFINITION
+directive @notAuthenticated on FIELD_DEFINITION
 
 ## Should all permissions be in the database?
+## Even in that case they should be as enum
+## have `is_core` field in permissions table for such permissions
 # enum Permissions {
 #   INVITE
 #   CHANGE_USER_PASSWORD
+# . CREATE_ROLE
 # }
 
 type User {
@@ -13,7 +17,7 @@ type User {
   createdAt: DateTime!
   email: String!
   username: String!
-  # role: String!
+  role: String!
   # permissions: [Permissions!]
 }
 
@@ -23,21 +27,25 @@ extend type Query {
 }
 
 extend type Mutation {
+  changePassword(oldPassword: String!, newPassword: String!): Boolean!
+    @authenticated
+  # changeUserPassword(email: String!, password: String!): Boolean!
+  #   @authenticated
+  #   @authorized(permission: CHANGE_USER_PASSWORD)
+  # createRole(name: String!): String! @authorized(permission: CREATE_ROLE)
+  initialSignUp(username: String!, email: String!, password: String!): User!
+    @notAuthenticated
+    @hasNoUsers
+  # invitationSignUp(
+  #   username: String!
+  #   email: String!
+  #   password: String!
+  #   invitationId: String!
+  # ): User! @notAuthenticated
+  # invite(email: String!, role: String!): String!
+  #   @authenticated
+  #   @authorized(permission: INVITE)
   signInLocal(username: String!, password: String!): User! @notAuthenticated
   # signInGoogle(code: String!): User! @notAuthenticated
   signOut: Boolean! @authenticated
-  signUp(
-    username: String!
-    email: String!
-    password: String!
-    invitation: String
-  ): User! @notAuthenticated
-  # invite(email: String!): String!
-  #   @authenticated
-  #   @authorized(permissions: [INVITE])
-  # changeUserPassword(email: String!, password: String!): Boolean!
-  #   @authenticated
-  #   @authorized(permissions: [CHANGE_USER_PASSWORD])
-  changePassword(oldPassword: String!, newPassword: String!): Boolean!
-    @authenticated
 }

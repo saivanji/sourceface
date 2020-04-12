@@ -2,10 +2,10 @@ import bcrypt from "bcryptjs"
 import * as sql from "postgres/sql"
 import * as constraints from "postgres/constraints"
 
-export const createUser = async ({ username, email, password }, pg) => {
+export const create = async ({ username, email, password }, roleId, pg) => {
   try {
-    const hash = await userService.hashPassword(password)
-    const user = await pg.one(sql.users.create, [username, email, hash])
+    const hash = await hashPassword(password)
+    const user = await pg.one(sql.users.create, [username, email, hash, roleId])
 
     return user
   } catch (err) {
@@ -40,14 +40,14 @@ export const hasUsers = async (pg) => {
   return count !== 0
 }
 
-export const changePassword = async (id, { oldPassword, newPassword }, pg) => {
+export const changePassword = async ({ oldPassword, newPassword }, id, pg) => {
   return await pg.task(async (t) => {
     const user = await t.one(sql.users.byId, [id])
-    const valid = await userService.validatePassword(oldPassword, user.password)
+    const valid = await validatePassword(oldPassword, user.password)
 
     if (!valid) throw new Error("Wrong old password")
 
-    const hash = await userService.hashPassword(newPassword)
+    const hash = await hashPassword(newPassword)
     await t.one(sql.users.changePassword, [user.id, hash])
   })
 }

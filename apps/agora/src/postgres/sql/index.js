@@ -1,6 +1,11 @@
 import path from "path"
 import { QueryFile } from "pg-promise"
 
+export const roles = {
+  create: sql("roles/create.sql"),
+  list: sql("roles/list.sql"),
+}
+
 export const users = {
   byId: sql("users/byId.sql"),
   byUsername: sql("users/byUsername.sql"),
