@@ -70,14 +70,21 @@ const myself = async (parent, _args, { pg, session }) => {
   return await pg.oneOrNone(sql.users.byId, [session.userId])
 }
 
+const hasUsers = async (parent, _args, { pg }) => {
+  const count = +(await pg.one(sql.users.countAll)).count
+
+  return count !== 0
+}
+
 export default {
   Query: {
+    hasUsers,
     myself,
   },
   Mutation: {
-    signUp,
+    changePassword,
     signInLocal,
     signOut,
-    changePassword,
+    signUp,
   },
 }
