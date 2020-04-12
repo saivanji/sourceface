@@ -28,7 +28,7 @@ const signUp = async (
 }
 
 const signInLocal = async (parent, { username, password }, { pg, session }) => {
-  const user = await pg.oneOrNone(sql.users.one, [username])
+  const user = await pg.oneOrNone(sql.users.byUsername, [username])
   const valid = await bcrypt.compare(password, user.password)
 
   if (!user || !valid) throw new Error("Username or password is invalid")
@@ -38,12 +38,29 @@ const signInLocal = async (parent, { username, password }, { pg, session }) => {
   return user
 }
 
+const signOut = async (parent, _args, { session }) => {
+  await new Promise((resolve, reject) => {
+    try {
+      session.destroy(resolve)
+    } catch (err) {
+      reject(err)
+    }
+  })
+
+  return true
+}
+
+const myself = async (parent, _args, { pg, session }) => {
+  return await pg.oneOrNone(sql.users.byId, [session.userId])
+}
+
 export default {
-  // Query: {
-  //   myself: () => (),
-  // },
+  Query: {
+    myself,
+  },
   Mutation: {
     signUp,
     signInLocal,
+    signOut,
   },
 }

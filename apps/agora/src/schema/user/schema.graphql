@@ -20,8 +20,8 @@ extend type Query {
 
 extend type Mutation {
   signInLocal(username: String!, password: String!): User! @not_authenticated
-  signInGoogle(code: String!): User! @not_authenticated
-  signOut: Boolean
+  # signInGoogle(code: String!): User! @not_authenticated
+  signOut: Boolean!
   signUp(
     username: String!
     email: String!

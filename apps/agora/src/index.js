@@ -41,7 +41,15 @@ app.post(
 if (NODE_ENV === "production") {
   app.use(express.static(path.resolve(__dirname, "public")))
 } else {
-  app.get(GRAPHQL_ENDPOINT, playground({ endpoint: GRAPHQL_ENDPOINT }))
+  app.get(
+    GRAPHQL_ENDPOINT,
+    playground({
+      endpoint: GRAPHQL_ENDPOINT,
+      settings: {
+        "request.credentials": "include",
+      },
+    })
+  )
 }
 
 app.pg = pg
