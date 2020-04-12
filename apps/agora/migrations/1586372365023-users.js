@@ -7,7 +7,6 @@ export const up = () =>
         id serial PRIMARY KEY,
         created_at timestamp NOT NULL DEFAULT NOW(),
         username text NOT NULL UNIQUE CHECK (
-          username <> '' AND
           length(username) > 1
         ),
         email text NOT NULL UNIQUE CHECK (

@@ -5,8 +5,8 @@ directive @notAuthenticated on FIELD_DEFINITION
 
 ## Should all permissions be in the database?
 ## Even in that case they should be as enum
-## have `is_core` field in permissions table for such permissions
-# enum Permissions {
+## have `is_system` field in permissions table for such permissions
+# enum SystemPermissions {
 #   INVITE
 #   CHANGE_USER_PASSWORD
 # . CREATE_ROLE
@@ -27,11 +27,13 @@ extend type Query {
 }
 
 extend type Mutation {
+  # assignPermissions(roleId: Int!, permissionIds: [Int!]!): Boolean
   changePassword(oldPassword: String!, newPassword: String!): Boolean!
     @authenticated
   # changeUserPassword(email: String!, password: String!): Boolean!
   #   @authenticated
   #   @authorized(permission: CHANGE_USER_PASSWORD)
+  # createPermission(name: String!): Boolean
   # createRole(name: String!): String! @authorized(permission: CREATE_ROLE)
   initialSignUp(username: String!, email: String!, password: String!): User!
     @notAuthenticated
