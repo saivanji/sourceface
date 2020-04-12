@@ -7,11 +7,6 @@ type User {
   # permissions: [Permissions!]
 }
 
-type AuthPayload {
-  user: User!
-  token: String!
-}
-
 extend type Query {
   myself: User! @authenticated
   # environment. google/facebook/twitter auth available, sendgrid
@@ -24,16 +19,15 @@ extend type Query {
 }
 
 extend type Mutation {
-  signInLocal(email: String!, password: String!): AuthPayload!
-    @not_authenticated
-  signInGoogle(code: String!): AuthPayload! @not_authenticated
+  signInLocal(username: String!, password: String!): User! @not_authenticated
+  signInGoogle(code: String!): User! @not_authenticated
   signOut: Boolean
   signUp(
     username: String!
     email: String!
     password: String!
     invitation: String
-  ): AuthPayload! @not_authenticated
+  ): User! @not_authenticated
   invite(email: String!): String!
     @authenticated
     @authorized(permissions: [INVITE])

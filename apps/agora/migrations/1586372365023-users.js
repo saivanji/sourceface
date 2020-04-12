@@ -6,15 +6,15 @@ export const up = () =>
       CREATE TABLE users(
         id serial PRIMARY KEY,
         created_at timestamp NOT NULL DEFAULT NOW(),
-        username text NOT NULL CHECK (
+        username text NOT NULL UNIQUE CHECK (
           username <> '' AND
           length(username) > 1
         ),
         email text NOT NULL UNIQUE CHECK (
           email ~* '${emailRegex}'
         ),
-        hash text CHECK (
-          hash <> ''
+        password text CHECK (
+          password <> ''
         )
       )
     `)

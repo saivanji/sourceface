@@ -1,6 +1,4 @@
-import postgres from "@@postgres"
-
-const pg = postgres()
+const pg = require("pg-promise")()(process.env.DATABASE_URL)
 
 // making pg variable available in migrations
 global.pg = pg

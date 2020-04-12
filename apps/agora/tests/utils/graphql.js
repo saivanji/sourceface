@@ -1,10 +1,49 @@
-import { graphql } from "graphql"
-import schema from "../../src/schema"
+import http from "http"
 
 export default async (query, variables) => {
-  const res = await graphql(schema, query, null, { pg: global.pg }, variables)
+  return new Promise((resolve, reject) => {
+    const req = http.request(
+      {
+        hostname: "localhost",
+        path: "/graphql",
+        port: global.PORT,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      },
+      (res) => {
+        let rawBody = ""
 
-  if (res.errors) throw res.errors
+        res.on("data", (data) => {
+          rawBody = rawBody + data.toString()
+        })
 
-  return res
+        res.on("end", () => {
+          const body = JSON.parse(rawBody)
+
+          if (body.errors) {
+            reject(body.errors)
+            return
+          }
+
+          resolve({
+            data: body.data,
+            headers: res.headers,
+          })
+        })
+      }
+    )
+
+    req.on("error", (err) => reject(err))
+
+    req.write(
+      JSON.stringify({
+        query,
+        variables,
+      })
+    )
+    req.end()
+  })
 }

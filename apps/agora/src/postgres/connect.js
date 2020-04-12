@@ -2,7 +2,7 @@ import pgPromise from "pg-promise"
 import moment from "moment"
 import humps from "humps"
 
-const { POSTGRES_URL } = process.env
+const { DATABASE_URL } = process.env
 
 const pgp = pgPromise({
   receive: (data) => {
@@ -27,4 +27,4 @@ const pgp = pgPromise({
 // transforming js Date to ISO string
 pgp.pg.types.setTypeParser(1114, (s) => moment(s).toISOString())
 
-export default () => pgp(POSTGRES_URL)
+export default () => pgp(DATABASE_URL)

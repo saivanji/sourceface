@@ -8,7 +8,8 @@ services:
       - /var/www/node_modules
     environment:
       - NODE_ENV=development
-      - POSTGRES_URL
+      - DATABASE_URL
+      - SECRET
       - PORT=5000
     ports:
       - "5000:5000"
