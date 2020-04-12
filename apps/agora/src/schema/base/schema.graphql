@@ -2,15 +2,6 @@ type Query
 
 type Mutation
 
-enum Permissions {
-  INVITE
-  CHANGE_PASSWORD
-}
-
-directive @not_authenticated on FIELD_DEFINITION
-directive @authenticated on FIELD_DEFINITION
-directive @authorized(permissions: [Permissions]) on FIELD_DEFINITION
-
 scalar Email
 
 scalar DateTime

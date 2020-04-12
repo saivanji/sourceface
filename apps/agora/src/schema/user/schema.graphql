@@ -1,3 +1,12 @@
+directive @notAuthenticated on FIELD_DEFINITION
+directive @authenticated on FIELD_DEFINITION
+# directive @authorized(permissions: [Permissions]) on FIELD_DEFINITION
+
+# enum Permissions {
+#   INVITE
+#   CHANGE_PASSWORD
+# }
+
 type User {
   id: Int!
   createdAt: DateTime!
@@ -19,21 +28,21 @@ extend type Query {
 }
 
 extend type Mutation {
-  signInLocal(username: String!, password: String!): User! @not_authenticated
-  # signInGoogle(code: String!): User! @not_authenticated
-  signOut: Boolean!
+  signInLocal(username: String!, password: String!): User! @notAuthenticated
+  # signInGoogle(code: String!): User! @notAuthenticated
+  signOut: Boolean! @authenticated
   signUp(
     username: String!
     email: String!
     password: String!
     invitation: String
-  ): User! @not_authenticated
-  invite(email: String!): String!
-    @authenticated
-    @authorized(permissions: [INVITE])
-  changePassword(email: String!, password: String!): Boolean!
-    @authenticated
-    @authorized(permissions: [CHANGE_PASSWORD])
-  changeSelfPassword(oldPassword: String!, newPassword: String!): Boolean!
-    @authenticated
+  ): User! @notAuthenticated
+  # invite(email: String!): String!
+  #   @authenticated
+  #   @authorized(permissions: [INVITE])
+  # changePassword(email: String!, password: String!): Boolean!
+  #   @authenticated
+  #   @authorized(permissions: [CHANGE_PASSWORD])
+  # changeSelfPassword(oldPassword: String!, newPassword: String!): Boolean!
+  #   @authenticated
 }
