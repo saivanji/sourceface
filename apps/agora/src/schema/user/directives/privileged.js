@@ -8,12 +8,12 @@ export default class extends SchemaDirectiveVisitor {
     field.resolve = async (...args) => {
       const [, , context] = args
 
-      const isAllowed = await roleRepo.privileged(
+      const { isPrivileged } = await roleRepo.byUserId(
         context.session.userId,
         context.pg
       )
 
-      if (!isAllowed) {
+      if (!isPrivileged) {
         throw new Error(
           "You need to be have a privileged role in order to perform that action"
         )

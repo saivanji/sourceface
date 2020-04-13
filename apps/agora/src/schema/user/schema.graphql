@@ -40,12 +40,12 @@ extend type Mutation {
   initialSignUp(username: String!, email: String!, password: String!): User!
     @notAuthenticated
     @noUsers
-  # invitationSignUp(
-  #   username: String!
-  #   email: String!
-  #   password: String!
-  #   invitationId: String!
-  # ): User! @notAuthenticated
+  invitationSignUp(
+    username: String!
+    email: String!
+    password: String!
+    invitationId: String!
+  ): User! @notAuthenticated
   invite(email: String!, roleId: Int!): Invitation! @authenticated @privileged
   signInLocal(username: String!, password: String!): User! @notAuthenticated
   # signInGoogle(code: String!): User! @notAuthenticated

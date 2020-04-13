@@ -8,3 +8,5 @@ export const create = async ({ email, roleId }, pg) => {
 
   return await pg.one(sql.invitations.create, [id, email, expires, roleId])
 }
+
+export const byId = async (id, pg) => pg.one(sql.invitations.byId, [id])

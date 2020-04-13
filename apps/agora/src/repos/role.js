@@ -5,5 +5,5 @@ export const create = (name, isPrivileged, pg) =>
 
 export const list = (ids, pg) => pg.manyOrNone(sql.roles.list, [ids])
 
-export const privileged = async (userId, pg) =>
-  (await pg.one(sql.roles.privileged, [userId])).result
+export const byUserId = async (userId, pg) =>
+  await pg.one(sql.roles.byUserId, [userId])

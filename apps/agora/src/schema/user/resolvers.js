@@ -12,6 +12,23 @@ const initialSignUp = async (parent, args, { pg, session }) => {
   })
 }
 
+const invitationSignUp = async (
+  parent,
+  { username, email, password, invitationId },
+  { pg, session }
+) => {
+  return await pg.task(async (t) => {
+    const invitation = await invitationRepo.byId(invitationId, t)
+    const user = await userRepo.create(
+      { username, email, password },
+      invitation.roleId,
+      pg
+    )
+    session.userId = user.id
+    return user
+  })
+}
+
 const signInLocal = async (parent, args, { pg, session }) => {
   const user = await userRepo.checkPassword(args, pg)
   session.userId = user.id
@@ -57,6 +74,7 @@ export default {
   Mutation: {
     changePassword,
     initialSignUp,
+    invitationSignUp,
     invite,
     signInLocal,
     signOut,
