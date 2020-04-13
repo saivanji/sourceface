@@ -35,7 +35,7 @@ export const getById = async (id, pg) => {
 }
 
 export const hasUsers = async (pg) => {
-  const count = +(await pg.one(sql.users.countAll)).count
+  const count = +(await pg.one(sql.users.count)).count
 
   return count !== 0
 }

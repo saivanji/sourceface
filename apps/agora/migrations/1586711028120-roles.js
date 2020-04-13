@@ -6,7 +6,8 @@ export const up = () =>
         name text NOT NULL UNIQUE CHECK (
           name <> '' AND
           length(name) > 1
-        )
+        ),
+        is_privileged boolean NOT NULL
       )
     `)
     await t.none(`

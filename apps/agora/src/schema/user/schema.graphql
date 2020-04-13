@@ -1,24 +1,20 @@
 directive @authenticated on FIELD_DEFINITION
-# directive @authorized(permissions: [Permissions]) on FIELD_DEFINITION
-directive @hasNoUsers on FIELD_DEFINITION
 directive @notAuthenticated on FIELD_DEFINITION
-
-## Should all permissions be in the database?
-## Even in that case they should be as enum
-## have `is_system` field in permissions table for such permissions
-# enum SystemPermissions {
-#   INVITE
-#   CHANGE_USER_PASSWORD
-# . CREATE_ROLE
-# }
+directive @noUsers on FIELD_DEFINITION
+directive @privileged on FIELD_DEFINITION
 
 type User {
   id: Int!
   createdAt: DateTime!
   email: String!
   username: String!
-  role: String!
-  # permissions: [Permissions!]
+  role: Role!
+}
+
+type Role {
+  id: Int!
+  name: String!
+  isPrivileged: Boolean!
 }
 
 extend type Query {
@@ -27,26 +23,22 @@ extend type Query {
 }
 
 extend type Mutation {
-  # assignPermissions(roleId: Int!, permissionIds: [Int!]!): Boolean
   changePassword(oldPassword: String!, newPassword: String!): Boolean!
     @authenticated
   # changeUserPassword(email: String!, password: String!): Boolean!
   #   @authenticated
-  #   @authorized(permission: CHANGE_USER_PASSWORD)
-  # createPermission(name: String!): Boolean
-  # createRole(name: String!): String! @authorized(permission: CREATE_ROLE)
+  #   @privileged
+  # createRole(name: String!): String! @authenticated @privileged
   initialSignUp(username: String!, email: String!, password: String!): User!
     @notAuthenticated
-    @hasNoUsers
+    @noUsers
   # invitationSignUp(
   #   username: String!
   #   email: String!
   #   password: String!
   #   invitationId: String!
   # ): User! @notAuthenticated
-  # invite(email: String!, role: String!): String!
-  #   @authenticated
-  #   @authorized(permission: INVITE)
+  # invite(email: String!, role: String!): String! @authenticated @privileged
   signInLocal(username: String!, password: String!): User! @notAuthenticated
   # signInGoogle(code: String!): User! @notAuthenticated
   signOut: Boolean! @authenticated

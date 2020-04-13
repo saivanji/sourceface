@@ -4,12 +4,13 @@ import { QueryFile } from "pg-promise"
 export const roles = {
   create: sql("roles/create.sql"),
   list: sql("roles/list.sql"),
+  privileged: sql("roles/privileged.sql"),
 }
 
 export const users = {
   byId: sql("users/byId.sql"),
   byUsername: sql("users/byUsername.sql"),
-  countAll: sql("users/countAll.sql"),
+  count: sql("users/count.sql"),
   changePassword: sql("users/changePassword.sql"),
   create: sql("users/create.sql"),
 }

@@ -8,7 +8,9 @@ export default class extends SchemaDirectiveVisitor {
     field.resolve = async (...args) => {
       const [, , context] = args
 
-      if (await userRepo.hasUsers(context.pg)) {
+      const isAllowed = await userRepo.hasUsers(context.pg)
+
+      if (isAllowed) {
         throw new Error(
           "Application should not contain users in order to perform that action"
         )

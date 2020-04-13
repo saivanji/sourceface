@@ -4,8 +4,7 @@ import * as userRepo from "repos/user"
 
 const initialSignUp = async (parent, args, { pg, session }) => {
   return await pg.tx(async (t) => {
-    const role = await roleRepo.create("admin", t)
-    // assign system permissions for the role
+    const role = await roleRepo.create("admin", true, t)
     const user = await userRepo.create(args, role.id, t)
     session.userId = user.id
     return user

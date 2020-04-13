@@ -3,9 +3,7 @@ import DataLoader from "dataloader"
 import * as roleRepo from "repos/role"
 
 export default (pg) => {
-  const role = new DataLoader(async (ids) =>
-    (await roleRepo.list(ids, pg)).map(R.prop("name"))
-  )
+  const role = new DataLoader((ids) => roleRepo.list(ids, pg))
 
   return {
     role,
