@@ -18,6 +18,7 @@ export const users = {
   count: sql("users/count.sql"),
   changePassword: sql("users/changePassword.sql"),
   create: sql("users/create.sql"),
+  list: sql("users/list.sql"),
 }
 
 function sql(file) {

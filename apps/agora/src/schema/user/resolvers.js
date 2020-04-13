@@ -62,6 +62,9 @@ const hasUsers = async (parent, _args, { pg }) => {
   return await userRepo.hasUsers(pg)
 }
 
+const users = async (parent, { limit = 10, offset = 0 }, { pg }) =>
+  await userRepo.list(limit, offset, pg)
+
 const role = (parent, _args, ctx) => {
   return ctx.loaders.role.load(parent.roleId)
 }
@@ -70,6 +73,7 @@ export default {
   Query: {
     hasUsers,
     myself,
+    users,
   },
   Mutation: {
     changePassword,

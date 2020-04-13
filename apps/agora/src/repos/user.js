@@ -52,6 +52,9 @@ export const changePassword = async ({ oldPassword, newPassword }, id, pg) => {
   })
 }
 
+export const list = async (limit, offset, pg) =>
+  pg.manyOrNone(sql.users.list, [limit, offset])
+
 const hashPassword = (password) => bcrypt.hash(password, 10)
 
 const validatePassword = (password, hash) => bcrypt.compare(password, hash)

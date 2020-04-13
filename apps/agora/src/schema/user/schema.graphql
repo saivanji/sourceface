@@ -27,13 +27,14 @@ type Invitation {
 
 extend type Query {
   myself: User! @authenticated
+  users: [User!]! @authenticated @privileged
   hasUsers: Boolean! @notAuthenticated
 }
 
 extend type Mutation {
   changePassword(oldPassword: String!, newPassword: String!): Boolean!
     @authenticated
-  # changeUserPassword(email: String!, password: String!): Boolean!
+  # changeUserPassword(userId: Int!, password: String!): Boolean!
   #   @authenticated
   #   @privileged
   # createRole(name: String!): Role! @authenticated @privileged
