@@ -1,4 +1,5 @@
 import util from "util"
+import * as invitationRepo from "repos/invitation"
 import * as roleRepo from "repos/role"
 import * as userRepo from "repos/user"
 
@@ -33,6 +34,9 @@ const changePassword = async (parent, args, context) => {
   return true
 }
 
+const invite = async (parent, args, { pg }) =>
+  await invitationRepo.create(args, pg)
+
 const myself = async (parent, _args, { pg, session }) => {
   return await userRepo.getById(session.userId, pg)
 }
@@ -53,6 +57,7 @@ export default {
   Mutation: {
     changePassword,
     initialSignUp,
+    invite,
     signInLocal,
     signOut,
   },

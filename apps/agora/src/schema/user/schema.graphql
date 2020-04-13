@@ -17,6 +17,14 @@ type Role {
   isPrivileged: Boolean!
 }
 
+type Invitation {
+  id: String!
+  createdAt: DateTime!
+  expiresAt: DateTime!
+  email: String!
+  roleId: Int!
+}
+
 extend type Query {
   myself: User! @authenticated
   hasUsers: Boolean! @notAuthenticated
@@ -28,7 +36,7 @@ extend type Mutation {
   # changeUserPassword(email: String!, password: String!): Boolean!
   #   @authenticated
   #   @privileged
-  # createRole(name: String!): String! @authenticated @privileged
+  # createRole(name: String!): Role! @authenticated @privileged
   initialSignUp(username: String!, email: String!, password: String!): User!
     @notAuthenticated
     @noUsers
@@ -38,7 +46,7 @@ extend type Mutation {
   #   password: String!
   #   invitationId: String!
   # ): User! @notAuthenticated
-  # invite(email: String!, role: String!): String! @authenticated @privileged
+  invite(email: String!, roleId: Int!): Invitation! @authenticated @privileged
   signInLocal(username: String!, password: String!): User! @notAuthenticated
   # signInGoogle(code: String!): User! @notAuthenticated
   signOut: Boolean! @authenticated

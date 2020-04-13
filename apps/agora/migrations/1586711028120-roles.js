@@ -3,6 +3,7 @@ export const up = () =>
     await t.none(`
       CREATE TABLE roles(
         id serial PRIMARY KEY,
+        created_at timestamp NOT NULL DEFAULT NOW(),
         name text NOT NULL UNIQUE CHECK (
           name <> '' AND
           length(name) > 1
