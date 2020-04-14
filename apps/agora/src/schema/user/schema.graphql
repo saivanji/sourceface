@@ -32,13 +32,13 @@ extend type Query {
 }
 
 extend type Mutation {
-  # assignRole(roleId: Int!, userId: Int): Boolean!
+  # assignRole(userId: Int!, roleId: Int!): Boolean!
   changePassword(oldPassword: String!, newPassword: String!): Boolean!
     @authenticated
   # changeUserPassword(userId: Int!, password: String!): Boolean!
   #   @authenticated
   #   @privileged
-  # createRole(name: String!): Role! @authenticated @privileged
+  createRole(name: String!): Role! @authenticated @privileged
   initialSignUp(username: String!, email: String!, password: String!): User!
     @notAuthenticated
     @noUsers
@@ -49,7 +49,7 @@ extend type Mutation {
     password: String!
   ): User! @notAuthenticated
   invite(roleId: Int!, email: String!): Invitation! @authenticated @privileged
-  # removeRole(roleId: Int!): Boolean! @authenticated @privileged
+  removeRole(roleId: Int!): Boolean! @authenticated @privileged
   # removeUser(userId: Int!): Boolean! @authenticated @privileged
   # updateRole(roleId: Int!, name: String): Role! @authenticated @privileged
   signInLocal(username: String!, password: String!): User! @notAuthenticated

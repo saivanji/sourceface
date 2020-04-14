@@ -4,7 +4,7 @@ import path from "path"
 import playground from "graphql-playground-middleware-express"
 import session from "express-session"
 import connectPgSimple from "connect-pg-simple"
-import postgres from "./postgres/connect"
+import postgres from "./postgres"
 import schema from "./schema"
 import loaders from "./loaders"
 
@@ -45,6 +45,7 @@ if (NODE_ENV === "production") {
       endpoint: GRAPHQL_ENDPOINT,
       settings: {
         "request.credentials": "include",
+        "schema.polling.enable": false,
       },
     })
   )

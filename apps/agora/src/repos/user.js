@@ -1,5 +1,4 @@
 import bcrypt from "bcryptjs"
-import * as constraints from "postgres/constraints"
 
 export const create = async ({ username, email, password }, roleId, pg) => {
   try {
@@ -8,11 +7,11 @@ export const create = async ({ username, email, password }, roleId, pg) => {
 
     return user
   } catch (err) {
-    if (err.constraint === constraints.USER_EMAIL_UNIQUE) {
+    if (err.constraint === "users_email_key") {
       throw new Error("User with such email already exists")
     }
 
-    if (err.constraint === constraints.USER_USERNAME_UNIQUE) {
+    if (err.constraint === "users_username_key") {
       throw new Error("User with such username already exists")
     }
 
@@ -39,33 +38,51 @@ export const hasUsers = async (pg) => {
   return count !== 0
 }
 
-export const changePassword = async ({ oldPassword, newPassword }, id, pg) => {
+export const changePassword = async (
+  { oldPassword, newPassword },
+  userId,
+  pg
+) => {
   return await pg.task(async (t) => {
-    const user = await t.one(sql.byId, [id])
+    const user = await t.one(sql.byId, [userId])
     const valid = await validatePassword(oldPassword, user.password)
 
     if (!valid) throw new Error("Wrong old password")
 
     const hash = await hashPassword(newPassword)
-    await t.one(sql.changePassword, [user.id, hash])
+    await t.one(sql.setPassword, [user.id, hash])
   })
+}
+
+export const setPassword = async (password, userId) => {
+  const hash = await hashPassword(password)
+  await t.none(sql.setPassword, [userId, hash])
 }
 
 export const list = async (limit, offset, pg) =>
   pg.manyOrNone(sql.list, [limit, offset])
+
+export const remove = async (userId, pg) => pg.none(sql.remove, [userId])
+
+export const assignRole = async (userId, roleId, pg) =>
+  pg.none(sql.assignRole, [userId, roleId])
 
 const hashPassword = (password) => bcrypt.hash(password, 10)
 
 const validatePassword = (password, hash) => bcrypt.compare(password, hash)
 
 const sql = {
+  assignRole: `
+    UPDATE users SET role_id = $2
+    WHERE id = $1
+  `,
   byId: `
     SELECT * FROM users WHERE id = $1;
   `,
   byUsername: `
     SELECT * FROM users WHERE username = $1;
   `,
-  changePassword: `
+  setPassword: `
     UPDATE users SET password = $2
     WHERE id = $1
     RETURNING *;
@@ -81,5 +98,9 @@ const sql = {
   list: `
     SELECT * FROM users
     LIMIT $1 OFFSET $2
+  `,
+  remove: `
+    DELETE FROM users
+    WHERE id = $1
   `,
 }

@@ -43,10 +43,11 @@ const signOut = async (parent, _args, { session }) => {
 // not using destructuring for `context`. Since pg-session deletes `session` object
 // upon calling `regenerate` and spawning a new instance afterwards.
 const changePassword = async (parent, args, context) => {
-  await userRepo.changePassword(args, context.session.userId, context.pg)
+  const { userId } = context.session
+  await userRepo.changePassword(args, userId, context.pg)
 
   await util.promisify(context.session.regenerate.bind(context.session))()
-  context.session.userId = user.id
+  context.session.userId = userId
 
   return true
 }
@@ -65,6 +66,16 @@ const hasUsers = async (parent, _args, { pg }) => {
 const users = async (parent, { limit = 10, offset = 0 }, { pg }) =>
   await userRepo.list(limit, offset, pg)
 
+const createRole = async (parent, { name }, { pg }) => {
+  return await roleRepo.create(name, false, pg)
+}
+
+const removeRole = async (parent, { roleId }, { pg }) => {
+  await roleRepo.remove(roleId, pg)
+
+  return true
+}
+
 const role = (parent, _args, ctx) => {
   return ctx.loaders.role.load(parent.roleId)
 }
@@ -77,9 +88,11 @@ export default {
   },
   Mutation: {
     changePassword,
+    createRole,
     initialSignUp,
     invitationSignUp,
     invite,
+    removeRole,
     signInLocal,
     signOut,
   },

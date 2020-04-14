@@ -4,7 +4,7 @@ import humps from "humps"
 
 const { DATABASE_URL } = process.env
 
-const pgp = pgPromise({
+export const pgp = pgPromise({
   receive: (data) => {
     /**
      * Camelizing column names
