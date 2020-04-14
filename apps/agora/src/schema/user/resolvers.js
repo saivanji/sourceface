@@ -66,6 +66,16 @@ const hasUsers = async (parent, _args, { pg }) => {
 const users = async (parent, { limit = 10, offset = 0 }, { pg }) =>
   await userRepo.list(limit, offset, pg)
 
+const removeUser = async (parent, { userId }, { pg, session }) => {
+  if (session.userId === userId) {
+    throw new Error("Can not remove yourself")
+  }
+
+  await userRepo.remove(userId, pg)
+
+  return true
+}
+
 const createRole = async (parent, { name }, { pg }) => {
   return await roleRepo.create(name, false, pg)
 }
@@ -115,6 +125,7 @@ export default {
     invitationSignUp,
     invite,
     removeRole,
+    removeUser,
     signInLocal,
     signOut,
     updateRole,
