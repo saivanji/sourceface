@@ -8,7 +8,10 @@ export const create = async ({ email, roleId }, pg) => {
   return await pg.one(sql.create, [id, email, expires, roleId])
 }
 
-export const byId = async (id, pg) => pg.one(sql.byId, [id])
+export const byId = async (invitationId, pg) => pg.one(sql.byId, [invitationId])
+
+export const remove = async (invitationId, pg) =>
+  pg.none(sql.remove, [invitationId])
 
 const sql = {
   create: `
@@ -19,5 +22,8 @@ const sql = {
   byId: `
     SELECT * FROM invitations
     WHERE id = $1
+  `,
+  remove: `
+    DELETE FROM invitations WHERE id = $1
   `,
 }

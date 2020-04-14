@@ -50,13 +50,13 @@ export const changePassword = async (
     if (!valid) throw new Error("Wrong old password")
 
     const hash = await hashPassword(newPassword)
-    await t.one(sql.setPassword, [user.id, hash])
+    await t.none(sql.setPassword, [user.id, hash])
   })
 }
 
-export const setPassword = async (password, userId) => {
+export const setPassword = async (password, userId, pg) => {
   const hash = await hashPassword(password)
-  await t.none(sql.setPassword, [userId, hash])
+  await pg.none(sql.setPassword, [userId, hash])
 }
 
 export const list = async (limit, offset, pg) =>
@@ -85,7 +85,6 @@ const sql = {
   setPassword: `
     UPDATE users SET password = $2
     WHERE id = $1
-    RETURNING *;
   `,
   count: `
     SELECT count(id) FROM users

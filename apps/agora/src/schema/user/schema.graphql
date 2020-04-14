@@ -32,13 +32,8 @@ extend type Query {
 }
 
 extend type Mutation {
-  assignRole(userId: Int!, roleId: Int!): Boolean! @authenticated @privileged
-  changePassword(oldPassword: String!, newPassword: String!): Boolean!
-    @authenticated
-  # changeUserPassword(userId: Int!, password: String!): Boolean!
-  #   @authenticated
-  #   @privileged
-  createRole(name: String!): Role! @authenticated @privileged
+  signInLocal(username: String!, password: String!): User! @notAuthenticated
+  # signInGoogle(code: String!): User! @notAuthenticated
   initialSignUp(username: String!, email: String!, password: String!): User!
     @notAuthenticated
     @noUsers
@@ -48,11 +43,16 @@ extend type Mutation {
     email: String!
     password: String!
   ): User! @notAuthenticated
-  invite(roleId: Int!, email: String!): Invitation! @authenticated @privileged
-  removeRole(roleId: Int!): Boolean! @authenticated @privileged
-  removeUser(userId: Int!): Boolean! @authenticated @privileged
-  updateRole(roleId: Int!, name: String): Role! @authenticated @privileged
-  signInLocal(username: String!, password: String!): User! @notAuthenticated
-  # signInGoogle(code: String!): User! @notAuthenticated
   signOut: Boolean! @authenticated
+  invite(roleId: Int!, email: String!): Invitation! @authenticated @privileged
+  changePassword(oldPassword: String!, newPassword: String!): Boolean!
+    @authenticated
+  changeUserPassword(userId: Int!, password: String!): Boolean!
+    @authenticated
+    @privileged
+  removeUser(userId: Int!): Boolean! @authenticated @privileged
+  createRole(name: String!): Role! @authenticated @privileged
+  removeRole(roleId: Int!): Boolean! @authenticated @privileged
+  updateRole(roleId: Int!, name: String): Role! @authenticated @privileged
+  assignRole(userId: Int!, roleId: Int!): Boolean! @authenticated @privileged
 }

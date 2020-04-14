@@ -17,14 +17,17 @@ const invitationSignUp = async (
   { username, email, password, invitationId },
   { pg, session }
 ) => {
-  return await pg.task(async (t) => {
+  return await pg.tx(async (t) => {
     const invitation = await invitationRepo.byId(invitationId, t)
     const user = await userRepo.create(
       { username, email, password },
       invitation.roleId,
       pg
     )
+    await invitationRepo.remove(invitationId, t)
+
     session.userId = user.id
+
     return user
   })
 }
@@ -76,6 +79,12 @@ const removeUser = async (parent, { userId }, { pg, session }) => {
   return true
 }
 
+const changeUserPassword = async (parent, { userId, password }, { pg }) => {
+  await userRepo.setPassword(password, userId, pg)
+
+  return true
+}
+
 const createRole = async (parent, { name }, { pg }) => {
   return await roleRepo.create(name, false, pg)
 }
@@ -120,6 +129,7 @@ export default {
   Mutation: {
     assignRole,
     changePassword,
+    changeUserPassword,
     createRole,
     initialSignUp,
     invitationSignUp,
