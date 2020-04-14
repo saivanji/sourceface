@@ -17,6 +17,8 @@ export const list = (ids, pg) => pg.manyOrNone(sql.list, [ids])
 export const byUserId = async (userId, pg) =>
   await pg.one(sql.byUserId, [userId])
 
+export const byId = async (roleId, pg) => await pg.one(sql.byId, [roleId])
+
 export const remove = async (roleId, pg) => await pg.none(sql.remove, [roleId])
 
 export const update = async (data, roleId, pg) => {

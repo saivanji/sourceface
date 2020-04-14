@@ -71,13 +71,31 @@ const createRole = async (parent, { name }, { pg }) => {
 }
 
 const removeRole = async (parent, { roleId }, { pg }) => {
-  await roleRepo.remove(roleId, pg)
+  await pg.task(async (t) => {
+    const role = await roleRepo.byId(roleId, t)
+
+    if (role.isPrivileged) {
+      throw new Error("Can not remove privileged role")
+    }
+
+    await roleRepo.remove(roleId, t)
+  })
 
   return true
 }
 
 const updateRole = async (parent, { roleId, ...data }, { pg }) =>
   await roleRepo.update(data, roleId, pg)
+
+const assignRole = async (parent, { userId, roleId }, { pg, context }) => {
+  if (userId === context.session.userId) {
+    throw new Error("Can not change the role for yourself")
+  }
+
+  await userRepo.assignRole(userId, roleId, pg)
+
+  return true
+}
 
 const role = (parent, _args, ctx) => {
   return ctx.loaders.role.load(parent.roleId)
@@ -90,6 +108,7 @@ export default {
     users,
   },
   Mutation: {
+    assignRole,
     changePassword,
     createRole,
     initialSignUp,
