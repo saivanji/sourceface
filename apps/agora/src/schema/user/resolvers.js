@@ -76,6 +76,9 @@ const removeRole = async (parent, { roleId }, { pg }) => {
   return true
 }
 
+const updateRole = async (parent, { roleId, ...data }, { pg }) =>
+  await roleRepo.update(data, roleId, pg)
+
 const role = (parent, _args, ctx) => {
   return ctx.loaders.role.load(parent.roleId)
 }
@@ -95,6 +98,7 @@ export default {
     removeRole,
     signInLocal,
     signOut,
+    updateRole,
   },
   User: {
     role,

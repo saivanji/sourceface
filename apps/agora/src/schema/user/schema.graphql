@@ -51,7 +51,7 @@ extend type Mutation {
   invite(roleId: Int!, email: String!): Invitation! @authenticated @privileged
   removeRole(roleId: Int!): Boolean! @authenticated @privileged
   # removeUser(userId: Int!): Boolean! @authenticated @privileged
-  # updateRole(roleId: Int!, name: String): Role! @authenticated @privileged
+  updateRole(roleId: Int!, name: String): Role! @authenticated @privileged
   signInLocal(username: String!, password: String!): User! @notAuthenticated
   # signInGoogle(code: String!): User! @notAuthenticated
   signOut: Boolean! @authenticated
