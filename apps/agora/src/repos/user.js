@@ -64,6 +64,7 @@ export const list = async (limit, offset, pg) =>
 
 export const remove = async (userId, pg) => pg.none(sql.remove, [userId])
 
+// should be in role repo?
 export const assignRole = async (userId, roleId, pg) =>
   pg.none(sql.assignRole, [userId, roleId])
 

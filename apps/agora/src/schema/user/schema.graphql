@@ -15,6 +15,12 @@ type Role {
   id: Int!
   name: String!
   isPrivileged: Boolean!
+  # permissions(limit: Int, offset: Int): [Permission!]!
+}
+
+type Permission {
+  id: Int!
+  name: String!
 }
 
 type Invitation {
@@ -27,8 +33,12 @@ type Invitation {
 
 extend type Query {
   myself: User! @authenticated
-  users: [User!]! @authenticated @privileged
+  users(limit: Int, offset: Int): [User!]! @authenticated @privileged
   hasUsers: Boolean! @notAuthenticated
+  roles(limit: Int, offset: Int): [Role!]! @authenticated @privileged
+  permissions(limit: Int, offset: Int): [Permission!]!
+    @authenticated
+    @privileged
 }
 
 extend type Mutation {
@@ -55,4 +65,12 @@ extend type Mutation {
   removeRole(roleId: Int!): Boolean! @authenticated @privileged
   updateRole(roleId: Int!, name: String): Role! @authenticated @privileged
   assignRole(userId: Int!, roleId: Int!): Boolean! @authenticated @privileged
+  createPermission(name: String!): Permission! @authenticated @privileged
+  removePermission(permissionId: Int!): Boolean! @authenticated @privileged
+  updatePermission(permissionId: Int!, name: String): Permission!
+    @authenticated
+    @privileged
+  assignPermission(roleId: Int!, permissionId: Int!): Boolean!
+    @authenticated
+    @privileged
 }

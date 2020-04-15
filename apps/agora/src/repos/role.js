@@ -12,7 +12,7 @@ export const create = async (name, isPrivileged, pg) => {
   }
 }
 
-export const list = (ids, pg) => pg.manyOrNone(sql.list, [ids])
+export const byIds = (ids, pg) => pg.manyOrNone(sql.byIds, [ids])
 
 export const byUserId = async (userId, pg) =>
   await pg.one(sql.byUserId, [userId])
@@ -32,6 +32,12 @@ export const update = async (data, roleId, pg) => {
   )
 }
 
+export const assignPermission = async (roleId, permissionId, pg) =>
+  pg.none(sql.assignPermission, [roleId, permissionId])
+
+export const list = async (limit, offset, pg) =>
+  await pg.manyOrNone(sql.list, [limit, offset])
+
 const sql = {
   byId: `
     SELECT * FROM roles
@@ -47,12 +53,20 @@ const sql = {
     VALUES ($1, $2)
     RETURNING *
   `,
-  list: `
+  byIds: `
     SELECT * FROM roles
     WHERE id IN ($1:csv)
   `,
   remove: `
     DELETE FROM roles
     WHERE id = $1
+  `,
+  assignPermission: `
+    INSERT INTO roles_permissions (role_id, permission_id)
+    VALUES ($1, $2)
+  `,
+  list: `
+    SELECT * FROM roles
+    LIMIT $1 OFFSET $2
   `,
 }

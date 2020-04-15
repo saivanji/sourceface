@@ -1,7 +1,8 @@
 import util from "util"
 import * as invitationRepo from "repos/invitation"
-import * as roleRepo from "repos/role"
 import * as userRepo from "repos/user"
+import * as roleRepo from "repos/role"
+import * as permissionRepo from "repos/permission"
 
 const initialSignUp = async (parent, args, { pg, session }) => {
   return await pg.tx(async (t) => {
@@ -116,6 +117,31 @@ const assignRole = async (parent, { userId, roleId }, { pg, context }) => {
   return true
 }
 
+const createPermission = async (parent, { name }, { pg }) => {
+  return await permissionRepo.create(name, pg)
+}
+
+const removePermission = async (parent, { permissionId }, { pg }) => {
+  await permissionRepo.remove(permissionId, pg)
+
+  return true
+}
+
+const updatePermission = async (parent, { permissionId, ...data }, { pg }) =>
+  await permissionRepo.update(data, permissionId, pg)
+
+const assignPermission = async (parent, { roleId, permissionId }, { pg }) => {
+  await roleRepo.assignPermission(roleId, permissionId, pg)
+
+  return true
+}
+
+const roles = async (parent, { limit = 10, offset = 0 }, { pg }) =>
+  await roleRepo.list(limit, offset, pg)
+
+const permissions = async (parent, { limit = 10, offset = 0 }, { pg }) =>
+  await permissionRepo.list(limit, offset, pg)
+
 const role = (parent, _args, ctx) => {
   return ctx.loaders.role.load(parent.roleId)
 }
@@ -127,17 +153,23 @@ export default {
     users,
   },
   Mutation: {
+    assignPermission,
     assignRole,
     changePassword,
     changeUserPassword,
     createRole,
+    createPermission,
     initialSignUp,
     invitationSignUp,
     invite,
+    permissions,
+    removePermission,
     removeRole,
     removeUser,
+    roles,
     signInLocal,
     signOut,
+    updatePermission,
     updateRole,
   },
   User: {
