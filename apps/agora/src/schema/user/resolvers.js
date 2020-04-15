@@ -150,6 +150,8 @@ export default {
   Query: {
     hasUsers,
     myself,
+    permissions,
+    roles,
     users,
   },
   Mutation: {
@@ -162,11 +164,9 @@ export default {
     initialSignUp,
     invitationSignUp,
     invite,
-    permissions,
     removePermission,
     removeRole,
     removeUser,
-    roles,
     signInLocal,
     signOut,
     updatePermission,
