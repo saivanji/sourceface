@@ -1,7 +1,9 @@
 import React from "react"
 import ReactDOM from "react-dom"
 import "./index.css"
-// import * as auth from "./pages/auth"
-import { Layout } from "components/common/dashboard"
+import * as auth from "./pages/auth"
+import cmp from "@sourceface/components"
 
-ReactDOM.render(<Layout />, document.getElementById("root"))
+console.log(cmp)
+
+ReactDOM.render(<auth.SignIn />, document.getElementById("root"))

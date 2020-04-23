@@ -1,6 +1,7 @@
 import React from "react"
 import { Tabs } from "components/kit"
 
+// Ignore that component for now
 export default ({ children }) => {
   return (
     <div className="flex">

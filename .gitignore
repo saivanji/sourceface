@@ -1,4 +1,5 @@
 .DS_Store
+node_modules
 /temp
 sourceface-*.zip
 sourceface-*.tar.gz
