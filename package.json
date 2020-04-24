@@ -1,8 +1,0 @@
-{
-  "workspaces": [
-    "packages/components"
-  ],
-  "author": "aiven715 <aiven715@gmail.com>",
-  "license": "MIT",
-  "private": true
-}

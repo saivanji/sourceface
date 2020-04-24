@@ -1,11 +1,5 @@
 version: "3.4"
 services:
-  workspaces:
-    build: .
-    command: "tail -f /dev/null"
-    volumes:
-      - components:/var/www/node_modules/@sourceface/components
-
   agora:
     build: ./apps/agora
     command: "yarn start"
@@ -30,16 +24,20 @@ services:
     volumes:
       - ./apps/sunwell:/var/www
       - /var/www/node_modules
-      - components:/var/www/node_modules/@sourceface/components
+      - ./packages/components:/var/www/node_modules/@sourceface/components
     environment:
       - REACT_APP_AGORA_HOST=${AGORA_HOST}
     ports:
       - "3000:3000"
       - "4000:4000"
 
-  # # storybook
-  # components:
-  #   build: ./packages/@sourceface/components
+  # storybook
+  components:
+    build: ./packages/components
+    command: "tail -f /dev/null"
+    volumes:
+      - ./packages/components:/var/www
+      - /var/www/node_modules
 
   postgres:
     image: postgres:9.5
@@ -48,6 +46,3 @@ services:
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
-
-volumes:
-  components:
