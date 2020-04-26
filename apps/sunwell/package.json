@@ -3,7 +3,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "concurrently \"react-scripts start\" \"start-storybook -p 4000 --quiet\"",
+    "start": "react-scripts start",
     "format": "prettier --write \"src/**/*.js\"",
     "lint": "prettier --check \"src/**/*.js\" && eslint \"src/**/*.js\"",
     "build": "react-scripts build",
@@ -13,23 +13,21 @@
   "dependencies": {
     "@sourceface/components": "0.0.1",
     "classnames": "^2.2.6",
-    "moment": "^2.24.0",
-    "normalizr": "^3.6.0",
-    "ramda": "^0.27.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "^3.4.1",
-    "yup": "^0.28.3"
+    "react-scripts": "^3.4.1"
   },
   "devDependencies": {
-    "@storybook/react": "^5.3.17",
-    "concurrently": "^5.1.0",
     "prettier": "^2.0.2",
     "tailwindcss": "^1.2.0",
     "values.js": "^1.1.0"
   },
   "browserslist": {
-    "production": [">0.2%", "not dead", "not op_mini all"],
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",

@@ -3,5 +3,16 @@
   "version": "0.0.1",
   "main": "./lib/index.js",
   "author": "aiven715 <aiven715@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "start": "start-storybook -p 4000 --quiet"
+  },
+  "dependencies": {
+    "classnames": "^2.2.6",
+    "react": "^16.13.1"
+  },
+  "devDependencies": {
+    "@storybook/react": "^5.3.18",
+    "values.js": "^1.1.1"
+  }
 }

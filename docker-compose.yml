@@ -24,7 +24,7 @@ services:
     volumes:
       - ./apps/sunwell:/var/www
       - /var/www/node_modules
-      - ./packages/components:/var/www/node_modules/@sourceface/components
+      # - ./packages/components:/var/www/node_modules/@sourceface/components
     environment:
       - REACT_APP_AGORA_HOST=${AGORA_HOST}
     ports:
