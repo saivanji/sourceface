@@ -8,11 +8,13 @@
     "start": "start-storybook -p 4000 --quiet"
   },
   "dependencies": {
-    "classnames": "^2.2.6",
-    "react": "^16.13.1"
+    "classnames": "^2.2.6"
   },
   "devDependencies": {
     "@storybook/react": "^5.3.18",
     "values.js": "^1.1.1"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1"
   }
 }

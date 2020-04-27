@@ -1,1 +1,1 @@
-export default "It works great 123";
+export default "It works great!";

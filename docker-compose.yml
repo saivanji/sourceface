@@ -20,24 +20,28 @@ services:
     # temporary option in order webpack not to exit
     stdin_open: true
     build: ./apps/sunwell
-    command: "yarn start"
+    command: >
+      bash -c "rm -rf /var/www/node_modules/@sourceface/components &&
+               ln -s /mnt/components /var/www/node_modules/@sourceface/components &&
+               yarn start"
     volumes:
       - ./apps/sunwell:/var/www
       - /var/www/node_modules
-      # - ./packages/components:/var/www/node_modules/@sourceface/components
+      - ./packages/components:/mnt/components
     environment:
       - REACT_APP_AGORA_HOST=${AGORA_HOST}
     ports:
       - "3000:3000"
-      - "4000:4000"
 
-  # storybook
-  components:
-    build: ./packages/components
-    command: "tail -f /dev/null"
-    volumes:
-      - ./packages/components:/var/www
-      - /var/www/node_modules
+  # # storybook
+  # components:
+  #   build: ./packages/components
+  #   command: "yarn start"
+  #   volumes:
+  #     - ./packages/components:/var/www
+  #     - /var/www/node_modules
+  #   ports:
+  #     - "4000:4000"
 
   postgres:
     image: postgres:9.5
