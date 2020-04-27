@@ -33,10 +33,10 @@ services:
     ports:
       - "3000:3000"
 
-  # storybook
+  # TODO: use named volumes to mount components dir from docker image containing `node_modules` instead of a host dir
   components:
     build: ./packages/components
-    command: "tail -f /dev/null"
+    command: "yarn start"
     volumes:
       - ./packages/components:/var/www
       - /var/www/node_modules
