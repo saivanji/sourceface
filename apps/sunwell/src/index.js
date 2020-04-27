@@ -1,9 +1,6 @@
 import React from "react"
 import ReactDOM from "react-dom"
 import "./index.css"
-import * as auth from "./pages/auth"
-import cmp from "@sourceface/components"
+import * as pages from "./pages"
 
-console.log(cmp)
-
-ReactDOM.render(<auth.SignIn />, document.getElementById("root"))
+ReactDOM.render(<pages.SignIn />, document.getElementById("root"))

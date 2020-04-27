@@ -1,8 +1,13 @@
 import React from "react"
-import { Input } from "components/form/native"
-import { Label } from "components/form/generic"
-import { Button, Stack, Link, Spinner } from "components/kit"
-import { Layout, Box } from "components/common/auth"
+import {
+  Button,
+  Stack,
+  Link,
+  Spinner,
+  Input,
+  Label,
+} from "@sourceface/components"
+import { Layout, Box } from "components/auth"
 import Strength from "./Strength"
 
 export default () => {

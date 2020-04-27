@@ -1,8 +1,13 @@
 import React from "react"
-import { Input, Checkbox } from "components/form/native"
-import { Label } from "components/form/generic"
-import { Button, Link, Stack } from "components/kit"
-import { Layout, Box } from "components/common/auth"
+import {
+  Button,
+  Link,
+  Stack,
+  Input,
+  Checkbox,
+  Label,
+} from "@sourceface/components"
+import { Layout, Box } from "components/auth"
 
 export default () => {
   return (

@@ -1,5 +1,5 @@
 import React from "react"
-import { Tabs } from "components/kit"
+import { Tabs } from "@sourceface/components"
 
 // Ignore that component for now
 export default ({ children }) => {

@@ -33,15 +33,15 @@ services:
     ports:
       - "3000:3000"
 
-  # # storybook
-  # components:
-  #   build: ./packages/components
-  #   command: "yarn start"
-  #   volumes:
-  #     - ./packages/components:/var/www
-  #     - /var/www/node_modules
-  #   ports:
-  #     - "4000:4000"
+  # storybook
+  components:
+    build: ./packages/components
+    command: "tail -f /dev/null"
+    volumes:
+      - ./packages/components:/var/www
+      - /var/www/node_modules
+    ports:
+      - "4000:4000"
 
   postgres:
     image: postgres:9.5
