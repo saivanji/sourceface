@@ -5,12 +5,16 @@
   "author": "aiven715 <aiven715@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "start-storybook -p 4000 --quiet"
+    "start": "start-storybook -p 4000 --quiet",
+    "build": "babel src -d lib"
   },
   "dependencies": {
     "classnames": "^2.2.6"
   },
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/preset-react": "^7.9.4",
     "@storybook/react": "^5.3.18",
     "values.js": "^1.1.1"
   },
