@@ -16,6 +16,7 @@
     "@babel/core": "^7.9.0",
     "@babel/preset-react": "^7.9.4",
     "@storybook/react": "^5.3.18",
+    "babel-loader": "^8.1.0",
     "values.js": "^1.1.1"
   },
   "peerDependencies": {
