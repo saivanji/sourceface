@@ -9,3 +9,7 @@
   align-items: center;
   margin-left: var(--space-1);
 }
+
+.full {
+  width: 100%;
+}
