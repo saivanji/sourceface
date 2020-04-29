@@ -18,16 +18,13 @@
     "react-scripts": "^3.4.1"
   },
   "devDependencies": {
+    "@sourceface/config": "0.0.4",
     "prettier": "^2.0.2",
     "tailwindcss": "^1.2.0",
     "values.js": "^1.1.0"
   },
   "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
+    "production": [">0.2%", "not dead", "not op_mini all"],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
