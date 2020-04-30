@@ -42,6 +42,7 @@ exports.spacings = {
   64: "16rem",
 }
 
+// same as spacings
 exports.sizes = {
   1: "0.25rem",
   2: "0.5rem",
@@ -60,4 +61,12 @@ exports.sizes = {
   48: "12rem",
   56: "14rem",
   64: "16rem",
+}
+
+exports.rounded = {
+  sm: "",
+  base: "",
+  md: "",
+  lg: "",
+  full: "",
 }
