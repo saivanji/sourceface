@@ -1,4 +1,6 @@
 const path = require("path")
+const postcssCustomProperties = require("postcss-custom-properties")
+const atImport = require("postcss-import")
 
 module.exports = {
   mode: "production",
@@ -32,10 +34,21 @@ module.exports = {
           {
             loader: "css-loader",
             options: {
+              import: false,
               modules: {
                 localIdentName: "[name]__[local]___[hash:base64:5]",
               },
               localsConvention: "camelCase",
+            },
+          },
+          {
+            loader: "postcss-loader",
+            options: {
+              ident: "postcss",
+              plugins: () => [
+                atImport(),
+                postcssCustomProperties({ preserve: false }),
+              ],
             },
           },
         ],

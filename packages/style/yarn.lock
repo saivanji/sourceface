@@ -31,6 +31,19 @@
     core-js-pure "^3.0.0"
     regenerator-runtime "^0.13.4"
 
+"@sourceface/config@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@sourceface/config/-/config-0.0.4.tgz#db5d82d5570f48df8a86dbd1846b085e7486039e"
+  integrity sha512-5fXx7u8GmtZ5AVOr4h3omBq7oK/b7VFeUFll59Y/vMSi6ALdwd9XJpPQ2fkoC5H51nGV/nFhOhWQjxUNobh1bQ==
+  dependencies:
+    eslint "^6.8.0"
+    eslint-config-standard "^14.1.1"
+    eslint-plugin-import "^2.20.2"
+    eslint-plugin-node "^11.1.0"
+    eslint-plugin-promise "^4.2.1"
+    eslint-plugin-react "^7.19.0"
+    eslint-plugin-standard "^4.0.1"
+
 "@types/color-name@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
@@ -1433,6 +1446,11 @@ validate-npm-package-license@^3.0.1:
   dependencies:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
+
+values.js@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/values.js/-/values.js-1.1.1.tgz#19d947efd0e1b4d31847ceb01ae4754f14afa65a"
+  integrity sha512-kyUec6alcUa3WevP+mtfCnSdWLuLyX2F/RFTeFnrSgPutzSjJUotqFtKBv8YzEcOCaQ7FEpAgI1RxeD9/8iozQ==
 
 which@^1.2.9:
   version "1.3.1"

@@ -3,8 +3,6 @@ import cx from "classnames"
 import CircleSpinner from "../CircleSpinner"
 import styles from "./index.css"
 
-console.log(styles)
-
 export default function Button({
   children,
   appearance = "primary",
@@ -21,8 +19,8 @@ export default function Button({
     <button
       className={cx(
         className,
-        root,
-        shouldFitContainer && fullContainer,
+        styles.root,
+        shouldFitContainer && styles.full,
         !isDisabled ? appearances[appearance] : disabled,
         sizes[size].base
       )}
@@ -37,8 +35,6 @@ export default function Button({
   )
 }
 
-const root = "focus:outline-none flex justify-center items-center rounded"
-const fullContainer = "w-full"
 const disabled = "bg-gray-tint-80 text-gray-shade-10 cursor-not-allowed"
 
 const sizes = {

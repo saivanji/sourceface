@@ -23,12 +23,16 @@ services:
     command: >
       bash -c "rm -rf /var/www/node_modules/@sourceface/components &&
                ln -s /mnt/components /var/www/node_modules/@sourceface/components &&
+               rm -rf /var/www/node_modules/@sourceface/style &&
+               ln -s /mnt/style /var/www/node_modules/@sourceface/style &&
                yarn start"
     volumes:
       - ./apps/sunwell:/var/www
       - /var/www/node_modules
       - ./packages/components:/mnt/components
       - components_node_modules:/mnt/components/node_modules
+      - ./packages/style:/mnt/style
+      - style_node_modules:/mnt/style/node_modules
     environment:
       - REACT_APP_AGORA_HOST=${AGORA_HOST}
     ports:
@@ -36,12 +40,24 @@ services:
 
   components:
     build: ./packages/components
-    command: "yarn start"
+    command: >
+      bash -c "rm -rf /var/www/node_modules/@sourceface/style &&
+               ln -s /mnt/style /var/www/node_modules/@sourceface/style &&
+               yarn start"
     volumes:
       - ./packages/components:/var/www
       - components_node_modules:/var/www/node_modules
+      - ./packages/style:/mnt/style
+      - style_node_modules:/mnt/style/node_modules
     ports:
       - "4000:4000"
+
+  style:
+    build: ./packages/style
+    command: "tail -f /dev/null"
+    volumes:
+      - ./packages/style:/var/www
+      - style_node_modules:/var/www/node_modules
 
   postgres:
     image: postgres:9.5
@@ -53,3 +69,4 @@ services:
 
 volumes:
   components_node_modules:
+  style_node_modules:
