@@ -1,24 +1,53 @@
 const fs = require("fs")
 const path = require("path")
-const { colors, spacings } = require("./index")
+const { colors, values, rounded, fontSizes } = require("./index")
 
-const spacingsDefinition = Object.keys(spacings).reduce(
-  (acc, n) => acc + `  --space-${n}: ${spacings[n]};\n`,
-  ""
+const mapObj = (obj, fn) =>
+  Object.keys(obj).reduce(
+    (acc, key) => ({
+      ...acc,
+      ...fn(key, obj[key]),
+    }),
+    {}
+  )
+
+const renderCss = data =>
+  ":root {\n" +
+  Object.keys(data).reduce(
+    (acc, key) => acc + `  --${key}: ${data[key]};\n`,
+    ""
+  ) +
+  "}"
+
+const colorsDefinition = mapObj(colors, (k, v) =>
+  typeof v === "string"
+    ? {
+        [`color-${k}`]: v,
+      }
+    : mapObj(v, (_k, _v) => ({
+        [`color-${k}-${_k}`]: _v,
+      }))
 )
 
-const colorsDefinition = Object.keys(colors).reduce(
-  (acc, color) =>
-    acc +
-    (typeof colors[color] === "string"
-      ? `  --color-${color}: ${colors[color]};\n`
-      : Object.keys(colors[color]).reduce(
-          (acc, n) => acc + `  --color-${color}-${n}: ${colors[color][n]};\n`,
-          ""
-        )),
-  ""
+const valuesDefinition = mapObj(values, (k, v) => ({
+  [`value-${k}`]: v,
+}))
+
+const fontSizesDefinition = mapObj(fontSizes, (k, v) => ({
+  [`font-size-${k}`]: v,
+}))
+
+const roundedDefinition = mapObj(rounded, (k, v) => ({
+  [`rounded-${k}`]: v,
+}))
+
+fs.writeFileSync(
+  path.resolve(__dirname, "index.css"),
+  renderCss({
+    ...colorsDefinition,
+    ...valuesDefinition,
+    ...fontSizesDefinition,
+    ...roundedDefinition,
+  }),
+  "utf-8"
 )
-
-const css = `:root {\n${spacingsDefinition}${colorsDefinition}}`
-
-fs.writeFileSync(path.resolve(__dirname, "index.css"), css, "utf-8")
