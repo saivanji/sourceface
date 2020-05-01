@@ -2,3 +2,9 @@ body {
   padding: 1rem;
   font-family: "Nunito Sans", sans-serif;
 }
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}

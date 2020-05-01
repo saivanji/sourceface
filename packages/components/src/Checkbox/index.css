@@ -1,0 +1,10 @@
+@import "@sourceface/style/index.css";
+
+.root {
+  cursor: pointer;
+}
+
+.label {
+  margin-left: var(--value-2);
+  user-select: none;
+}

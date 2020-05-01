@@ -1,8 +1,11 @@
 import React from "react"
+import styles from "./index.css"
 
-export default ({ label }) => (
-  <label className="cursor-pointer">
-    <input type="checkbox" />
-    {label && <span className="ml-2 select-none">{label}</span>}
-  </label>
-)
+export default function Checkbox({ label }) {
+  return (
+    <label className={styles.root}>
+      <input type="checkbox" />
+      {label && <span className={styles.label}>{label}</span>}
+    </label>
+  )
+}

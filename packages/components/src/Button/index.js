@@ -9,11 +9,11 @@ export default function Button({
   size = "normal",
   type = "button",
   shouldFitContainer = false,
-  iconAfter,
-  iconBefore,
   isDisabled,
   isLoading,
   className,
+  // iconAfter,
+  // iconBefore,
 }) {
   return (
     <button
@@ -21,40 +21,16 @@ export default function Button({
         className,
         styles.root,
         shouldFitContainer && styles.full,
-        !isDisabled ? appearances[appearance] : disabled,
-        sizes[size].base
+        isDisabled ? styles.disabled : styles[appearance],
+        styles[size]
       )}
       disabled={isDisabled}
       type={type}
     >
       {isLoading && (
-        <CircleSpinner appearance="dark" className={sizes[size].spinner} />
+        <CircleSpinner appearance="dark" className={styles.spinner} />
       )}
       {children}
     </button>
   )
-}
-
-const disabled = "bg-gray-tint-80 text-gray-shade-10 cursor-not-allowed"
-
-const sizes = {
-  compact: {
-    base: "h-6 px-2",
-    spinner: "mr-1",
-  },
-  normal: {
-    base: "h-8 px-3",
-    spinner: "mr-2",
-  },
-  loose: {
-    base: "h-10 px-4",
-    spinner: "mr-3",
-  },
-}
-
-const appearances = {
-  primary:
-    "bg-gray-tint-70 hover:bg-gray-tint-40 active:bg-gray-tint-20 text-gray-shade-80 focus:shadow-gray-outline",
-  secondary: "",
-  danger: "",
 }

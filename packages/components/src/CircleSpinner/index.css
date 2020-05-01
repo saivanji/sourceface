@@ -1,0 +1,24 @@
+@import "@sourceface/style/index.css";
+
+@keyframes rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.root {
+  border-right-color: transparent !important;
+  animation: rotate 0.75s linear infinite;
+  border: 2px solid;
+  width: var(--value-3);
+  height: var(--value-3);
+  border-radius: var(--rounded-full);
+}
+
+.light {
+  border-color: var(--color-white);
+}
+
+.dark {
+  border-color: var(--color-gray-shade-50);
+}
