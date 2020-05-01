@@ -1,3 +1,5 @@
+// TODO: should be in es5
+// TODO: move everything from `config` to root?
 import { exec } from "child_process"
 import app from "/"
 
@@ -18,8 +20,8 @@ global.beforeEach(async () => {
   )
   await Promise.all(
     tables
-      .filter((item) => item.tableName !== "migrations")
-      .map((item) => app.pg.none(`DELETE FROM ${item.tableName}`))
+      .filter(item => item.tableName !== "migrations")
+      .map(item => app.pg.none(`DELETE FROM ${item.tableName}`))
   )
 })
 

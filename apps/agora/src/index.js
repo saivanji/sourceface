@@ -30,7 +30,7 @@ app.use(
 
 app.post(
   GRAPHQL_ENDPOINT,
-  graphqlHTTP((req) => ({
+  graphqlHTTP(req => ({
     schema,
     context: Object.assign(req, { pg, loaders: loaders(pg) }),
   }))
@@ -54,3 +54,5 @@ if (NODE_ENV === "production") {
 app.pg = pg
 
 export default app
+
+// TODO: all configuration is writen in es5 JS. src, migrations, tests - in TS

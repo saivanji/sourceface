@@ -4,11 +4,7 @@ module.exports = {
     es6: true,
     node: true,
   },
-  extends: ["plugin:react/recommended", "standard"],
-  globals: {
-    Atomics: "readonly",
-    SharedArrayBuffer: "readonly",
-  },
+  extends: ["eslint:recommended"],
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
@@ -16,9 +12,12 @@ module.exports = {
     ecmaVersion: 2018,
     sourceType: "module",
   },
-  plugins: ["react"],
+  plugins: ["import", "react"],
   rules: {
     quotes: ["error", "double"],
     "comma-dangle": "off",
+    "import/no-unresolved": ["error", { commonjs: true }],
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars": "error",
   },
 }
