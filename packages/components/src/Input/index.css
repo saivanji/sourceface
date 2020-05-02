@@ -5,6 +5,7 @@
 }
 
 .element {
+  width: 100%;
   background-color: var(--color-gray-tint-130);
   color: var(--color-gray-shade-110);
   border-radius: var(--rounded-base);
@@ -35,9 +36,6 @@
     &:focus {
       box-shadow: none;
     }
-  }
-  &.full {
-    width: 100%;
   }
 }
 

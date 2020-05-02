@@ -2,9 +2,64 @@
 
 .root {
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  &:hover {
+    & .checkbox {
+      background-color: var(--color-gray-tint-130);
+    }
+  }
+  &.disabled {
+    cursor: not-allowed;
+    & .checkbox {
+      background-color: var(--color-gray-tint-130);
+    }
+  }
+}
+
+.checkbox {
+  border: 1px solid var(--color-gray-tint-50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--rounded-sm);
+  &.compact {
+    width: var(--value-4);
+    height: var(--value-4);
+    & + .label {
+      margin-left: var(--value-1);
+    }
+  }
+  &.normal {
+    width: var(--value-5);
+    height: var(--value-5);
+    & + .label {
+      margin-left: var(--value-2);
+    }
+  }
+  &.loose {
+    width: var(--value-6);
+    height: var(--value-6);
+    & + .label {
+      margin-left: var(--value-3);
+    }
+  }
+}
+
+input[type="checkbox"] {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  &:checked + .checkbox {
+    background-color: var(--color-gray-tint-70);
+  }
+  &:focus + .checkbox {
+    box-shadow: 0 0 0 3px var(--color-gray-tint-120);
+  }
 }
 
 .label {
-  margin-left: var(--value-2);
+  font-size: var(--font-size-sm);
   user-select: none;
 }
