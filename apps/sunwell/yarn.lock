@@ -1155,12 +1155,13 @@
   resolved "https://registry.yarnpkg.com/@sourceface/components/-/components-0.0.1.tgz#723bea5adc61cfc0a948a7cacc4c2e106a2168d1"
   integrity sha512-3zX8RIo+IAfZRWDdJFIRHpOMLCc/a3gccjr+5fe4P+5YWFl/rqTjVe0DqqrGU6mmUcMxF8eP8kjAadWmpEK3Cg==
 
-"@sourceface/config@0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@sourceface/config/-/config-0.0.5.tgz#4c49232023b54e3ee993df96cb738899752b7819"
-  integrity sha512-lcvLynffj0oWy55FYgVXERdCyi729UT7V6tn9YJUF7xTQV5k7wr47ahAHpYxKaQd80Dyc0LzSosE6dX3agJqNA==
+"@sourceface/config@0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@sourceface/config/-/config-0.0.6.tgz#56e859621f188f03019513186f8acc7765eb3367"
+  integrity sha512-ZPhXYucMbHRSXZfkq/AtBOnyC1DWP2BIowiFRcxO5+zprghf2BR8ba53+EAyv/lqDwYmJ/t9TIPQhm58709LDw==
   dependencies:
     eslint-plugin-import "^2.20.2"
+    eslint-plugin-react "^7.19.0"
 
 "@svgr/babel-plugin-add-jsx-attribute@^4.2.0":
   version "4.2.0"
@@ -3889,7 +3890,7 @@ eslint-plugin-react-hooks@^1.6.1:
   resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-1.7.0.tgz#6210b6d5a37205f0b92858f895a4e827020a7d04"
   integrity sha512-iXTCFcOmlWvw4+TOE8CLWj6yX1GwzT0Y6cUfHHZqWnSk144VmVIRcVGtUAzrLES7C798lmvnt02C7rxaOX1HNA==
 
-eslint-plugin-react@7.19.0:
+eslint-plugin-react@7.19.0, eslint-plugin-react@^7.19.0:
   version "7.19.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.19.0.tgz#6d08f9673628aa69c5559d33489e855d83551666"
   integrity sha512-SPT8j72CGuAP+JFbT0sJHOB80TX/pu44gQ4vXH/cq+hQTiY2PuZ6IHkqXJV6x1b28GDdo1lbInjKUrrdUf0LOQ==

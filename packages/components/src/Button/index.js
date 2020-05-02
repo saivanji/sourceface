@@ -1,6 +1,6 @@
 import React from "react"
 import cx from "classnames"
-import CircleSpinner from "../CircleSpinner"
+import Spinner from "../Spinner"
 import styles from "./index.css"
 
 export default function Button({
@@ -27,9 +27,7 @@ export default function Button({
       disabled={isDisabled}
       type={type}
     >
-      {isLoading && (
-        <CircleSpinner appearance="dark" className={styles.spinner} />
-      )}
+      {isLoading && <Spinner appearance="dark" className={styles.spinner} />}
       {children}
     </button>
   )

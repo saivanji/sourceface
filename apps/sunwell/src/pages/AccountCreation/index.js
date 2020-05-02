@@ -3,7 +3,7 @@ import {
   Button,
   Stack,
   Link,
-  CircleSpinner,
+  Spinner,
   Input,
   Label,
 } from "@sourceface/components"
@@ -42,7 +42,7 @@ export default () => {
               type="password"
               size="loose"
               shouldFitContainer
-              iconAfter={<CircleSpinner />}
+              iconAfter={<Spinner />}
             />
             <Strength />
           </Label>
