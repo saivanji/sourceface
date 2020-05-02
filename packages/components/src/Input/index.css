@@ -1,0 +1,59 @@
+@import "@sourceface/style/index.css";
+
+.root {
+  position: relative;
+}
+
+.element {
+  background-color: var(--color-gray-tint-130);
+  color: var(--color-gray-shade-110);
+  border-radius: var(--rounded-base);
+  border: 1px solid var(--color-gray-tint-50);
+  font-size: var(--font-size-sm);
+  &:focus {
+    background-color: var(--color-white);
+    border-color: var(--color-gray-tint-10);
+    box-shadow: 0 0 0 3px var(--color-gray-tint-120);
+  }
+  &::placeholder {
+    color: var(--color-gray-shade-30);
+  }
+  &.compact {
+    height: var(--value-6);
+    padding: 0 var(--value-1);
+  }
+  &.normal {
+    height: var(--value-8);
+    padding: 0 var(--value-2);
+  }
+  &.loose {
+    height: var(--value-10);
+    padding: 0 var(--value-3);
+  }
+  &.error {
+    border-color: var(--color-gray-shade-100);
+    &:focus {
+      box-shadow: none;
+    }
+  }
+  &.full {
+    width: 100%;
+  }
+}
+
+.error-text {
+  font-size: var(--font-size-xs);
+  color: var(--color-black);
+  margin-top: var(--value-1);
+}
+
+.icon-after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  margin-right: var(--value-3);
+  width: var(--value-3);
+}

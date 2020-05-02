@@ -11,61 +11,60 @@
   &:focus {
     outline: 0;
   }
-}
-
-.full {
-  width: 100%;
-}
-
-.compact {
-  height: var(--value-6);
-  padding-left: var(--value-2);
-  padding-right: var(--value-2);
-  & .spinner {
-    margin-right: var(--value-1);
+  &.full {
+    width: 100%;
   }
-}
 
-.normal {
-  height: var(--value-8);
-  padding-left: var(--value-3);
-  padding-right: var(--value-3);
-  & .spinner {
-    margin-right: var(--value-2);
+  &.compact {
+    height: var(--value-6);
+    padding-left: var(--value-2);
+    padding-right: var(--value-2);
+    & .spinner {
+      margin-right: var(--value-1);
+    }
   }
-}
 
-.loose {
-  height: var(--value-10);
-  padding-left: var(--value-4);
-  padding-right: var(--value-4);
-  & .spinner {
-    margin-right: var(--value-3);
+  &.normal {
+    height: var(--value-8);
+    padding-left: var(--value-3);
+    padding-right: var(--value-3);
+    & .spinner {
+      margin-right: var(--value-2);
+    }
   }
-}
 
-.primary {
-  background-color: var(--color-gray-tint-70);
-  color: var(--color-gray-shade-80);
-  &:hover {
-    background-color: var(--color-gray-tint-40);
+  &.loose {
+    height: var(--value-10);
+    padding-left: var(--value-4);
+    padding-right: var(--value-4);
+    & .spinner {
+      margin-right: var(--value-3);
+    }
   }
-  &:active {
-    background-color: var(--color-gray-tint-20);
+
+  &.primary {
+    background-color: var(--color-gray-tint-70);
+    color: var(--color-gray-shade-80);
+    &:hover {
+      background-color: var(--color-gray-tint-40);
+    }
+    &:active {
+      background-color: var(--color-gray-tint-20);
+    }
+    &:focus {
+      box-shadow: 0 0 0 3px var(--color-gray-tint-120);
+    }
   }
-  &:focus {
-    box-shadow: 0 0 0 3px var(--color-gray-tint-120);
+
+  &.secondary {
   }
-}
 
-.secondary {
-}
+  &.danger {
+  }
 
-.danger {
-}
-
-.disabled {
-  background-color: var(--color-gray-tint-80);
-  color: var(--color-gray-shade-10);
-  cursor: not-allowed;
+  &.disabled {
+    background-color: var(--color-gray-tint-80);
+    color: var(--color-gray-shade-10);
+    cursor: not-allowed;
+  }
 }
