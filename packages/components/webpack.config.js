@@ -1,4 +1,5 @@
 const path = require("path")
+const rules = require("@sourceface/config/client/webpack-rules.js")
 
 module.exports = {
   mode: "production",
@@ -17,44 +18,7 @@ module.exports = {
     },
   },
   module: {
-    rules: [
-      {
-        test: /\.jsx?$/,
-        exclude: /(node_modules)/,
-        use: {
-          loader: "babel-loader",
-        },
-      },
-      {
-        test: /\.css$/,
-        use: [
-          "style-loader",
-          {
-            loader: "css-loader",
-            options: {
-              import: false,
-              modules: {
-                localIdentName: "[hash:base64]",
-              },
-              localsConvention: "camelCase",
-            },
-          },
-          "postcss-loader",
-        ],
-      },
-      {
-        test: /\.svg$/,
-        issuer: {
-          test: /\.jsx$/,
-        },
-        use: {
-          loader: "@svgr/webpack",
-          options: {
-            dimensions: false,
-          },
-        },
-      },
-    ],
+    rules,
   },
   resolve: {
     extensions: [".js", ".jsx"],

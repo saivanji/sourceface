@@ -1,11 +1,11 @@
-const custom = require("../webpack.config")
+const rules = require("@sourceface/config/client/webpack-rules.js")
 
 module.exports = {
   stories: ["../src/**/*.stories.jsx"],
   webpackFinal: config => {
     return {
       ...config,
-      module: { ...config.module, rules: custom.module.rules },
+      module: { ...config.module, rules },
     }
   },
 }

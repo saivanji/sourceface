@@ -1,24 +1,24 @@
 import React from "react"
-import Stack from "./index"
+import Fields from "./index"
 import Input from "../Input"
 
 const Child = () => <Input placeholder="Enter username" />
 
-export default { title: "Stack" }
+export default { title: "Fields" }
 
 export const vertical = () => (
-  <Stack direction="vertical">
+  <Fields direction="vertical">
     <Child />
     <Child />
     <Child />
     <Child />
-  </Stack>
+  </Fields>
 )
 export const horizontal = () => (
-  <Stack direction="horizontal">
+  <Fields direction="horizontal">
     <Child />
     <Child />
     <Child />
     <Child />
-  </Stack>
+  </Fields>
 )
