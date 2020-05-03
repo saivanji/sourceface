@@ -1155,10 +1155,10 @@
   resolved "https://registry.yarnpkg.com/@sourceface/components/-/components-0.0.1.tgz#723bea5adc61cfc0a948a7cacc4c2e106a2168d1"
   integrity sha512-3zX8RIo+IAfZRWDdJFIRHpOMLCc/a3gccjr+5fe4P+5YWFl/rqTjVe0DqqrGU6mmUcMxF8eP8kjAadWmpEK3Cg==
 
-"@sourceface/config@0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@sourceface/config/-/config-0.0.6.tgz#56e859621f188f03019513186f8acc7765eb3367"
-  integrity sha512-ZPhXYucMbHRSXZfkq/AtBOnyC1DWP2BIowiFRcxO5+zprghf2BR8ba53+EAyv/lqDwYmJ/t9TIPQhm58709LDw==
+"@sourceface/config@0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@sourceface/config/-/config-0.0.8.tgz#6edf1e2c7f9f052118ad50de087297f24a5910a4"
+  integrity sha512-oQE/srclOl8t+h2Eti0JF9OobHyMbKAwHzDJ6bGt5oWNbmScerp52g8DHXBQJLmdxqHjNY+bJfT0xXDCvIaV1A==
   dependencies:
     eslint-plugin-import "^2.20.2"
     eslint-plugin-react "^7.19.0"

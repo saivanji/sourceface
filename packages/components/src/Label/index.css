@@ -1,0 +1,16 @@
+@import "@sourceface/style/index.css";
+
+.title {
+  font-weight: 700;
+  display: flex;
+  color: var(--color-gray-shade-100);
+  margin-bottom: var(--value-2);
+  font-size: var(--font-size-sm);
+}
+
+.helper {
+  display: block;
+  margin-top: var(--value-1);
+  color: var(--color-gray);
+  font-size: var(--font-size-xs);
+}

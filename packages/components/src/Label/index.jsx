@@ -1,11 +1,13 @@
 import React from "react"
+import styles from "./index.css"
 
-export default ({ children, title, helperMessage }) => (
+export default ({ children, title, isRequired, helperMessage }) => (
   <label>
-    <span className="font-bold mb-2 flex text-gray-shade-110">{title}</span>
+    <span className={styles.title}>
+      {title}
+      {isRequired && " *"}
+    </span>
     {children}
-    {helperMessage && (
-      <span className="block mt-1 text-gray text-xs">{helperMessage}</span>
-    )}
+    {helperMessage && <span className={styles.helper}>{helperMessage}</span>}
   </label>
 )

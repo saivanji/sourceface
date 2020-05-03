@@ -14,7 +14,6 @@
   &.full {
     width: 100%;
   }
-
   &.compact {
     height: var(--value-6);
     padding-left: var(--value-2);
@@ -23,7 +22,6 @@
       margin-right: var(--value-1);
     }
   }
-
   &.normal {
     height: var(--value-8);
     padding-left: var(--value-3);
@@ -32,7 +30,6 @@
       margin-right: var(--value-2);
     }
   }
-
   &.loose {
     height: var(--value-10);
     padding-left: var(--value-4);
@@ -41,7 +38,6 @@
       margin-right: var(--value-3);
     }
   }
-
   &.primary {
     background-color: var(--color-gray-tint-70);
     color: var(--color-gray-shade-80);
@@ -55,13 +51,10 @@
       box-shadow: 0 0 0 3px var(--color-gray-tint-120);
     }
   }
-
   &.secondary {
   }
-
   &.danger {
   }
-
   &.disabled {
     background-color: var(--color-gray-tint-80);
     color: var(--color-gray-shade-10);

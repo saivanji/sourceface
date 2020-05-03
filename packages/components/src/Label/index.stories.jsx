@@ -15,3 +15,8 @@ export const notRequired = () => (
     <Placeholder />
   </Label>
 )
+export const helperMessage = () => (
+  <Label title="Username" helperMessage="Min 6 letters">
+    <Placeholder />
+  </Label>
+)
