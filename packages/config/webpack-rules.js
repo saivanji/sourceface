@@ -40,7 +40,7 @@ module.exports = [
   },
 ]
 
-const resolveLoader = (name, context = __dirname) => {
+function resolveLoader(name, context = __dirname) {
   const modulePath = path.resolve(context, "node_modules", name)
 
   if (!fs.existsSync(modulePath)) {
