@@ -1,13 +1,7 @@
 import React from "react"
 import cx from "classnames"
+import styles from "./index.css"
 
 export default ({ children, className }) => (
-  <button
-    className={cx(
-      "focus:outline-none focus:shadow-gray-outline rounded font-semibold",
-      className
-    )}
-  >
-    {children}
-  </button>
+  <button className={cx(styles.root, className)}>{children}</button>
 )
