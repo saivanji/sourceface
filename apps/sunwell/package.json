@@ -4,10 +4,9 @@
   "private": true,
   "scripts": {
     "start": "react-scripts start",
-    "format": "prettier --write \"src/**/*.js\"",
-    "lint": "prettier --check \"src/**/*.js\" && eslint \"src/**/*.js\"",
     "build": "react-scripts build",
-    "tailwind": "tailwind build tailwind.css -c tailwind.config.js -o public/tailwind.css"
+    "format": "prettier --write \"src/**/*.js\"",
+    "lint": "prettier --check \"src/**/*.js\" && eslint \"src/**/*.js\""
   },
   "dependencies": {
     "@sourceface/components": "0.0.1",
@@ -17,22 +16,10 @@
     "react-scripts": "^3.4.1"
   },
   "devDependencies": {
-    "@sourceface/config": "0.0.8",
+    "@sourceface/config": "0.0.12",
     "eslint": "^6.8.0",
     "prettier": "^2.0.5",
     "tailwindcss": "^1.2.0",
     "values.js": "^1.1.0"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
   }
 }
