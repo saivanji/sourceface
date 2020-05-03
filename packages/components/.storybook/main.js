@@ -1,7 +1,7 @@
 const custom = require("../webpack.config")
 
 module.exports = {
-  stories: ["../src/**/*.stories.js"],
+  stories: ["../src/**/*.stories.jsx"],
   webpackFinal: config => {
     return {
       ...config,

@@ -2,7 +2,7 @@
 
 .root {
   cursor: pointer;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   &:hover {
     & .checkbox {
@@ -53,6 +53,9 @@ input[type="checkbox"] {
   opacity: 0;
   &:checked + .checkbox {
     background-color: var(--color-gray-tint-70);
+    & .icon {
+      display: block;
+    }
   }
   &:focus + .checkbox {
     box-shadow: 0 0 0 3px var(--color-gray-tint-120);
@@ -62,4 +65,9 @@ input[type="checkbox"] {
 .label {
   font-size: var(--font-size-sm);
   user-select: none;
+}
+
+.icon {
+  display: none;
+  fill: var(--color-gray-shade-100);
 }

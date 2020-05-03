@@ -19,7 +19,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         exclude: /(node_modules)/,
         use: {
           loader: "babel-loader",
@@ -44,8 +44,19 @@ module.exports = {
       },
       {
         test: /\.svg$/,
-        use: ["@svgr/webpack"],
+        issuer: {
+          test: /\.jsx$/,
+        },
+        use: {
+          loader: "@svgr/webpack",
+          options: {
+            dimensions: false,
+          },
+        },
       },
     ],
+  },
+  resolve: {
+    extensions: [".js", ".jsx"],
   },
 }

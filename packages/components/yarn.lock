@@ -1165,10 +1165,10 @@
     prop-types "^15.6.1"
     react-lifecycles-compat "^3.0.4"
 
-"@sourceface/config@0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@sourceface/config/-/config-0.0.6.tgz#56e859621f188f03019513186f8acc7765eb3367"
-  integrity sha512-ZPhXYucMbHRSXZfkq/AtBOnyC1DWP2BIowiFRcxO5+zprghf2BR8ba53+EAyv/lqDwYmJ/t9TIPQhm58709LDw==
+"@sourceface/config@0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@sourceface/config/-/config-0.0.7.tgz#fe44b091290b9569dc9488414d8bd308772f4a7e"
+  integrity sha512-HxxiAwwNnD2rRJWcRo1+M+XLYcDcLryNDlhsp6eP2z3nkTsbCtFcVxm7AafwjI8Z9gTAps+63gqNb6T3vw7UgA==
   dependencies:
     eslint-plugin-import "^2.20.2"
     eslint-plugin-react "^7.19.0"
