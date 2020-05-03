@@ -1,12 +1,13 @@
 {
   "name": "@sourceface/config",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "author": "aiven715 <aiven715@gmail.com>",
   "license": "MIT",
   "files": [
     ".prettierrc.js",
     ".eslintrc.js",
-    "webpack-rules.js"
+    "client/postcss.config.js",
+    "client/webpack-rules.js"
   ],
   "scripts": {
     "format": "prettier --write \"src/**/*.js\"",
@@ -14,11 +15,14 @@
   },
   "dependencies": {
     "@svgr/webpack": "^5.4.0",
+    "autoprefixer": "^9.7.6",
     "babel-loader": "^8.1.0",
     "css-loader": "^3.5.3",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-react": "^7.19.0",
+    "postcss-import": "^12.0.1",
     "postcss-loader": "^3.0.0",
+    "postcss-preset-env": "^6.7.0",
     "style-loader": "^1.2.1"
   },
   "devDependencies": {
