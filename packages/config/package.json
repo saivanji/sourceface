@@ -1,19 +1,25 @@
 {
   "name": "@sourceface/config",
-  "version": "0.0.8",
+  "version": "0.0.10",
   "author": "aiven715 <aiven715@gmail.com>",
   "license": "MIT",
   "files": [
     ".prettierrc.js",
-    ".eslintrc.js"
+    ".eslintrc.js",
+    "webpack-rules.js"
   ],
   "scripts": {
     "format": "prettier --write \"src/**/*.js\"",
     "lint": "prettier --check \"src/**/*.js\" && eslint \"src/**/*.js\""
   },
   "dependencies": {
+    "@svgr/webpack": "^5.4.0",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^3.5.3",
     "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-react": "^7.19.0"
+    "eslint-plugin-react": "^7.19.0",
+    "postcss-loader": "^3.0.0",
+    "style-loader": "^1.2.1"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
