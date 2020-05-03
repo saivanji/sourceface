@@ -2,7 +2,7 @@ import React from "react"
 import {
   Button,
   Link,
-  Stack,
+  Fields,
   Input,
   Checkbox,
   Label,
@@ -16,7 +16,7 @@ export default () => {
         title="Sign In to your account"
         description="Enter your credentials into the form below"
       >
-        <Stack stretchItem spacing={4}>
+        <Fields>
           <Label title="Email">
             <Input
               placeholder="example@domain.com"
@@ -33,11 +33,11 @@ export default () => {
               shouldFitContainer
             />
           </Label>
-          <Stack direction="row" justifyContent="between">
-            <Checkbox label="Stay signed in" />
-            <Link>Forgot password?</Link>
-          </Stack>
-        </Stack>
+        </Fields>
+        <div direction="horizontal">
+          <Checkbox label="Stay signed in" />
+          <Link>Forgot password?</Link>
+        </div>
         <Button className="mt-6" type="submit" size="loose" shouldFitContainer>
           Continue
         </Button>

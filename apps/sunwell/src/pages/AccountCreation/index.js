@@ -17,7 +17,7 @@ export default () => {
         title="Welcome aboard"
         description="Enter your credentials into the form below in order to create your account"
       >
-        <Stack stretchItem spacing={4}>
+        <Stack>
           <Label title="Username">
             <Input
               placeholder="johndoe"
