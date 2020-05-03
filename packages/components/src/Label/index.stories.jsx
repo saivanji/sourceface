@@ -1,22 +1,23 @@
 import React from "react"
 import Label from "./index"
+import Input from "../Input"
 
 export default { title: "Label" }
 
-const Placeholder = () => <img src="https://via.placeholder.com/360x40" />
+const Child = () => <Input placeholder="Please enter the text" />
 
 export const required = () => (
   <Label title="Username" isRequired>
-    <Placeholder />
+    <Child />
   </Label>
 )
 export const notRequired = () => (
   <Label title="Username">
-    <Placeholder />
+    <Child />
   </Label>
 )
 export const helperMessage = () => (
   <Label title="Username" helperMessage="Min 6 letters">
-    <Placeholder />
+    <Child />
   </Label>
 )

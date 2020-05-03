@@ -38,7 +38,7 @@ export default () => {
             <Link>Forgot password?</Link>
           </Stack>
         </Stack>
-        <Button className="mt-5" type="submit" size="loose" shouldFitContainer>
+        <Button className="mt-6" type="submit" size="loose" shouldFitContainer>
           Continue
         </Button>
       </Box>
