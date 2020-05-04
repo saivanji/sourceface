@@ -1,6 +1,7 @@
 const Values = require("values.js")
 const gray = "#bdc3c7"
 const white = "#ffffff"
+const black = "#000000"
 const grayColor = new Values(gray)
 
 const grayTints = grayColor.tints(7)
@@ -17,6 +18,7 @@ const mapColors = items =>
 
 exports.colors = {
   white,
+  black,
   gray,
   "gray-tint": mapColors(grayTints),
   "gray-shade": mapColors(grayShades),
