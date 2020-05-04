@@ -1,6 +1,5 @@
 const path = require("path")
-const rules = require("@sourceface/config/client/webpack-rules.js")
-const plugins = require("@sourceface/config/client/webpack-plugins.js")
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 
 module.exports = {
   mode: "production",
@@ -18,9 +17,51 @@ module.exports = {
       root: "React",
     },
   },
-  plugins,
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: "[name].css",
+      chunkFilename: "[id].css",
+    }),
+  ],
   module: {
-    rules,
+    rules: [
+      {
+        test: /\.jsx?$/,
+        exclude: /(node_modules)/,
+        use: {
+          loader: "babel-loader",
+        },
+      },
+      {
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: "css-loader",
+            options: {
+              import: false,
+              modules: {
+                localIdentName: "[hash:base64]",
+              },
+              localsConvention: "camelCase",
+            },
+          },
+          "postcss-loader",
+        ],
+      },
+      {
+        test: /\.svg$/,
+        issuer: {
+          test: /\.jsx$/,
+        },
+        use: {
+          loader: "@svgr/webpack",
+          options: {
+            dimensions: false,
+          },
+        },
+      },
+    ],
   },
   resolve: {
     extensions: [".js", ".jsx"],

@@ -1149,22 +1149,16 @@
     prop-types "^15.6.1"
     react-lifecycles-compat "^3.0.4"
 
-"@sourceface/config@0.0.14":
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/@sourceface/config/-/config-0.0.14.tgz#b713a211bda0fec2d54e106fb4472c1e9aa55caf"
-  integrity sha512-Wk0mz6eXOWDCtqPh8dxZ9FlWJ0XOxi30pymM2tkAHs0SAqQpepJfq7Y2qo24Kbyb95pVLYmUNgbsDgw8T1AVfA==
+"@sourceface/config@0.0.15":
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/@sourceface/config/-/config-0.0.15.tgz#4da2b0ceeae2024a7b03c725e483084c56c7c5f6"
+  integrity sha512-6QwPNv6sk+0YBB2uDdudNUA0RyHnf5sTfpPrWCNlw8kZOyo7AvyNywNsqd+NhK69K+RVnoriR6B05pSj8AXeQQ==
   dependencies:
-    "@svgr/webpack" "^5.4.0"
     autoprefixer "^9.7.6"
-    babel-loader "^8.1.0"
-    css-loader "^3.5.3"
     eslint-plugin-import "^2.20.2"
     eslint-plugin-react "^7.19.0"
-    mini-css-extract-plugin "^0.9.0"
     postcss-import "^12.0.1"
-    postcss-loader "^3.0.0"
     postcss-preset-env "^6.7.0"
-    style-loader "^1.2.1"
 
 "@sourceface/style@0.0.1":
   version "0.0.1"
@@ -8631,14 +8625,6 @@ style-loader@^1.0.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/style-loader/-/style-loader-1.2.0.tgz#f78e4d49caf5018f7c03ae1886e1270124feeb0a"
   integrity sha512-HC8WcGnjwNrKji7HSBqFOhGNUSt7UDU/jHxT6bA83Gk+JWJBmgitWlGihc0V1w6ZvwlzcX5LJOsofZzSP7b1tQ==
-  dependencies:
-    loader-utils "^2.0.0"
-    schema-utils "^2.6.6"
-
-style-loader@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/style-loader/-/style-loader-1.2.1.tgz#c5cbbfbf1170d076cfdd86e0109c5bba114baa1a"
-  integrity sha512-ByHSTQvHLkWE9Ir5+lGbVOXhxX10fbprhLvdg96wedFZb4NDekDPxVKv5Fwmio+QcMlkkNfuK+5W1peQ5CUhZg==
   dependencies:
     loader-utils "^2.0.0"
     schema-utils "^2.6.6"

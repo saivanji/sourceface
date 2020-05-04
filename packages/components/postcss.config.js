@@ -1,1 +1,1 @@
-module.exports = require("@sourceface/config/client/postcss.config.js")
+module.exports = require("@sourceface/config/postcss.config.js")
