@@ -1,21 +1,15 @@
 const path = require("path")
-const MiniCssExtractPlugin = require("mini-css-extract-plugin")
-const TerserJSPlugin = require("terser-webpack-plugin")
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin")
 
-const isDev = process.env.NODE_ENV === "development"
+const NODE_ENV = process.env.NODE_ENV || "production"
+const isProd = NODE_ENV === "production"
 
 module.exports = {
-  mode: isDev ? "development" : "production",
-  devtool: isDev ? "cheap-module-source-map" : "source-map",
-  optimization: {
-    minimize: !isDev,
-    minimizer: [new TerserJSPlugin(), new OptimizeCSSAssetsPlugin()],
-  },
+  mode: isProd ? "production" : "development",
+  devtool: "source-map",
   entry: "./src/index.js",
   output: {
-    path: path.resolve(__dirname),
-    filename: "index.js",
+    path: path.resolve(__dirname, "lib"),
+    filename: isProd ? "index.min.js" : "index.js",
     libraryTarget: "umd",
   },
   externals: {
@@ -26,11 +20,6 @@ module.exports = {
       root: "React",
     },
   },
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: "index.css",
-    }),
-  ],
   module: {
     rules: [
       {
@@ -43,15 +32,15 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          MiniCssExtractPlugin.loader,
+          "style-loader",
           {
             loader: "css-loader",
             options: {
               import: false,
               modules: {
-                localIdentName: isDev
-                  ? "[folder]_[local]_[hash:base64:5]"
-                  : "[hash:base64]",
+                localIdentName: isProd
+                  ? "[hash:base64]"
+                  : "[folder]_[local]_[hash:base64:5]",
               },
               localsConvention: "camelCase",
             },

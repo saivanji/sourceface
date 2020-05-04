@@ -1,8 +1,5 @@
 /node_modules
-index.js
-index.js.*
-index.css
-index.css.*
+/lib
 
 .DS_Store
 
