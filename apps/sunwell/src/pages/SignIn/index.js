@@ -18,20 +18,10 @@ export default () => {
       >
         <Fields>
           <Label title="Email">
-            <Input
-              placeholder="example@domain.com"
-              type="text"
-              size="loose"
-              shouldFitContainer
-            />
+            <Input placeholder="example@domain.com" type="text" size="loose" />
           </Label>
           <Label title="Password" right={<Link>Forgot password?</Link>}>
-            <Input
-              placeholder="********"
-              type="password"
-              size="loose"
-              shouldFitContainer
-            />
+            <Input placeholder="********" type="password" size="loose" />
           </Label>
         </Fields>
         <div direction="horizontal">

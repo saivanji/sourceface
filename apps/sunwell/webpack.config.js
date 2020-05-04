@@ -4,10 +4,10 @@ const CopyPlugin = require("copy-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 
-const { WEBPACK_DEV_SERVER } = process.env
+const isDev = !!process.env.WEBPACK_DEV_SERVER
 
 module.exports = {
-  mode: WEBPACK_DEV_SERVER ? "development" : "production",
+  mode: isDev ? "development" : "production",
   entry: "./src/index.js",
   output: {
     path: path.resolve(__dirname, "build"),
@@ -24,19 +24,27 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [
-          MiniCssExtractPlugin.loader,
+        oneOf: [
           {
-            loader: "css-loader",
-            options: {
-              import: false,
-              modules: {
-                localIdentName: "[hash:base64]",
-              },
-              localsConvention: "camelCase",
-            },
+            resourceQuery: /^\?raw$/,
+            use: [MiniCssExtractPlugin.loader, "css-loader"],
           },
-          "postcss-loader",
+          {
+            use: [
+              MiniCssExtractPlugin.loader,
+              {
+                loader: "css-loader",
+                options: {
+                  import: false,
+                  modules: {
+                    localIdentName: "[hash:base64]",
+                  },
+                  localsConvention: "camelCase",
+                },
+              },
+              "postcss-loader",
+            ],
+          },
         ],
       },
       {
