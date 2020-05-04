@@ -40,8 +40,8 @@
 }
 
 .error-text {
-  font-size: var(--font-size-xs);
   color: var(--color-black);
+  font-size: var(--font-size-xs);
   margin-top: var(--value-1);
 }
 

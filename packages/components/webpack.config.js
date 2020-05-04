@@ -1,8 +1,17 @@
 const path = require("path")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const TerserJSPlugin = require("terser-webpack-plugin")
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin")
+
+const isDev = process.env.NODE_ENV === "development"
 
 module.exports = {
-  mode: "production",
+  mode: isDev ? "development" : "production",
+  devtool: isDev ? "cheap-module-source-map" : "source-map",
+  optimization: {
+    minimize: !isDev,
+    minimizer: [new TerserJSPlugin(), new OptimizeCSSAssetsPlugin({})],
+  },
   entry: "./src/index.js",
   output: {
     path: path.resolve(__dirname),
