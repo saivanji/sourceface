@@ -17,4 +17,12 @@ ReactDOM.render(<pages.SignIn />, document.getElementById("root"))
 // - Implement Text component
 // - Implement Space component?
 //
-// - css source maps are not loaded from components
+//
+// - build components for prod and dev at the same time
+// - minified version will provide sourcemaps and have .min.js name
+// - unminified is not
+// - will live in lib dir
+// - depending on env will do a corresponding export in index.js(like in react)
+//
+// - do we need sourcemaps for dev version? do we need to generate source maps at all?
+// - check best practices how other libarries do
