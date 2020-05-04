@@ -2,8 +2,7 @@ version: "3.4"
 services:
   agora:
     build: ./apps/agora
-    command: >
-      bash -c "yarn install && yarn start"
+    command: "yarn start"
     volumes:
       - ./apps/agora:/var/www
       - /var/www/node_modules
@@ -22,8 +21,7 @@ services:
     stdin_open: true
     build: ./apps/sunwell
     command: >
-      bash -c "yarn install &&
-               rm -rf /var/www/node_modules/@sourceface/components &&
+      bash -c "rm -rf /var/www/node_modules/@sourceface/components &&
                ln -s /mnt/components /var/www/node_modules/@sourceface/components &&
                rm -rf /var/www/node_modules/@sourceface/style &&
                ln -s /mnt/style /var/www/node_modules/@sourceface/style &&
@@ -43,8 +41,7 @@ services:
   components:
     build: ./packages/components
     command: >
-      bash -c "yarn install &&
-               rm -rf /var/www/node_modules/@sourceface/style &&
+      bash -c "rm -rf /var/www/node_modules/@sourceface/style &&
                ln -s /mnt/style /var/www/node_modules/@sourceface/style &&
                yarn start"
     volumes:
