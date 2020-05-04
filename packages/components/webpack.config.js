@@ -5,7 +5,7 @@ module.exports = {
   mode: "production",
   entry: "./src/index.js",
   output: {
-    path: path.resolve(__dirname, "lib"),
+    path: path.resolve(__dirname),
     filename: "index.js",
     libraryTarget: "umd",
   },
@@ -19,8 +19,7 @@ module.exports = {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: "[name].css",
-      chunkFilename: "[id].css",
+      filename: "index.css",
     }),
   ],
   module: {

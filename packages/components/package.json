@@ -1,7 +1,7 @@
 {
   "name": "@sourceface/components",
   "version": "0.0.1",
-  "main": "./lib/index.js",
+  "main": "./index.js",
   "author": "aiven715 <aiven715@gmail.com>",
   "license": "MIT",
   "files": [
