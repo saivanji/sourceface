@@ -34,7 +34,7 @@ services:
       - ./packages/style:/mnt/style
       - style_node_modules:/mnt/style/node_modules
     environment:
-      - REACT_APP_AGORA_HOST=${AGORA_HOST}
+      - AGORA_HOST=${AGORA_HOST}
     ports:
       - "3000:3000"
 
