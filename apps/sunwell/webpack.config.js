@@ -44,7 +44,9 @@ module.exports = {
                 options: {
                   import: false,
                   modules: {
-                    localIdentName: "[hash:base64]",
+                    localIdentName: isDev
+                      ? "[folder]_[local]_[hash:base64:5]"
+                      : "[hash:base64]",
                   },
                   localsConvention: "camelCase",
                 },
