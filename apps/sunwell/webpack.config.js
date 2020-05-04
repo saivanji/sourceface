@@ -1,8 +1,8 @@
 const path = require("path")
 const HtmlPlugin = require("html-webpack-plugin")
 const CopyPlugin = require("copy-webpack-plugin")
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const { CleanWebpackPlugin } = require("clean-webpack-plugin")
-const rules = require("@sourceface/config/client/webpack-rules.js")
 
 const { WEBPACK_DEV_SERVER } = process.env
 
@@ -14,7 +14,44 @@ module.exports = {
     filename: "bundle.[contenthash].js",
   },
   module: {
-    rules,
+    rules: [
+      {
+        test: /\.jsx?$/,
+        exclude: /(node_modules)/,
+        use: {
+          loader: "babel-loader",
+        },
+      },
+      {
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: "css-loader",
+            options: {
+              import: false,
+              modules: {
+                localIdentName: "[hash:base64]",
+              },
+              localsConvention: "camelCase",
+            },
+          },
+          "postcss-loader",
+        ],
+      },
+      {
+        test: /\.svg$/,
+        issuer: {
+          test: /\.jsx$/,
+        },
+        use: {
+          loader: "@svgr/webpack",
+          options: {
+            dimensions: false,
+          },
+        },
+      },
+    ],
   },
   resolve: {
     extensions: [".js", ".jsx"],
@@ -26,6 +63,10 @@ module.exports = {
     }),
     new CleanWebpackPlugin(),
     new CopyPlugin([{ from: path.resolve(__dirname, "static") }]),
+    new MiniCssExtractPlugin({
+      filename: "[name].css",
+      chunkFilename: "[id].css",
+    }),
   ],
   devServer: {
     host: "0.0.0.0",
