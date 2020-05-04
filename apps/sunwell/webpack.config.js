@@ -2,13 +2,20 @@ const path = require("path")
 const HtmlPlugin = require("html-webpack-plugin")
 const CopyPlugin = require("copy-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const TerserJSPlugin = require("terser-webpack-plugin")
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin")
 const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 
 const isDev = !!process.env.WEBPACK_DEV_SERVER
 
 module.exports = {
   mode: isDev ? "development" : "production",
+  devtool: isDev && "cheap-module-source-map",
   entry: "./src/index.js",
+  optimization: {
+    minimize: !isDev,
+    minimizer: [new TerserJSPlugin(), new OptimizeCSSAssetsPlugin()],
+  },
   output: {
     path: path.resolve(__dirname, "build"),
     filename: "bundle.[contenthash].js",
