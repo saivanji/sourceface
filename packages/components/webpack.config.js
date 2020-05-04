@@ -10,7 +10,7 @@ module.exports = {
   devtool: isDev ? "cheap-module-source-map" : "source-map",
   optimization: {
     minimize: !isDev,
-    minimizer: [new TerserJSPlugin(), new OptimizeCSSAssetsPlugin({})],
+    minimizer: [new TerserJSPlugin(), new OptimizeCSSAssetsPlugin()],
   },
   entry: "./src/index.js",
   output: {
