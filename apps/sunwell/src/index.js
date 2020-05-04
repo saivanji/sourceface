@@ -10,9 +10,9 @@ ReactDOM.render(<pages.SignIn />, document.getElementById("root"))
 
 // - Connect fonts
 // - Setup hot module replacement
+//
 // - Setup dynamic imports
-// - Meaningful css classnames in development
-// - Do not open browser on save
+// - Css file splitting
 //
 // - Implement Text component
 // - Implement Space component?
