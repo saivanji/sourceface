@@ -9,9 +9,12 @@ import "./index.css"
 ReactDOM.render(<pages.SignIn />, document.getElementById("root"))
 
 // - Connect fonts
-// - Setup dynamic imports
 // - Setup hot module replacement
-// - minify css and generate sourcemaps
+// - Setup dynamic imports
+// - Meaningful css classnames in development
+// - Do not open browser on save
 //
 // - Implement Text component
 // - Implement Space component?
+//
+// - css source maps are not loaded from components
