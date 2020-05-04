@@ -1,5 +1,6 @@
 const path = require("path")
 const rules = require("@sourceface/config/client/webpack-rules.js")
+const plugins = require("@sourceface/config/client/webpack-plugins.js")
 
 module.exports = {
   mode: "production",
@@ -17,6 +18,7 @@ module.exports = {
       root: "React",
     },
   },
+  plugins,
   module: {
     rules,
   },
