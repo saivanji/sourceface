@@ -2,8 +2,6 @@ const fs = require("fs")
 const path = require("path")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 
-console.log(MiniCssExtractPlugin.loader)
-
 module.exports = [
   {
     test: /\.jsx?$/,
