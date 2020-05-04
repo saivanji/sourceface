@@ -1,11 +1,10 @@
 const path = require("path")
-const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 
 module.exports = {
   mode: "production",
   entry: "./src/index.js",
   output: {
-    path: path.resolve(__dirname),
+    path: path.resolve(__dirname, "lib"),
     filename: "index.js",
     libraryTarget: "umd",
   },
@@ -17,11 +16,6 @@ module.exports = {
       root: "React",
     },
   },
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: "index.css",
-    }),
-  ],
   module: {
     rules: [
       {
@@ -34,7 +28,7 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          MiniCssExtractPlugin.loader,
+          "style-loader",
           {
             loader: "css-loader",
             options: {
