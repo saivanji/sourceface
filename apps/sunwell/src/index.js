@@ -19,10 +19,11 @@ ReactDOM.render(<pages.SignIn />, document.getElementById("root"))
 //
 //
 // - build components for prod and dev at the same time
-// - minified version will provide sourcemaps and have .min.js name
-// - unminified is not
+// - minified version will provide sourcemaps and have .min.js name with .min.js.map
+// - unminified will provide sourcemaps as well
+// - css will provide source maps
 // - will live in lib dir
-// - depending on env will do a corresponding export in index.js(like in react)
+// - depending on env will do a corresponding export in index.js(like in react). have development env first convention in sourceface app?
 //
-// - do we need sourcemaps for dev version? do we need to generate source maps at all?
-// - check best practices how other libarries do
+// - check best practices how other libraries do
+// - how to export dev css?
