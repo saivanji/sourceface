@@ -1,3 +1,5 @@
+// move to a file in src?
+
 import pgPromise from "pg-promise"
 import moment from "moment"
 import humps from "humps"
@@ -5,7 +7,7 @@ import humps from "humps"
 const { DATABASE_URL } = process.env
 
 export const pgp = pgPromise({
-  receive: (data) => {
+  receive: data => {
     /**
      * Camelizing column names
      */
@@ -25,6 +27,6 @@ export const pgp = pgPromise({
 })
 
 // transforming js Date to ISO string
-pgp.pg.types.setTypeParser(1114, (s) => moment(s).toISOString())
+pgp.pg.types.setTypeParser(1114, s => moment(s).toISOString())
 
 export default () => pgp(DATABASE_URL)

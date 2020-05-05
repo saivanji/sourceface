@@ -1,3 +1,4 @@
+// TODO: should be in es5
 const pg = require("pg-promise")()(process.env.DATABASE_URL)
 
 // making pg variable available in migrations

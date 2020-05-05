@@ -1,6 +1,8 @@
 import * as R from "ramda"
 import { graphql, faker } from "./utils"
 
+// tests should be written without touching the database using graphql requests only
+
 const mutations = {
   signUp: `
     mutation($username: String!, $email: String!, $password: String!) {
