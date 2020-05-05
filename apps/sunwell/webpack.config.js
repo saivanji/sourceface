@@ -11,7 +11,7 @@ const isDev = !!process.env.WEBPACK_DEV_SERVER
 module.exports = {
   mode: isDev ? "development" : "production",
   devtool: isDev && "cheap-module-source-map",
-  entry: "./src/index.js",
+  entry: "./src/index.jsx",
   optimization: {
     minimize: !isDev,
     minimizer: [new TerserJSPlugin(), new OptimizeCSSAssetsPlugin()],

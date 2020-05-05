@@ -1,0 +1,10 @@
+@import "@sourceface/style/index.css";
+
+.label {
+  display: block;
+  margin-bottom: var(--value-4);
+}
+
+.submit {
+  margin-top: var(--value-5);
+}

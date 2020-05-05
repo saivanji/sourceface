@@ -1,0 +1,13 @@
+@import "@sourceface/style/index.css";
+
+.root {
+  display: flex;
+  flex-direction: column;
+  color: var(--color-gray);
+  margin-top: var(--value-1);
+  font-size: var(--font-size-xs);
+}
+
+.completed {
+  text-decoration: line-through;
+}

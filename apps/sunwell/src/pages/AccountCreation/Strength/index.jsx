@@ -1,9 +1,10 @@
 import React from "react"
 import cx from "classnames"
+import styles from "./index.css"
 
 export default () => {
   return (
-    <div className="text-gray mt-1 text-xs flex flex-col">
+    <div className={styles.root}>
       <Row>At least 6 characters</Row>
       <Row isCompleted>
         Should contain letters at least one uppercase letter
@@ -14,5 +15,5 @@ export default () => {
 }
 
 const Row = ({ children, isCompleted }) => {
-  return <span className={cx(isCompleted && "line-through")}>{children}</span>
+  return <span className={cx(isCompleted && styles.completed)}>{children}</span>
 }
