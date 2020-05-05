@@ -1,13 +1,7 @@
 import React from "react"
-import {
-  Button,
-  Link,
-  Fields,
-  Input,
-  Checkbox,
-  Label,
-} from "@sourceface/components"
+import { Button, Link, Input, Checkbox, Label } from "@sourceface/components"
 import { Layout, Box } from "components/auth"
+import styles from "./index.css"
 
 export default () => {
   return (
@@ -16,19 +10,21 @@ export default () => {
         title="Sign In to your account"
         description="Enter your credentials into the form below"
       >
-        <Fields>
-          <Label title="Email">
-            <Input placeholder="example@domain.com" type="text" size="loose" />
-          </Label>
-          <Label title="Password" right={<Link>Forgot password?</Link>}>
-            <Input placeholder="********" type="password" size="loose" />
-          </Label>
-        </Fields>
-        <div direction="horizontal">
+        <Label className={styles.label} title="Email">
+          <Input placeholder="example@domain.com" type="text" size="loose" />
+        </Label>
+        <Label
+          className={styles.label}
+          title="Password"
+          right={<Link>Forgot password?</Link>}
+        >
+          <Input placeholder="********" type="password" size="loose" />
+        </Label>
+        <div className={styles.bottomLine}>
           <Checkbox label="Stay signed in" />
           <Link>Forgot password?</Link>
         </div>
-        <Button className="mt-6" type="submit" size="loose" shouldFitContainer>
+        <Button type="submit" size="loose" shouldFitContainer>
           Continue
         </Button>
       </Box>

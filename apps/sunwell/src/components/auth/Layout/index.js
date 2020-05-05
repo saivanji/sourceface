@@ -1,11 +1,12 @@
 import React from "react"
+import styles from "./index.css"
 
 export default ({ children }) => {
   return (
-    <div className="min-h-screen flex items-center justify-center relative">
-      <div className="flex flex-col max-w-lg w-full mx-4 mt-4 mb-16">
+    <div className={styles.root}>
+      <div className={styles.container}>
         {children}
-        <span className="mt-auto absolute w-full bottom-0 left-0 text-xs text-center font-bold mb-4">
+        <span className={styles.copyright}>
           Crafted with <span>❤</span>️ by @aiven715
         </span>
       </div>

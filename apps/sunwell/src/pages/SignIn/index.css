@@ -1,0 +1,12 @@
+@import "@sourceface/style/index.css";
+
+.label {
+  display: block;
+  margin-bottom: var(--value-4);
+}
+
+.bottom-line {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--value-6);
+}

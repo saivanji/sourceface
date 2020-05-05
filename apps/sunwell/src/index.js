@@ -6,14 +6,3 @@ import * as pages from "./pages"
 import "./index.css"
 
 ReactDOM.render(<pages.SignIn />, document.getElementById("root"))
-
-// - Connect fonts
-// - Setup hot module replacement
-//
-// - Setup dynamic imports
-// - Css file splitting
-//
-// - Implement Text component
-// - Implement Space component?
-//
-// - Learn css kits

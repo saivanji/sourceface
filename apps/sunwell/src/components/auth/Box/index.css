@@ -1,0 +1,23 @@
+@import "@sourceface/style/index.css";
+
+.root {
+  background-color: var(--color-white);
+  border-radius: var(--rounded-lg);
+  padding: var(--value-8);
+  box-shadow: var(--shadow-sm);
+}
+
+.title {
+  display: block;
+  font-weight: 600;
+  margin-bottom: var(--value-1);
+  font-size: var(--font-size-2xl);
+  color: var(--color-gray-shade-110);
+}
+
+.description {
+  display: block;
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--value-6);
+  color: var(--color-gray-shade-50);
+}
