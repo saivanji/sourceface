@@ -1,6 +1,13 @@
 const fs = require("fs")
 const path = require("path")
-const { colors, values, rounded, fontSizes } = require("./index")
+const {
+  colors,
+  values,
+  sizes,
+  rounded,
+  fontSizes,
+  shadows,
+} = require("./index")
 
 const mapObj = (obj, fn) =>
   Object.keys(obj).reduce(
@@ -33,6 +40,10 @@ const valuesDefinition = mapObj(values, (k, v) => ({
   [`value-${k}`]: v,
 }))
 
+const sizesDefinition = mapObj(sizes, (k, v) => ({
+  [`size-${k}`]: v,
+}))
+
 const fontSizesDefinition = mapObj(fontSizes, (k, v) => ({
   [`font-size-${k}`]: v,
 }))
@@ -41,13 +52,19 @@ const roundedDefinition = mapObj(rounded, (k, v) => ({
   [`rounded-${k}`]: v,
 }))
 
+const shadowsDefinition = mapObj(shadows, (k, v) => ({
+  [`shadow-${k}`]: v,
+}))
+
 fs.writeFileSync(
   path.resolve(__dirname, "index.css"),
   renderCss({
     ...colorsDefinition,
     ...valuesDefinition,
+    ...sizesDefinition,
     ...fontSizesDefinition,
     ...roundedDefinition,
+    ...shadowsDefinition,
   }),
   "utf-8"
 )
