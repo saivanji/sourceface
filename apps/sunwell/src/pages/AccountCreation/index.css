@@ -8,3 +8,15 @@
 .submit {
   margin-top: var(--value-5);
 }
+
+.terms {
+  text-align: center;
+  font-size: var(--font-size-sm);
+  margin: var(--value-4) var(--value-1) 0;
+  color: var(--value-gray-shade-80);
+}
+
+.terms-link {
+  margin: 0 var(--value-1);
+  color: var(--value-gray-shade-80);
+}

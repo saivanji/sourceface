@@ -2,6 +2,7 @@ import React from "react"
 import { Button, Spinner, Input, Label } from "@sourceface/components"
 import { Layout, Box } from "components/auth"
 import ErrorIcon from "assets/error.svg"
+import CheckIcon from "assets/check.svg"
 import Strength from "./Strength"
 import styles from "./index.css"
 
@@ -27,7 +28,7 @@ export default () => {
             type="text"
             size="loose"
             shouldFitContainer
-            iconAfter="done"
+            iconAfter={<CheckIcon />}
           />
         </Label>
         <Label className={styles.label} title="Password">
@@ -63,9 +64,9 @@ export default () => {
 }
 
 const Terms = () => (
-  <div className="mt-4 text-center text-gray-tint-10 px-4">
+  <div className={styles.terms}>
     By signing up I agree with
-    <Button appearance="link" className="text-gray-shade-80 mx-1">
+    <Button appearance="link" className={styles.termsLink}>
       Terms and Conditions
     </Button>
     of the application and service it provides

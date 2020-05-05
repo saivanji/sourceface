@@ -1,7 +1,7 @@
 @import "@sourceface/style/index.css";
 
 .root {
-  display: flex;
+  display: inline-flex;
   justify-content: center;
   align-items: center;
   border: 0;
@@ -22,7 +22,7 @@
   &.disabled-link {
     background: none;
     padding: 0;
-    font-weight: 600;
+    font-weight: 700;
     cursor: not-allowed;
     color: var(--color-gray-shade-10);
   }
@@ -68,7 +68,7 @@
   &.link {
     background: none;
     padding: 0;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--color-gray-shade-110);
     &:focus {
       box-shadow: 0 0 0 3px var(--color-gray-tint-120);
