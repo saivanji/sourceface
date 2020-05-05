@@ -21,8 +21,12 @@ export default function Button({
         className,
         styles.root,
         shouldFitContainer && styles.full,
-        isDisabled ? styles.disabled : styles[appearance],
-        styles[size]
+        isDisabled
+          ? appearance !== "link"
+            ? styles.disabled
+            : styles.disabledLink
+          : styles[appearance],
+        appearance !== "link" && styles[size]
       )}
       disabled={isDisabled}
       type={type}

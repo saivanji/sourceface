@@ -14,6 +14,19 @@
   &.full {
     width: 100%;
   }
+  &.disabled {
+    background-color: var(--color-gray-tint-80);
+    cursor: not-allowed;
+    color: var(--color-gray-shade-10);
+  }
+  &.disabled-link {
+    background: none;
+    padding: 0;
+    font-weight: 600;
+    cursor: not-allowed;
+    color: var(--color-gray-shade-10);
+  }
+  /* sizes */
   &.compact {
     height: var(--value-6);
     padding-left: var(--value-2);
@@ -38,6 +51,7 @@
       margin-right: var(--value-3);
     }
   }
+  /* appearances */
   &.primary {
     background-color: var(--color-gray-tint-70);
     color: var(--color-gray-shade-80);
@@ -51,13 +65,17 @@
       box-shadow: 0 0 0 3px var(--color-gray-tint-120);
     }
   }
+  &.link {
+    background: none;
+    padding: 0;
+    font-weight: 600;
+    color: var(--color-gray-shade-110);
+    &:focus {
+      box-shadow: 0 0 0 3px var(--color-gray-tint-120);
+    }
+  }
   &.secondary {
   }
   &.danger {
-  }
-  &.disabled {
-    background-color: var(--color-gray-tint-80);
-    color: var(--color-gray-shade-10);
-    cursor: not-allowed;
   }
 }
