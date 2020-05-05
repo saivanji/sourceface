@@ -1,12 +1,12 @@
 import React from "react"
 import { Button, Input, Checkbox, Label } from "@sourceface/components"
-import { Layout, Box } from "components/auth"
+import { Layout, Card } from "components/auth"
 import styles from "./index.css"
 
 export default () => {
   return (
     <Layout>
-      <Box
+      <Card
         title="Sign In to your account"
         description="Enter your credentials into the form below"
       >
@@ -23,7 +23,7 @@ export default () => {
         <Button type="submit" size="loose" shouldFitContainer>
           Continue
         </Button>
-      </Box>
+      </Card>
       {/* <Separator /> */}
     </Layout>
   )

@@ -1,6 +1,6 @@
 import React from "react"
 import { Button, Spinner, Input, Label } from "@sourceface/components"
-import { Layout, Box } from "components/auth"
+import { Layout, Card } from "components/auth"
 import ErrorIcon from "assets/error.svg"
 import CheckIcon from "assets/check.svg"
 import Strength from "./Strength"
@@ -9,7 +9,7 @@ import styles from "./index.css"
 export default () => {
   return (
     <Layout>
-      <Box
+      <Card
         title="Welcome aboard"
         description="Enter your credentials into the form below in order to create your account"
       >
@@ -58,7 +58,7 @@ export default () => {
           Get started
         </Button>
         <Terms />
-      </Box>
+      </Card>
     </Layout>
   )
 }
