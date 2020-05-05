@@ -15,6 +15,7 @@
     "clean": "rimraf ./lib",
     "build:production": "cross-env NODE_ENV=production webpack",
     "build:development": "cross-env NODE_ENV=development webpack",
+    "_build": "npm-run-all clean build:*",
     "build": "npm-run-all build:*"
   },
   "dependencies": {
