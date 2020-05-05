@@ -1,9 +1,15 @@
 import React from "react"
 import styles from "./index.css"
 
-export default function Label({ children, title, isRequired, helperMessage }) {
+export default function Label({
+  children,
+  className,
+  title,
+  isRequired,
+  helperMessage,
+}) {
   return (
-    <label>
+    <label className={className}>
       <span className={styles.title}>
         {title}
         {isRequired && " *"}
