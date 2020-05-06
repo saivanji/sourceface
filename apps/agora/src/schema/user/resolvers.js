@@ -5,8 +5,9 @@ import * as roleRepo from "repos/role"
 import * as permissionRepo from "repos/permission"
 
 const initialSignUp = async (parent, args, { pg, session }) => {
-  return await pg.tx(async (t) => {
+  return await pg.tx(async t => {
     const role = await roleRepo.create("admin", true, t)
+    // create regular role as well
     const user = await userRepo.create(args, role.id, t)
     session.userId = user.id
     return user
@@ -18,7 +19,7 @@ const invitationSignUp = async (
   { username, email, password, invitationId },
   { pg, session }
 ) => {
-  return await pg.tx(async (t) => {
+  return await pg.tx(async t => {
     const invitation = await invitationRepo.byId(invitationId, t)
     const user = await userRepo.create(
       { username, email, password },
@@ -91,7 +92,7 @@ const createRole = async (parent, { name }, { pg }) => {
 }
 
 const removeRole = async (parent, { roleId }, { pg }) => {
-  await pg.task(async (t) => {
+  await pg.task(async t => {
     const role = await roleRepo.byId(roleId, t)
 
     if (role.isPrivileged) {
