@@ -9,9 +9,9 @@
     "build": "babel ./server.js --out-dir ./build",
     "test": "jest",
     "migrate:create": "migrate create",
-    "migrate:list": "migrate list --store='./config/migrationStore' --compiler='js:@babel/register'",
-    "migrate:up": "migrate up --store='./config/migrationStore' --compiler='js:@babel/register'",
-    "migrate:down": "migrate down --store='./config/migrationStore' --compiler='js:@babel/register'"
+    "migrate:list": "migrate list --store='./setup/migrationStore' --compiler='js:@babel/register'",
+    "migrate:up": "migrate up --store='./setup/migrationStore' --compiler='js:@babel/register'",
+    "migrate:down": "migrate down --store='./setup/migrationStore' --compiler='js:@babel/register'"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -40,7 +40,7 @@
     "@babel/plugin-transform-runtime": "^7.9.0",
     "@babel/preset-env": "^7.9.0",
     "@babel/register": "^7.9.0",
-    "@sourceface/config": "0.0.5",
+    "@sourceface/config": "0.0.15",
     "babel-plugin-import-graphql": "^2.7.0",
     "babel-plugin-module-resolver": "^4.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",

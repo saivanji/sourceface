@@ -1,14 +1,14 @@
 import util from "util"
-import * as invitationRepo from "repos/invitation"
 import * as userRepo from "repos/user"
+import * as invitationRepo from "repos/invitation"
 import * as roleRepo from "repos/role"
-import * as permissionRepo from "repos/permission"
 
 const initialSignUp = async (parent, args, { pg, session }) => {
   return await pg.tx(async t => {
     const role = await roleRepo.create("admin", true, t)
-    // create regular role as well
+    await roleRepo.create("manager", false, t)
     const user = await userRepo.create(args, role.id, t)
+
     session.userId = user.id
     return user
   })
@@ -87,27 +87,6 @@ const changeUserPassword = async (parent, { userId, password }, { pg }) => {
   return true
 }
 
-const createRole = async (parent, { name }, { pg }) => {
-  return await roleRepo.create(name, false, pg)
-}
-
-const removeRole = async (parent, { roleId }, { pg }) => {
-  await pg.task(async t => {
-    const role = await roleRepo.byId(roleId, t)
-
-    if (role.isPrivileged) {
-      throw new Error("Can not remove privileged role")
-    }
-
-    await roleRepo.remove(roleId, t)
-  })
-
-  return true
-}
-
-const updateRole = async (parent, { roleId, ...data }, { pg }) =>
-  await roleRepo.update(data, roleId, pg)
-
 const assignRole = async (parent, { userId, roleId }, { pg, context }) => {
   if (userId === context.session.userId) {
     throw new Error("Can not change the role for yourself")
@@ -118,31 +97,6 @@ const assignRole = async (parent, { userId, roleId }, { pg, context }) => {
   return true
 }
 
-const createPermission = async (parent, { name }, { pg }) => {
-  return await permissionRepo.create(name, pg)
-}
-
-const removePermission = async (parent, { permissionId }, { pg }) => {
-  await permissionRepo.remove(permissionId, pg)
-
-  return true
-}
-
-const updatePermission = async (parent, { permissionId, ...data }, { pg }) =>
-  await permissionRepo.update(data, permissionId, pg)
-
-const assignPermission = async (parent, { roleId, permissionId }, { pg }) => {
-  await roleRepo.assignPermission(roleId, permissionId, pg)
-
-  return true
-}
-
-const roles = async (parent, { limit = 10, offset = 0 }, { pg }) =>
-  await roleRepo.list(limit, offset, pg)
-
-const permissions = async (parent, { limit = 10, offset = 0 }, { pg }) =>
-  await permissionRepo.list(limit, offset, pg)
-
 const role = (parent, _args, ctx) => {
   return ctx.loaders.role.load(parent.roleId)
 }
@@ -151,27 +105,18 @@ export default {
   Query: {
     hasUsers,
     myself,
-    permissions,
-    roles,
     users,
   },
   Mutation: {
-    assignPermission,
     assignRole,
     changePassword,
     changeUserPassword,
-    createRole,
-    createPermission,
     initialSignUp,
     invitationSignUp,
     invite,
-    removePermission,
-    removeRole,
     removeUser,
     signInLocal,
     signOut,
-    updatePermission,
-    updateRole,
   },
   User: {
     role,

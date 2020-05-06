@@ -1,7 +1,6 @@
 directive @authenticated on FIELD_DEFINITION
 directive @notAuthenticated on FIELD_DEFINITION
 directive @noUsers on FIELD_DEFINITION
-directive @privileged on FIELD_DEFINITION
 
 type User {
   id: Int!
@@ -9,18 +8,6 @@ type User {
   email: String!
   username: String!
   role: Role!
-}
-
-type Role {
-  id: Int!
-  name: String!
-  isPrivileged: Boolean!
-  # permissions(limit: Int, offset: Int): [Permission!]!
-}
-
-type Permission {
-  id: Int!
-  name: String!
 }
 
 type Invitation {
@@ -35,10 +22,6 @@ extend type Query {
   myself: User! @authenticated
   users(limit: Int, offset: Int): [User!]! @authenticated @privileged
   hasUsers: Boolean! @notAuthenticated
-  roles(limit: Int, offset: Int): [Role!]! @authenticated @privileged
-  permissions(limit: Int, offset: Int): [Permission!]!
-    @authenticated
-    @privileged
 }
 
 extend type Mutation {
@@ -47,30 +30,19 @@ extend type Mutation {
   initialSignUp(username: String!, email: String!, password: String!): User!
     @notAuthenticated
     @noUsers
+  signOut: Boolean! @authenticated
+  changePassword(oldPassword: String!, newPassword: String!): Boolean!
+    @authenticated
+  changeUserPassword(userId: Int!, password: String!): Boolean!
+    @authenticated
+    @privileged
+  invite(roleId: Int!, email: String!): Invitation! @authenticated @privileged
   invitationSignUp(
     invitationId: String!
     username: String!
     email: String!
     password: String!
   ): User! @notAuthenticated
-  signOut: Boolean! @authenticated
-  invite(roleId: Int!, email: String!): Invitation! @authenticated @privileged
-  changePassword(oldPassword: String!, newPassword: String!): Boolean!
-    @authenticated
-  changeUserPassword(userId: Int!, password: String!): Boolean!
-    @authenticated
-    @privileged
   removeUser(userId: Int!): Boolean! @authenticated @privileged
-  createRole(name: String!): Role! @authenticated @privileged
-  removeRole(roleId: Int!): Boolean! @authenticated @privileged
-  updateRole(roleId: Int!, name: String): Role! @authenticated @privileged
   assignRole(userId: Int!, roleId: Int!): Boolean! @authenticated @privileged
-  createPermission(name: String!): Permission! @authenticated @privileged
-  removePermission(permissionId: Int!): Boolean! @authenticated @privileged
-  updatePermission(permissionId: Int!, name: String): Permission!
-    @authenticated
-    @privileged
-  assignPermission(roleId: Int!, permissionId: Int!): Boolean!
-    @authenticated
-    @privileged
 }

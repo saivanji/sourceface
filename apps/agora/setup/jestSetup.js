@@ -1,5 +1,4 @@
 // TODO: should be in es5
-// TODO: rename to `setup` dir instead of config
 import { exec } from "child_process"
 import app from "/"
 

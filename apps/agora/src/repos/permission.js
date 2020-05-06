@@ -1,4 +1,4 @@
-import { pgp } from "postgres/index"
+import { pgp } from "postgres.js"
 
 export const create = async (name, pg) => {
   try {
