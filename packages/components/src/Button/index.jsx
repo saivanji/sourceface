@@ -20,19 +20,31 @@ export default function Button({
       className={cx(
         className,
         styles.root,
+        styles[appearance],
+        styles[size],
         shouldFitContainer && styles.full,
-        isDisabled
-          ? appearance !== "link"
-            ? styles.disabled
-            : styles.disabledLink
-          : styles[appearance],
-        appearance !== "link" && styles[size]
+        isDisabled && styles.disabled
       )}
-      disabled={isDisabled}
+      disabled={isDisabled || isLoading}
       type={type}
     >
-      {isLoading && <Spinner appearance="dark" className={styles.spinner} />}
+      {isLoading && (
+        <Spinner
+          appearance={getSpinnerAppearance(appearance)}
+          className={styles.spinner}
+        />
+      )}
       {children}
     </button>
   )
 }
+
+const spinners = {
+  light: ["primary"],
+  dark: ["secondary", "link"],
+}
+
+const getSpinnerAppearance = btn =>
+  Object.keys(spinners).reduce((acc, key) =>
+    spinners[key].includes(btn) ? key : acc
+  )

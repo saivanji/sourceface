@@ -12,7 +12,7 @@
   &.disabled {
     cursor: not-allowed;
     & .checkbox {
-      background-color: var(--color-gray-tint-130);
+      background-color: var(--color-gray-tint-110);
     }
   }
 }
@@ -52,7 +52,8 @@ input[type="checkbox"] {
   height: 0;
   opacity: 0;
   &:checked + .checkbox {
-    background-color: var(--color-gray-tint-70);
+    background-color: var(--color-gray-shade-10);
+    border-color: var(--color-gray-shade-10);
     & .icon {
       display: block;
     }
@@ -69,5 +70,5 @@ input[type="checkbox"] {
 
 .icon {
   display: none;
-  fill: var(--color-gray-shade-100);
+  fill: var(--color-white);
 }

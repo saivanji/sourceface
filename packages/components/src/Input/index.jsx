@@ -4,6 +4,7 @@ import styles from "./index.css"
 
 export default function Input({
   size = "normal",
+  className,
   iconAfter,
   // iconBefore,
   error,
@@ -11,7 +12,7 @@ export default function Input({
 }) {
   return (
     <>
-      <div className={styles.root}>
+      <div className={cx(styles.root, className)}>
         <input
           className={cx(styles.element, styles[size], error && styles.error)}
           {...props}
