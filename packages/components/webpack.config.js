@@ -15,8 +15,6 @@ module.exports = {
     }
   }, {}),
   output: {
-    // path: path.resolve(__dirname, "lib"),
-    // filename: isProd ? "index.min.js" : "index.js",
     path: path.resolve(__dirname),
     filename: isProd ? "[name]/prod/index.js" : "[name]/dev/index.js",
     libraryTarget: "umd",
