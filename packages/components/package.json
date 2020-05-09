@@ -1,22 +1,22 @@
 {
   "name": "@sourceface/components",
   "version": "0.0.1",
-  "main": "./index.js",
   "author": "aiven715 <aiven715@gmail.com>",
   "license": "MIT",
   "files": [
-    "lib",
-    "index.js"
+    "button",
+    "checkbox",
+    "input",
+    "label",
+    "spinner",
+    "tabs"
   ],
   "scripts": {
     "format": "prettier --write \"src/**/*.js\"",
     "lint": "prettier --check \"src/**/*.js\" && eslint \"src/**/*.js\"",
     "start": "start-storybook -p 4000 --quiet",
-    "clean": "rimraf ./lib",
-    "build:production": "cross-env NODE_ENV=production webpack",
-    "build:development": "cross-env NODE_ENV=development webpack",
-    "_build": "npm-run-all clean build:*",
-    "build": "npm-run-all build:*"
+    "clean": "./scripts/clean.js",
+    "build": "./scripts/build.js"
   },
   "dependencies": {
     "@sourceface/style": "0.0.1",
@@ -29,10 +29,9 @@
     "@storybook/react": "^5.3.18",
     "@svgr/webpack": "^5.4.0",
     "babel-loader": "^8.1.0",
-    "cross-env": "^7.0.2",
     "css-loader": "^3.5.3",
     "eslint": "^6.8.0",
-    "npm-run-all": "^4.1.5",
+    "glob": "^7.1.6",
     "postcss-loader": "^3.0.0",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
