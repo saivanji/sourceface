@@ -1,5 +1,7 @@
 import React from "react"
-import { Button, Input, Label } from "@sourceface/components"
+import Button from "@sourceface/components/button"
+import Input from "@sourceface/components/input"
+import Label from "@sourceface/components/label"
 import styles from "./index.css"
 
 export default () => {

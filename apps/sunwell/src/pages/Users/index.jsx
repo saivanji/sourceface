@@ -1,6 +1,6 @@
 import React from "react"
 import { InviteForm } from "components/administration"
-import { Input } from "@sourceface/components"
+import Input from "@sourceface/components/input"
 import styles from "./index.css"
 import Tabs from "./Tabs"
 

@@ -1,5 +1,8 @@
 import React from "react"
-import { Button, Input, Checkbox, Label } from "@sourceface/components"
+import Button from "@sourceface/components/button"
+import Checkbox from "@sourceface/components/checkbox"
+import Input from "@sourceface/components/input"
+import Label from "@sourceface/components/label"
 import { Layout, Card } from "components/auth"
 import styles from "./index.css"
 
