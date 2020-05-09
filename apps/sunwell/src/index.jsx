@@ -5,4 +5,4 @@ import ReactDOM from "react-dom"
 import * as pages from "./pages"
 import "./index.css"
 
-ReactDOM.render(<pages.Security />, document.getElementById("root"))
+ReactDOM.render(<pages.Users />, document.getElementById("root"))

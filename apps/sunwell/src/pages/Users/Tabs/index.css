@@ -1,0 +1,31 @@
+@import "@sourceface/style/index.css";
+
+.root {
+  display: flex;
+  border-bottom: 1px solid var(--color-gray-tint-30);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border: 0;
+  border-top-left-radius: var(--rounded-base);
+  border-top-right-radius: var(--rounded-base);
+  background: none;
+  font-size: var(--font-size-sm);
+  padding: 0 var(--value-3);
+  height: var(--value-8);
+  color: var(--color-gray-shade-80);
+  &:hover {
+    background-color: var(--color-gray-tint-130);
+  }
+  &:focus {
+    outline: 0;
+    box-shadow: 0 0 0 3px var(--color-gray-tint-120);
+  }
+  &.selected {
+    /* TODO: should not have a primary color, most likely color from secondary button(but not the same appearance in order not to confuse it with secondary button) */
+    background-color: var(--color-gray-tint-100);
+  }
+}

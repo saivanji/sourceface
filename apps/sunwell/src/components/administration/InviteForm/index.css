@@ -1,0 +1,10 @@
+@import "@sourceface/style/index.css";
+
+.root {
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  margin-right: var(--value-1);
+}

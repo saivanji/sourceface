@@ -1,0 +1,18 @@
+@import "@sourceface/style/index.css";
+
+.wrap {
+  padding: 200px;
+}
+
+.header {
+  display: flex;
+  margin-bottom: var(--value-3);
+}
+
+.invite-form {
+  margin-left: auto;
+}
+
+.tabs {
+  margin-bottom: var(--value-4);
+}
