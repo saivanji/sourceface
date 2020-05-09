@@ -14,9 +14,21 @@
       height: var(--value-6);
       padding: 0 var(--value-1);
     }
+    & .icon-before,
+    & .icon-after {
+      width: var(--value-2);
+    }
+    & .icon-before {
+      margin-left: var(--value-2);
+    }
     & .icon-after {
       margin-right: var(--value-2);
-      width: var(--value-2);
+    }
+    & .has-icon-before {
+      padding-left: calc(var(--value-2) * 3);
+    }
+    & .has-icon-after {
+      padding-right: calc(var(--value-2) * 3);
     }
   }
   &.normal {
@@ -24,9 +36,21 @@
       height: var(--value-8);
       padding: 0 var(--value-2);
     }
+    & .icon-before,
+    & .icon-after {
+      width: var(--value-3);
+    }
+    & .icon-before {
+      margin-left: var(--value-3);
+    }
     & .icon-after {
       margin-right: var(--value-3);
-      width: var(--value-3);
+    }
+    & .has-icon-before {
+      padding-left: calc(var(--value-3) * 3);
+    }
+    & .has-icon-after {
+      padding-right: calc(var(--value-3) * 3);
     }
   }
   &.loose {
@@ -34,9 +58,21 @@
       height: var(--value-10);
       padding: 0 var(--value-3);
     }
+    & .icon-before,
+    & .icon-after {
+      width: var(--value-4);
+    }
+    & .icon-before {
+      margin-left: var(--value-4);
+    }
     & .icon-after {
       margin-right: var(--value-4);
-      width: var(--value-4);
+    }
+    & .has-icon-before {
+      padding-left: calc(var(--value-4) * 3);
+    }
+    & .has-icon-after {
+      padding-right: calc(var(--value-4) * 3);
     }
   }
 }
@@ -70,11 +106,19 @@
   margin-top: var(--value-1);
 }
 
+.icon-before,
 .icon-after {
   position: absolute;
   top: 0;
   bottom: 0;
-  right: 0;
   display: flex;
   align-items: center;
+}
+
+.icon-before {
+  left: 0;
+}
+
+.icon-after {
+  right: 0;
 }

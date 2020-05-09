@@ -6,15 +6,21 @@ export default function Input({
   size = "normal",
   className,
   iconAfter,
-  // iconBefore,
+  iconBefore,
   error,
   ...props
 }) {
   return (
     <>
       <div className={cx(styles.root, styles[size], className)}>
+        {iconBefore && <div className={styles.iconBefore}>{iconBefore}</div>}
         <input
-          className={cx(styles.element, error && styles.error)}
+          className={cx(
+            styles.element,
+            error && styles.error,
+            iconBefore && styles.hasIconBefore,
+            iconAfter && styles.hasIconAfter
+          )}
           {...props}
         />
         {iconAfter && <div className={styles.iconAfter}>{iconAfter}</div>}
