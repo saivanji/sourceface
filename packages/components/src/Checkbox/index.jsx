@@ -1,7 +1,7 @@
 import React from "react"
 import cx from "classnames"
 import styles from "./index.css"
-import Icon from "./check.svg"
+import Icon from "./assets/check.svg"
 
 export default function Checkbox({ label, size = "normal", isDisabled }) {
   return (

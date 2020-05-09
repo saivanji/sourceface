@@ -1,14 +1,16 @@
 import React from "react"
+import { withKnobs, boolean, select } from "@storybook/addon-knobs"
+import { withA11y } from "@storybook/addon-a11y"
 import Checkbox from "./index"
 
-const props = {
-  label: "Are you sure?",
-}
+export default { title: "Checkbox", decorators: [withKnobs, withA11y] }
 
-export default { title: "Checkbox" }
+const makeProps = () => ({
+  size: select("Size", ["compact", "normal", "loose"], "normal"),
+  isDisabled: boolean("Disabled"),
+})
 
-export const withoutLabel = () => <Checkbox />
-export const compactSize = () => <Checkbox {...props} size="compact"></Checkbox>
-export const normalSize = () => <Checkbox {...props} size="normal"></Checkbox>
-export const looseSize = () => <Checkbox {...props} size="loose"></Checkbox>
-export const disabled = () => <Checkbox {...props} isDisabled></Checkbox>
+export const withLabel = () => (
+  <Checkbox {...makeProps()} label="Are you sure?" />
+)
+export const withoutLabel = () => <Checkbox {...makeProps()} />

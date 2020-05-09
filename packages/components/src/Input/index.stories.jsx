@@ -1,14 +1,16 @@
 import React from "react"
+import { withKnobs, select, text } from "@storybook/addon-knobs"
+import { withA11y } from "@storybook/addon-a11y"
 import Input from "./index"
 
-const props = {
-  placeholder: "Please enter the text",
-}
+export default { title: "Input", decorators: [withKnobs, withA11y] }
 
-export default { title: "Input" }
+const makeProps = () => ({
+  size: select("Size", ["compact", "normal", "loose"], "normal"),
+  placeholder: text("Placeholder", "Enter something"),
+})
 
-export const compactSize = () => <Input {...props} size="compact" />
-export const normalSize = () => <Input {...props} size="normal" />
-export const looseSize = () => <Input {...props} size="loose" />
-export const iconAfter = () => <Input {...props} iconAfter="🐻" />
-export const error = () => <Input {...props} error="This field is required" />
+export const Regular = () => <Input {...makeProps()} />
+export const Error = () => (
+  <Input {...makeProps()} error="This field is required" />
+)
