@@ -7,6 +7,7 @@ const props = {
 
 export default { title: "Checkbox" }
 
+export const withoutLabel = () => <Checkbox />
 export const compactSize = () => <Checkbox {...props} size="compact"></Checkbox>
 export const normalSize = () => <Checkbox {...props} size="normal"></Checkbox>
 export const looseSize = () => <Checkbox {...props} size="loose"></Checkbox>

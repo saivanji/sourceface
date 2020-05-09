@@ -3,6 +3,7 @@ import cx from "classnames"
 import Spinner from "../Spinner"
 import styles from "./index.css"
 
+// TODO: should link be a separate component?
 export default function Button({
   children,
   appearance = "primary",

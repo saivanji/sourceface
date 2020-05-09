@@ -6,13 +6,13 @@ export default { title: "Label" }
 
 const Child = () => <Input placeholder="Please enter the text" />
 
-export const required = () => (
-  <Label title="Username" isRequired>
+export const regular = () => (
+  <Label title="Username">
     <Child />
   </Label>
 )
-export const notRequired = () => (
-  <Label title="Username">
+export const required = () => (
+  <Label title="Username" isRequired>
     <Child />
   </Label>
 )

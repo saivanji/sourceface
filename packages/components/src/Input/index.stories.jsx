@@ -10,4 +10,5 @@ export default { title: "Input" }
 export const compactSize = () => <Input {...props} size="compact" />
 export const normalSize = () => <Input {...props} size="normal" />
 export const looseSize = () => <Input {...props} size="loose" />
+export const iconAfter = () => <Input {...props} iconAfter="🐻" />
 export const error = () => <Input {...props} error="This field is required" />

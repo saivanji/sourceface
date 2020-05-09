@@ -25,7 +25,19 @@
     box-shadow: 0 0 0 3px var(--color-gray-tint-120);
   }
   &.selected {
-    /* TODO: should not have a primary color, most likely color from secondary button(but not the same appearance in order not to confuse it with secondary button) */
-    background-color: var(--color-gray-tint-100);
+    background-color: var(--color-gray-tint-110);
   }
+}
+
+.icon-before,
+.icon-after {
+  width: var(--value-3);
+}
+
+.icon-before {
+  margin-right: var(--value-1);
+}
+
+.icon-after {
+  margin-left: var(--value-1);
 }

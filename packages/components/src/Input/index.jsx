@@ -12,9 +12,9 @@ export default function Input({
 }) {
   return (
     <>
-      <div className={cx(styles.root, className)}>
+      <div className={cx(styles.root, styles[size], className)}>
         <input
-          className={cx(styles.element, styles[size], error && styles.error)}
+          className={cx(styles.element, error && styles.error)}
           {...props}
         />
         {iconAfter && <div className={styles.iconAfter}>{iconAfter}</div>}

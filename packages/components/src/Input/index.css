@@ -2,6 +2,43 @@
 
 .root {
   position: relative;
+  &.normal,
+  &.loose {
+    & .element {
+      font-size: var(--font-size-sm);
+    }
+  }
+  &.compact {
+    & .element {
+      font-size: var(--font-size-xs);
+      height: var(--value-6);
+      padding: 0 var(--value-1);
+    }
+    & .icon-after {
+      margin-right: var(--value-2);
+      width: var(--value-2);
+    }
+  }
+  &.normal {
+    & .element {
+      height: var(--value-8);
+      padding: 0 var(--value-2);
+    }
+    & .icon-after {
+      margin-right: var(--value-3);
+      width: var(--value-3);
+    }
+  }
+  &.loose {
+    & .element {
+      height: var(--value-10);
+      padding: 0 var(--value-3);
+    }
+    & .icon-after {
+      margin-right: var(--value-4);
+      width: var(--value-4);
+    }
+  }
 }
 
 .element {
@@ -10,7 +47,6 @@
   color: var(--color-gray-shade-110);
   border-radius: var(--rounded-base);
   border: 1px solid var(--color-gray-tint-50);
-  font-size: var(--font-size-sm);
   &:focus {
     background-color: var(--color-white);
     border-color: var(--color-gray-tint-10);
@@ -18,18 +54,6 @@
   }
   &::placeholder {
     color: var(--color-gray-shade-30);
-  }
-  &.compact {
-    height: var(--value-6);
-    padding: 0 var(--value-1);
-  }
-  &.normal {
-    height: var(--value-8);
-    padding: 0 var(--value-2);
-  }
-  &.loose {
-    height: var(--value-10);
-    padding: 0 var(--value-3);
   }
   &.error {
     border-color: var(--color-gray-shade-100);
@@ -39,6 +63,7 @@
   }
 }
 
+/* TODO: should consider input size */
 .error-text {
   color: var(--color-black);
   font-size: var(--font-size-xs);
@@ -52,6 +77,4 @@
   right: 0;
   display: flex;
   align-items: center;
-  margin-right: var(--value-3);
-  width: var(--value-3);
 }

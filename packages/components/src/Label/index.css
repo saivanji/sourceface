@@ -1,5 +1,7 @@
 @import "@sourceface/style/index.css";
 
+/* TODO: add sizes */
+
 .title {
   font-weight: 700;
   display: flex;
