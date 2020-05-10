@@ -1,5 +1,5 @@
 import React from "react"
-import { withKnobs, text, boolean, select } from "@storybook/addon-knobs"
+import { withKnobs, text } from "@storybook/addon-knobs"
 import { withA11y } from "@storybook/addon-a11y"
 import Badge from "./index"
 

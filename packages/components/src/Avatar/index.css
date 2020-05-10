@@ -1,0 +1,13 @@
+@import "@sourceface/style/index.css";
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-white);
+  width: var(--value-10);
+  height: var(--value-10);
+  background-color: var(--color-gray-shade-80);
+  border-radius: var(--rounded-full);
+  font-size: var(--font-size-md);
+}

@@ -32,9 +32,11 @@
   }
   &:focus {
     outline: 0;
+    background-color: var(--color-white);
     box-shadow: 0 0 0 3px var(--color-gray-tint-120);
   }
   &.selected {
+    font-weight: 700;
     border-bottom: 2px solid var(--color-gray-shade-80);
   }
 }
@@ -45,9 +47,9 @@
 }
 
 .icon-before {
-  margin-right: var(--value-1);
+  margin-right: var(--value-2);
 }
 
 .icon-after {
-  margin-left: var(--value-1);
+  margin-left: var(--value-2);
 }
