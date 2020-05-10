@@ -2,6 +2,7 @@ import React from "react"
 import { InviteForm } from "components/administration"
 import Input from "@sourceface/components/input"
 import Tabs, { Tab } from "@sourceface/components/tabs"
+import Search from "./assets/search.svg"
 import styles from "./index.css"
 
 // take into the account gray bg of content area??
@@ -14,7 +15,12 @@ export default () => {
         <Tab>Invitations</Tab>
       </Tabs>
       <div className={styles.header}>
-        <Input type="text" placeholder="Search for a user" />
+        <Input
+          className={styles.search}
+          type="text"
+          placeholder="Search for a user"
+          iconBefore={<Search />}
+        />
         <InviteForm className={styles.inviteForm} />
       </div>
     </div>
