@@ -1,6 +1,13 @@
+@import "@sourceface/style/index.css";
+
+html {
+  line-height: 1.5;
+}
+
 body {
   padding: 1rem;
   font-family: "Nunito Sans", sans-serif;
+  background-color: var(--color-gray-tint-110);
 }
 
 *,

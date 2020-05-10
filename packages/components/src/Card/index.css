@@ -1,0 +1,19 @@
+@import "@sourceface/style/index.css";
+
+.root {
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-sm);
+
+  &.compact {
+    border-radius: var(--rounded-sm);
+    padding: var(--value-2);
+  }
+  &.normal {
+    border-radius: var(--rounded-base);
+    padding: var(--value-4);
+  }
+  &.loose {
+    border-radius: var(--rounded-md);
+    padding: var(--value-6);
+  }
+}
