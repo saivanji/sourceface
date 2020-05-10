@@ -1,3 +1,5 @@
+@import "@sourceface/style/index.css";
+
 *,
 *:before,
 *:after {
@@ -10,4 +12,5 @@ html {
 
 body {
   font-family: "Nunito Sans", sans-serif;
+  background-color: var(--color-gray-tint-110);
 }

@@ -6,7 +6,6 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  background-color: var(--color-gray-tint-110);
 }
 
 .container {

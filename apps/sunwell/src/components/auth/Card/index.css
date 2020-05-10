@@ -1,12 +1,5 @@
 @import "@sourceface/style/index.css";
 
-.root {
-  background-color: var(--color-white);
-  border-radius: var(--rounded-lg);
-  padding: var(--value-8);
-  box-shadow: var(--shadow-sm);
-}
-
 .title {
   display: block;
   font-weight: 600;
