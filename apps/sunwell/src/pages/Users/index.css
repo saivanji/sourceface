@@ -6,7 +6,7 @@
 
 .header {
   display: flex;
-  margin-bottom: var(--value-4);
+  margin-bottom: var(--value-6);
 }
 
 .search {
@@ -19,4 +19,8 @@
 
 .tabs {
   margin-bottom: var(--value-4);
+}
+
+.email {
+  margin-left: var(--value-4);
 }
