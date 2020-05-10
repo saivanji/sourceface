@@ -25,10 +25,10 @@
       margin-right: var(--value-2);
     }
     & .has-icon-before {
-      padding-left: calc(var(--value-2) * 3);
+      padding-left: var(--value-6);
     }
     & .has-icon-after {
-      padding-right: calc(var(--value-2) * 3);
+      padding-right: var(--value-6);
     }
   }
   &.normal {
@@ -47,10 +47,10 @@
       margin-right: var(--value-3);
     }
     & .has-icon-before {
-      padding-left: calc(var(--value-3) * 3);
+      padding-left: var(--value-8);
     }
     & .has-icon-after {
-      padding-right: calc(var(--value-3) * 3);
+      padding-right: var(--value-8);
     }
   }
   &.loose {
@@ -69,10 +69,10 @@
       margin-right: var(--value-4);
     }
     & .has-icon-before {
-      padding-left: calc(var(--value-4) * 3);
+      padding-left: var(--value-10);
     }
     & .has-icon-after {
-      padding-right: calc(var(--value-4) * 3);
+      padding-right: var(--value-10);
     }
   }
 }
