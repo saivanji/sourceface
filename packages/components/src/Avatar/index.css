@@ -5,8 +5,8 @@
   align-items: center;
   justify-content: center;
   color: var(--color-white);
-  width: var(--value-10);
-  height: var(--value-10);
+  width: var(--value-8);
+  height: var(--value-8);
   background-color: var(--color-gray-shade-80);
   border-radius: var(--rounded-full);
   font-size: var(--font-size-md);

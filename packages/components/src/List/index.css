@@ -1,0 +1,13 @@
+@import "@sourceface/style/index.css";
+
+.item {
+  border-bottom: 1px solid var(--color-gray-tint-50);
+  padding: var(--value-4) 0;
+  &:first-child {
+    padding-top: 0;
+  }
+  &:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+}

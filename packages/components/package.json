@@ -4,12 +4,14 @@
   "author": "aiven715 <aiven715@gmail.com>",
   "license": "MIT",
   "files": [
+    "avatar",
     "badge",
     "button",
     "card",
     "checkbox",
     "input",
     "label",
+    "list",
     "spinner",
     "tabs"
   ],

@@ -6,11 +6,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+/avatar
 /badge
 /button
 /card
 /checkbox
 /input
 /label
+/list
 /spinner
 /tabs
