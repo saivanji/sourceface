@@ -1,0 +1,11 @@
+@import "@sourceface/style/index.css";
+
+.root {
+  display: inline-flex;
+  font-size: var(--font-size-xs);
+  border-radius: var(--rounded-full);
+  color: var(--color-white);
+  background-color: var(--color-gray-shade-80);
+  padding: 0 var(--value-1);
+  height: var(--value-4);
+}

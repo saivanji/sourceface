@@ -5,12 +5,8 @@ import Card from "./index"
 
 export default { title: "Card", decorators: [withKnobs, withA11y] }
 
-const makeProps = () => ({
-  size: select("Size", ["compact", "normal", "loose"], "normal"),
-})
-
 export const Regular = () => (
-  <Card {...makeProps()}>
+  <Card size={select("Size", ["compact", "normal", "loose"], "normal")}>
     Adipisicing adipisci quidem sapiente voluptate provident deleniti quae?
     Ullam molestias tempora sapiente repellat similique. Incidunt vel sed quia
     consequatur magnam Provident enim delectus esse ipsum sit? Assumenda optio

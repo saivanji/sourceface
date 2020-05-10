@@ -4,6 +4,7 @@
   "author": "aiven715 <aiven715@gmail.com>",
   "license": "MIT",
   "files": [
+    "badge",
     "button",
     "card",
     "checkbox",
