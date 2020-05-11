@@ -68,9 +68,9 @@ export default () => {
           </List>
           <Pagination
             className={styles.pagination}
-            pageCount={9}
+            pageCount={30}
             pageMargin={1}
-            pageSurroundings={2}
+            pageSurroundings={1}
             onPageClick={setPage}
             selectedPage={page}
           />
