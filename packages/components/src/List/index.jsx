@@ -2,6 +2,7 @@ import React from "react"
 import cx from "classnames"
 import styles from "./index.css"
 
+// TODO: use ul/li
 export default function List({ children, className }) {
   return <div className={className}>{children}</div>
 }

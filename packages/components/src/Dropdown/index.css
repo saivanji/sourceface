@@ -9,11 +9,13 @@
   position: absolute;
   display: inline-flex;
   flex-direction: column;
+  z-index: 1;
   background-color: var(--color-white);
   width: var(--value-48);
   border-radius: var(--rounded-base);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
   padding: var(--value-2) 0;
+  border: 1px solid var(--color-gray-tint-90);
   &.bottom-left,
   &.bottom-right {
     top: calc(100% + var(--value-2));
