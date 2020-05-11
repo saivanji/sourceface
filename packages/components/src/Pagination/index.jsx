@@ -25,30 +25,35 @@ export default function Pagination({
         </Item>
         {Array(pageCount)
           .fill()
-          .map((_, i) => i)
-          .filter(i =>
-            shouldRenderPage(
+          .map((_, i) => {
+            const shouldRender = shouldRenderPage(
               i,
               selectedPage,
               pageCount,
               pageMargin,
               pageSurroundings
             )
-          )
-          .map(i => (
-            <>
-              {
-                // {i === pageCount - pageMargin && <Item isDisabled>...</Item>}
-              }
-              <Item
-                isSelected={i === selectedPage}
-                key={i}
-                onClick={() => onPageClick(i)}
-              >
-                {i + 1}
-              </Item>
-            </>
-          ))}
+            const shouldRenderNext = shouldRenderPage(
+              i + 1,
+              selectedPage,
+              pageCount,
+              pageMargin,
+              pageSurroundings
+            )
+            return (
+              shouldRender && (
+                <React.Fragment key={i}>
+                  <Item
+                    isSelected={i === selectedPage}
+                    onClick={() => onPageClick(i)}
+                  >
+                    {i + 1}
+                  </Item>
+                  {!shouldRenderNext && <Item isDisabled>...</Item>}
+                </React.Fragment>
+              )
+            )
+          })}
         <Item
           onClick={() => !isNextDisabled && onPageClick(selectedPage + 1)}
           isDisabled={isNextDisabled}
@@ -109,4 +114,4 @@ const shouldRenderPage = (i, selected, count, margin, surroundings) => {
 }
 
 const pad = (n, margin, surroundings) =>
-  n <= surroundings ? margin + surroundings - n : 0
+  n <= margin + surroundings ? margin + surroundings - n : 0
