@@ -38,3 +38,7 @@
   display: flex;
   align-items: center;
 }
+
+.pagination {
+  margin-top: var(--value-6);
+}
