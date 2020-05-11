@@ -21,6 +21,20 @@
   margin-bottom: var(--value-4);
 }
 
-.email {
+.email,
+.role {
   margin-left: var(--value-4);
+}
+
+.more {
+  margin-left: auto;
+  & svg {
+    width: var(--value-4);
+    /* fill: var(--color-gray); */
+  }
+}
+
+.user {
+  display: flex;
+  align-items: center;
 }

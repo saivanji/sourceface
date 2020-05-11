@@ -1,11 +1,14 @@
 import React from "react"
+import { times } from "ramda"
 import { InviteForm } from "components/administration"
 import Avatar from "@sourceface/components/avatar"
 import Badge from "@sourceface/components/badge"
+import Button from "@sourceface/components/button"
 import Input from "@sourceface/components/input"
 import List, { Item } from "@sourceface/components/list"
 import Tabs, { Tab, TabsHead, TabsBody } from "@sourceface/components/tabs"
-import Search from "./assets/search.svg"
+import SearchIcon from "./assets/search.svg"
+import MoreIcon from "./assets/more.svg"
 import styles from "./index.css"
 
 export default () => {
@@ -22,27 +25,33 @@ export default () => {
               className={styles.search}
               type="text"
               placeholder="Search for a user"
-              iconBefore={<Search />}
+              iconBefore={<SearchIcon />}
             />
             <InviteForm className={styles.inviteForm} />
           </div>
           <List>
-            <Item>
-              <Avatar value="A" />
-              <span className={styles.email}>aiven715@gmail.com</span>
-            </Item>
-            <Item>
-              <Avatar value="A" />
-              <span className={styles.email}>aiven715@gmail.com</span>
-            </Item>
-            <Item>
-              <Avatar value="A" />
-              <span className={styles.email}>aiven715@gmail.com</span>
-            </Item>
-            <Item>
-              <Avatar value="A" />
-              <span className={styles.email}>aiven715@gmail.com</span>
-            </Item>
+            {times(
+              i => (
+                <Item className={styles.user} key={i}>
+                  <Avatar value="A" />
+                  <span className={styles.email}>aiven715@gmail.com</span>
+                  <Badge
+                    className={styles.role}
+                    value="admin"
+                    appearance="light"
+                    shape="squared"
+                  />
+                  <Button
+                    className={styles.more}
+                    appearance="secondary"
+                    size="compact"
+                  >
+                    <MoreIcon />
+                  </Button>
+                </Item>
+              ),
+              5
+            )}
           </List>
         </TabsBody>
       </Tabs>
