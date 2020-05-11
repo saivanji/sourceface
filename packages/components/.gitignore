@@ -10,6 +10,7 @@ yarn-error.log*
 /badge
 /button
 /card
+/dropdown
 /checkbox
 /input
 /label
