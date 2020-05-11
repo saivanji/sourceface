@@ -13,6 +13,7 @@
     "input",
     "label",
     "list",
+    "pagination",
     "spinner",
     "tabs"
   ],
