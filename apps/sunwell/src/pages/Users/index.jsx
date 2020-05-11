@@ -11,6 +11,7 @@ import Dropdown, {
 } from "@sourceface/components/dropdown"
 import Input from "@sourceface/components/input"
 import List, { Item } from "@sourceface/components/list"
+// import Pagination from "@sourceface/components/pagination"
 import Tabs, { Tab, TabsHead, TabsBody } from "@sourceface/components/tabs"
 import SearchIcon from "./assets/search.svg"
 import MoreIcon from "./assets/more.svg"
