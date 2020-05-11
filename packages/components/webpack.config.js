@@ -1,5 +1,6 @@
 const path = require("path")
 const glob = require("glob")
+const pkg = require("./package.json")
 
 const NODE_ENV = process.env.NODE_ENV || "production"
 const isProd = NODE_ENV === "production"
@@ -19,14 +20,9 @@ module.exports = {
     filename: isProd ? "[name]/prod/index.js" : "[name]/dev/index.js",
     libraryTarget: "umd",
   },
-  externals: {
-    react: {
-      commonjs: "react",
-      commonjs2: "react",
-      amd: "react",
-      root: "React",
-    },
-  },
+  externals: Object.keys(
+    Object.assign({}, pkg.dependencies, pkg.peerDependencies)
+  ).reduce((acc, key) => Object.assign({}, acc, { [key]: key }), {}),
   module: {
     rules: [
       {
