@@ -23,6 +23,8 @@ services:
     command: >
       bash -c "rm -rf /var/www/node_modules/@sourceface/components &&
                ln -s /mnt/components /var/www/node_modules/@sourceface/components &&
+               rm -rf /mnt/components/node_modules/react &&
+               ln -s /var/www/node_modules/react /mnt/components/node_modules/react &&
                rm -rf /var/www/node_modules/@sourceface/style &&
                ln -s /mnt/style /var/www/node_modules/@sourceface/style &&
                yarn start"
