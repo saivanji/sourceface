@@ -11,12 +11,11 @@ import Dropdown, {
 } from "@sourceface/components/dropdown"
 import Input from "@sourceface/components/input"
 import List, { Item } from "@sourceface/components/list"
-// import Pagination from "@sourceface/components/pagination"
+import Pagination from "@sourceface/components/pagination"
 import Tabs, { Tab, TabsHead, TabsBody } from "@sourceface/components/tabs"
 import SearchIcon from "./assets/search.svg"
 import MoreIcon from "./assets/more.svg"
 import styles from "./index.css"
-import Pagination from "./Pagination"
 
 export default () => {
   const [page, setPage] = useState(0)
