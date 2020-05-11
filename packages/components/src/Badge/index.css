@@ -2,6 +2,7 @@
 
 .root {
   display: inline-flex;
+  align-items: center;
   font-size: var(--font-size-xs);
   color: var(--color-white);
   padding: 0 var(--value-1);
