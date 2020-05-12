@@ -11,6 +11,7 @@ import Dropdown, {
 } from "@sourceface/components/dropdown"
 import Input from "@sourceface/components/input"
 import List, { Item } from "@sourceface/components/list"
+import Loader from "@sourceface/components/loader"
 import Modal, {
   ModalHeader,
   ModalBody,
@@ -46,10 +47,12 @@ export default () => {
               />
               <InviteForm className={styles.inviteForm} />
             </div>
-            <Items
-              setChangingRole={setChangingRole}
-              setRemovingUser={setRemovingUser}
-            />
+            <Loader isLoading>
+              <Items
+                setChangingRole={setChangingRole}
+                setRemovingUser={setRemovingUser}
+              />
+            </Loader>
             <Pagination
               className={styles.pagination}
               pageCount={30}

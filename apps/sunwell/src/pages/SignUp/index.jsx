@@ -40,7 +40,7 @@ export default () => {
             type="password"
             size="loose"
             shouldFitContainer
-            iconAfter={<Spinner />}
+            iconAfter={<Spinner size="compact" />}
           />
           <Strength />
         </Label>
