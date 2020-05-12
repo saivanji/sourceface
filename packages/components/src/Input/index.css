@@ -1,11 +1,17 @@
 @import "@sourceface/style/index.css";
 
 .root {
-  position: relative;
   &.normal,
   &.loose {
     & .element {
       font-size: var(--font-size-sm);
+    }
+  }
+  &.compact,
+  &.normal {
+    & .error-text {
+      font-size: var(--font-size-xs);
+      margin-top: var(--value-1);
     }
   }
   &.compact {
@@ -74,7 +80,14 @@
     & .has-icon-after {
       padding-right: var(--value-10);
     }
+    & .error-text {
+      font-size: var(--font-size-sm);
+    }
   }
+}
+
+.wrap {
+  position: relative;
 }
 
 .element {
@@ -100,11 +113,9 @@
   }
 }
 
-/* TODO: should consider input size */
 .error-text {
   color: var(--color-black);
   font-size: var(--font-size-xs);
-  margin-top: var(--value-1);
 }
 
 .icon-before,

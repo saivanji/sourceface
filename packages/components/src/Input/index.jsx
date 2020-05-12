@@ -11,8 +11,8 @@ export default function Input({
   ...props
 }) {
   return (
-    <>
-      <div className={cx(styles.root, styles[size], className)}>
+    <div className={cx(styles.root, styles[size], className)}>
+      <div className={styles.wrap}>
         {iconBefore && <div className={styles.iconBefore}>{iconBefore}</div>}
         <input
           className={cx(
@@ -26,6 +26,6 @@ export default function Input({
         {iconAfter && <div className={styles.iconAfter}>{iconAfter}</div>}
       </div>
       {error && <div className={styles.errorText}>{error}</div>}
-    </>
+    </div>
   )
 }
