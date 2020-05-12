@@ -12,5 +12,6 @@ html {
 
 body {
   font-family: "Nunito Sans", sans-serif;
+  font-size: var(--font-size-sm);
   background-color: var(--color-gray-tint-110);
 }
