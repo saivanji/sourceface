@@ -15,7 +15,9 @@
     }
   }
   &.compact {
-    height: var(--value-6);
+    & .wrap {
+      height: var(--value-6);
+    }
     & .element {
       font-size: var(--font-size-xs);
       padding: 0 var(--value-1);
@@ -38,7 +40,9 @@
     }
   }
   &.normal {
-    height: var(--value-8);
+    & .wrap {
+      height: var(--value-8);
+    }
     & .element {
       padding: 0 var(--value-2);
     }
@@ -60,7 +64,9 @@
     }
   }
   &.loose {
-    height: var(--value-10);
+    & .wrap {
+      height: var(--value-10);
+    }
     & .element {
       padding: 0 var(--value-3);
     }
