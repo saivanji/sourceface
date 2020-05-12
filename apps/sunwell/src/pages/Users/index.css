@@ -1,7 +1,7 @@
 @import "@sourceface/style/index.css";
 
 .wrap {
-  padding: 200px;
+  padding: var(--value-4);
 }
 
 .header {

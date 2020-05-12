@@ -46,38 +46,10 @@ export default () => {
               />
               <InviteForm className={styles.inviteForm} />
             </div>
-            <List>
-              {times(
-                i => (
-                  <Item className={styles.user} key={i}>
-                    <Avatar value="A" />
-                    <span className={styles.email}>aiven715@gmail.com</span>
-                    <Badge
-                      className={styles.role}
-                      value="admin"
-                      appearance="light"
-                      shape="squared"
-                    />
-                    <Dropdown className={styles.more}>
-                      <DropdownButton>
-                        <Button appearance="secondary" size="compact">
-                          <MoreIcon />
-                        </Button>
-                      </DropdownButton>
-                      <DropdownMenu>
-                        <DropdownItem onClick={() => setChangingRole(true)}>
-                          Change role
-                        </DropdownItem>
-                        <DropdownItem onClick={() => setRemovingUser(true)}>
-                          Remove from the app
-                        </DropdownItem>
-                      </DropdownMenu>
-                    </Dropdown>
-                  </Item>
-                ),
-                5
-              )}
-            </List>
+            <Items
+              setChangingRole={setChangingRole}
+              setRemovingUser={setRemovingUser}
+            />
             <Pagination
               className={styles.pagination}
               pageCount={30}
@@ -89,6 +61,61 @@ export default () => {
           </TabsBody>
         </Tabs>
       </div>
+      <Modals
+        changingRole={changingRole}
+        removingUser={removingUser}
+        setChangingRole={setChangingRole}
+        setRemovingUser={setRemovingUser}
+      />
+    </>
+  )
+}
+
+function Items({ setChangingRole, setRemovingUser }) {
+  return (
+    <List>
+      {times(
+        i => (
+          <Item className={styles.user} key={i}>
+            <Avatar value="A" />
+            <span className={styles.email}>aiven715@gmail.com</span>
+            <Badge
+              className={styles.role}
+              value="admin"
+              appearance="light"
+              shape="squared"
+            />
+            <Dropdown className={styles.more}>
+              <DropdownButton>
+                <Button appearance="secondary" size="compact">
+                  <MoreIcon />
+                </Button>
+              </DropdownButton>
+              <DropdownMenu>
+                <DropdownItem onClick={() => setChangingRole(true)}>
+                  Change role
+                </DropdownItem>
+                <DropdownItem onClick={() => setRemovingUser(true)}>
+                  Remove from the app
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </Item>
+        ),
+        5
+      )}
+    </List>
+  )
+}
+
+function Modals({
+  changingRole,
+  removingUser,
+  setChangingRole,
+  setRemovingUser,
+}) {
+  return (
+    <>
       <Modal
         size="compact"
         isOpened={changingRole}
