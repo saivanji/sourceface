@@ -122,39 +122,42 @@ function Modals({
 }) {
   return (
     <>
-      <Modal isOpened={changingRole} onDismiss={() => setChangingRole(false)}>
+      <Modal
+        size="compact"
+        isOpened={changingRole}
+        onDismiss={() => setChangingRole(false)}
+      >
         <ModalHeader>Change the role of aiven715</ModalHeader>
         <ModalBody>
           Note, that users with privileged role have full control over the
           application.
-          <Label title="Select a new role">
-            <Select
-              placeholder="Choose a role"
-              options={[
-                {
-                  label: (
-                    <>
-                      Admin
-                      <Badge
-                        className={styles.privileged}
-                        shape="squared"
-                        value="Privileged"
-                      />
-                    </>
-                  ),
-                  value: "admin",
-                },
-                {
-                  label: "Manager",
-                  value: "manager",
-                },
-                {
-                  label: "Staff",
-                  value: "staff",
-                },
-              ]}
-            />
-          </Label>
+          <Select
+            className={styles.roleSelect}
+            placeholder="Choose a role"
+            options={[
+              {
+                label: (
+                  <>
+                    Admin
+                    <Badge
+                      className={styles.privileged}
+                      shape="squared"
+                      value="Privileged"
+                    />
+                  </>
+                ),
+                value: "admin",
+              },
+              {
+                label: "Manager",
+                value: "manager",
+              },
+              {
+                label: "Staff",
+                value: "staff",
+              },
+            ]}
+          />
         </ModalBody>
         <ModalFooter>
           <Button onClick={() => setChangingRole(false)} appearance="secondary">

@@ -30,7 +30,6 @@
   margin-left: auto;
   & svg {
     width: var(--value-4);
-    /* fill: var(--color-gray); */
   }
 }
 
@@ -45,4 +44,8 @@
 
 .privileged {
   margin-left: var(--value-2);
+}
+
+.role-select {
+  margin-top: var(--value-1);
 }
