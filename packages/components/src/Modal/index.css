@@ -23,10 +23,10 @@
   padding: var(--value-4);
   box-shadow: var(--shadow-sm);
   &.compact {
-    max-width: var(--size-lg);
+    max-width: var(--size-xs);
   }
   &.normal {
-    max-width: var(--size-xl);
+    max-width: var(--size-lg);
   }
   &.loose {
     max-width: var(--size-2xl);
