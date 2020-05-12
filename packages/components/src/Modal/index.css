@@ -70,6 +70,10 @@
   &:hover {
     fill: var(--color-gray-shade-120);
   }
+  &:focus {
+    border-radius: var(--rounded-base);
+    box-shadow: 0 0 0 3px var(--color-gray-tint-120);
+  }
 }
 
 .actions {
