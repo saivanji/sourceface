@@ -1,6 +1,6 @@
 import React from "react"
 import { withA11y } from "@storybook/addon-a11y"
-import Tabs, { Tab, TabsHead, TabsBody } from "./index"
+import Tabs, { Tab, TabsHeader, TabsBody } from "./index"
 
 const body = (
   <TabsBody>
@@ -15,32 +15,32 @@ export default { title: "Tabs", decorators: [withA11y] }
 
 export const Regular = () => (
   <Tabs>
-    <TabsHead>
+    <TabsHeader>
       <Tab isSelected>Users</Tab>
       <Tab>Invitations</Tab>
-    </TabsHead>
+    </TabsHeader>
     {body}
   </Tabs>
 )
 
 export const IconBefore = () => (
   <Tabs>
-    <TabsHead>
+    <TabsHeader>
       <Tab isSelected iconBefore="🔥">
         Users
       </Tab>
       <Tab>Invitations</Tab>
-    </TabsHead>
+    </TabsHeader>
     {body}
   </Tabs>
 )
 
 export const IconAfter = () => (
   <Tabs>
-    <TabsHead>
+    <TabsHeader>
       <Tab isSelected>Users</Tab>
       <Tab iconAfter="🍔">Invitations</Tab>
-    </TabsHead>
+    </TabsHeader>
     {body}
   </Tabs>
 )

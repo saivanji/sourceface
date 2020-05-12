@@ -13,6 +13,7 @@ export default function Button({
   isDisabled,
   isLoading,
   className,
+  onClick,
   // iconAfter,
   // iconBefore,
 }) {
@@ -28,6 +29,7 @@ export default function Button({
       )}
       disabled={isDisabled || isLoading}
       type={type}
+      onClick={onClick}
     >
       {isLoading && (
         <Spinner

@@ -21,8 +21,8 @@ export function Tab({ children, isSelected, iconAfter, iconBefore }) {
   )
 }
 
-export function TabsHead({ children }) {
-  return <div className={styles.head}>{children}</div>
+export function TabsHeader({ children }) {
+  return <div className={styles.header}>{children}</div>
 }
 
 export function TabsBody({ children }) {

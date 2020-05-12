@@ -13,6 +13,7 @@
     "input",
     "label",
     "list",
+    "modal",
     "pagination",
     "spinner",
     "tabs"
@@ -48,6 +49,7 @@
     "webpack-cli": "^3.3.11"
   },
   "peerDependencies": {
-    "react": "^16.13.1"
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   }
 }
