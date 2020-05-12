@@ -51,7 +51,9 @@ export function ModalHeader({ children, iconBefore }) {
     <div className={cx(styles.row, styles.header)}>
       {iconBefore && <span className={styles.headerIcon}>{iconBefore}</span>}
       <h4 className={styles.title}>{children}</h4>
-      <CloseIcon onClick={onDismiss} className={styles.closeIcon} />
+      <button className={styles.close}>
+        <CloseIcon onClick={onDismiss} />
+      </button>
     </div>
   )
 }

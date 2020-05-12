@@ -62,15 +62,22 @@
   margin-right: var(--value-2);
 }
 
-.close-icon {
+.close {
+  display: flex;
   margin-left: auto;
   cursor: pointer;
+  border: 0;
+  padding: 0;
+  background: none;
   width: var(--value-6);
-  fill: var(--color-gray-shade-90);
-  &:hover {
-    fill: var(--color-gray-shade-120);
+  & svg {
+    fill: var(--color-gray-shade-90);
+    &:hover {
+      fill: var(--color-gray-shade-120);
+    }
   }
   &:focus {
+    outline: 0;
     border-radius: var(--rounded-base);
     box-shadow: 0 0 0 3px var(--color-gray-tint-120);
   }
