@@ -9,6 +9,7 @@ yarn-error.log*
 /avatar
 /badge
 /button
+/breadcrumbs
 /card
 /dropdown
 /checkbox
