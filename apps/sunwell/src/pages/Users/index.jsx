@@ -160,7 +160,7 @@ function Modals({
           />
         </ModalBody>
         <ModalFooter>
-          <Button onClick={() => setChangingRole(false)} appearance="secondary">
+          <Button onClick={() => setChangingRole(false)} appearance="tertiary">
             Cancel
           </Button>
           <Button>Submit</Button>
