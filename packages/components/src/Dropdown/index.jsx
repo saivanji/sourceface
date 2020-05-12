@@ -25,17 +25,21 @@ export default function Dropdown({ children, className }) {
   )
 }
 
-export function DropdownButton({ children }) {
+export function DropdownButton({ children, className }) {
   const { toggle, buttonRef } = useContext(Context)
 
   return (
-    <div ref={buttonRef} onClick={toggle}>
+    <div className={className} ref={buttonRef} onClick={toggle}>
       {children}
     </div>
   )
 }
 
-export function DropdownMenu({ children, position = "bottomRight" }) {
+export function DropdownMenu({
+  children,
+  position = "bottomRight",
+  className,
+}) {
   const { isOpened, close, buttonRef, menuRef } = useContext(Context)
   const onClickOutside = useCallback(
     event =>
@@ -57,19 +61,22 @@ export function DropdownMenu({ children, position = "bottomRight" }) {
 
   return (
     isOpened && (
-      <div ref={menuRef} className={cx(styles.menu, styles[position])}>
+      <div
+        ref={menuRef}
+        className={cx(styles.menu, styles[position], className)}
+      >
         {children}
       </div>
     )
   )
 }
 
-export function DropdownItem({ children, onClick }) {
+export function DropdownItem({ children, onClick, className }) {
   const { close } = useContext(Context)
 
   return (
     <div
-      className={styles.item}
+      className={cx(styles.item, className)}
       onClick={() => {
         close()
 

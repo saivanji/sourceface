@@ -9,9 +9,9 @@
     }
   }
   &.compact {
+    height: var(--value-6);
     & .element {
       font-size: var(--font-size-xs);
-      height: var(--value-6);
       padding: 0 var(--value-1);
     }
     & .icon-before,
@@ -32,8 +32,8 @@
     }
   }
   &.normal {
+    height: var(--value-8);
     & .element {
-      height: var(--value-8);
       padding: 0 var(--value-2);
     }
     & .icon-before,
@@ -54,8 +54,8 @@
     }
   }
   &.loose {
+    height: var(--value-10);
     & .element {
-      height: var(--value-10);
       padding: 0 var(--value-3);
     }
     & .icon-before,
@@ -79,6 +79,7 @@
 
 .element {
   width: 100%;
+  height: 100%;
   background-color: var(--color-gray-tint-130);
   color: var(--color-gray-shade-110);
   border-radius: var(--rounded-base);
