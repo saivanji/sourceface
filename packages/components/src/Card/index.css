@@ -3,6 +3,7 @@
 .root {
   background-color: var(--color-white);
   box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-gray-tint-90);
 
   &.compact {
     border-radius: var(--rounded-sm);
