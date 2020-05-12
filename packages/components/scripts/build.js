@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 const path = require("path")
+const util = require("util")
 const fs = require("fs")
 const { exec } = require("child_process")
 const pkg = require("../package.json")
@@ -14,22 +15,23 @@ async function main() {
   ]
 }
 
-function build(env) {
-  return new Promise((resolve, reject) => {
-    exec(
+async function build(env) {
+  try {
+    const { stdout, stderr } = await util.promisify(exec)(
       "node ./node_modules/.bin/webpack --colors",
       {
         env: {
           NODE_ENV: env,
         },
-      },
-      (err, stdout, stderr) => {
-        if (err || stderr) return reject(err || stderr)
-
-        resolve(stdout)
       }
     )
-  })
+
+    if (stderr) throw stderr
+
+    return stdout
+  } catch (err) {
+    throw err.stdout || err.stderr
+  }
 }
 
 function populateIndexes() {
