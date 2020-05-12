@@ -10,6 +10,7 @@ import Dropdown, {
   DropdownItem,
 } from "@sourceface/components/dropdown"
 import Input from "@sourceface/components/input"
+import Label from "@sourceface/components/label"
 import List, { Item } from "@sourceface/components/list"
 import Loader from "@sourceface/components/loader"
 import Modal, {
@@ -121,25 +122,27 @@ function Modals({
   return (
     <>
       <Modal isOpened={changingRole} onDismiss={() => setChangingRole(false)}>
-        <ModalHeader>Change user role</ModalHeader>
+        <ModalHeader>Change the role of aiven715</ModalHeader>
         <ModalBody>
-          <Select
-            placeholder="Choose a role"
-            options={[
-              {
-                label: "Admin",
-                value: "admin",
-              },
-              {
-                label: "Manager",
-                value: "manager",
-              },
-              {
-                label: "Staff",
-                value: "staff",
-              },
-            ]}
-          />
+          <Label title="Choose a role">
+            <Select
+              placeholder="Choose a role"
+              options={[
+                {
+                  label: "Admin",
+                  value: "admin",
+                },
+                {
+                  label: "Manager",
+                  value: "manager",
+                },
+                {
+                  label: "Staff",
+                  value: "staff",
+                },
+              ]}
+            />
+          </Label>
         </ModalBody>
         <ModalFooter>
           <Button onClick={() => setChangingRole(false)} appearance="secondary">
