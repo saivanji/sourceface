@@ -18,6 +18,7 @@ import Modal, {
   ModalFooter,
 } from "@sourceface/components/modal"
 import Pagination from "@sourceface/components/pagination"
+import Select from "@sourceface/components/select"
 import Tabs, { Tab, TabsHeader, TabsBody } from "@sourceface/components/tabs"
 import SearchIcon from "./assets/search.svg"
 import AlertIcon from "./assets/alert.svg"
@@ -47,7 +48,7 @@ export default () => {
               />
               <InviteForm className={styles.inviteForm} />
             </div>
-            <Loader isLoading>
+            <Loader>
               <Items
                 setChangingRole={setChangingRole}
                 setRemovingUser={setRemovingUser}
@@ -119,16 +120,26 @@ function Modals({
 }) {
   return (
     <>
-      <Modal
-        size="compact"
-        isOpened={changingRole}
-        onDismiss={() => setChangingRole(false)}
-      >
+      <Modal isOpened={changingRole} onDismiss={() => setChangingRole(false)}>
         <ModalHeader>Change user role</ModalHeader>
         <ModalBody>
-          Consectetur voluptate temporibus dolorum molestiae autem Eveniet
-          voluptates earum asperiores ipsa dicta. Vero quidem itaque culpa
-          aperiam vero. Qui officia!
+          <Select
+            placeholder="Choose a role"
+            options={[
+              {
+                label: "Admin",
+                value: "admin",
+              },
+              {
+                label: "Manager",
+                value: "manager",
+              },
+              {
+                label: "Staff",
+                value: "staff",
+              },
+            ]}
+          />
         </ModalBody>
         <ModalFooter>
           <Button onClick={() => setChangingRole(false)} appearance="secondary">
@@ -137,11 +148,7 @@ function Modals({
           <Button>Submit</Button>
         </ModalFooter>
       </Modal>
-      <Modal
-        size="compact"
-        isOpened={removingUser}
-        onDismiss={() => setRemovingUser(false)}
-      >
+      <Modal isOpened={removingUser} onDismiss={() => setRemovingUser(false)}>
         <ModalHeader iconBefore={<AlertIcon />}>User removal</ModalHeader>
         <ModalBody>
           Are you sure that you want to remove that user? This can not be undone
