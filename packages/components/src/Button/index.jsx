@@ -33,6 +33,7 @@ export default function Button({
     >
       {isLoading && (
         <Spinner
+          size="compact"
           appearance={getSpinnerAppearance(appearance)}
           className={styles.spinner}
         />

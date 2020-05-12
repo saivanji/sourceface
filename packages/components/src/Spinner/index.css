@@ -10,9 +10,19 @@
   border-right-color: transparent !important;
   animation: rotate 0.75s linear infinite;
   border: 2px solid;
-  width: var(--value-3);
-  height: var(--value-3);
   border-radius: var(--rounded-full);
+  &.compact {
+    width: var(--value-3);
+    height: var(--value-3);
+  }
+  &.normal {
+    width: var(--value-4);
+    height: var(--value-4);
+  }
+  &.loose {
+    width: var(--value-5);
+    height: var(--value-5);
+  }
 }
 
 .light {
