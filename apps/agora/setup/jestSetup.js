@@ -1,4 +1,5 @@
 // TODO: should be in es5
+import util from "util"
 import { exec } from "child_process"
 import app from "/"
 
@@ -31,7 +32,7 @@ global.afterAll(async () => {
 })
 
 function startServer(app, port) {
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     const server = app.listen(port, () => {
       resolve(server)
     })
@@ -39,26 +40,30 @@ function startServer(app, port) {
 }
 
 function closeServer(server) {
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     server.close(resolve)
   })
 }
 
-function migrate() {
-  return new Promise((resolve, reject) => {
-    /**
-     * Cleaning database in case it was not properly destroyed
-     */
-    exec("yarn migrate:down", (err, stdout, stderr) => {
-      if (err || stderr) return reject(err || stderr)
+async function migrate() {
+  /**
+   * Cleaning database in case it was not properly destroyed
+   */
+  await asyncExec("yarn migrate:down")
+  /**
+   * Applying database migrations
+   */
+  await asyncExec("yarn migrate:up")
+}
 
-      /**
-       * Applying database migrations
-       */
-      exec("yarn migrate:up", (err, stdout, stderr) => {
-        if (err || stderr) return reject(err || stderr)
-        resolve()
-      })
-    })
-  })
+async function asyncExec(cmd) {
+  try {
+    const { stdout, stderr } = await util.promisify(exec)(cmd)
+
+    if (stderr) throw stderr
+
+    return stdout
+  } catch (err) {
+    throw err.stdout || err.stderr
+  }
 }
