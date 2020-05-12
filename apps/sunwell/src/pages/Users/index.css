@@ -1,9 +1,5 @@
 @import "@sourceface/style/index.css";
 
-.wrap {
-  padding: var(--value-4);
-}
-
 .header {
   display: flex;
   margin-bottom: var(--value-6);
@@ -47,5 +43,5 @@
 }
 
 .role-select {
-  margin-top: var(--value-1);
+  margin-top: var(--value-2);
 }

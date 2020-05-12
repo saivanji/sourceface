@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { times } from "ramda"
 import { InviteForm } from "components/administration"
+import { Layout } from "components/common"
 import Avatar from "@sourceface/components/avatar"
 import Badge from "@sourceface/components/badge"
 import Button from "@sourceface/components/button"
@@ -33,7 +34,7 @@ export default () => {
 
   return (
     <>
-      <div className={styles.wrap}>
+      <Layout>
         <Tabs className={styles.tabs}>
           <TabsHeader>
             <Tab isSelected>Users</Tab>
@@ -65,7 +66,7 @@ export default () => {
             />
           </TabsBody>
         </Tabs>
-      </div>
+      </Layout>
       <Modals
         changingRole={changingRole}
         removingUser={removingUser}
@@ -160,7 +161,7 @@ function Modals({
           />
         </ModalBody>
         <ModalFooter>
-          <Button onClick={() => setChangingRole(false)} appearance="tertiary">
+          <Button onClick={() => setChangingRole(false)} appearance="secondary">
             Cancel
           </Button>
           <Button>Submit</Button>
