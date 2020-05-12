@@ -100,6 +100,7 @@ function Items({ setChangingRole, setRemovingUser }) {
                 <DropdownItem onClick={() => setChangingRole(true)}>
                   Change role
                 </DropdownItem>
+                <DropdownItem>Change password</DropdownItem>
                 <DropdownItem onClick={() => setRemovingUser(true)}>
                   Remove from the app
                 </DropdownItem>
