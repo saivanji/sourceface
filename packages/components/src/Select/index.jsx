@@ -24,7 +24,7 @@ export default function Select({
   return (
     <div className={cx(styles.root, styles[size], className)}>
       <Dropdown>
-        <DropdownButton>
+        <DropdownButton className={styles.full}>
           <button
             className={cx(
               styles.element,
@@ -32,7 +32,9 @@ export default function Select({
               error && styles.error
             )}
           >
-            {selectedLabel || placeholder}
+            <span className={styles.selection}>
+              {selectedLabel || placeholder}
+            </span>
             <ArrowIcon className={styles.arrow} />
           </button>
         </DropdownButton>
