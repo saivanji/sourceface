@@ -125,12 +125,23 @@ function Modals({
       <Modal isOpened={changingRole} onDismiss={() => setChangingRole(false)}>
         <ModalHeader>Change the role of aiven715</ModalHeader>
         <ModalBody>
-          <Label title="Choose a role">
+          Note, that users with privileged role have full control over the
+          application.
+          <Label title="Select a new role">
             <Select
               placeholder="Choose a role"
               options={[
                 {
-                  label: "Admin",
+                  label: (
+                    <>
+                      Admin
+                      <Badge
+                        className={styles.privileged}
+                        shape="squared"
+                        value="Privileged"
+                      />
+                    </>
+                  ),
                   value: "admin",
                 },
                 {

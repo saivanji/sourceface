@@ -42,3 +42,7 @@
 .pagination {
   margin-top: var(--value-8);
 }
+
+.privileged {
+  margin-left: var(--value-2);
+}
