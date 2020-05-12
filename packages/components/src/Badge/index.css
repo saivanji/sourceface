@@ -4,7 +4,6 @@
   display: inline-flex;
   align-items: center;
   font-size: var(--font-size-xs);
-  color: var(--color-white);
   padding: 0 var(--value-1);
   height: var(--value-4);
   &.rounded {
@@ -15,8 +14,10 @@
   }
   &.dark {
     background-color: var(--color-gray-shade-80);
+    color: var(--color-white);
   }
   &.light {
-    background-color: var(--color-gray);
+    background-color: var(--color-gray-tint-90);
+    color: var(--color-gray-shade-70);
   }
 }
