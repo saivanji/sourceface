@@ -1,0 +1,62 @@
+import React from "react"
+import cx from "classnames"
+import styles from "./index.css"
+import ArrowIcon from "./assets/arrow.svg"
+import Dropdown, {
+  DropdownButton,
+  DropdownMenu,
+  DropdownItem,
+} from "../Dropdown"
+
+export default function Select({
+  size = "normal",
+  name,
+  value,
+  onChange,
+  placeholder,
+  options,
+  className,
+  error,
+}) {
+  const selectedLabel =
+    value && options.find(option => option.value === value).label
+
+  return (
+    <div className={cx(styles.root, styles[size], className)}>
+      <Dropdown>
+        <DropdownButton>
+          <button
+            className={cx(
+              styles.element,
+              !value && styles.placeholder,
+              error && styles.error
+            )}
+          >
+            {selectedLabel || placeholder}
+            <ArrowIcon className={styles.arrow} />
+          </button>
+        </DropdownButton>
+        <DropdownMenu position="bottomLeft" className={styles.dropdown}>
+          {options.map(option => (
+            <DropdownItem
+              onClick={() => {
+                if (onChange) {
+                  onChange({
+                    target: {
+                      name,
+                      value: option.value,
+                    },
+                  })
+                }
+              }}
+              key={option.value}
+            >
+              {option.label}
+            </DropdownItem>
+          ))}
+        </DropdownMenu>
+      </Dropdown>
+      {error && <div className={styles.errorText}>{error}</div>}
+    </div>
+  )
+}

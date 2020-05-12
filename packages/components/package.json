@@ -16,6 +16,7 @@
     "loader",
     "modal",
     "pagination",
+    "select",
     "spinner",
     "tabs"
   ],
