@@ -1,11 +1,11 @@
 import React from "react"
 import cx from "classnames"
 import styles from "./index.css"
-import ContentIcon from "assets/content.svg"
-import GroupIcon from "assets/group.svg"
-import LockIcon from "assets/lock.svg"
-import SettingsIcon from "assets/settings.svg"
-import ShieldIcon from "assets/shield.svg"
+import ContentIcon from "assets/content-line.svg"
+import GroupIcon from "assets/group-line.svg"
+import LockIcon from "assets/lock-line.svg"
+import SettingsIcon from "assets/settings-line.svg"
+import ShieldIcon from "assets/shield-line.svg"
 
 export default function Sidebar() {
   return (
