@@ -41,7 +41,9 @@ function Header() {
         <Breadcrumbs items={items} />
         <Dropdown className={styles.profile}>
           <DropdownButton>
-            <Avatar className={styles.avatar} value="A" />
+            <button className={styles.avatar}>
+              <Avatar value="A" />
+            </button>
           </DropdownButton>
           <DropdownMenu>
             <DropdownItem>Sign out</DropdownItem>
