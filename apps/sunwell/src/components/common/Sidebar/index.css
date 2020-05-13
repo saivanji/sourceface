@@ -1,0 +1,39 @@
+@import "@sourceface/style/index.css";
+
+.root {
+  height: 100%;
+  display: flex;
+}
+
+.product-name {
+  display: flex;
+  align-items: center;
+  height: var(--value-10);
+  margin-bottom: var(--value-2);
+  color: var(--color-white);
+  font-size: var(--font-size-xl);
+}
+
+.logo {
+  height: var(--value-10);
+  margin: 0 calc(var(--value-2) * -1);
+}
+
+.line {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-gray-shade-120);
+  padding: var(--value-2);
+}
+
+.line-wrap {
+  flex: 1;
+  width: var(--value-10);
+}
+
+.menu {
+  padding: var(--value-2) var(--value-4);
+  width: var(--value-64);
+  background-color: var(--color-gray-shade-110);
+}
