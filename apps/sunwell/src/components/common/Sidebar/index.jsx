@@ -4,6 +4,7 @@ import styles from "./index.css"
 import ContentIcon from "assets/content-line.svg"
 import GroupIcon from "assets/group-line.svg"
 import LockIcon from "assets/lock-line.svg"
+import QuestionIcon from "assets/question-line.svg"
 import SettingsIcon from "assets/settings-line.svg"
 import ShieldIcon from "assets/shield-line.svg"
 
@@ -16,6 +17,9 @@ export default function Sidebar() {
           <ContentIcon />
         </NavLink>
         <div className={styles.bottom}>
+          <NavLink>
+            <QuestionIcon />
+          </NavLink>
           <NavLink>
             <SettingsIcon />
           </NavLink>

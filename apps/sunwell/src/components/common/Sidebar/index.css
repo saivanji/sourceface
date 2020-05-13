@@ -51,7 +51,7 @@
   }
   & svg {
     fill: var(--color-gray-shade-10);
-    width: var(--value-6);
+    width: var(--value-5);
   }
 }
 
