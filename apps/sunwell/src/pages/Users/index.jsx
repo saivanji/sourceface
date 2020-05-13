@@ -22,9 +22,9 @@ import Modal, {
 import Pagination from "@sourceface/components/pagination"
 import Select from "@sourceface/components/select"
 import Tabs, { Tab, TabsHeader, TabsBody } from "@sourceface/components/tabs"
-import SearchIcon from "./assets/search.svg"
-import AlertIcon from "./assets/alert.svg"
-import MoreIcon from "./assets/more.svg"
+import SearchIcon from "assets/search.svg"
+import AlertIcon from "assets/alert.svg"
+import MoreIcon from "assets/more.svg"
 import styles from "./index.css"
 
 export default () => {
