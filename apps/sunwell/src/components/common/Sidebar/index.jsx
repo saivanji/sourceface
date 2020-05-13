@@ -30,10 +30,12 @@ export default function Sidebar() {
   )
 }
 
+// TODO: should have a tagname
 function NavLink({ className, children }) {
   return <button className={cx(styles.navLink, className)}>{children}</button>
 }
 
+// TODO: should have a tagname
 function MenuLink({ children, isActive }) {
   return (
     <button className={cx(styles.menuLink, isActive && styles.active)}>

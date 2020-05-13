@@ -85,10 +85,12 @@
   cursor: pointer;
   width: 100%;
   text-align: left;
-  padding: var(--value-3) var(--value-2);
+  padding: 0 var(--value-2);
   color: var(--color-gray-tint-100);
-  font-size: var(--font-size-base);
+  /* font-size: var(--font-size-base); */
   border-radius: var(--rounded-md);
+
+  height: var(--value-10);
   &:hover {
     background-color: var(--color-gray-shade-100);
   }
