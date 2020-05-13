@@ -7,7 +7,9 @@ import LockIcon from "assets/lock-line.svg"
 import QuestionIcon from "assets/question-line.svg"
 import SettingsIcon from "assets/settings-line.svg"
 import ShieldIcon from "assets/shield-line.svg"
+import StackIcon from "assets/stack-line.svg"
 
+// TODO: move to kit
 export default function Sidebar() {
   return (
     <div className={styles.root}>
@@ -19,6 +21,9 @@ export default function Sidebar() {
         <div className={styles.bottom}>
           <NavLink>
             <QuestionIcon />
+          </NavLink>
+          <NavLink>
+            <StackIcon />
           </NavLink>
           <NavLink>
             <SettingsIcon />
