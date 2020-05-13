@@ -2,7 +2,10 @@ import React from "react"
 import cx from "classnames"
 import styles from "./index.css"
 import ContentIcon from "assets/content.svg"
+import GroupIcon from "assets/group.svg"
+import LockIcon from "assets/lock.svg"
 import SettingsIcon from "assets/settings.svg"
+import ShieldIcon from "assets/shield.svg"
 
 export default function Sidebar() {
   return (
@@ -21,9 +24,11 @@ export default function Sidebar() {
       <div className={styles.menu}>
         <span className={styles.menuTitle}>Settings</span>
         <div className={styles.menuList}>
-          <MenuLink>Security</MenuLink>
-          <MenuLink isActive>Users management</MenuLink>
-          <MenuLink>Access management</MenuLink>
+          <MenuLink icon={<ShieldIcon />}>Security</MenuLink>
+          <MenuLink icon={<GroupIcon />} isActive>
+            Users management
+          </MenuLink>
+          <MenuLink icon={<LockIcon />}>Access management</MenuLink>
         </div>
       </div>
     </div>
@@ -36,9 +41,10 @@ function NavLink({ className, children }) {
 }
 
 // TODO: should have a tagname
-function MenuLink({ children, isActive }) {
+function MenuLink({ children, icon, isActive }) {
   return (
     <button className={cx(styles.menuLink, isActive && styles.active)}>
+      {icon && <icon.type className={styles.menuIcon}>{icon}</icon.type>}
       {children}
     </button>
   )
