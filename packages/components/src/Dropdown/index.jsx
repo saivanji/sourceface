@@ -35,7 +35,6 @@ Dropdown.Trigger = function Trigger({ children, className }) {
   )
 }
 
-// TODO: move to list component
 Dropdown.Menu = function Menu({
   children,
   position = "bottomRight",
