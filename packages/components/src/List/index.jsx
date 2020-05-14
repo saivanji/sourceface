@@ -7,6 +7,6 @@ export default function List({ children, className }) {
   return <div className={className}>{children}</div>
 }
 
-export function Item({ children, className }) {
+List.Item = function Item({ children, className }) {
   return <div className={cx(styles.item, className)}>{children}</div>
 }

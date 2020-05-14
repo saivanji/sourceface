@@ -11,7 +11,7 @@ export default function Tabs({ children, className }) {
   )
 }
 
-export function Tab({ children, isSelected, iconAfter, iconBefore }) {
+Tabs.Tab = function Tab({ children, isSelected, iconAfter, iconBefore }) {
   return (
     <button className={cx(styles.item, isSelected && styles.selected)}>
       {iconBefore && <div className={styles.iconBefore}>{iconBefore}</div>}
@@ -21,10 +21,10 @@ export function Tab({ children, isSelected, iconAfter, iconBefore }) {
   )
 }
 
-export function TabsHeader({ children }) {
+Tabs.Header = function Header({ children }) {
   return <div className={styles.header}>{children}</div>
 }
 
-export function TabsBody({ children }) {
+Tabs.Body = function Body({ children }) {
   return <div className={styles.body}>{children}</div>
 }

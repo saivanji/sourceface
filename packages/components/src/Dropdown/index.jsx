@@ -25,7 +25,7 @@ export default function Dropdown({ children, className }) {
   )
 }
 
-export function DropdownButton({ children, className }) {
+Dropdown.Trigger = function Trigger({ children, className }) {
   const { toggle, buttonRef } = useContext(Context)
 
   return (
@@ -36,7 +36,7 @@ export function DropdownButton({ children, className }) {
 }
 
 // TODO: move to list component
-export function DropdownMenu({
+Dropdown.Menu = function Menu({
   children,
   position = "bottomRight",
   className,
@@ -72,7 +72,7 @@ export function DropdownMenu({
   )
 }
 
-export function DropdownItem({ children, onClick, className }) {
+Dropdown.Item = function Item({ children, onClick, className }) {
   const { close } = useContext(Context)
 
   return (

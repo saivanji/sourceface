@@ -1,46 +1,46 @@
 import React from "react"
 import { withA11y } from "@storybook/addon-a11y"
-import Tabs, { Tab, TabsHeader, TabsBody } from "./index"
+import Tabs from "./index"
 
 const body = (
-  <TabsBody>
+  <Tabs.Body>
     Ipsum eius nobis magnam sequi dolorem, omnis veniam Placeat vero nihil
     quibusdam esse quas! Molestias laudantium eos similique voluptatibus
     reiciendis similique Ducimus odit reprehenderit modi praesentium laudantium?
     Ullam optio omnis
-  </TabsBody>
+  </Tabs.Body>
 )
 
 export default { title: "Tabs", decorators: [withA11y] }
 
 export const Regular = () => (
   <Tabs>
-    <TabsHeader>
-      <Tab isSelected>Users</Tab>
-      <Tab>Invitations</Tab>
-    </TabsHeader>
+    <Tabs.Header>
+      <Tabs.Tab isSelected>Users</Tabs.Tab>
+      <Tabs.Tab>Invitations</Tabs.Tab>
+    </Tabs.Header>
     {body}
   </Tabs>
 )
 
 export const IconBefore = () => (
   <Tabs>
-    <TabsHeader>
-      <Tab isSelected iconBefore="🔥">
+    <Tabs.Header>
+      <Tabs.Tab isSelected iconBefore="🔥">
         Users
-      </Tab>
-      <Tab>Invitations</Tab>
-    </TabsHeader>
+      </Tabs.Tab>
+      <Tabs.Tab>Invitations</Tabs.Tab>
+    </Tabs.Header>
     {body}
   </Tabs>
 )
 
 export const IconAfter = () => (
   <Tabs>
-    <TabsHeader>
-      <Tab isSelected>Users</Tab>
-      <Tab iconAfter="🍔">Invitations</Tab>
-    </TabsHeader>
+    <Tabs.Header>
+      <Tabs.Tab isSelected>Users</Tabs.Tab>
+      <Tabs.Tab iconAfter="🍔">Invitations</Tabs.Tab>
+    </Tabs.Header>
     {body}
   </Tabs>
 )

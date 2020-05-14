@@ -2,11 +2,7 @@ import React from "react"
 import cx from "classnames"
 import styles from "./index.css"
 import ArrowIcon from "./assets/arrow.svg"
-import Dropdown, {
-  DropdownButton,
-  DropdownMenu,
-  DropdownItem,
-} from "../Dropdown"
+import Dropdown from "../Dropdown"
 
 // TODO: if select will have "clear" feature applied, display separator between arrow and clear icon
 export default function Select({
@@ -25,7 +21,7 @@ export default function Select({
   return (
     <div className={cx(styles.root, styles[size], className)}>
       <Dropdown>
-        <DropdownButton className={styles.full}>
+        <Dropdown.Trigger className={styles.full}>
           <button
             className={cx(
               styles.element,
@@ -38,10 +34,10 @@ export default function Select({
             </span>
             <ArrowIcon className={styles.arrow} />
           </button>
-        </DropdownButton>
-        <DropdownMenu position="bottomLeft" className={styles.dropdown}>
+        </Dropdown.Trigger>
+        <Dropdown.Menu position="bottomLeft" className={styles.dropdown}>
           {options.map(option => (
-            <DropdownItem
+            <Dropdown.Item
               onClick={() => {
                 if (onChange) {
                   onChange({
@@ -55,9 +51,9 @@ export default function Select({
               key={option.value}
             >
               {option.label}
-            </DropdownItem>
+            </Dropdown.Item>
           ))}
-        </DropdownMenu>
+        </Dropdown.Menu>
       </Dropdown>
       {error && <div className={styles.errorText}>{error}</div>}
     </div>

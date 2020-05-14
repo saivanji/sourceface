@@ -1,8 +1,8 @@
 import React from "react"
-import { withKnobs, text, select } from "@storybook/addon-knobs"
+import { withKnobs, select } from "@storybook/addon-knobs"
 import { withA11y } from "@storybook/addon-a11y"
 import Button from "../Button"
-import Dropdown, { DropdownButton, DropdownMenu, DropdownItem } from "./index"
+import Dropdown from "./index"
 
 const makeMenuProps = () => ({
   position: select(
@@ -17,15 +17,15 @@ export default { title: "Dropdown", decorators: [withKnobs, withA11y] }
 export const Regular = () => (
   <div style={rootStyle}>
     <Dropdown>
-      <DropdownButton>
+      <Dropdown.Trigger>
         <Button>Click me</Button>
-      </DropdownButton>
-      <DropdownMenu {...makeMenuProps()}>
-        <DropdownItem>Consectetur officiis.</DropdownItem>
-        <DropdownItem>Consectetur harum</DropdownItem>
-        <DropdownItem>Amet asperiores.</DropdownItem>
-        <DropdownItem>Sit ipsam.</DropdownItem>
-      </DropdownMenu>
+      </Dropdown.Trigger>
+      <Dropdown.Menu {...makeMenuProps()}>
+        <Dropdown.Item>Consectetur officiis.</Dropdown.Item>
+        <Dropdown.Item>Consectetur harum</Dropdown.Item>
+        <Dropdown.Item>Amet asperiores.</Dropdown.Item>
+        <Dropdown.Item>Sit ipsam.</Dropdown.Item>
+      </Dropdown.Menu>
     </Dropdown>
   </div>
 )

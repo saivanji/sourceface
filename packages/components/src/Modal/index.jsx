@@ -44,7 +44,7 @@ export default function Modal({
   )
 }
 
-export function ModalHeader({ children, iconBefore }) {
+Modal.Header = function Header({ children, iconBefore }) {
   const { onDismiss } = useContext(Context)
 
   return (
@@ -58,11 +58,11 @@ export function ModalHeader({ children, iconBefore }) {
   )
 }
 
-export function ModalBody({ children }) {
+Modal.Body = function Body({ children }) {
   return <div className={styles.row}>{children}</div>
 }
 
-export function ModalFooter({ children }) {
+Modal.Footer = function Footer({ children }) {
   return (
     <div className={cx(styles.row, styles.footer)}>
       <div className={styles.actions}>
