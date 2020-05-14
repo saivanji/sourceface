@@ -39,6 +39,7 @@
       fill: var(--color-gray-tint-20);
     }
   }
+  &.active,
   &:active {
     background-color: var(--color-gray-shade-100);
     & svg {

@@ -3,19 +3,11 @@ import { times } from "ramda"
 import Avatar from "@sourceface/components/avatar"
 import Badge from "@sourceface/components/badge"
 import Button from "@sourceface/components/button"
-import Dropdown, {
-  DropdownButton,
-  DropdownMenu,
-  DropdownItem,
-} from "@sourceface/components/dropdown"
+import Dropdown from "@sourceface/components/dropdown"
 import Input from "@sourceface/components/input"
-import List, { Item } from "@sourceface/components/list"
+import List from "@sourceface/components/list"
 import Loader from "@sourceface/components/loader"
-import Modal, {
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from "@sourceface/components/modal"
+import Modal from "@sourceface/components/modal"
 import Pagination from "@sourceface/components/pagination"
 import Select from "@sourceface/components/select"
 import { InviteForm, UsersTabs } from "components/settings"
@@ -79,7 +71,7 @@ function Items({ setChangingGroups, setChangingPass, setRemoving }) {
     <List>
       {times(
         i => (
-          <Item className={styles.user} key={i}>
+          <List.Item className={styles.user} key={i}>
             <Avatar value="A" />
             <span className={styles.email}>aiven715@gmail.com</span>
             <Badge
@@ -89,24 +81,24 @@ function Items({ setChangingGroups, setChangingPass, setRemoving }) {
               shape="squared"
             />
             <Dropdown className={styles.more}>
-              <DropdownButton>
+              <Dropdown.Trigger>
                 <Button appearance="secondary" size="compact">
                   <MoreIcon />
                 </Button>
-              </DropdownButton>
-              <DropdownMenu>
-                <DropdownItem onClick={() => setChangingGroups(true)}>
+              </Dropdown.Trigger>
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={() => setChangingGroups(true)}>
                   Change groups
-                </DropdownItem>
-                <DropdownItem onClick={() => setChangingPass(true)}>
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => setChangingPass(true)}>
                   Change password
-                </DropdownItem>
-                <DropdownItem onClick={() => setRemoving(true)}>
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => setRemoving(true)}>
                   Remove from the app
-                </DropdownItem>
-              </DropdownMenu>
+                </Dropdown.Item>
+              </Dropdown.Menu>
             </Dropdown>
-          </Item>
+          </List.Item>
         ),
         5
       )}
@@ -121,8 +113,8 @@ function GroupsModal({ isChangingGroups, setChangingGroups }) {
       isOpened={isChangingGroups}
       onDismiss={() => setChangingGroups(false)}
     >
-      <ModalHeader>Change groups of aiven715</ModalHeader>
-      <ModalBody>
+      <Modal.Header>Change groups of aiven715</Modal.Header>
+      <Modal.Body>
         Note, that users with privileged group have full control over the
         application.
         <Select
@@ -152,13 +144,13 @@ function GroupsModal({ isChangingGroups, setChangingGroups }) {
             },
           ]}
         />
-      </ModalBody>
-      <ModalFooter>
+      </Modal.Body>
+      <Modal.Footer>
         <Button onClick={() => setChangingGroups(false)} appearance="secondary">
           Cancel
         </Button>
         <Button>Submit</Button>
-      </ModalFooter>
+      </Modal.Footer>
     </Modal>
   )
 }
@@ -170,21 +162,21 @@ function PassModal({ isChangingPass, setChangingPass }) {
       isOpened={isChangingPass}
       onDismiss={() => setChangingPass(false)}
     >
-      <ModalHeader>Change password of aiven715</ModalHeader>
-      <ModalBody>
+      <Modal.Header>Change password of aiven715</Modal.Header>
+      <Modal.Body>
         Please, do not forget to tell the new password to the user
         <Input
           className={styles.newPassword}
           type="password"
           placeholder="New password"
         />
-      </ModalBody>
-      <ModalFooter>
+      </Modal.Body>
+      <Modal.Footer>
         <Button onClick={() => setChangingPass(false)} appearance="secondary">
           Cancel
         </Button>
         <Button>Submit</Button>
-      </ModalFooter>
+      </Modal.Footer>
     </Modal>
   )
 }
@@ -192,16 +184,18 @@ function PassModal({ isChangingPass, setChangingPass }) {
 function RemovalModal({ isRemoving, setRemoving }) {
   return (
     <Modal isOpened={isRemoving} onDismiss={() => setRemoving(false)}>
-      <ModalHeader iconBefore={<AlertIcon />}>Remove aiven715 user</ModalHeader>
-      <ModalBody>
+      <Modal.Header iconBefore={<AlertIcon />}>
+        Remove aiven715 user
+      </Modal.Header>
+      <Modal.Body>
         Are you sure that you want to remove that user? This can not be undone
-      </ModalBody>
-      <ModalFooter>
+      </Modal.Body>
+      <Modal.Footer>
         <Button onClick={() => setRemoving(false)} appearance="secondary">
           Cancel
         </Button>
         <Button>Submit</Button>
-      </ModalFooter>
+      </Modal.Footer>
     </Modal>
   )
 }

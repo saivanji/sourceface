@@ -1,11 +1,7 @@
 import React from "react"
 import Avatar from "@sourceface/components/avatar"
 import Breadcrumbs from "@sourceface/components/breadcrumbs"
-import Dropdown, {
-  DropdownButton,
-  DropdownMenu,
-  DropdownItem,
-} from "@sourceface/components/dropdown"
+import Dropdown from "@sourceface/components/dropdown"
 import styles from "./index.css"
 
 const items = [
@@ -29,14 +25,14 @@ export default function Header() {
       <div className={styles.wrap}>
         <Breadcrumbs items={items} />
         <Dropdown className={styles.profile}>
-          <DropdownButton>
+          <Dropdown.Trigger>
             <button className={styles.avatar}>
               <Avatar value="A" />
             </button>
-          </DropdownButton>
-          <DropdownMenu>
-            <DropdownItem>Sign out</DropdownItem>
-          </DropdownMenu>
+          </Dropdown.Trigger>
+          <Dropdown.Menu>
+            <Dropdown.Item>Sign out</Dropdown.Item>
+          </Dropdown.Menu>
         </Dropdown>
       </div>
     </div>

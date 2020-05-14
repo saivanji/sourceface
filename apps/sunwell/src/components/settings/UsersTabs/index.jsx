@@ -1,20 +1,20 @@
 import React from "react"
 import Badge from "@sourceface/components/badge"
-import Tabs, { Tab, TabsHeader, TabsBody } from "@sourceface/components/tabs"
+import Tabs from "@sourceface/components/tabs"
 
 export default function UsersTabs({ children, selected, invitationsCount }) {
   return (
     <Tabs>
-      <TabsHeader>
-        <Tab isSelected={selected === "users"}>Users</Tab>
-        <Tab
+      <Tabs.Header>
+        <Tabs.Tab isSelected={selected === "users"}>Users</Tabs.Tab>
+        <Tabs.Tab
           isSelected={selected === "invitations"}
           iconAfter={<Badge value={invitationsCount} />}
         >
           Invitations
-        </Tab>
-      </TabsHeader>
-      <TabsBody>{children}</TabsBody>
+        </Tabs.Tab>
+      </Tabs.Header>
+      <Tabs.Body>{children}</Tabs.Body>
     </Tabs>
   )
 }

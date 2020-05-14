@@ -33,28 +33,49 @@ export default function Sidebar() {
       <div className={styles.menu}>
         <span className={styles.menuTitle}>Settings</span>
         <div className={styles.menuList}>
-          <MenuLink icon={<ShieldIcon />}>Security</MenuLink>
-          <MenuLink icon={<GroupIcon />} isActive>
+          <MenuLink iconBefore={<ShieldIcon />}>Security</MenuLink>
+          <MenuLink iconBefore={<GroupIcon />} isActive>
             Users management
           </MenuLink>
-          <MenuLink icon={<LockIcon />}>Access management</MenuLink>
+          <MenuLink iconBefore={<LockIcon />}>Access management</MenuLink>
         </div>
       </div>
     </div>
   )
 }
 
-// TODO: should have a tagname
-function NavLink({ className, children }) {
-  return <button className={cx(styles.navLink, className)}>{children}</button>
+function NavLink({
+  children,
+  className,
+  isActive,
+  component: Component = "a",
+  ...props
+}) {
+  return (
+    <Component
+      {...props}
+      className={cx(styles.navLink, isActive && styles.active, className)}
+    >
+      {children}
+    </Component>
+  )
 }
 
-// TODO: should have a tagname
-function MenuLink({ children, icon, isActive }) {
+function MenuLink({
+  children,
+  className,
+  iconBefore,
+  isActive,
+  component: Component = "a",
+  ...props
+}) {
   return (
-    <button className={cx(styles.menuLink, isActive && styles.active)}>
-      {icon && <icon.type className={styles.menuIcon}>{icon}</icon.type>}
+    <Component
+      {...props}
+      className={cx(styles.menuLink, isActive && styles.active, className)}
+    >
+      {iconBefore && <iconBefore.type className={styles.menuIcon} />}
       {children}
-    </button>
+    </Component>
   )
 }

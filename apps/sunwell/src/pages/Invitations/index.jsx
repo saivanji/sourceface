@@ -3,18 +3,10 @@ import { times } from "ramda"
 import { UsersTabs } from "components/settings"
 import { Layout } from "components/common"
 import Button from "@sourceface/components/button"
-import Dropdown, {
-  DropdownButton,
-  DropdownMenu,
-  DropdownItem,
-} from "@sourceface/components/dropdown"
-import List, { Item } from "@sourceface/components/list"
+import Dropdown from "@sourceface/components/dropdown"
+import List from "@sourceface/components/list"
 import Loader from "@sourceface/components/loader"
-import Modal, {
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from "@sourceface/components/modal"
+import Modal from "@sourceface/components/modal"
 import Pagination from "@sourceface/components/pagination"
 import AlertIcon from "assets/alert.svg"
 import MoreIcon from "assets/more.svg"
@@ -51,23 +43,23 @@ function Items({ setRemoving }) {
     <List>
       {times(
         i => (
-          <Item className={styles.invitation} key={i}>
+          <List.Item className={styles.invitation} key={i}>
             <span>aiven715@gmail.com</span>
             <span className={styles.date}>25 days ago</span>
             <Dropdown className={styles.more}>
-              <DropdownButton>
+              <Dropdown.Trigger>
                 <Button appearance="secondary" size="compact">
                   <MoreIcon />
                 </Button>
-              </DropdownButton>
-              <DropdownMenu>
-                <DropdownItem>Resend email</DropdownItem>
-                <DropdownItem onClick={() => setRemoving(true)}>
+              </Dropdown.Trigger>
+              <Dropdown.Menu>
+                <Dropdown.Item>Resend email</Dropdown.Item>
+                <Dropdown.Item onClick={() => setRemoving(true)}>
                   Remove invitation
-                </DropdownItem>
-              </DropdownMenu>
+                </Dropdown.Item>
+              </Dropdown.Menu>
             </Dropdown>
-          </Item>
+          </List.Item>
         ),
         5
       )}
@@ -78,16 +70,16 @@ function Items({ setRemoving }) {
 function RemovalModal({ isRemoving, setRemoving }) {
   return (
     <Modal isOpened={isRemoving} onDismiss={() => setRemoving(false)}>
-      <ModalHeader iconBefore={<AlertIcon />}>Remove invitation</ModalHeader>
-      <ModalBody>
+      <Modal.Header iconBefore={<AlertIcon />}>Remove invitation</Modal.Header>
+      <Modal.Body>
         Are you sure that you want to remove that invitation?
-      </ModalBody>
-      <ModalFooter>
+      </Modal.Body>
+      <Modal.Footer>
         <Button onClick={() => setRemoving(false)} appearance="secondary">
           Cancel
         </Button>
         <Button>Submit</Button>
-      </ModalFooter>
+      </Modal.Footer>
     </Modal>
   )
 }
