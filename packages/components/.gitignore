@@ -20,5 +20,6 @@ yarn-error.log*
 /modal
 /pagination
 /select
+/sidebar
 /spinner
 /tabs
