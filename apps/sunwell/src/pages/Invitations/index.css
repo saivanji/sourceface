@@ -1,0 +1,23 @@
+@import "@sourceface/style/index.css";
+
+.more {
+  margin-left: auto;
+  & svg {
+    width: var(--value-4);
+  }
+}
+
+.invitation {
+  display: flex;
+  align-items: center;
+}
+
+.pagination {
+  margin-top: var(--value-8);
+}
+
+.date {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-shade-20);
+  margin-left: var(--value-3);
+}

@@ -13,10 +13,6 @@
   margin-left: auto;
 }
 
-.tabs {
-  margin-bottom: var(--value-4);
-}
-
 .email,
 .group {
   margin-left: var(--value-4);

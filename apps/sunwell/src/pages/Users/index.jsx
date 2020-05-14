@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { times } from "ramda"
-import { InviteForm } from "components/administration"
+import { InviteForm, UsersTabs } from "components/settings"
 import { Layout } from "components/common"
 import Avatar from "@sourceface/components/avatar"
 import Badge from "@sourceface/components/badge"
@@ -11,7 +11,6 @@ import Dropdown, {
   DropdownItem,
 } from "@sourceface/components/dropdown"
 import Input from "@sourceface/components/input"
-import Label from "@sourceface/components/label"
 import List, { Item } from "@sourceface/components/list"
 import Loader from "@sourceface/components/loader"
 import Modal, {
@@ -21,7 +20,6 @@ import Modal, {
 } from "@sourceface/components/modal"
 import Pagination from "@sourceface/components/pagination"
 import Select from "@sourceface/components/select"
-import Tabs, { Tab, TabsHeader, TabsBody } from "@sourceface/components/tabs"
 import SearchIcon from "assets/search.svg"
 import AlertIcon from "assets/alert.svg"
 import MoreIcon from "assets/more.svg"
@@ -29,55 +27,49 @@ import styles from "./index.css"
 
 export default () => {
   const [page, setPage] = useState(0)
-  const [changingGroups, setChangingGroups] = useState(false)
-  const [removingUser, setRemovingUser] = useState(false)
+  const [isChangingGroups, setChangingGroups] = useState(false)
+  const [isRemoving, setRemoving] = useState(false)
 
   return (
     <>
       <Layout>
-        <Tabs className={styles.tabs}>
-          <TabsHeader>
-            <Tab isSelected>Users</Tab>
-            <Tab iconAfter={<Badge value="30" />}>Invitations</Tab>
-          </TabsHeader>
-          <TabsBody>
-            <div className={styles.header}>
-              <Input
-                className={styles.search}
-                type="text"
-                placeholder="Search for a user"
-                iconBefore={<SearchIcon />}
-              />
-              <InviteForm className={styles.inviteForm} />
-            </div>
-            <Loader>
-              <Items
-                setChangingGroups={setChangingGroups}
-                setRemovingUser={setRemovingUser}
-              />
-            </Loader>
-            <Pagination
-              className={styles.pagination}
-              pageCount={30}
-              pageMargin={1}
-              pageSurroundings={1}
-              onPageClick={setPage}
-              selectedPage={page}
+        <UsersTabs selected="users" invitationsCount={30}>
+          <div className={styles.header}>
+            <Input
+              className={styles.search}
+              type="text"
+              placeholder="Search for a user"
+              iconBefore={<SearchIcon />}
             />
-          </TabsBody>
-        </Tabs>
+            <InviteForm className={styles.inviteForm} />
+          </div>
+          <Loader>
+            <Items
+              setChangingGroups={setChangingGroups}
+              setRemoving={setRemoving}
+            />
+          </Loader>
+          <Pagination
+            className={styles.pagination}
+            pageCount={30}
+            pageMargin={1}
+            pageSurroundings={1}
+            onPageClick={setPage}
+            selectedPage={page}
+          />
+        </UsersTabs>
       </Layout>
       <Modals
-        changingGroups={changingGroups}
-        removingUser={removingUser}
+        isChangingGroups={isChangingGroups}
+        isRemoving={isRemoving}
         setChangingGroups={setChangingGroups}
-        setRemovingUser={setRemovingUser}
+        setRemoving={setRemoving}
       />
     </>
   )
 }
 
-function Items({ setChangingGroups, setRemovingUser }) {
+function Items({ setChangingGroups, setRemoving }) {
   return (
     <List>
       {times(
@@ -87,7 +79,7 @@ function Items({ setChangingGroups, setRemovingUser }) {
             <span className={styles.email}>aiven715@gmail.com</span>
             <Badge
               className={styles.group}
-              value="admin"
+              value="root"
               appearance="light"
               shape="squared"
             />
@@ -102,7 +94,7 @@ function Items({ setChangingGroups, setRemovingUser }) {
                   Change groups
                 </DropdownItem>
                 <DropdownItem>Change password</DropdownItem>
-                <DropdownItem onClick={() => setRemovingUser(true)}>
+                <DropdownItem onClick={() => setRemoving(true)}>
                   Remove from the app
                 </DropdownItem>
               </DropdownMenu>
@@ -116,16 +108,16 @@ function Items({ setChangingGroups, setRemovingUser }) {
 }
 
 function Modals({
-  changingGroups,
-  removingUser,
+  isChangingGroups,
+  isRemoving,
   setChangingGroups,
-  setRemovingUser,
+  setRemoving,
 }) {
   return (
     <>
       <Modal
         size="compact"
-        isOpened={changingGroups}
+        isOpened={isChangingGroups}
         onDismiss={() => setChangingGroups(false)}
       >
         <ModalHeader>Change groups of aiven715</ModalHeader>
@@ -139,7 +131,7 @@ function Modals({
               {
                 label: (
                   <>
-                    Admin
+                    root
                     <Badge
                       className={styles.privileged}
                       shape="squared"
@@ -147,15 +139,15 @@ function Modals({
                     />
                   </>
                 ),
-                value: "admin",
+                value: "root",
               },
               {
-                label: "Manager",
-                value: "manager",
+                label: "product",
+                value: "product",
               },
               {
-                label: "Staff",
-                value: "staff",
+                label: "orders",
+                value: "orders",
               },
             ]}
           />
@@ -170,13 +162,15 @@ function Modals({
           <Button>Submit</Button>
         </ModalFooter>
       </Modal>
-      <Modal isOpened={removingUser} onDismiss={() => setRemovingUser(false)}>
-        <ModalHeader iconBefore={<AlertIcon />}>User removal</ModalHeader>
+      <Modal isOpened={isRemoving} onDismiss={() => setRemoving(false)}>
+        <ModalHeader iconBefore={<AlertIcon />}>
+          Remove aiven715 user
+        </ModalHeader>
         <ModalBody>
           Are you sure that you want to remove that user? This can not be undone
         </ModalBody>
         <ModalFooter>
-          <Button onClick={() => setRemovingUser(false)} appearance="secondary">
+          <Button onClick={() => setRemoving(false)} appearance="secondary">
             Cancel
           </Button>
           <Button>Submit</Button>

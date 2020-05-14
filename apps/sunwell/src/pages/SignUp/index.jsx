@@ -3,10 +3,9 @@ import Button from "@sourceface/components/button"
 import Spinner from "@sourceface/components/spinner"
 import Input from "@sourceface/components/input"
 import Label from "@sourceface/components/label"
-import { Layout, Card } from "components/auth"
+import { Layout, Card, Strength } from "components/auth"
 import ErrorIcon from "assets/error.svg"
 import CheckIcon from "assets/check.svg"
-import Strength from "./Strength"
 import styles from "./index.css"
 
 export default () => {
