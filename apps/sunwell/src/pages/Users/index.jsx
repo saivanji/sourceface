@@ -29,7 +29,7 @@ import styles from "./index.css"
 
 export default () => {
   const [page, setPage] = useState(0)
-  const [changingRole, setChangingRole] = useState(false)
+  const [changingGroups, setChangingGroups] = useState(false)
   const [removingUser, setRemovingUser] = useState(false)
 
   return (
@@ -52,7 +52,7 @@ export default () => {
             </div>
             <Loader>
               <Items
-                setChangingRole={setChangingRole}
+                setChangingGroups={setChangingGroups}
                 setRemovingUser={setRemovingUser}
               />
             </Loader>
@@ -68,16 +68,16 @@ export default () => {
         </Tabs>
       </Layout>
       <Modals
-        changingRole={changingRole}
+        changingGroups={changingGroups}
         removingUser={removingUser}
-        setChangingRole={setChangingRole}
+        setChangingGroups={setChangingGroups}
         setRemovingUser={setRemovingUser}
       />
     </>
   )
 }
 
-function Items({ setChangingRole, setRemovingUser }) {
+function Items({ setChangingGroups, setRemovingUser }) {
   return (
     <List>
       {times(
@@ -86,7 +86,7 @@ function Items({ setChangingRole, setRemovingUser }) {
             <Avatar value="A" />
             <span className={styles.email}>aiven715@gmail.com</span>
             <Badge
-              className={styles.role}
+              className={styles.group}
               value="admin"
               appearance="light"
               shape="squared"
@@ -98,8 +98,8 @@ function Items({ setChangingRole, setRemovingUser }) {
                 </Button>
               </DropdownButton>
               <DropdownMenu>
-                <DropdownItem onClick={() => setChangingRole(true)}>
-                  Change role
+                <DropdownItem onClick={() => setChangingGroups(true)}>
+                  Change groups
                 </DropdownItem>
                 <DropdownItem>Change password</DropdownItem>
                 <DropdownItem onClick={() => setRemovingUser(true)}>
@@ -116,25 +116,25 @@ function Items({ setChangingRole, setRemovingUser }) {
 }
 
 function Modals({
-  changingRole,
+  changingGroups,
   removingUser,
-  setChangingRole,
+  setChangingGroups,
   setRemovingUser,
 }) {
   return (
     <>
       <Modal
         size="compact"
-        isOpened={changingRole}
-        onDismiss={() => setChangingRole(false)}
+        isOpened={changingGroups}
+        onDismiss={() => setChangingGroups(false)}
       >
-        <ModalHeader>Change the role of aiven715</ModalHeader>
+        <ModalHeader>Change groups of aiven715</ModalHeader>
         <ModalBody>
-          Note, that users with privileged role have full control over the
+          Note, that users with privileged group have full control over the
           application.
           <Select
-            className={styles.roleSelect}
-            placeholder="Choose a role"
+            className={styles.groupsSelect}
+            placeholder="Select groups"
             options={[
               {
                 label: (
@@ -161,7 +161,10 @@ function Modals({
           />
         </ModalBody>
         <ModalFooter>
-          <Button onClick={() => setChangingRole(false)} appearance="secondary">
+          <Button
+            onClick={() => setChangingGroups(false)}
+            appearance="secondary"
+          >
             Cancel
           </Button>
           <Button>Submit</Button>

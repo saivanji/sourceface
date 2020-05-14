@@ -18,7 +18,7 @@
 }
 
 .email,
-.role {
+.group {
   margin-left: var(--value-4);
 }
 
@@ -42,6 +42,6 @@
   margin-left: var(--value-2);
 }
 
-.role-select {
+.groups-select {
   margin-top: var(--value-2);
 }
