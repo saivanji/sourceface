@@ -17,14 +17,14 @@ Sidebar.Pane = function Pane({ children, className }) {
 Sidebar.PaneLink = function PaneLink({
   children,
   className,
-  isActive,
+  isSelected,
   component: Component = "a",
   ...props
 }) {
   return (
     <Component
       {...props}
-      className={cx(styles.paneLink, isActive && styles.active, className)}
+      className={cx(styles.paneLink, isSelected && styles.selected, className)}
     >
       {children}
     </Component>
@@ -43,18 +43,22 @@ Sidebar.Group = function Group({ children, className }) {
   return <div className={cx(styles.group, className)}>{children}</div>
 }
 
+Sidebar.GroupTitle = function Group({ children, className }) {
+  return <span className={cx(styles.groupTitle, className)}>{children}</span>
+}
+
 Sidebar.GroupLink = function GroupLink({
   children,
   className,
   iconBefore,
-  isActive,
+  isSelected,
   component: Component = "a",
   ...props
 }) {
   return (
     <Component
       {...props}
-      className={cx(styles.groupLink, isActive && styles.active, className)}
+      className={cx(styles.groupLink, isSelected && styles.selected, className)}
     >
       {iconBefore && <iconBefore.type className={styles.groupIcon} />}
       {children}

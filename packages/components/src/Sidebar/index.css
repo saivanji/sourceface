@@ -40,7 +40,7 @@
       fill: var(--color-gray-tint-20);
     }
   }
-  &.active,
+  &.selected,
   &:active {
     background-color: var(--color-gray-shade-100);
     & svg {
@@ -76,6 +76,19 @@
 
 .group {
   margin-left: calc(var(--value-2) * -1);
+  & + .group {
+    margin-top: var(--value-5);
+  }
+}
+
+.group-title {
+  text-transform: uppercase;
+  font-weight: 700;
+  display: block;
+  padding-left: var(--value-2);
+  color: var(--color-gray-shade-30);
+  font-size: var(--font-size-xs);
+  margin-bottom: var(--value-1);
 }
 
 .group-icon {
@@ -85,7 +98,6 @@
 }
 
 .group-link {
-  padding: 0;
   border: 0;
   background: none;
   cursor: pointer;
@@ -104,7 +116,8 @@
       fill: var(--color-gray-tint-20);
     }
   }
-  &.active,
+  /* most likely active color should be different from selected */
+  &.selected,
   &:active {
     background-color: var(--color-gray-shade-120);
     & .group-icon {

@@ -16,7 +16,7 @@ export const Regular = () => (
         <Sidebar.GroupLink href="#" iconBefore="🔥">
           Security
         </Sidebar.GroupLink>
-        <Sidebar.GroupLink href="#" iconBefore="🔥" isActive>
+        <Sidebar.GroupLink href="#" iconBefore="🔥" isSelected>
           Users management
         </Sidebar.GroupLink>
         <Sidebar.GroupLink href="#" iconBefore="🔥">
