@@ -11,13 +11,14 @@ yarn-error.log*
 /button
 /breadcrumbs
 /card
-/dropdown
 /checkbox
+/dropdown
 /input
 /label
 /list
 /loader
 /modal
+/navbar
 /pagination
 /select
 /sidebar
