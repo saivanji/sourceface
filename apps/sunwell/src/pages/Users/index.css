@@ -38,6 +38,7 @@
   margin-left: var(--value-2);
 }
 
-.groups-select {
+.groups-select,
+.new-password {
   margin-top: var(--value-2);
 }

@@ -28,6 +28,7 @@ import styles from "./index.css"
 export default () => {
   const [page, setPage] = useState(0)
   const [isChangingGroups, setChangingGroups] = useState(false)
+  const [isChangingPass, setChangingPass] = useState(false)
   const [isRemoving, setRemoving] = useState(false)
 
   return (
@@ -46,6 +47,7 @@ export default () => {
           <Loader>
             <Items
               setChangingGroups={setChangingGroups}
+              setChangingPass={setChangingPass}
               setRemoving={setRemoving}
             />
           </Loader>
@@ -59,17 +61,20 @@ export default () => {
           />
         </UsersTabs>
       </Layout>
-      <Modals
+      <GroupsModal
         isChangingGroups={isChangingGroups}
-        isRemoving={isRemoving}
         setChangingGroups={setChangingGroups}
-        setRemoving={setRemoving}
       />
+      <PassModal
+        isChangingPass={isChangingPass}
+        setChangingPass={setChangingPass}
+      />
+      <RemovalModal isRemoving={isRemoving} setRemoving={setRemoving} />
     </>
   )
 }
 
-function Items({ setChangingGroups, setRemoving }) {
+function Items({ setChangingGroups, setChangingPass, setRemoving }) {
   return (
     <List>
       {times(
@@ -93,7 +98,9 @@ function Items({ setChangingGroups, setRemoving }) {
                 <DropdownItem onClick={() => setChangingGroups(true)}>
                   Change groups
                 </DropdownItem>
-                <DropdownItem>Change password</DropdownItem>
+                <DropdownItem onClick={() => setChangingPass(true)}>
+                  Change password
+                </DropdownItem>
                 <DropdownItem onClick={() => setRemoving(true)}>
                   Remove from the app
                 </DropdownItem>
@@ -107,75 +114,94 @@ function Items({ setChangingGroups, setRemoving }) {
   )
 }
 
-function Modals({
-  isChangingGroups,
-  isRemoving,
-  setChangingGroups,
-  setRemoving,
-}) {
+function GroupsModal({ isChangingGroups, setChangingGroups }) {
   return (
-    <>
-      <Modal
-        size="compact"
-        isOpened={isChangingGroups}
-        onDismiss={() => setChangingGroups(false)}
-      >
-        <ModalHeader>Change groups of aiven715</ModalHeader>
-        <ModalBody>
-          Note, that users with privileged group have full control over the
-          application.
-          <Select
-            className={styles.groupsSelect}
-            placeholder="Select groups"
-            options={[
-              {
-                label: (
-                  <>
-                    root
-                    <Badge
-                      className={styles.privileged}
-                      shape="squared"
-                      value="Privileged"
-                    />
-                  </>
-                ),
-                value: "root",
-              },
-              {
-                label: "product",
-                value: "product",
-              },
-              {
-                label: "orders",
-                value: "orders",
-              },
-            ]}
-          />
-        </ModalBody>
-        <ModalFooter>
-          <Button
-            onClick={() => setChangingGroups(false)}
-            appearance="secondary"
-          >
-            Cancel
-          </Button>
-          <Button>Submit</Button>
-        </ModalFooter>
-      </Modal>
-      <Modal isOpened={isRemoving} onDismiss={() => setRemoving(false)}>
-        <ModalHeader iconBefore={<AlertIcon />}>
-          Remove aiven715 user
-        </ModalHeader>
-        <ModalBody>
-          Are you sure that you want to remove that user? This can not be undone
-        </ModalBody>
-        <ModalFooter>
-          <Button onClick={() => setRemoving(false)} appearance="secondary">
-            Cancel
-          </Button>
-          <Button>Submit</Button>
-        </ModalFooter>
-      </Modal>
-    </>
+    <Modal
+      size="compact"
+      isOpened={isChangingGroups}
+      onDismiss={() => setChangingGroups(false)}
+    >
+      <ModalHeader>Change groups of aiven715</ModalHeader>
+      <ModalBody>
+        Note, that users with privileged group have full control over the
+        application.
+        <Select
+          className={styles.groupsSelect}
+          placeholder="Select groups"
+          options={[
+            {
+              label: (
+                <>
+                  root
+                  <Badge
+                    className={styles.privileged}
+                    shape="squared"
+                    value="Privileged"
+                  />
+                </>
+              ),
+              value: "root",
+            },
+            {
+              label: "product",
+              value: "product",
+            },
+            {
+              label: "orders",
+              value: "orders",
+            },
+          ]}
+        />
+      </ModalBody>
+      <ModalFooter>
+        <Button onClick={() => setChangingGroups(false)} appearance="secondary">
+          Cancel
+        </Button>
+        <Button>Submit</Button>
+      </ModalFooter>
+    </Modal>
+  )
+}
+
+function PassModal({ isChangingPass, setChangingPass }) {
+  return (
+    <Modal
+      size="compact"
+      isOpened={isChangingPass}
+      onDismiss={() => setChangingPass(false)}
+    >
+      <ModalHeader>Change password of aiven715</ModalHeader>
+      <ModalBody>
+        Please, do not forget to tell the new password to the user
+        <Input
+          className={styles.newPassword}
+          type="password"
+          placeholder="New password"
+        />
+      </ModalBody>
+      <ModalFooter>
+        <Button onClick={() => setChangingPass(false)} appearance="secondary">
+          Cancel
+        </Button>
+        <Button>Submit</Button>
+      </ModalFooter>
+    </Modal>
+  )
+}
+
+function RemovalModal({ isRemoving, setRemoving }) {
+  return (
+    <Modal isOpened={isRemoving} onDismiss={() => setRemoving(false)}>
+      <ModalHeader iconBefore={<AlertIcon />}>Remove aiven715 user</ModalHeader>
+      <ModalBody>
+        Are you sure that you want to remove that user? This can not be undone
+      </ModalBody>
+      <ModalFooter>
+        <Button onClick={() => setRemoving(false)} appearance="secondary">
+          Cancel
+        </Button>
+        <Button>Submit</Button>
+      </ModalFooter>
+    </Modal>
   )
 }

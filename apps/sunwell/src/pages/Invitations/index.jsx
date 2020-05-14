@@ -41,7 +41,7 @@ export default () => {
           />
         </UsersTabs>
       </Layout>
-      <Modals isRemoving={isRemoving} setRemoving={setRemoving} />
+      <RemovalModal isRemoving={isRemoving} setRemoving={setRemoving} />
     </>
   )
 }
@@ -75,21 +75,19 @@ function Items({ setRemoving }) {
   )
 }
 
-function Modals({ isRemoving, setRemoving }) {
+function RemovalModal({ isRemoving, setRemoving }) {
   return (
-    <>
-      <Modal isOpened={isRemoving} onDismiss={() => setRemoving(false)}>
-        <ModalHeader iconBefore={<AlertIcon />}>Remove invitation</ModalHeader>
-        <ModalBody>
-          Are you sure that you want to remove that invitation?
-        </ModalBody>
-        <ModalFooter>
-          <Button onClick={() => setRemoving(false)} appearance="secondary">
-            Cancel
-          </Button>
-          <Button>Submit</Button>
-        </ModalFooter>
-      </Modal>
-    </>
+    <Modal isOpened={isRemoving} onDismiss={() => setRemoving(false)}>
+      <ModalHeader iconBefore={<AlertIcon />}>Remove invitation</ModalHeader>
+      <ModalBody>
+        Are you sure that you want to remove that invitation?
+      </ModalBody>
+      <ModalFooter>
+        <Button onClick={() => setRemoving(false)} appearance="secondary">
+          Cancel
+        </Button>
+        <Button>Submit</Button>
+      </ModalFooter>
+    </Modal>
   )
 }
