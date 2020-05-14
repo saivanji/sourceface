@@ -8,6 +8,7 @@ import Dropdown, {
   DropdownItem,
 } from "../Dropdown"
 
+// TODO: if select will have "clear" feature applied, display separator between arrow and clear icon
 export default function Select({
   size = "normal",
   name,
