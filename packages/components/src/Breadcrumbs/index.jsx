@@ -10,12 +10,12 @@ export default function Breadcrumbs({ className, items, renderLink }) {
     <div className={cx(styles.root, className)}>
       <span className={styles.path}>
         {path.map((item, i) => (
-          <>
+          <React.Fragment key={i}>
             {i !== 0 && " › "}
             <a className={styles.link} key={i} href="#">
               {item.name}
             </a>
-          </>
+          </React.Fragment>
         ))}
       </span>
       <span className={styles.current}>{current.name}</span>
