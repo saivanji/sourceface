@@ -19,7 +19,6 @@
 }
 
 .more {
-  margin-left: auto;
   & svg {
     width: var(--value-4);
   }
@@ -31,7 +30,9 @@
 }
 
 .pagination {
-  margin-top: var(--value-8);
+  margin-top: var(--value-4);
+  padding-top: var(--value-8);
+  border-top: 1px solid var(--color-gray-tint-50);
 }
 
 .privileged {

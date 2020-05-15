@@ -53,10 +53,14 @@ export default ({ children }) => {
         <Sidebar.Menu>
           <Sidebar.MenuTitle>Settings</Sidebar.MenuTitle>
           <Sidebar.Group>
+            <Sidebar.GroupTitle>Personal</Sidebar.GroupTitle>
             <Sidebar.GroupLink href="#" iconBefore={<ShieldIcon />}>
               Security
             </Sidebar.GroupLink>
-            <Sidebar.GroupLink href="#" iconBefore={<GroupIcon />} isActive>
+          </Sidebar.Group>
+          <Sidebar.Group>
+            <Sidebar.GroupTitle>Organization</Sidebar.GroupTitle>
+            <Sidebar.GroupLink href="#" iconBefore={<GroupIcon />} isSelected>
               Users management
             </Sidebar.GroupLink>
             <Sidebar.GroupLink href="#" iconBefore={<LockIcon />}>
