@@ -18,9 +18,11 @@ const removeRole = async (parent, { roleId }, { pg }) => {
   return true
 }
 
+// TODO: user could not edit privileged group
 const updateRole = async (parent, { roleId, ...data }, { pg }) =>
   await roleRepo.update(data, roleId, pg)
 
+// TODO: user could not assign permisson to privileged group
 const assignPermission = async (parent, { roleId, permissionId }, { pg }) => {
   await roleRepo.assignPermission(roleId, permissionId, pg)
 
