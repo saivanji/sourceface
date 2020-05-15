@@ -25,6 +25,7 @@ Tabs.Header = function Header({ children }) {
   return <div className={styles.header}>{children}</div>
 }
 
+// TODO: rename to Content
 Tabs.Body = function Body({ children }) {
   return <div className={styles.body}>{children}</div>
 }

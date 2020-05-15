@@ -3,6 +3,7 @@ import cx from "classnames"
 import styles from "./index.css"
 import Icon from "./assets/check.svg"
 
+// TODO: implement indeterminate state
 export default function Checkbox({ label, size = "normal", isDisabled }) {
   return (
     <label

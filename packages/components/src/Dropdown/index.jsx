@@ -35,6 +35,7 @@ Dropdown.Trigger = function Trigger({ children, className }) {
   )
 }
 
+// TODO: remove in favor of future implemented list component? same for Item?
 Dropdown.Menu = function Menu({
   children,
   position = "bottomRight",
