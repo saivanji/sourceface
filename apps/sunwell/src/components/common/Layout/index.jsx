@@ -2,12 +2,12 @@ import React from "react"
 import Avatar from "@sourceface/components/avatar"
 import Breadcrumbs from "@sourceface/components/breadcrumbs"
 import Dropdown from "@sourceface/components/dropdown"
-import Navbar from "@sourceface/components/navbar"
-import Sidemenu from "@sourceface/components/sidemenu"
-import Sidepane from "@sourceface/components/sidepane"
-import ContentIcon from "assets/content-line.svg"
+import Header from "@sourceface/components/header"
 import GroupIcon from "assets/group-line.svg"
 import LockIcon from "assets/lock-line.svg"
+import Nav from "@sourceface/components/nav"
+import Sidebar from "@sourceface/components/sidebar"
+import ContentIcon from "assets/content-line.svg"
 import QuestionIcon from "assets/question-line.svg"
 import SettingsIcon from "assets/settings-line.svg"
 import ShieldIcon from "assets/shield-line.svg"
@@ -33,42 +33,42 @@ const items = [
 export default ({ children }) => {
   return (
     <div className={styles.root}>
-      <Sidepane>
-        <Sidepane.Logo />
-        <Sidepane.Link href="#">
+      <Nav appearance="dark" className={styles.nav}>
+        <Nav.Logo />
+        <Nav.Link href="#">
           <ContentIcon />
-        </Sidepane.Link>
+        </Nav.Link>
         <div className={styles.bottom}>
-          <Sidepane.Link href="#">
+          <Nav.Link href="#">
             <QuestionIcon />
-          </Sidepane.Link>
-          <Sidepane.Link href="#">
+          </Nav.Link>
+          <Nav.Link href="#">
             <StackIcon />
-          </Sidepane.Link>
-          <Sidepane.Link href="#">
+          </Nav.Link>
+          <Nav.Link href="#">
             <SettingsIcon />
-          </Sidepane.Link>
+          </Nav.Link>
         </div>
-      </Sidepane>
-      <Sidemenu>
-        <Sidemenu.Title>Settings</Sidemenu.Title>
-        <Sidemenu.Group>
-          <Sidemenu.GroupTitle>Personal</Sidemenu.GroupTitle>
-          <Sidemenu.GroupLink href="#" iconBefore={<ShieldIcon />}>
+      </Nav>
+      <Sidebar appearance="dark" className={styles.sidebar}>
+        <Sidebar.Title>Settings</Sidebar.Title>
+        <Sidebar.Group>
+          <Sidebar.GroupTitle>Personal</Sidebar.GroupTitle>
+          <Sidebar.GroupLink href="#" iconBefore={<ShieldIcon />}>
             Security
-          </Sidemenu.GroupLink>
-        </Sidemenu.Group>
-        <Sidemenu.Group>
-          <Sidemenu.GroupTitle>Organization</Sidemenu.GroupTitle>
-          <Sidemenu.GroupLink href="#" iconBefore={<GroupIcon />} isSelected>
+          </Sidebar.GroupLink>
+        </Sidebar.Group>
+        <Sidebar.Group>
+          <Sidebar.GroupTitle>Organization</Sidebar.GroupTitle>
+          <Sidebar.GroupLink href="#" iconBefore={<GroupIcon />} isSelected>
             Users management
-          </Sidemenu.GroupLink>
-          <Sidemenu.GroupLink href="#" iconBefore={<LockIcon />}>
+          </Sidebar.GroupLink>
+          <Sidebar.GroupLink href="#" iconBefore={<LockIcon />}>
             Access management
-          </Sidemenu.GroupLink>
-        </Sidemenu.Group>
-      </Sidemenu>
-      <Navbar>
+          </Sidebar.GroupLink>
+        </Sidebar.Group>
+      </Sidebar>
+      <Header className={styles.header}>
         <Breadcrumbs items={items} />
         <Dropdown className={styles.profile}>
           <Dropdown.Trigger>
@@ -80,8 +80,8 @@ export default ({ children }) => {
             <Dropdown.Item>Sign out</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
-      </Navbar>
-      <div className={styles.content}>{children}</div>
+      </Header>
+      <div className={styles.main}>{children}</div>
     </div>
   )
 }

@@ -2,15 +2,16 @@ import React from "react"
 import cx from "classnames"
 import styles from "./index.css"
 
-export default function Sidepane({ children, className }) {
+// TODO: implement light appearance
+export default function Nav({ children, className }) {
   return <div className={cx(styles.root, className)}>{children}</div>
 }
 
-Sidepane.Logo = function Logo({ children, className }) {
+Nav.Logo = function Logo({ children, className }) {
   return <div className={cx(styles.logo, className)}>{children}</div>
 }
 
-Sidepane.Link = function Link({
+Nav.Link = function Link({
   children,
   className,
   isSelected,

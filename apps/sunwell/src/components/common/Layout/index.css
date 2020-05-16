@@ -1,15 +1,33 @@
 @import "@sourceface/style/index.css";
 
+:root {
+  --panel-size: calc(var(--value-10) + var(--value-4));
+}
+
 .root {
-  display: flex;
+  display: grid;
+  grid-template-columns: var(--panel-size) var(--value-64) 1fr;
+  grid-template-rows: var(--panel-size) 1fr;
+  grid-template-areas:
+    "nav sidebar header"
+    "nav sidebar main";
   height: 100vh;
 }
 
-.main {
-  flex: 1;
+.nav {
+  grid-area: nav;
 }
 
-.content {
+.sidebar {
+  grid-area: sidebar;
+}
+
+.header {
+  grid-area: header;
+}
+
+.main {
+  grid-area: main;
   padding: var(--value-4);
 }
 

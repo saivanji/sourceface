@@ -2,7 +2,7 @@ import React from "react"
 import { withA11y } from "@storybook/addon-a11y"
 import Avatar from "../Avatar"
 import Breadcrumbs from "../Breadcrumbs"
-import Navbar from "./index"
+import Header from "./index"
 
 const items = [
   {
@@ -19,13 +19,13 @@ const items = [
   },
 ]
 
-export default { title: "Navbar", decorators: [withA11y] }
+export default { title: "Header", decorators: [withA11y] }
 
 export const Regular = () => (
-  <Navbar>
+  <Header>
     <Breadcrumbs items={items} />
     <div style={{ marginLeft: "auto" }}>
       <Avatar value="A" />
     </div>
-  </Navbar>
+  </Header>
 )
