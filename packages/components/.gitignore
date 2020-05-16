@@ -21,6 +21,7 @@ yarn-error.log*
 /navbar
 /pagination
 /select
-/sidebar
+/sidemenu
+/sidepane
 /spinner
 /tabs

@@ -1,69 +1,13 @@
 @import "@sourceface/style/index.css";
 
 .root {
-  height: 100%;
-  display: flex;
-}
-
-.pane {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  width: calc(var(--value-10) + var(--value-4));
-  background-color: var(--color-gray-shade-120);
-  padding: 0 var(--value-2) var(--value-2);
-}
-
-.pane-logo {
-  /* margin: 0 calc(var(--value-2) * -1); */
-  height: calc(var(--value-10) + var(--value-4));
-  border-bottom: 1px solid var(--color-gray-shade-90);
-  margin-bottom: var(--value-4);
-  /* background-color: var(--color-gray-shade-130); */
-}
-
-.pane-link {
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  text-decoration: none;
-  height: var(--value-10);
-  border-radius: var(--rounded-md);
-  &:hover {
-    background-color: var(--color-gray-shade-110);
-    & svg {
-      fill: var(--color-gray-tint-20);
-    }
-  }
-  &.selected,
-  &:active {
-    background-color: var(--color-gray-shade-100);
-    & svg {
-      fill: var(--color-gray-tint-50);
-    }
-  }
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px var(--color-gray-shade-90);
-  }
-  & svg {
-    fill: var(--color-gray-shade-10);
-    width: var(--value-5);
-  }
-}
-
-.menu {
-  padding: var(--value-2) var(--value-4);
+  height: 100vh;
   width: var(--value-64);
+  padding: var(--value-2) var(--value-4);
   background-color: var(--color-gray-shade-110);
 }
 
-.menu-title {
+.title {
   display: flex;
   align-items: center;
   margin-bottom: -1px;

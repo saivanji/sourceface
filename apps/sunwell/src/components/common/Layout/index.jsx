@@ -3,7 +3,8 @@ import Avatar from "@sourceface/components/avatar"
 import Breadcrumbs from "@sourceface/components/breadcrumbs"
 import Dropdown from "@sourceface/components/dropdown"
 import Navbar from "@sourceface/components/navbar"
-import Sidebar from "@sourceface/components/sidebar"
+import Sidemenu from "@sourceface/components/sidemenu"
+import Sidepane from "@sourceface/components/sidepane"
 import ContentIcon from "assets/content-line.svg"
 import GroupIcon from "assets/group-line.svg"
 import LockIcon from "assets/lock-line.svg"
@@ -32,59 +33,55 @@ const items = [
 export default ({ children }) => {
   return (
     <div className={styles.root}>
-      <Sidebar>
-        <Sidebar.Pane>
-          <Sidebar.PaneLogo />
-          <Sidebar.PaneLink href="#">
-            <ContentIcon />
-          </Sidebar.PaneLink>
-          <div className={styles.bottom}>
-            <Sidebar.PaneLink href="#">
-              <QuestionIcon />
-            </Sidebar.PaneLink>
-            <Sidebar.PaneLink href="#">
-              <StackIcon />
-            </Sidebar.PaneLink>
-            <Sidebar.PaneLink href="#">
-              <SettingsIcon />
-            </Sidebar.PaneLink>
-          </div>
-        </Sidebar.Pane>
-        <Sidebar.Menu>
-          <Sidebar.MenuTitle>Settings</Sidebar.MenuTitle>
-          <Sidebar.Group>
-            <Sidebar.GroupTitle>Personal</Sidebar.GroupTitle>
-            <Sidebar.GroupLink href="#" iconBefore={<ShieldIcon />}>
-              Security
-            </Sidebar.GroupLink>
-          </Sidebar.Group>
-          <Sidebar.Group>
-            <Sidebar.GroupTitle>Organization</Sidebar.GroupTitle>
-            <Sidebar.GroupLink href="#" iconBefore={<GroupIcon />} isSelected>
-              Users management
-            </Sidebar.GroupLink>
-            <Sidebar.GroupLink href="#" iconBefore={<LockIcon />}>
-              Access management
-            </Sidebar.GroupLink>
-          </Sidebar.Group>
-        </Sidebar.Menu>
-      </Sidebar>
-      <div className={styles.main}>
-        <Navbar>
-          <Breadcrumbs items={items} />
-          <Dropdown className={styles.profile}>
-            <Dropdown.Trigger>
-              <button className={styles.avatar}>
-                <Avatar value="A" />
-              </button>
-            </Dropdown.Trigger>
-            <Dropdown.Menu>
-              <Dropdown.Item>Sign out</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </Navbar>
-        <div className={styles.content}>{children}</div>
-      </div>
+      <Sidepane>
+        <Sidepane.Logo />
+        <Sidepane.Link href="#">
+          <ContentIcon />
+        </Sidepane.Link>
+        <div className={styles.bottom}>
+          <Sidepane.Link href="#">
+            <QuestionIcon />
+          </Sidepane.Link>
+          <Sidepane.Link href="#">
+            <StackIcon />
+          </Sidepane.Link>
+          <Sidepane.Link href="#">
+            <SettingsIcon />
+          </Sidepane.Link>
+        </div>
+      </Sidepane>
+      <Sidemenu>
+        <Sidemenu.Title>Settings</Sidemenu.Title>
+        <Sidemenu.Group>
+          <Sidemenu.GroupTitle>Personal</Sidemenu.GroupTitle>
+          <Sidemenu.GroupLink href="#" iconBefore={<ShieldIcon />}>
+            Security
+          </Sidemenu.GroupLink>
+        </Sidemenu.Group>
+        <Sidemenu.Group>
+          <Sidemenu.GroupTitle>Organization</Sidemenu.GroupTitle>
+          <Sidemenu.GroupLink href="#" iconBefore={<GroupIcon />} isSelected>
+            Users management
+          </Sidemenu.GroupLink>
+          <Sidemenu.GroupLink href="#" iconBefore={<LockIcon />}>
+            Access management
+          </Sidemenu.GroupLink>
+        </Sidemenu.Group>
+      </Sidemenu>
+      <Navbar>
+        <Breadcrumbs items={items} />
+        <Dropdown className={styles.profile}>
+          <Dropdown.Trigger>
+            <button className={styles.avatar}>
+              <Avatar value="A" />
+            </button>
+          </Dropdown.Trigger>
+          <Dropdown.Menu>
+            <Dropdown.Item>Sign out</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </Navbar>
+      <div className={styles.content}>{children}</div>
     </div>
   )
 }

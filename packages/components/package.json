@@ -19,7 +19,8 @@
     "navbar",
     "pagination",
     "select",
-    "sidebar",
+    "sidemenu",
+    "sidepane",
     "spinner",
     "tabs"
   ],
