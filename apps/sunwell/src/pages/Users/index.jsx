@@ -32,7 +32,7 @@ export default () => {
               placeholder="Search for a user"
               iconBefore={<SearchIcon />}
             />
-            <InviteForm className={styles.inviteForm} />
+            <InviteForm />
           </div>
           <Loader>
             <UsersTable

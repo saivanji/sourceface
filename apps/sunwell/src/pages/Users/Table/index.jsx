@@ -18,17 +18,39 @@ Table.Head = function Head({ children, className }) {
 }
 
 Table.Heading = function Heading({ children, className, align = "left" }) {
-  return <div className={cx(styles.heading, className)}>{children}</div>
+  return (
+    <div
+      className={cx(styles.heading, styles[alignClassNames[align]], className)}
+    >
+      {children}
+    </div>
+  )
 }
 
 Table.Body = function Body({ children, className }) {
   return <div className={cx(styles.body, className)}>{children}</div>
 }
 
-Table.Row = function Row({ children, className }) {
+Table.Row = function Row({
+  children,
+  className,
+  onClick,
+  isSelectable,
+  isSelected,
+}) {
   return <div className={cx(styles.row, className)}>{children}</div>
 }
 
 Table.Cell = function Cell({ children, className, align = "left" }) {
-  return <div className={cx(styles.cell, className)}>{children}</div>
+  return (
+    <div className={cx(styles.cell, styles[alignClassNames[align]], className)}>
+      {children}
+    </div>
+  )
+}
+
+const alignClassNames = {
+  left: "alignLeft",
+  center: "alignCenter",
+  right: "alignRight",
 }

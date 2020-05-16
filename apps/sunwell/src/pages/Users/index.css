@@ -2,15 +2,12 @@
 
 .header {
   display: flex;
+  justify-content: space-between;
   margin-bottom: var(--value-6);
 }
 
 .search {
   fill: var(--color-gray-shade-80);
-}
-
-.invite-form {
-  margin-left: auto;
 }
 
 .email,
