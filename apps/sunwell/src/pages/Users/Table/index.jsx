@@ -1,4 +1,4 @@
-import React from "react"
+import React, { createContext, useContext } from "react"
 import cx from "classnames"
 import styles from "./index.css"
 
@@ -9,12 +9,25 @@ import styles from "./index.css"
 
 // TODO: implement multiple sizes
 
-export default function Table({ children, className }) {
-  return <div className={className}>{children}</div>
+const Context = createContext("table")
+
+export default function Table({ children, className, size }) {
+  return (
+    <Context.Provider value={{ size }}>
+      <div className={cx(styles.root, className)}>{children}</div>
+    </Context.Provider>
+  )
 }
 
 Table.Head = function Head({ children, className }) {
-  return <div className={cx(styles.head, className)}>{children}</div>
+  const { size } = useContext(Context)
+  console.log(defaultSize(children))
+
+  return (
+    <div style={{}} className={cx(styles.head, className)}>
+      {children}
+    </div>
+  )
 }
 
 Table.Heading = function Heading({ children, className, align = "left" }) {
@@ -27,18 +40,19 @@ Table.Heading = function Heading({ children, className, align = "left" }) {
   )
 }
 
-Table.Body = function Body({ children, className }) {
-  return <div className={cx(styles.body, className)}>{children}</div>
-}
-
 Table.Row = function Row({
   children,
   className,
-  onClick,
-  isSelectable,
-  isSelected,
+  // onClick,
+  // isSelectable,
+  // isSelected,
 }) {
-  return <div className={cx(styles.row, className)}>{children}</div>
+  const { size } = useContext(Context)
+  return (
+    <div style={{}} className={cx(styles.row, className)}>
+      {children}
+    </div>
+  )
 }
 
 Table.Cell = function Cell({ children, className, align = "left" }) {
@@ -54,3 +68,9 @@ const alignClassNames = {
   center: "alignCenter",
   right: "alignRight",
 }
+
+const defaultSize = children =>
+  React.Children.map(
+    children,
+    () => `calc(100% / ${React.Children.count(children)})`
+  )

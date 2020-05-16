@@ -67,39 +67,37 @@ function UsersTable({ setChangingPass, setRemoving }) {
         <Table.Heading>Groups</Table.Heading>
         <Table.Heading />
       </Table.Head>
-      <Table.Body>
-        {times(
-          i => (
-            <Table.Row key={i}>
-              <Table.Cell>
-                <Avatar value="A" />
-                <span className={styles.email}>aiven715@gmail.com</span>
-              </Table.Cell>
-              <Table.Cell>
-                <Badge value="root" appearance="light" shape="squared" />
-              </Table.Cell>
-              <Table.Cell align="right">
-                <Dropdown className={styles.more}>
-                  <Dropdown.Trigger>
-                    <Button appearance="secondary" size="compact">
-                      <MoreIcon />
-                    </Button>
-                  </Dropdown.Trigger>
-                  <Dropdown.Menu>
-                    <Dropdown.Item onClick={() => setChangingPass(true)}>
-                      Change password
-                    </Dropdown.Item>
-                    <Dropdown.Item onClick={() => setRemoving(true)}>
-                      Remove from the app
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </Table.Cell>
-            </Table.Row>
-          ),
-          5
-        )}
-      </Table.Body>
+      {times(
+        i => (
+          <Table.Row key={i}>
+            <Table.Cell>
+              <Avatar value="A" />
+              <span className={styles.email}>aiven715@gmail.com</span>
+            </Table.Cell>
+            <Table.Cell>
+              <Badge value="root" appearance="light" shape="squared" />
+            </Table.Cell>
+            <Table.Cell align="right">
+              <Dropdown className={styles.more}>
+                <Dropdown.Trigger>
+                  <Button appearance="secondary" size="compact">
+                    <MoreIcon />
+                  </Button>
+                </Dropdown.Trigger>
+                <Dropdown.Menu>
+                  <Dropdown.Item onClick={() => setChangingPass(true)}>
+                    Change password
+                  </Dropdown.Item>
+                  <Dropdown.Item onClick={() => setRemoving(true)}>
+                    Remove from the app
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </Table.Cell>
+          </Table.Row>
+        ),
+        5
+      )}
     </Table>
   )
 }
