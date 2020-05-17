@@ -43,3 +43,19 @@
     box-shadow: 0 0 0 3px var(--color-gray-tint-120);
   }
 }
+
+/* TODO: how to properly define media query? */
+/* Mobile first instead? */
+@media (max-width: 768px) {
+  .root {
+    grid-template-areas:
+      "header"
+      "main";
+    grid-template-columns: 1fr;
+  }
+
+  .nav,
+  .sidebar {
+    display: none;
+  }
+}
