@@ -7,10 +7,12 @@ export default function Sidebar({ children, className }) {
   return <div className={cx(styles.root, className)}>{children}</div>
 }
 
+// TODO: add iconBefore prop
 Sidebar.Title = function Title({ children, className }) {
   return <span className={cx(styles.title, className)}>{children}</span>
 }
 
+// TODO: have title here and remove GroupTitle?
 Sidebar.Group = function Group({ children, className }) {
   return <div className={cx(styles.group, className)}>{children}</div>
 }
@@ -19,6 +21,7 @@ Sidebar.GroupTitle = function GroupTitle({ children, className }) {
   return <span className={cx(styles.groupTitle, className)}>{children}</span>
 }
 
+// TODO: rename to Link
 Sidebar.GroupLink = function GroupLink({
   children,
   className,
