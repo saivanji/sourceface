@@ -3,11 +3,11 @@ import Avatar from "@sourceface/components/avatar"
 import Breadcrumbs from "@sourceface/components/breadcrumbs"
 import Dropdown from "@sourceface/components/dropdown"
 import Header from "@sourceface/components/header"
-import GroupIcon from "assets/group-line.svg"
-import LockIcon from "assets/lock-line.svg"
 import Nav from "@sourceface/components/nav"
 import Sidebar from "@sourceface/components/sidebar"
 import ContentIcon from "assets/content-line.svg"
+import GroupIcon from "assets/group-line.svg"
+import LockIcon from "assets/lock-line.svg"
 import QuestionIcon from "assets/question-line.svg"
 import SettingsIcon from "assets/settings-line.svg"
 import ShieldIcon from "assets/shield-line.svg"
@@ -38,17 +38,15 @@ export default ({ children }) => {
         <Nav.Link href="#">
           <ContentIcon />
         </Nav.Link>
-        <div className={styles.bottom}>
-          <Nav.Link href="#">
-            <QuestionIcon />
-          </Nav.Link>
-          <Nav.Link href="#">
-            <StackIcon />
-          </Nav.Link>
-          <Nav.Link href="#">
-            <SettingsIcon />
-          </Nav.Link>
-        </div>
+        <Nav.Link href="#">
+          <QuestionIcon />
+        </Nav.Link>
+        <Nav.Link href="#">
+          <StackIcon />
+        </Nav.Link>
+        <Nav.Link href="#">
+          <SettingsIcon />
+        </Nav.Link>
       </Nav>
       <Sidebar appearance="dark" className={styles.sidebar}>
         <Sidebar.Title>Settings</Sidebar.Title>
@@ -70,7 +68,7 @@ export default ({ children }) => {
       </Sidebar>
       <Header className={styles.header}>
         <Breadcrumbs items={items} />
-        <Dropdown className={styles.profile}>
+        <Dropdown>
           <Dropdown.Trigger>
             <button className={styles.avatar}>
               <Avatar value="A" />

@@ -1,13 +1,9 @@
 @import "@sourceface/style/index.css";
 
-:root {
-  --panel-size: calc(var(--value-10) + var(--value-4));
-}
-
 .root {
   display: grid;
-  grid-template-columns: var(--panel-size) var(--value-64) 1fr;
-  grid-template-rows: var(--panel-size) 1fr;
+  grid-template-columns: auto var(--value-64) 1fr;
+  grid-template-rows: auto 1fr;
   grid-template-areas:
     "nav sidebar header"
     "nav sidebar main";
@@ -16,6 +12,8 @@
 
 .nav {
   grid-area: nav;
+  display: grid;
+  grid-template-rows: auto 1fr;
 }
 
 .sidebar {
@@ -24,19 +22,14 @@
 
 .header {
   grid-area: header;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
 }
 
 .main {
   grid-area: main;
   padding: var(--value-4);
-}
-
-.bottom {
-  margin-top: auto;
-}
-
-.profile {
-  margin-left: auto;
 }
 
 .avatar {
