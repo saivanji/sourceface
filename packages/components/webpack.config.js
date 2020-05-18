@@ -33,13 +33,12 @@ module.exports = {
         },
       },
       {
-        test: /\.css$/,
+        test: /\.scss$/,
         use: [
           "style-loader",
           {
             loader: "css-loader",
             options: {
-              import: false,
               modules: {
                 localIdentName: isProd
                   ? "[hash:base64]"
@@ -49,6 +48,7 @@ module.exports = {
             },
           },
           "postcss-loader",
+          "sass-loader",
         ],
       },
       {
