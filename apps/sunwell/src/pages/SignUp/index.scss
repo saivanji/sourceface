@@ -2,21 +2,21 @@
 
 .label {
   display: block;
-  margin-bottom: var(--value-4);
+  margin-bottom: $value-4;
 }
 
 .submit {
-  margin-top: var(--value-5);
+  margin-top: $value-5;
 }
 
 .terms {
   text-align: center;
-  font-size: var(--font-size-sm);
-  margin: var(--value-4) var(--value-1) 0;
-  color: var(--value-gray-shade-80);
+  font-size: $font-size-sm;
+  margin: $value-4 $value-1 0;
+  color: $value-gray-shade-80;
 }
 
 .terms-link {
-  margin: 0 var(--value-1);
-  color: var(--value-gray-shade-80);
+  margin: 0 $value-1;
+  color: $value-gray-shade-80;
 }

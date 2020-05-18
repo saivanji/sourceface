@@ -3,21 +3,21 @@
 .header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: var(--value-6);
+  margin-bottom: $value-6;
 }
 
 .search {
-  fill: var(--color-gray-shade-80);
+  fill: $color-gray-shade-80;
 }
 
 .email,
 .group {
-  margin-left: var(--value-4);
+  margin-left: $value-4;
 }
 
 .more {
   & svg {
-    width: var(--value-4);
+    width: $value-4;
   }
 }
 
@@ -27,16 +27,16 @@
 }
 
 .pagination {
-  margin-top: var(--value-4);
-  padding-top: var(--value-8);
-  border-top: 1px solid var(--color-gray-tint-50);
+  margin-top: $value-4;
+  padding-top: $value-8;
+  border-top: 1px solid $color-gray-tint-50;
 }
 
 .privileged {
-  margin-left: var(--value-2);
+  margin-left: $value-2;
 }
 
 .groups-select,
 .new-password {
-  margin-top: var(--value-2);
+  margin-top: $value-2;
 }

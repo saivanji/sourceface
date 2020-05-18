@@ -1,11 +1,11 @@
-@import "@sourceface/style/index.css";
+@import "~@sourceface/style/index.scss";
 
 .root {
 }
 
 .head,
 .row {
-  border-bottom: 1px solid var(--color-gray-tint-50);
+  border-bottom: 1px solid $color-gray-tint-50;
   display: flex;
 }
 
@@ -14,15 +14,15 @@
 }
 
 .head {
-  padding-bottom: var(--value-4);
+  padding-bottom: $value-4;
 }
 
 .row + .head {
-  padding-top: var(--value-4);
+  padding-top: $value-4;
 }
 
 .row {
-  padding: var(--value-4) 0;
+  padding: $value-4 0;
   &:last-child {
     border-bottom: 0;
     padding-bottom: 0;
@@ -50,5 +50,5 @@
 
 /* .heading + .heading, */
 /* .cell + .cell { */
-/*   padding-left: var(--value-4); */
+/*   padding-left: $value-4; */
 /* } */

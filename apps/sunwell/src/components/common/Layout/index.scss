@@ -2,7 +2,7 @@
 
 .root {
   display: grid;
-  grid-template-columns: auto var(--value-64) 1fr;
+  grid-template-columns: auto $value-64 1fr;
   grid-template-rows: auto 1fr;
   grid-template-areas:
     "nav sidebar header"
@@ -29,7 +29,7 @@
 
 .main {
   grid-area: main;
-  padding: var(--value-4);
+  padding: $value-4;
 }
 
 .avatar {
@@ -37,10 +37,10 @@
   background: none;
   padding: 0;
   border: 0;
-  border-radius: var(--rounded-full);
+  border-radius: $rounded-full;
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 3px var(--color-gray-tint-120);
+    box-shadow: 0 0 0 3px $color-gray-tint-120;
   }
 }
 

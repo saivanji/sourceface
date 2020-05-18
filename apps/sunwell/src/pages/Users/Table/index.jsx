@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from "react"
 import cx from "classnames"
-import styles from "./index.css"
+import styles from "./index.scss"
 
 // side view is not a table feature. it should be implemented somewhere else, but it's a feature of table module
 

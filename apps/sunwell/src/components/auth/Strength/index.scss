@@ -3,9 +3,9 @@
 .root {
   display: flex;
   flex-direction: column;
-  color: var(--color-gray);
-  margin-top: var(--value-1);
-  font-size: var(--font-size-xs);
+  color: $color-gray;
+  margin-top: $value-1;
+  font-size: $font-size-xs;
 }
 
 .completed {

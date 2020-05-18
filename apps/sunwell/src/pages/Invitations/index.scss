@@ -3,7 +3,7 @@
 .more {
   margin-left: auto;
   & svg {
-    width: var(--value-4);
+    width: $value-4;
   }
 }
 
@@ -13,11 +13,11 @@
 }
 
 .pagination {
-  margin-top: var(--value-8);
+  margin-top: $value-8;
 }
 
 .date {
-  font-size: var(--font-size-xs);
-  color: var(--color-gray-shade-20);
-  margin-left: var(--value-3);
+  font-size: $font-size-xs;
+  color: $color-gray-shade-20;
+  margin-left: $value-3;
 }
