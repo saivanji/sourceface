@@ -62,7 +62,6 @@ input[type="checkbox"] {
   width: 0;
   height: 0;
   opacity: 0;
-  visibility: hidden;
   &:checked + .checkbox {
     background-color: $color-gray-shade-80;
     border-color: $color-gray-shade-80;
