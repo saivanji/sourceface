@@ -1,6 +1,6 @@
 import React from "react"
 import cx from "classnames"
-import styles from "./index.css"
+import styles from "./index.scss"
 
 export default function Breadcrumbs({ className, items, renderLink }) {
   const path = items.slice(0, -1)

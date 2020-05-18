@@ -1,7 +1,7 @@
 import React from "react"
 import cx from "classnames"
 import Card from "../Card"
-import styles from "./index.css"
+import styles from "./index.scss"
 
 export default function Tabs({ children, className }) {
   return (

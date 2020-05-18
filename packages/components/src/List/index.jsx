@@ -1,6 +1,6 @@
 import React from "react"
 import cx from "classnames"
-import styles from "./index.css"
+import styles from "./index.scss"
 
 // TODO: use ul/li
 export default function List({ children, className }) {

@@ -2,7 +2,7 @@ import React, { createContext, useRef, useEffect, useContext } from "react"
 import { createPortal } from "react-dom"
 import cx from "classnames"
 import CloseIcon from "./assets/close.svg"
-import styles from "./index.css"
+import styles from "./index.scss"
 
 const Context = createContext("modal")
 

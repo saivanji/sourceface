@@ -1,7 +1,7 @@
 import React from "react"
 import cx from "classnames"
 import Spinner from "../Spinner"
-import styles from "./index.css"
+import styles from "./index.scss"
 
 // TODO: should link be a separate component?
 export default function Button({

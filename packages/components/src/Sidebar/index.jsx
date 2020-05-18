@@ -1,6 +1,6 @@
 import React from "react"
 import cx from "classnames"
-import styles from "./index.css"
+import styles from "./index.scss"
 
 // TODO: implement light appearance
 export default function Sidebar({ children, className }) {

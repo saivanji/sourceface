@@ -1,6 +1,6 @@
 import React from "react"
 import cx from "classnames"
-import styles from "./index.css"
+import styles from "./index.scss"
 import Icon from "./assets/check.svg"
 
 // TODO: implement indeterminate state

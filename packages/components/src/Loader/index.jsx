@@ -1,6 +1,6 @@
 import React from "react"
 import Spinner from "../Spinner"
-import styles from "./index.css"
+import styles from "./index.scss"
 
 export default function Loader({ isLoading, children }) {
   return (
