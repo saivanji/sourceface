@@ -5,11 +5,11 @@
   "author": "aiven715 <aiven715@gmail.com>",
   "license": "MIT",
   "files": [
-    "index.css",
+    "index.scss",
     "index.js"
   ],
   "scripts": {
-    "build": "node ./generateCss.js",
+    "build": "node ./generateScss.js",
     "format": "prettier --write \"src/**/*.js\"",
     "lint": "prettier --check \"src/**/*.js\" && eslint \"src/**/*.js\""
   },

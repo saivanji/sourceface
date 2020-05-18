@@ -2,6 +2,7 @@ const fs = require("fs")
 const path = require("path")
 const {
   colors,
+  breakpoints,
   values,
   sizes,
   rounded,
@@ -18,13 +19,8 @@ const mapObj = (obj, fn) =>
     {}
   )
 
-const renderCss = data =>
-  ":root {\n" +
-  Object.keys(data).reduce(
-    (acc, key) => acc + `  --${key}: ${data[key]};\n`,
-    ""
-  ) +
-  "}"
+const render = data =>
+  Object.keys(data).reduce((acc, key) => acc + `$${key}: ${data[key]};\n`, "")
 
 const colorsDefinition = mapObj(colors, (k, v) =>
   typeof v === "string"
@@ -35,6 +31,10 @@ const colorsDefinition = mapObj(colors, (k, v) =>
         [`color-${k}-${_k}`]: _v,
       }))
 )
+
+const breakpointsDefinition = mapObj(breakpoints, (k, v) => ({
+  [`break-${k}`]: v,
+}))
 
 const valuesDefinition = mapObj(values, (k, v) => ({
   [`value-${k}`]: v,
@@ -57,9 +57,10 @@ const shadowsDefinition = mapObj(shadows, (k, v) => ({
 }))
 
 fs.writeFileSync(
-  path.resolve(__dirname, "index.css"),
-  renderCss({
+  path.resolve(__dirname, "index.scss"),
+  render({
     ...colorsDefinition,
+    ...breakpointsDefinition,
     ...valuesDefinition,
     ...sizesDefinition,
     ...fontSizesDefinition,
