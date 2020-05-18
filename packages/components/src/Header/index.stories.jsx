@@ -1,4 +1,5 @@
 import React from "react"
+import { withKnobs, select } from "@storybook/addon-knobs"
 import { withA11y } from "@storybook/addon-a11y"
 import Avatar from "../Avatar"
 import Breadcrumbs from "../Breadcrumbs"
@@ -19,13 +20,19 @@ const items = [
   },
 ]
 
-export default { title: "Header", decorators: [withA11y] }
+export default { title: "Header", decorators: [withKnobs, withA11y] }
 
-export const Regular = () => (
-  <Header>
+const Regular = ({ appearance }) => (
+  <Header
+    appearance={appearance}
+    size={select("Size", ["compact", "normal", "loose"], "normal")}
+  >
     <Breadcrumbs items={items} />
     <div style={{ marginLeft: "auto" }}>
       <Avatar value="A" />
     </div>
   </Header>
 )
+
+export const Light = () => <Regular appearance="light" />
+export const Dark = () => <Regular appearance="dark" />

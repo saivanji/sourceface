@@ -2,8 +2,11 @@ import React from "react"
 import cx from "classnames"
 import styles from "./index.scss"
 
-// TODO: implement compact size
-// TODO: implement dark appearance
-export default function Header({ children, className }) {
+export default function Header({
+  children,
+  appearance = "light",
+  size = "normal",
+  className,
+}) {
   return <div className={cx(styles.root, className)}>{children}</div>
 }

@@ -1,8 +1,25 @@
 @import "~@sourceface/style/index.scss";
 
 .root {
-  height: $value-10 + $value-4;
-  padding: $value-2 $value-4;
-  background-color: $color-white;
   box-shadow: $shadow-base;
+  &.light {
+    background-color: $color-white;
+    color: $color-gray-shade-110;
+  }
+  &.dark {
+    background-color: $color-gray-shade-100;
+    color: $color-gray-tint-70;
+  }
+  &.compact {
+    height: $value-12;
+    padding: $value-1 $value-2;
+  }
+  &.normal {
+    height: $value-10 + $value-4;
+    padding: $value-2 $value-4;
+  }
+  &.loose {
+    height: $value-16;
+    padding: $value-4 $value-8;
+  }
 }

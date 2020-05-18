@@ -5,8 +5,6 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  width: $value-4 + $value-10;
-  height: $value-4 + $value-10;
   box-shadow: $shadow-base;
   &.light {
     background-color: $color-white;
@@ -20,9 +18,28 @@
       fill: $color-gray-tint-40;
     }
   }
-}
-
-.icon {
-  width: $value-8;
-  height: $value-8;
+  &.compact {
+    width: $value-12;
+    height: $value-12;
+    .icon {
+      width: $value-6;
+      height: $value-6;
+    }
+  }
+  &.normal {
+    width: $value-4 + $value-10;
+    height: $value-4 + $value-10;
+    .icon {
+      width: $value-8;
+      height: $value-8;
+    }
+  }
+  &.loose {
+    width: $value-16;
+    height: $value-16;
+    .icon {
+      width: $value-10;
+      height: $value-10;
+    }
+  }
 }
