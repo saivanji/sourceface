@@ -1,7 +1,7 @@
-@use "~@sourceface/style/index.scss";
+@import "~@sourceface/style/index.scss";
 
 .root {
-  height: calc($value-10 + $value-4);
+  height: $value-10 + $value-4;
   padding: $value-2 $value-4;
   background-color: $color-white;
   box-shadow: $shadow-base;

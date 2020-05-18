@@ -1,14 +1,14 @@
-@use "~@sourceface/style/index.scss";
+@import "~@sourceface/style/index.scss";
 
 .root {
-  width: calc($value-10 + $value-4);
+  width: $value-10 + $value-4;
   background-color: $color-gray-shade-120;
   padding: 0 $value-2 $value-2;
 }
 
 .logo {
   /* margin: 0 calc($value-2) * -1; */
-  height: calc($value-10 + $value-4);
+  height: $value-10 + $value-4;
   border-bottom: 1px solid $color-gray-shade-90;
   margin-bottom: $value-4;
   /* background-color: $color-gray-shade-130; */
