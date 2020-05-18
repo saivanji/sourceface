@@ -43,4 +43,4 @@ Sidebar.GroupLink = function GroupLink({
 
 Sidebar.Back = function Back() {}
 
-Sidebar.Nested = function Nested() {}
+Sidebar.Switcher = function Switcher() {}

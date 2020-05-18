@@ -24,7 +24,7 @@ export default () => {
   return (
     <>
       <Layout>
-        <UsersTabs selected="users" invitationsCount={30}>
+        <UsersTabs selected="team" invitationsCount={30}>
           <div className={styles.header}>
             <Input
               className={styles.search}
@@ -35,7 +35,7 @@ export default () => {
             <InviteForm />
           </div>
           <Loader>
-            <UsersTable
+            <TeamTable
               setChangingPass={setChangingPass}
               setRemoving={setRemoving}
             />
@@ -59,7 +59,7 @@ export default () => {
   )
 }
 
-function UsersTable({ setChangingPass, setRemoving }) {
+function TeamTable({ setChangingPass, setRemoving }) {
   return (
     <Table>
       <Table.Head>

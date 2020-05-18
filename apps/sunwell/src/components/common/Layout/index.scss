@@ -2,22 +2,12 @@
 
 .root {
   display: grid;
-  grid-template-columns: auto $value-64 1fr;
-  grid-template-rows: auto 1fr;
   grid-template-areas:
-    "nav sidebar header"
-    "nav sidebar main";
-  height: 100vh;
-}
-
-.nav {
-  grid-area: nav;
-  display: grid;
+    "header"
+    "main";
+  grid-template-columns: 1fr;
   grid-template-rows: auto 1fr;
-}
-
-.sidebar {
-  grid-area: sidebar;
+  height: 100vh;
 }
 
 .header {
@@ -44,18 +34,21 @@
   }
 }
 
-/* TODO: how to properly define media query? */
-/* Mobile first instead? */
-@media (max-width: 768px) {
+@media (min-width: $break-lg) {
   .root {
     grid-template-areas:
-      "header"
-      "main";
-    grid-template-columns: 1fr;
+      "nav sidebar header"
+      "nav sidebar main";
+    grid-template-columns: auto $value-64 1fr;
   }
 
-  .nav,
+  .nav {
+    grid-area: nav;
+    display: grid;
+    grid-template-rows: auto 1fr;
+  }
+
   .sidebar {
-    display: none;
+    grid-area: sidebar;
   }
 }

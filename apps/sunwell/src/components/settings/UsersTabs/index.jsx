@@ -6,7 +6,7 @@ export default function UsersTabs({ children, selected, invitationsCount }) {
   return (
     <Tabs>
       <Tabs.Header>
-        <Tabs.Tab isSelected={selected === "users"}>Users</Tabs.Tab>
+        <Tabs.Tab isSelected={selected === "team"}>Team</Tabs.Tab>
         <Tabs.Tab
           isSelected={selected === "invitations"}
           iconAfter={<Badge value={invitationsCount} />}

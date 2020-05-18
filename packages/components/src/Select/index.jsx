@@ -5,6 +5,7 @@ import ArrowIcon from "./assets/arrow.svg"
 import Dropdown from "../Dropdown"
 
 // TODO: if select will have "clear" feature applied, display separator between arrow and clear icon
+// TODO: implement isNative
 export default function Select({
   size = "normal",
   name,

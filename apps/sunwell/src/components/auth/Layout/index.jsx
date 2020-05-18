@@ -1,33 +1,42 @@
 import React from "react"
+import { useMediaQuery } from "react-responsive"
 import Card from "@sourceface/components/card"
 import styles from "./index.scss"
+import { breakpoints } from "@sourceface/style"
 
 export default ({ children, title, description }) => {
-  return (
+  const isLargeSize = useMediaQuery({ minWidth: breakpoints.lg })
+
+  return isLargeSize ? (
     <div className={styles.root}>
-      <h1 className={styles.title}>{title}</h1>
-      <p className={styles.description}>{description}</p>
+      <Card className={styles.card} size="loose">
+        <Info title={title} description={description} />
+        {children}
+      </Card>
+      <Copyright />
+    </div>
+  ) : (
+    <div className={styles.root}>
+      <Info title={title} description={description} />
       {children}
-      <span className={styles.copyright}>
-        Crafted with <span>❤</span>️ by @aiven715
-      </span>
+      <Copyright />
     </div>
   )
 }
 
-// export default ({ children, title, description }) => {
-//   return (
-//     <div className={styles.root}>
-//       <div className={styles.container}>
-//         <Card size="loose">
-//           <span className={styles.title}>{title}</span>
-//           <span className={styles.description}>{description}</span>
-//           {children}
-//         </Card>
-//         <span className={styles.copyright}>
-//           Crafted with <span>❤</span>️ by @aiven715
-//         </span>
-//       </div>
-//     </div>
-//   )
-// }
+function Copyright() {
+  return (
+    <span className={styles.copyright}>
+      Crafted with <span>❤</span>️ by @aiven715
+    </span>
+  )
+}
+
+function Info({ title, description }) {
+  return (
+    <>
+      <h1 className={styles.title}>{title}</h1>
+      <p className={styles.description}>{description}</p>
+    </>
+  )
+}

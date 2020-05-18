@@ -1,4 +1,6 @@
 import React from "react"
+import { useMediaQuery } from "react-responsive"
+import { breakpoints } from "@sourceface/style"
 import Avatar from "@sourceface/components/avatar"
 import Breadcrumbs from "@sourceface/components/breadcrumbs"
 import Dropdown from "@sourceface/components/dropdown"
@@ -27,45 +29,55 @@ const items = [
     name: "Users",
     link: "/settings/users",
   },
+  {
+    name: "Team",
+    link: "/settings/users/team",
+  },
 ]
 
 // will be getting current page object from Page provided context and depending on it will render the data in breadcrumbs and sidebar
 export default ({ children }) => {
+  const isLargeSize = useMediaQuery({ minWidth: breakpoints.lg })
+
   return (
     <div className={styles.root}>
-      <Nav appearance="dark" className={styles.nav}>
-        <Nav.Logo />
-        <Nav.Link href="#">
-          <ContentIcon />
-        </Nav.Link>
-        <Nav.Link href="#">
-          <QuestionIcon />
-        </Nav.Link>
-        <Nav.Link href="#">
-          <StackIcon />
-        </Nav.Link>
-        <Nav.Link href="#">
-          <SettingsIcon />
-        </Nav.Link>
-      </Nav>
-      <Sidebar appearance="dark" className={styles.sidebar}>
-        <Sidebar.Title>Settings</Sidebar.Title>
-        <Sidebar.Group>
-          <Sidebar.GroupTitle>Personal</Sidebar.GroupTitle>
-          <Sidebar.GroupLink href="#" iconBefore={<ShieldIcon />}>
-            Security
-          </Sidebar.GroupLink>
-        </Sidebar.Group>
-        <Sidebar.Group>
-          <Sidebar.GroupTitle>Organization</Sidebar.GroupTitle>
-          <Sidebar.GroupLink href="#" iconBefore={<GroupIcon />} isSelected>
-            Users management
-          </Sidebar.GroupLink>
-          <Sidebar.GroupLink href="#" iconBefore={<LockIcon />}>
-            Access management
-          </Sidebar.GroupLink>
-        </Sidebar.Group>
-      </Sidebar>
+      {isLargeSize && (
+        <>
+          <Nav appearance="dark" className={styles.nav}>
+            <Nav.Logo />
+            <Nav.Link href="#">
+              <ContentIcon />
+            </Nav.Link>
+            <Nav.Link href="#">
+              <QuestionIcon />
+            </Nav.Link>
+            <Nav.Link href="#">
+              <StackIcon />
+            </Nav.Link>
+            <Nav.Link href="#">
+              <SettingsIcon />
+            </Nav.Link>
+          </Nav>
+          <Sidebar appearance="dark" className={styles.sidebar}>
+            <Sidebar.Title>Settings</Sidebar.Title>
+            <Sidebar.Group>
+              <Sidebar.GroupTitle>Personal</Sidebar.GroupTitle>
+              <Sidebar.GroupLink href="#" iconBefore={<ShieldIcon />}>
+                Security
+              </Sidebar.GroupLink>
+            </Sidebar.Group>
+            <Sidebar.Group>
+              <Sidebar.GroupTitle>Organization</Sidebar.GroupTitle>
+              <Sidebar.GroupLink href="#" iconBefore={<GroupIcon />} isSelected>
+                Users management
+              </Sidebar.GroupLink>
+              <Sidebar.GroupLink href="#" iconBefore={<LockIcon />}>
+                Access management
+              </Sidebar.GroupLink>
+            </Sidebar.Group>
+          </Sidebar>
+        </>
+      )}
       <Header className={styles.header}>
         <Breadcrumbs items={items} />
         <Dropdown>
