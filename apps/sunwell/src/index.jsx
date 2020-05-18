@@ -1,5 +1,5 @@
-import "normalize.css?raw" // eslint-disable-line import/no-unresolved
-import "./index.css"
+import "normalize.css"
+import "./index.scss"
 
 import React from "react"
 import ReactDOM from "react-dom"
