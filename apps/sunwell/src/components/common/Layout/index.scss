@@ -17,13 +17,13 @@
   align-items: center;
 }
 
-.burger {
-  grid-area: burger;
-}
-
 .main {
   grid-area: main;
   padding: $value-4;
+}
+
+.burger {
+  grid-area: main;
 }
 
 .avatar {

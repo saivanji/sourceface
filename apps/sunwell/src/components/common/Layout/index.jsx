@@ -3,6 +3,7 @@ import { useMediaQuery } from "react-responsive"
 import { breakpoints } from "@sourceface/style"
 import Avatar from "@sourceface/components/avatar"
 import Breadcrumbs from "@sourceface/components/breadcrumbs"
+import Burger from "@sourceface/components/burger"
 import Dropdown from "@sourceface/components/dropdown"
 import Header from "@sourceface/components/header"
 import Nav from "@sourceface/components/nav"
@@ -53,6 +54,7 @@ export default ({ children }) => {
 function Initial() {
   return (
     <>
+      <Burger className={styles.burder} appearance="dark" />
       <Header className={styles.header}>
         Users management
         <Avatar value="A" />
