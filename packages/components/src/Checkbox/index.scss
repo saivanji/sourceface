@@ -9,41 +9,41 @@
   }
   &.normal,
   &.loose {
-    & .label {
+    .label {
       font-size: $font-size-sm;
     }
   }
   &.compact {
-    & .checkbox {
+    .checkbox {
       width: $value-4;
       height: $value-4;
     }
-    & .label {
+    .label {
       font-size: $font-size-xs;
       margin-left: $value-1;
     }
   }
   &.normal {
-    & .checkbox {
+    .checkbox {
       width: $value-5;
       height: $value-5;
     }
-    & .label {
+    .label {
       margin-left: $value-2;
     }
   }
   &.loose {
-    & .checkbox {
+    .checkbox {
       width: $value-6;
       height: $value-6;
     }
-    & .label {
+    .label {
       margin-left: $value-3;
     }
   }
   &.disabled {
     cursor: not-allowed;
-    & .checkbox {
+    .checkbox {
       background-color: $color-gray-tint-110;
     }
   }
@@ -66,7 +66,7 @@ input[type="checkbox"] {
   &:checked + .checkbox {
     background-color: $color-gray-shade-80;
     border-color: $color-gray-shade-80;
-    & .icon {
+    .icon {
       display: block;
     }
   }

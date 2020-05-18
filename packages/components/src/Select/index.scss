@@ -5,35 +5,35 @@
   flex-direction: column;
   &.normal,
   &.loose {
-    & .element {
+    .element {
       font-size: $font-size-sm;
     }
   }
   &.compact,
   &.normal {
-    & .error-text {
+    .error-text {
       font-size: $font-size-xs;
     }
   }
   &.compact {
-    & .element {
+    .element {
       font-size: $font-size-xs;
       height: $value-6;
       padding: 0 $value-1;
     }
   }
   &.normal {
-    & .element {
+    .element {
       height: $value-8;
       padding: 0 $value-2;
     }
   }
   &.loose {
-    & .element {
+    .element {
       height: $value-10;
       padding: 0 $value-3;
     }
-    & .error-text {
+    .error-text {
       font-size: $font-size-sm;
     }
   }

@@ -18,11 +18,11 @@
   border: 1px solid $color-gray-tint-90;
   &.bottom-left,
   &.bottom-right {
-    top: calc(100% + $value-2);
+    top: calc(100% + #{$value-2});
   }
   &.top-left,
   &.top-right {
-    bottom: calc(100% + $value-2);
+    bottom: calc(100% + #{$value-2});
   }
   &.bottom-left,
   &.top-left {

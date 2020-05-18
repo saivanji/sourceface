@@ -54,7 +54,7 @@
   text-decoration: none;
   &:hover {
     background-color: $color-gray-shade-100;
-    & .group-icon {
+    .group-icon {
       fill: $color-gray-tint-20;
     }
   }
@@ -62,7 +62,7 @@
   &.selected,
   &:active {
     background-color: $color-gray-shade-120;
-    & .group-icon {
+    .group-icon {
       fill: $color-gray-tint-50;
     }
   }

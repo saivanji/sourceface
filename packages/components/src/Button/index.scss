@@ -19,17 +19,17 @@
   /* sizes */
   &.compact {
     font-size: $font-size-xs;
-    & .spinner {
+    .spinner {
       margin-right: $value-1;
     }
   }
   &.normal {
-    & .spinner {
+    .spinner {
       margin-right: $value-2;
     }
   }
   &.loose {
-    & .spinner {
+    .spinner {
       margin-right: $value-3;
     }
   }
@@ -40,7 +40,7 @@
       height: $value-6;
       padding-left: $value-2;
       padding-right: $value-2;
-      & .spinner {
+      .spinner {
         margin-right: $value-1;
       }
     }
@@ -48,7 +48,7 @@
       height: $value-8;
       padding-left: $value-3;
       padding-right: $value-3;
-      & .spinner {
+      .spinner {
         margin-right: $value-2;
       }
     }
@@ -56,7 +56,7 @@
       height: $value-10;
       padding-left: $value-4;
       padding-right: $value-4;
-      & .spinner {
+      .spinner {
         margin-right: $value-3;
       }
     }

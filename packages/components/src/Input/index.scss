@@ -3,89 +3,89 @@
 .root {
   &.normal,
   &.loose {
-    & .element {
+    .element {
       font-size: $font-size-sm;
     }
   }
   &.compact,
   &.normal {
-    & .error-text {
+    .error-text {
       font-size: $font-size-xs;
     }
   }
   &.compact {
-    & .wrap {
+    .wrap {
       height: $value-6;
     }
-    & .element {
+    .element {
       font-size: $font-size-xs;
       padding: 0 $value-1;
     }
-    & .icon-before,
-    & .icon-after {
+    .icon-before,
+    .icon-after {
       width: $value-2;
     }
-    & .icon-before {
+    .icon-before {
       margin-left: $value-2;
     }
-    & .icon-after {
+    .icon-after {
       margin-right: $value-2;
     }
-    & .has-icon-before {
+    .has-icon-before {
       padding-left: $value-6;
     }
-    & .has-icon-after {
+    .has-icon-after {
       padding-right: $value-6;
     }
   }
   &.normal {
-    & .wrap {
+    .wrap {
       height: $value-8;
     }
-    & .element {
+    .element {
       padding: 0 $value-2;
     }
-    & .icon-before,
-    & .icon-after {
+    .icon-before,
+    .icon-after {
       width: $value-3;
     }
-    & .icon-before {
+    .icon-before {
       margin-left: $value-3;
     }
-    & .icon-after {
+    .icon-after {
       margin-right: $value-3;
     }
-    & .has-icon-before {
+    .has-icon-before {
       padding-left: $value-8;
     }
-    & .has-icon-after {
+    .has-icon-after {
       padding-right: $value-8;
     }
   }
   &.loose {
-    & .wrap {
+    .wrap {
       height: $value-10;
     }
-    & .element {
+    .element {
       padding: 0 $value-3;
     }
-    & .icon-before,
-    & .icon-after {
+    .icon-before,
+    .icon-after {
       width: $value-4;
     }
-    & .icon-before {
+    .icon-before {
       margin-left: $value-4;
     }
-    & .icon-after {
+    .icon-after {
       margin-right: $value-4;
     }
-    & .has-icon-before {
+    .has-icon-before {
       padding-left: $value-10;
     }
-    & .has-icon-after {
+    .has-icon-after {
       padding-right: $value-10;
     }
-    & .error-text {
+    .error-text {
       font-size: $font-size-sm;
     }
   }
