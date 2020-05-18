@@ -3,9 +3,9 @@
 .root {
   display: grid;
   grid-template-areas:
-    "header"
-    "main";
-  grid-template-columns: 1fr;
+    "burger header"
+    "main main";
+  grid-template-columns: auto 1fr;
   grid-template-rows: auto 1fr;
   height: 100vh;
 }
@@ -15,6 +15,10 @@
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
+}
+
+.burger {
+  grid-area: burger;
 }
 
 .main {

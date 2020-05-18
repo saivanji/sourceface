@@ -3,6 +3,8 @@ import { useMediaQuery } from "react-responsive"
 import { breakpoints } from "@sourceface/style"
 import Avatar from "@sourceface/components/avatar"
 import Breadcrumbs from "@sourceface/components/breadcrumbs"
+import Burger from "@sourceface/components/burger"
+import BottomNav from "./BottomNav"
 import Dropdown from "@sourceface/components/dropdown"
 import Header from "@sourceface/components/header"
 import Nav from "@sourceface/components/nav"
@@ -41,7 +43,7 @@ export default ({ children }) => {
 
   return (
     <div className={styles.root}>
-      {isLargeSize && (
+      {isLargeSize ? (
         <>
           <Nav appearance="dark" className={styles.nav}>
             <Nav.Logo />
@@ -76,21 +78,28 @@ export default ({ children }) => {
               </Sidebar.GroupLink>
             </Sidebar.Group>
           </Sidebar>
+          <Header className={styles.header}>
+            <Breadcrumbs items={items} />
+            <Dropdown>
+              <Dropdown.Trigger>
+                <button className={styles.avatar}>
+                  <Avatar value="A" />
+                </button>
+              </Dropdown.Trigger>
+              <Dropdown.Menu>
+                <Dropdown.Item>Sign out</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </Header>
+        </>
+      ) : (
+        <>
+          {
+            // <Burger className={styles.burger} appearance="dark" />
+          }
+          <Header className={styles.header}>Header</Header>
         </>
       )}
-      <Header className={styles.header}>
-        <Breadcrumbs items={items} />
-        <Dropdown>
-          <Dropdown.Trigger>
-            <button className={styles.avatar}>
-              <Avatar value="A" />
-            </button>
-          </Dropdown.Trigger>
-          <Dropdown.Menu>
-            <Dropdown.Item>Sign out</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-      </Header>
       <div className={styles.main}>{children}</div>
     </div>
   )
