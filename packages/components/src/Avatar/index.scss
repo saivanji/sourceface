@@ -1,0 +1,13 @@
+@use "@sourceface/style/index.scss";
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-white;
+  width: $value-8;
+  height: $value-8;
+  background-color: $color-gray-shade-80;
+  border-radius: $rounded-full;
+  font-size: $font-size-md;
+}
