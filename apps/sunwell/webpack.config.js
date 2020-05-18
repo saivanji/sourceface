@@ -31,29 +31,25 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        oneOf: [
+        use: [MiniCssExtractPlugin.loader, "css-loader"],
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
           {
-            resourceQuery: /^\?raw$/,
-            use: [MiniCssExtractPlugin.loader, "css-loader"],
-          },
-          {
-            use: [
-              MiniCssExtractPlugin.loader,
-              {
-                loader: "css-loader",
-                options: {
-                  import: false,
-                  modules: {
-                    localIdentName: isDev
-                      ? "[folder]_[local]_[hash:base64:5]"
-                      : "[hash:base64]",
-                  },
-                  localsConvention: "camelCase",
-                },
+            loader: "css-loader",
+            options: {
+              modules: {
+                localIdentName: isDev
+                  ? "[folder]_[local]_[hash:base64:5]"
+                  : "[hash:base64]",
               },
-              "postcss-loader",
-            ],
+              localsConvention: "camelCase",
+            },
           },
+          "postcss-loader",
+          "sass-loader",
         ],
       },
       {
