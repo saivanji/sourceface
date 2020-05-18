@@ -8,5 +8,11 @@ export default function Header({
   size = "normal",
   className,
 }) {
-  return <div className={cx(styles.root, className)}>{children}</div>
+  return (
+    <div
+      className={cx(styles.root, styles[appearance], styles[size], className)}
+    >
+      {children}
+    </div>
+  )
 }
