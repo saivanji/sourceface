@@ -1,0 +1,28 @@
+@import "~@sourceface/style/index.scss";
+
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  width: $value-4 + $value-10;
+  height: $value-4 + $value-10;
+  box-shadow: $shadow-base;
+  &.light {
+    background-color: $color-white;
+    .icon {
+      fill: $color-gray-shade-80;
+    }
+  }
+  &.dark {
+    background-color: $color-gray-shade-120;
+    .icon {
+      fill: $color-gray-tint-30;
+    }
+  }
+}
+
+.icon {
+  width: $value-8;
+  height: $value-8;
+}
