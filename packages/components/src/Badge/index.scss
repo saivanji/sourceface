@@ -3,21 +3,21 @@
 .root {
   display: inline-flex;
   align-items: center;
-  font-size: var(--font-size-xs);
-  padding: 0 var(--value-1);
-  height: var(--value-4);
+  font-size: $font-size-xs;
+  padding: 0 $value-1;
+  height: $value-4;
   &.rounded {
-    border-radius: var(--rounded-full);
+    border-radius: $rounded-full;
   }
   &.squared {
-    border-radius: var(--rounded-base);
+    border-radius: $rounded-base;
   }
   &.dark {
-    background-color: var(--color-gray-shade-80);
-    color: var(--color-white);
+    background-color: $color-gray-shade-80;
+    color: $color-white;
   }
   &.light {
-    background-color: var(--color-gray-tint-90);
-    color: var(--color-gray-shade-70);
+    background-color: $color-gray-tint-90;
+    color: $color-gray-shade-70;
   }
 }

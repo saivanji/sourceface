@@ -4,89 +4,89 @@
   &.normal,
   &.loose {
     & .element {
-      font-size: var(--font-size-sm);
+      font-size: $font-size-sm;
     }
   }
   &.compact,
   &.normal {
     & .error-text {
-      font-size: var(--font-size-xs);
+      font-size: $font-size-xs;
     }
   }
   &.compact {
     & .wrap {
-      height: var(--value-6);
+      height: $value-6;
     }
     & .element {
-      font-size: var(--font-size-xs);
-      padding: 0 var(--value-1);
+      font-size: $font-size-xs;
+      padding: 0 $value-1;
     }
     & .icon-before,
     & .icon-after {
-      width: var(--value-2);
+      width: $value-2;
     }
     & .icon-before {
-      margin-left: var(--value-2);
+      margin-left: $value-2;
     }
     & .icon-after {
-      margin-right: var(--value-2);
+      margin-right: $value-2;
     }
     & .has-icon-before {
-      padding-left: var(--value-6);
+      padding-left: $value-6;
     }
     & .has-icon-after {
-      padding-right: var(--value-6);
+      padding-right: $value-6;
     }
   }
   &.normal {
     & .wrap {
-      height: var(--value-8);
+      height: $value-8;
     }
     & .element {
-      padding: 0 var(--value-2);
+      padding: 0 $value-2;
     }
     & .icon-before,
     & .icon-after {
-      width: var(--value-3);
+      width: $value-3;
     }
     & .icon-before {
-      margin-left: var(--value-3);
+      margin-left: $value-3;
     }
     & .icon-after {
-      margin-right: var(--value-3);
+      margin-right: $value-3;
     }
     & .has-icon-before {
-      padding-left: var(--value-8);
+      padding-left: $value-8;
     }
     & .has-icon-after {
-      padding-right: var(--value-8);
+      padding-right: $value-8;
     }
   }
   &.loose {
     & .wrap {
-      height: var(--value-10);
+      height: $value-10;
     }
     & .element {
-      padding: 0 var(--value-3);
+      padding: 0 $value-3;
     }
     & .icon-before,
     & .icon-after {
-      width: var(--value-4);
+      width: $value-4;
     }
     & .icon-before {
-      margin-left: var(--value-4);
+      margin-left: $value-4;
     }
     & .icon-after {
-      margin-right: var(--value-4);
+      margin-right: $value-4;
     }
     & .has-icon-before {
-      padding-left: var(--value-10);
+      padding-left: $value-10;
     }
     & .has-icon-after {
-      padding-right: var(--value-10);
+      padding-right: $value-10;
     }
     & .error-text {
-      font-size: var(--font-size-sm);
+      font-size: $font-size-sm;
     }
   }
 }
@@ -98,20 +98,20 @@
 .element {
   width: 100%;
   height: 100%;
-  background-color: var(--color-gray-tint-130);
-  color: var(--color-gray-shade-110);
-  border-radius: var(--rounded-base);
-  border: 1px solid var(--color-gray-tint-50);
+  background-color: $color-gray-tint-130;
+  color: $color-gray-shade-110;
+  border-radius: $rounded-base;
+  border: 1px solid $color-gray-tint-50;
   &:focus {
-    background-color: var(--color-white);
-    border-color: var(--color-gray-tint-10);
-    box-shadow: 0 0 0 3px var(--color-gray-tint-120);
+    background-color: $color-white;
+    border-color: $color-gray-tint-10;
+    box-shadow: 0 0 0 3px $color-gray-tint-120;
   }
   &::placeholder {
-    color: var(--color-gray-shade-30);
+    color: $color-gray-shade-30;
   }
   &.error {
-    border-color: var(--color-gray-shade-100);
+    border-color: $color-gray-shade-100;
     &:focus {
       box-shadow: none;
     }
@@ -119,8 +119,8 @@
 }
 
 .error-text {
-  color: var(--color-black);
-  margin-top: var(--value-1);
+  color: $color-black;
+  margin-top: $value-1;
 }
 
 .icon-before,

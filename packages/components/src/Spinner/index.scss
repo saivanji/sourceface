@@ -10,25 +10,25 @@
   border-right-color: transparent !important;
   animation: rotate 0.75s linear infinite;
   border: 2px solid;
-  border-radius: var(--rounded-full);
+  border-radius: $rounded-full;
   &.compact {
-    width: var(--value-3);
-    height: var(--value-3);
+    width: $value-3;
+    height: $value-3;
   }
   &.normal {
-    width: var(--value-4);
-    height: var(--value-4);
+    width: $value-4;
+    height: $value-4;
   }
   &.loose {
-    width: var(--value-5);
-    height: var(--value-5);
+    width: $value-5;
+    height: $value-5;
   }
 }
 
 .light {
-  border-color: var(--color-white);
+  border-color: $color-white;
 }
 
 .dark {
-  border-color: var(--color-gray-shade-80);
+  border-color: $color-gray-shade-80;
 }

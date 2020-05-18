@@ -6,21 +6,21 @@
   font-weight: 700;
   display: flex;
   align-items: center;
-  color: var(--color-gray-shade-100);
-  margin-bottom: var(--value-2);
-  font-size: var(--font-size-sm);
+  color: $color-gray-shade-100;
+  margin-bottom: $value-2;
+  font-size: $font-size-sm;
 }
 
 .helper {
   display: block;
-  margin-top: var(--value-1);
-  color: var(--color-gray);
-  font-size: var(--font-size-xs);
+  margin-top: $value-1;
+  color: $color-gray;
+  font-size: $font-size-xs;
 }
 
 .optional {
   font-weight: 400;
-  color: var(--color-gray);
-  font-size: var(--font-size-xs);
-  margin-left: var(--value-1);
+  color: $color-gray;
+  font-size: $font-size-xs;
+  margin-left: $value-1;
 }

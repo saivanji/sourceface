@@ -5,8 +5,8 @@
   justify-content: center;
   align-items: center;
   border: 0;
-  border-radius: var(--rounded-base);
-  font-size: var(--font-size-sm);
+  border-radius: $rounded-base;
+  font-size: $font-size-sm;
   &:not(:disabled) {
     cursor: pointer;
   }
@@ -18,108 +18,108 @@
   }
   /* sizes */
   &.compact {
-    font-size: var(--font-size-xs);
+    font-size: $font-size-xs;
     & .spinner {
-      margin-right: var(--value-1);
+      margin-right: $value-1;
     }
   }
   &.normal {
     & .spinner {
-      margin-right: var(--value-2);
+      margin-right: $value-2;
     }
   }
   &.loose {
     & .spinner {
-      margin-right: var(--value-3);
+      margin-right: $value-3;
     }
   }
   &.primary,
   &.secondary,
   &.tertiary {
     &.compact {
-      height: var(--value-6);
-      padding-left: var(--value-2);
-      padding-right: var(--value-2);
+      height: $value-6;
+      padding-left: $value-2;
+      padding-right: $value-2;
       & .spinner {
-        margin-right: var(--value-1);
+        margin-right: $value-1;
       }
     }
     &.normal {
-      height: var(--value-8);
-      padding-left: var(--value-3);
-      padding-right: var(--value-3);
+      height: $value-8;
+      padding-left: $value-3;
+      padding-right: $value-3;
       & .spinner {
-        margin-right: var(--value-2);
+        margin-right: $value-2;
       }
     }
     &.loose {
-      height: var(--value-10);
-      padding-left: var(--value-4);
-      padding-right: var(--value-4);
+      height: $value-10;
+      padding-left: $value-4;
+      padding-right: $value-4;
       & .spinner {
-        margin-right: var(--value-3);
+        margin-right: $value-3;
       }
     }
   }
   /* appearances */
   &.primary {
-    background-color: var(--color-gray-shade-80);
-    color: var(--color-white);
+    background-color: $color-gray-shade-80;
+    color: $color-white;
     &:hover:not(:disabled) {
-      background-color: var(--color-gray-shade-90);
+      background-color: $color-gray-shade-90;
     }
     &:active:not(:disabled) {
-      background-color: var(--color-gray-shade-100);
+      background-color: $color-gray-shade-100;
     }
     &:focus {
-      box-shadow: 0 0 0 3px var(--color-gray-tint-120);
+      box-shadow: 0 0 0 3px $color-gray-tint-120;
     }
     &.disabled {
       cursor: not-allowed;
-      background-color: var(--color-gray-tint-80);
-      color: var(--color-gray-shade-10);
+      background-color: $color-gray-tint-80;
+      color: $color-gray-shade-10;
     }
   }
   &.secondary {
-    background-color: var(--color-white);
-    color: var(--color-gray-shade-60);
-    border: 1px solid var(--color-gray-tint-50);
+    background-color: $color-white;
+    color: $color-gray-shade-60;
+    border: 1px solid $color-gray-tint-50;
     &.disabled {
-      background-color: var(--color-gray-tint-120);
+      background-color: $color-gray-tint-120;
     }
   }
   &.tertiary {
     background: none;
     font-weight: 700;
-    color: var(--color-gray-shade-110);
+    color: $color-gray-shade-110;
   }
   &.secondary,
   &.tertiary {
     &:hover:not(:disabled) {
-      background-color: var(--color-gray-tint-130);
+      background-color: $color-gray-tint-130;
     }
     &:active:not(:disabled) {
-      background-color: var(--color-gray-tint-120);
+      background-color: $color-gray-tint-120;
     }
     &:focus {
-      box-shadow: 0 0 0 3px var(--color-gray-tint-120);
+      box-shadow: 0 0 0 3px $color-gray-tint-120;
     }
     &.disabled {
       cursor: not-allowed;
-      color: var(--color-gray-shade-10);
+      color: $color-gray-shade-10;
     }
   }
   &.link {
     background: none;
     padding: 0;
     font-weight: 700;
-    color: var(--color-gray-shade-110);
+    color: $color-gray-shade-110;
     &:focus {
-      box-shadow: 0 0 0 3px var(--color-gray-tint-120);
+      box-shadow: 0 0 0 3px $color-gray-tint-120;
     }
     &.disabled {
       cursor: not-allowed;
-      color: var(--color-gray-shade-10);
+      color: $color-gray-shade-10;
     }
   }
   &.danger {

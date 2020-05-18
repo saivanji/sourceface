@@ -3,17 +3,17 @@
 .root {
   display: flex;
   flex-direction: column;
-  margin: calc(var(--value-4) * -1);
-  font-size: var(--font-size-sm);
+  margin: calc($value-4) * -1;
+  font-size: $font-size-sm;
 }
 
 .header {
   display: flex;
-  border-bottom: 1px solid var(--color-gray-tint-30);
+  border-bottom: 1px solid $color-gray-tint-30;
 }
 
 .body {
-  padding: var(--value-4);
+  padding: $value-4;
 }
 
 .item {
@@ -21,35 +21,35 @@
   align-items: center;
   cursor: pointer;
   border: 0;
-  border-top-left-radius: var(--rounded-base);
-  border-top-right-radius: var(--rounded-base);
+  border-top-left-radius: $rounded-base;
+  border-top-right-radius: $rounded-base;
   background: none;
   margin-bottom: -1px;
-  padding: 0 var(--value-4);
-  height: var(--value-10);
-  color: var(--color-gray-shade-80);
+  padding: 0 $value-4;
+  height: $value-10;
+  color: $color-gray-shade-80;
   &:hover {
   }
   &:focus {
     outline: 0;
-    background-color: var(--color-white);
-    box-shadow: 0 0 0 3px var(--color-gray-tint-120);
+    background-color: $color-white;
+    box-shadow: 0 0 0 3px $color-gray-tint-120;
   }
   &.selected {
     font-weight: 700;
-    border-bottom: 2px solid var(--color-gray-shade-80);
+    border-bottom: 2px solid $color-gray-shade-80;
   }
 }
 
 .icon-before,
 .icon-after {
-  width: var(--value-3);
+  width: $value-3;
 }
 
 .icon-before {
-  margin-right: var(--value-2);
+  margin-right: $value-2;
 }
 
 .icon-after {
-  margin-left: var(--value-2);
+  margin-left: $value-2;
 }

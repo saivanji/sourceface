@@ -5,46 +5,46 @@
   display: inline-flex;
   align-items: center;
   &:hover .checkbox {
-    background-color: var(--color-gray-tint-130);
+    background-color: $color-gray-tint-130;
   }
   &.normal,
   &.loose {
     & .label {
-      font-size: var(--font-size-sm);
+      font-size: $font-size-sm;
     }
   }
   &.compact {
     & .checkbox {
-      width: var(--value-4);
-      height: var(--value-4);
+      width: $value-4;
+      height: $value-4;
     }
     & .label {
-      font-size: var(--font-size-xs);
-      margin-left: var(--value-1);
+      font-size: $font-size-xs;
+      margin-left: $value-1;
     }
   }
   &.normal {
     & .checkbox {
-      width: var(--value-5);
-      height: var(--value-5);
+      width: $value-5;
+      height: $value-5;
     }
     & .label {
-      margin-left: var(--value-2);
+      margin-left: $value-2;
     }
   }
   &.loose {
     & .checkbox {
-      width: var(--value-6);
-      height: var(--value-6);
+      width: $value-6;
+      height: $value-6;
     }
     & .label {
-      margin-left: var(--value-3);
+      margin-left: $value-3;
     }
   }
   &.disabled {
     cursor: not-allowed;
     & .checkbox {
-      background-color: var(--color-gray-tint-110);
+      background-color: $color-gray-tint-110;
     }
   }
 }
@@ -53,8 +53,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--color-gray-tint-50);
-  border-radius: var(--rounded-sm);
+  border: 1px solid $color-gray-tint-50;
+  border-radius: $rounded-sm;
 }
 
 input[type="checkbox"] {
@@ -64,14 +64,14 @@ input[type="checkbox"] {
   opacity: 0;
   visibility: hidden;
   &:checked + .checkbox {
-    background-color: var(--color-gray-shade-80);
-    border-color: var(--color-gray-shade-80);
+    background-color: $color-gray-shade-80;
+    border-color: $color-gray-shade-80;
     & .icon {
       display: block;
     }
   }
   &:focus + .checkbox {
-    box-shadow: 0 0 0 3px var(--color-gray-tint-120);
+    box-shadow: 0 0 0 3px $color-gray-tint-120;
   }
 }
 
@@ -81,5 +81,5 @@ input[type="checkbox"] {
 
 .icon {
   display: none;
-  fill: var(--color-white);
+  fill: $color-white;
 }

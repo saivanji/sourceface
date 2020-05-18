@@ -17,24 +17,24 @@
 
 .container {
   width: 100%;
-  margin: var(--value-4);
-  background-color: var(--color-white);
-  border-radius: var(--rounded-base);
-  padding: var(--value-4);
-  box-shadow: var(--shadow-sm);
+  margin: $value-4;
+  background-color: $color-white;
+  border-radius: $rounded-base;
+  padding: $value-4;
+  box-shadow: $shadow-sm;
   &.compact {
-    max-width: var(--size-xs);
+    max-width: $size-xs;
   }
   &.normal {
-    max-width: var(--size-lg);
+    max-width: $size-lg;
   }
   &.loose {
-    max-width: var(--size-2xl);
+    max-width: $size-2xl;
   }
 }
 
 .row {
-  padding-bottom: var(--value-4);
+  padding-bottom: $value-4;
   &:last-child {
     padding-bottom: 0;
   }
@@ -51,15 +51,15 @@
   margin: 0;
   padding: 0;
   font-weight: 700;
-  font-size: var(--font-size-lg);
-  color: var(--color-gray-shade-120);
+  font-size: $font-size-lg;
+  color: $color-gray-shade-120;
 }
 
 .header-icon {
   display: flex;
   align-items: center;
-  width: var(--value-5);
-  margin-right: var(--value-2);
+  width: $value-5;
+  margin-right: $value-2;
 }
 
 .close {
@@ -69,17 +69,17 @@
   border: 0;
   padding: 0;
   background: none;
-  width: var(--value-6);
+  width: $value-6;
   & svg {
-    fill: var(--color-gray-shade-90);
+    fill: $color-gray-shade-90;
     &:hover {
-      fill: var(--color-gray-shade-120);
+      fill: $color-gray-shade-120;
     }
   }
   &:focus {
     outline: 0;
-    border-radius: var(--rounded-base);
-    box-shadow: 0 0 0 3px var(--color-gray-tint-120);
+    border-radius: $rounded-base;
+    box-shadow: 0 0 0 3px $color-gray-tint-120;
   }
 }
 
@@ -87,11 +87,11 @@
   margin-left: auto;
   display: flex;
   align-items: center;
-  padding-top: var(--value-2);
+  padding-top: $value-2;
 }
 
 .action {
-  margin-right: var(--value-2);
+  margin-right: $value-2;
   &:last-child {
     margin-right: 0;
   }

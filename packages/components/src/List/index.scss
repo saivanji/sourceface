@@ -1,8 +1,8 @@
 @import "@sourceface/style/index.css";
 
 .item {
-  border-bottom: 1px solid var(--color-gray-tint-50);
-  padding: var(--value-4) 0;
+  border-bottom: 1px solid $color-gray-tint-50;
+  padding: $value-4 0;
   &:first-child {
     padding-top: 0;
   }

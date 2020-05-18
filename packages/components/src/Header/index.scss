@@ -1,8 +1,8 @@
 @import "@sourceface/style/index.css";
 
 .root {
-  height: calc(var(--value-10) + var(--value-4));
-  padding: var(--value-2) var(--value-4);
-  background-color: var(--color-white);
-  box-shadow: var(--shadow-base);
+  height: calc($value-10) + var(--value-4);
+  padding: $value-2) var(--value-4;
+  background-color: $color-white;
+  box-shadow: $shadow-base;
 }

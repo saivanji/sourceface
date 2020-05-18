@@ -1,25 +1,25 @@
 @import "@sourceface/style/index.css";
 
 .root {
-  padding: var(--value-2) var(--value-4);
-  background-color: var(--color-gray-shade-110);
+  padding: $value-2) var(--value-4;
+  background-color: $color-gray-shade-110;
 }
 
 .title {
   display: flex;
   align-items: center;
   margin-bottom: -1px;
-  height: calc(var(--value-10) + var(--value-2));
-  margin-bottom: var(--value-4);
-  color: var(--color-white);
-  font-size: var(--font-size-xl);
-  border-bottom: 1px solid var(--color-gray-shade-90);
+  height: calc($value-10) + var(--value-2);
+  margin-bottom: $value-4;
+  color: $color-white;
+  font-size: $font-size-xl;
+  border-bottom: 1px solid $color-gray-shade-90;
 }
 
 .group {
-  margin-left: calc(var(--value-2) * -1);
+  margin-left: calc($value-2) * -1;
   & + .group {
-    margin-top: var(--value-5);
+    margin-top: $value-5;
   }
 }
 
@@ -27,16 +27,16 @@
   text-transform: uppercase;
   font-weight: 700;
   display: block;
-  padding-left: var(--value-2);
-  color: var(--color-gray-shade-30);
-  font-size: var(--font-size-xs);
-  margin-bottom: var(--value-1);
+  padding-left: $value-2;
+  color: $color-gray-shade-30;
+  font-size: $font-size-xs;
+  margin-bottom: $value-1;
 }
 
 .group-icon {
-  width: var(--value-4);
-  margin-right: var(--value-2);
-  fill: var(--color-gray-shade-10);
+  width: $value-4;
+  margin-right: $value-2;
+  fill: $color-gray-shade-10;
 }
 
 .group-link {
@@ -47,27 +47,27 @@
   text-align: left;
   display: flex;
   align-items: center;
-  padding: 0 var(--value-2);
-  color: var(--color-gray-tint-100);
-  border-radius: var(--rounded-md);
-  height: var(--value-10);
+  padding: 0 $value-2;
+  color: $color-gray-tint-100;
+  border-radius: $rounded-md;
+  height: $value-10;
   text-decoration: none;
   &:hover {
-    background-color: var(--color-gray-shade-100);
+    background-color: $color-gray-shade-100;
     & .group-icon {
-      fill: var(--color-gray-tint-20);
+      fill: $color-gray-tint-20;
     }
   }
   /* most likely active color should be different from selected */
   &.selected,
   &:active {
-    background-color: var(--color-gray-shade-120);
+    background-color: $color-gray-shade-120;
     & .group-icon {
-      fill: var(--color-gray-tint-50);
+      fill: $color-gray-tint-50;
     }
   }
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 3px var(--color-gray-shade-90);
+    box-shadow: 0 0 0 3px $color-gray-shade-90;
   }
 }
