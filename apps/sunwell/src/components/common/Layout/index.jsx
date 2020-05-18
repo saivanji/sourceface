@@ -19,6 +19,7 @@ import styles from "./index.scss"
 
 // Pages menu may be left sliding
 // User menu may be right sliding
+// when clicking on a user item in the list - display select list modal?
 
 const items = [
   {
@@ -54,8 +55,8 @@ export default ({ children }) => {
 function Initial() {
   return (
     <>
-      <Burger className={styles.burder} appearance="dark" />
-      <Header className={styles.header}>
+      <Burger className={styles.burger} size="compact" appearance="dark" />
+      <Header className={styles.header} size="compact">
         Users management
         <Avatar value="A" />
       </Header>

@@ -8,6 +8,7 @@
   grid-template-columns: auto 1fr;
   grid-template-rows: auto 1fr;
   height: 100vh;
+  background-color: $color-white;
 }
 
 .header {
@@ -19,11 +20,10 @@
 
 .main {
   grid-area: main;
-  padding: $value-4;
 }
 
 .burger {
-  grid-area: main;
+  grid-area: burger;
 }
 
 .avatar {
@@ -44,6 +44,7 @@
       "nav sidebar header"
       "nav sidebar main";
     grid-template-columns: auto $value-64 1fr;
+    background-color: transparent;
   }
 
   .nav {
@@ -54,5 +55,9 @@
 
   .sidebar {
     grid-area: sidebar;
+  }
+
+  .main {
+    padding: $value-4;
   }
 }
