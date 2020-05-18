@@ -13,7 +13,7 @@ import { Layout } from "components/common"
 import SearchIcon from "assets/search.svg"
 import AlertIcon from "assets/alert.svg"
 import MoreIcon from "assets/more.svg"
-import styles from "./index.css"
+import styles from "./index.scss"
 import Table from "./Table"
 
 export default () => {

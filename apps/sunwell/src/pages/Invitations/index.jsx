@@ -10,7 +10,7 @@ import Modal from "@sourceface/components/modal"
 import Pagination from "@sourceface/components/pagination"
 import AlertIcon from "assets/alert.svg"
 import MoreIcon from "assets/more.svg"
-import styles from "./index.css"
+import styles from "./index.scss"
 
 export default () => {
   const [page, setPage] = useState(0)

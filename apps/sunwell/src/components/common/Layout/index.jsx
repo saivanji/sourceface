@@ -12,7 +12,7 @@ import QuestionIcon from "assets/question-line.svg"
 import SettingsIcon from "assets/settings-line.svg"
 import ShieldIcon from "assets/shield-line.svg"
 import StackIcon from "assets/stack-line.svg"
-import styles from "./index.css"
+import styles from "./index.scss"
 
 const items = [
   {

@@ -4,7 +4,7 @@ import Checkbox from "@sourceface/components/checkbox"
 import Input from "@sourceface/components/input"
 import Label from "@sourceface/components/label"
 import { Layout } from "components/auth"
-import styles from "./index.css"
+import styles from "./index.scss"
 
 export default () => {
   return (

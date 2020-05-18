@@ -6,7 +6,7 @@ import Label from "@sourceface/components/label"
 import { Layout, Strength } from "components/auth"
 import ErrorIcon from "assets/error.svg"
 import CheckIcon from "assets/check.svg"
-import styles from "./index.css"
+import styles from "./index.scss"
 
 export default () => {
   return (

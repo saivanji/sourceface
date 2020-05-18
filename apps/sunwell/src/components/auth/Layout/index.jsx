@@ -1,6 +1,6 @@
 import React from "react"
 import Card from "@sourceface/components/card"
-import styles from "./index.css"
+import styles from "./index.scss"
 
 export default ({ children, title, description }) => {
   return (
