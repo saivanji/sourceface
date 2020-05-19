@@ -2,6 +2,7 @@ import React from "react"
 import cx from "classnames"
 import styles from "./index.scss"
 
+// TODO: define bg/color at the root component(in css with nesting) and not for the children. Make sure the rest components in the kit are following that convention
 // TODO: implement light appearance
 export default function Sidebar({ children, className, ...props }) {
   return (
