@@ -8,12 +8,18 @@
   box-shadow: $shadow-base;
   &.light {
     background-color: $color-white;
+    &.active {
+      background-color: $color-gray-tint-100;
+    }
     .icon {
       fill: $color-gray-shade-80;
     }
   }
   &.dark {
     background-color: $color-gray-shade-100;
+    &.active {
+      background-color: $color-gray-shade-110;
+    }
     .icon {
       fill: $color-gray-tint-40;
     }
