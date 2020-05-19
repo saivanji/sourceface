@@ -5,21 +5,19 @@ import { breakpoints } from "@sourceface/style"
 import Avatar from "@sourceface/components/avatar"
 import Breadcrumbs from "@sourceface/components/breadcrumbs"
 import Burger from "@sourceface/components/burger"
-import Dropdown from "@sourceface/components/dropdown"
 import Header from "@sourceface/components/header"
 import Nav from "@sourceface/components/nav"
 import Sidebar from "@sourceface/components/sidebar"
 import ContentIcon from "assets/content-line.svg"
 import GroupIcon from "assets/group-line.svg"
 import LockIcon from "assets/lock-line.svg"
+import LogoutIcon from "assets/logout-line.svg"
 import QuestionIcon from "assets/question-line.svg"
 import SettingsIcon from "assets/settings-line.svg"
 import ShieldIcon from "assets/shield-line.svg"
 import StackIcon from "assets/stack-line.svg"
 import styles from "./index.scss"
 
-// Pages menu may be left sliding
-// User menu may be right sliding
 // when clicking on a user item in the list - display select list modal?
 
 const items = [
@@ -49,32 +47,21 @@ export default ({ children }) => {
 }
 
 function Initial({ children }) {
-  const [leftMenuActive, setLeftMenuActive] = useState(false)
-  const [rightMenuActive, setRightMenuActive] = useState(false)
+  const [isMenuActive, setMenuActive] = useState()
 
   return (
-    <div
-      className={cx(
-        styles.root,
-        leftMenuActive && styles.leftMenuActive,
-        rightMenuActive && styles.rightMenuActive
-      )}
-    >
-      {leftMenuActive && <Sidenav />}
-      {rightMenuActive && <ProfileMenu />}
+    <div className={cx(styles.root, isMenuActive && styles.menuActive)}>
+      {isMenuActive && <Sidenav withLogout />}
       <Burger
         className={styles.burger}
-        isActive={leftMenuActive}
+        isActive={isMenuActive}
         size="compact"
         appearance="dark"
-        onClick={() => setLeftMenuActive(!leftMenuActive)}
+        onClick={() => setMenuActive(!isMenuActive)}
       />
       <Header className={styles.header} size="compact">
         Users management
-        <Avatar
-          onClick={() => setRightMenuActive(!rightMenuActive)}
-          value="A"
-        />
+        <Avatar value="A" />
       </Header>
 
       <div className={styles.main}>{children}</div>
@@ -88,16 +75,7 @@ function Large({ children }) {
       <Sidenav />
       <Header className={styles.header}>
         <Breadcrumbs items={items} />
-        <Dropdown>
-          <Dropdown.Trigger>
-            <button className={styles.avatar}>
-              <Avatar value="A" />
-            </button>
-          </Dropdown.Trigger>
-          <Dropdown.Menu>
-            <Dropdown.Item>Sign out</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
+        <Avatar value="A" />
       </Header>
       <div className={styles.main}>{children}</div>
     </div>
@@ -121,6 +99,9 @@ function Sidenav() {
         <Nav.Link href="#">
           <SettingsIcon />
         </Nav.Link>
+        <Nav.Link href="#">
+          <LogoutIcon />
+        </Nav.Link>
       </Nav>
       <Sidebar appearance="dark" className={styles.sidebar}>
         <Sidebar.Title>Settings</Sidebar.Title>
@@ -141,16 +122,5 @@ function Sidenav() {
         </Sidebar.Group>
       </Sidebar>
     </>
-  )
-}
-
-function ProfileMenu() {
-  return (
-    <Sidebar appearance="light" className={styles.profile}>
-      <Sidebar.Title>Profile</Sidebar.Title>
-      <Sidebar.GroupLink href="#" iconBefore={<ShieldIcon />}>
-        Sign out
-      </Sidebar.GroupLink>
-    </Sidebar>
   )
 }
