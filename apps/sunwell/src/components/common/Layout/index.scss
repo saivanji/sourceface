@@ -43,18 +43,6 @@
   grid-area: burger;
 }
 
-.avatar {
-  cursor: pointer;
-  background: none;
-  padding: 0;
-  border: 0;
-  border-radius: $rounded-full;
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px $color-gray-tint-120;
-  }
-}
-
 @media (min-width: $break-lg) {
   .root {
     grid-template-areas:

@@ -51,7 +51,7 @@ function Initial({ children }) {
 
   return (
     <div className={cx(styles.root, isMenuActive && styles.menuActive)}>
-      {isMenuActive && <Sidenav withLogout />}
+      {isMenuActive && <Sidenav />}
       <Burger
         className={styles.burger}
         isActive={isMenuActive}

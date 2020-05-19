@@ -3,6 +3,7 @@ import cx from "classnames"
 import Card from "../Card"
 import styles from "./index.scss"
 
+// TODO: should not be rendered inside a card
 export default function Tabs({ children, className, ...props }) {
   return (
     <Card>
