@@ -5,10 +5,24 @@
   grid-template-areas:
     "burger header"
     "main main";
-  grid-template-columns: auto 1fr;
   grid-template-rows: auto 1fr;
+  grid-template-columns: auto 1fr;
   height: 100vh;
   background-color: $color-white;
+  &.left-menu-active {
+    overflow: hidden;
+    grid-template-columns: $value-10 + $value-4 $value-64 auto 100vw;
+    grid-template-areas:
+      "nav sidebar burger header"
+      "nav sidebar main main";
+  }
+  &.right-menu-active {
+    overflow: hidden;
+    grid-template-columns: auto 100vw $value-48;
+    grid-template-areas:
+      "burger header profile"
+      "main main profile";
+  }
 }
 
 .header {
@@ -18,12 +32,24 @@
   align-items: center;
 }
 
+.nav {
+  grid-area: nav;
+}
+
+.sidebar {
+  grid-area: sidebar;
+}
+
 .main {
   grid-area: main;
 }
 
 .burger {
   grid-area: burger;
+}
+
+.profile {
+  grid-area: profile;
 }
 
 .avatar {
@@ -48,13 +74,8 @@
   }
 
   .nav {
-    grid-area: nav;
     display: grid;
     grid-template-rows: auto 1fr;
-  }
-
-  .sidebar {
-    grid-area: sidebar;
   }
 
   .main {

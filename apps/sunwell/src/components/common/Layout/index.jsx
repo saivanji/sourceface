@@ -1,4 +1,5 @@
-import React from "react"
+import React, { useState } from "react"
+import cx from "classnames"
 import { useMediaQuery } from "react-responsive"
 import { breakpoints } from "@sourceface/style"
 import Avatar from "@sourceface/components/avatar"
@@ -44,27 +45,66 @@ const items = [
 export default ({ children }) => {
   const isLargeSize = useMediaQuery({ minWidth: breakpoints.lg })
 
+  return isLargeSize ? <Large>{children}</Large> : <Initial>{children}</Initial>
+}
+
+function Initial({ children }) {
+  const [leftMenuActive, setLeftMenuActive] = useState(false)
+  const [rightMenuActive, setRightMenuActive] = useState(false)
+
   return (
-    <div className={styles.root}>
-      {isLargeSize ? <Large /> : <Initial />}
+    <div
+      className={cx(
+        styles.root,
+        leftMenuActive && styles.leftMenuActive,
+        rightMenuActive && styles.rightMenuActive
+      )}
+    >
+      {leftMenuActive && <Sidenav />}
+      {rightMenuActive && <ProfileMenu />}
+      <Burger
+        className={styles.burger}
+        isActive={leftMenuActive}
+        size="compact"
+        appearance="dark"
+        onClick={() => setLeftMenuActive(!leftMenuActive)}
+      />
+      <Header className={styles.header} size="compact">
+        Users management
+        <Avatar
+          onClick={() => setRightMenuActive(!rightMenuActive)}
+          value="A"
+        />
+      </Header>
+
       <div className={styles.main}>{children}</div>
     </div>
   )
 }
 
-function Initial() {
+function Large({ children }) {
   return (
-    <>
-      <Burger className={styles.burger} size="compact" appearance="dark" />
-      <Header className={styles.header} size="compact">
-        Users management
-        <Avatar value="A" />
+    <div className={styles.root}>
+      <Sidenav />
+      <Header className={styles.header}>
+        <Breadcrumbs items={items} />
+        <Dropdown>
+          <Dropdown.Trigger>
+            <button className={styles.avatar}>
+              <Avatar value="A" />
+            </button>
+          </Dropdown.Trigger>
+          <Dropdown.Menu>
+            <Dropdown.Item>Sign out</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
       </Header>
-    </>
+      <div className={styles.main}>{children}</div>
+    </div>
   )
 }
 
-function Large() {
+function Sidenav() {
   return (
     <>
       <Nav appearance="dark" className={styles.nav}>
@@ -100,19 +140,17 @@ function Large() {
           </Sidebar.GroupLink>
         </Sidebar.Group>
       </Sidebar>
-      <Header className={styles.header}>
-        <Breadcrumbs items={items} />
-        <Dropdown>
-          <Dropdown.Trigger>
-            <button className={styles.avatar}>
-              <Avatar value="A" />
-            </button>
-          </Dropdown.Trigger>
-          <Dropdown.Menu>
-            <Dropdown.Item>Sign out</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-      </Header>
     </>
+  )
+}
+
+function ProfileMenu() {
+  return (
+    <Sidebar appearance="light" className={styles.profile}>
+      <Sidebar.Title>Profile</Sidebar.Title>
+      <Sidebar.GroupLink href="#" iconBefore={<ShieldIcon />}>
+        Sign out
+      </Sidebar.GroupLink>
+    </Sidebar>
   )
 }
