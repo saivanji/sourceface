@@ -15,12 +15,13 @@ export default function Select({
   options,
   className,
   error,
+  ...props
 }) {
   const selectedLabel =
     value && options.find(option => option.value === value).label
 
   return (
-    <div className={cx(styles.root, styles[size], className)}>
+    <div {...props} className={cx(styles.root, styles[size], className)}>
       <Dropdown>
         <Dropdown.Trigger className={styles.full}>
           <button

@@ -7,8 +7,10 @@ export default ({
   appearance = "dark",
   shape = "rounded",
   className,
+  ...props
 }) => (
   <span
+    {...props}
     className={cx(className, styles.root, styles[appearance], styles[shape])}
   >
     {value}

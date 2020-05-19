@@ -7,9 +7,11 @@ export default function Header({
   appearance = "light",
   size = "normal",
   className,
+  ...props
 }) {
   return (
     <div
+      {...props}
       className={cx(styles.root, styles[appearance], styles[size], className)}
     >
       {children}

@@ -3,17 +3,28 @@ import cx from "classnames"
 import Card from "../Card"
 import styles from "./index.scss"
 
-export default function Tabs({ children, className }) {
+export default function Tabs({ children, className, ...props }) {
   return (
     <Card>
-      <div className={cx(styles.root, className)}>{children}</div>
+      <div {...props} className={cx(styles.root, className)}>
+        {children}
+      </div>
     </Card>
   )
 }
 
-Tabs.Tab = function Tab({ children, isSelected, iconAfter, iconBefore }) {
+Tabs.Tab = function Tab({
+  children,
+  isSelected,
+  iconAfter,
+  iconBefore,
+  ...props
+}) {
   return (
-    <button className={cx(styles.item, isSelected && styles.selected)}>
+    <button
+      {...props}
+      className={cx(styles.item, isSelected && styles.selected)}
+    >
       {iconBefore && <div className={styles.iconBefore}>{iconBefore}</div>}
       {children}
       {iconAfter && <div className={styles.iconAfter}>{iconAfter}</div>}
@@ -21,11 +32,19 @@ Tabs.Tab = function Tab({ children, isSelected, iconAfter, iconBefore }) {
   )
 }
 
-Tabs.Header = function Header({ children }) {
-  return <div className={styles.header}>{children}</div>
+Tabs.Header = function Header({ children, ...props }) {
+  return (
+    <div {...props} className={styles.header}>
+      {children}
+    </div>
+  )
 }
 
 // TODO: rename to Content
-Tabs.Body = function Body({ children }) {
-  return <div className={styles.body}>{children}</div>
+Tabs.Body = function Body({ children, ...props }) {
+  return (
+    <div {...props} className={styles.body}>
+      {children}
+    </div>
+  )
 }

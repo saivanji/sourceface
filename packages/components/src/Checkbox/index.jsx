@@ -4,9 +4,15 @@ import styles from "./index.scss"
 import Icon from "./assets/check.svg"
 
 // TODO: implement indeterminate state
-export default function Checkbox({ label, size = "normal", isDisabled }) {
+export default function Checkbox({
+  label,
+  size = "normal",
+  isDisabled,
+  ...props
+}) {
   return (
     <label
+      {...props}
       className={cx(styles.root, styles[size], isDisabled && styles.disabled)}
     >
       <input disabled={isDisabled} type="checkbox" />

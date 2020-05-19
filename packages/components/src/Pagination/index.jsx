@@ -9,13 +9,14 @@ export default function Pagination({
   onPageClick,
   pageMargin = 1,
   pageSurroundings = 2,
+  ...props
   // makePage,
 }) {
   const isPrevDisabled = selectedPage === 0
   const isNextDisabled = selectedPage === pageCount - 1
 
   return (
-    <nav className={className}>
+    <nav {...props} className={className}>
       <ul className={styles.root}>
         <Item
           onClick={() => !isPrevDisabled && onPageClick(selectedPage - 1)}
@@ -65,9 +66,9 @@ export default function Pagination({
   )
 }
 
-function Item({ children, isSelected, isDisabled, onClick }) {
+function Item({ children, isSelected, isDisabled, onClick, ...props }) {
   return (
-    <li className={styles.item}>
+    <li {...props} className={styles.item}>
       <a
         href="#"
         className={cx(

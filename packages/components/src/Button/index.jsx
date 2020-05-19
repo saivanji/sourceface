@@ -13,12 +13,13 @@ export default function Button({
   isDisabled,
   isLoading,
   className,
-  onClick,
   // iconAfter,
   // iconBefore,
+  ...props
 }) {
   return (
     <button
+      {...props}
       className={cx(
         className,
         styles.root,
@@ -29,7 +30,6 @@ export default function Button({
       )}
       disabled={isDisabled || isLoading}
       type={type}
-      onClick={onClick}
     >
       {isLoading && (
         <Spinner

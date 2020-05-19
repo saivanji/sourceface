@@ -11,7 +11,7 @@ import styles from "./index.scss"
 
 const Context = createContext("dropdown")
 
-export default function Dropdown({ children, className }) {
+export default function Dropdown({ children, className, ...props }) {
   const [isOpened, setOpened] = useState(false)
   const close = useCallback(() => setOpened(false), [setOpened])
   const toggle = useCallback(() => setOpened(!isOpened), [isOpened, setOpened])
@@ -20,16 +20,18 @@ export default function Dropdown({ children, className }) {
 
   return (
     <Context.Provider value={{ isOpened, toggle, close, buttonRef, menuRef }}>
-      <div className={cx(styles.root, className)}>{children}</div>
+      <div {...props} className={cx(styles.root, className)}>
+        {children}
+      </div>
     </Context.Provider>
   )
 }
 
-Dropdown.Trigger = function Trigger({ children, className }) {
+Dropdown.Trigger = function Trigger({ children, className, ...props }) {
   const { toggle, buttonRef } = useContext(Context)
 
   return (
-    <div className={className} ref={buttonRef} onClick={toggle}>
+    <div {...props} className={className} ref={buttonRef} onClick={toggle}>
       {children}
     </div>
   )
@@ -40,6 +42,7 @@ Dropdown.Menu = function Menu({
   children,
   position = "bottomRight",
   className,
+  ...props
 }) {
   const { isOpened, close, buttonRef, menuRef } = useContext(Context)
   const onClickOutside = useCallback(
@@ -63,6 +66,7 @@ Dropdown.Menu = function Menu({
   return (
     isOpened && (
       <div
+        {...props}
         ref={menuRef}
         className={cx(styles.menu, styles[position], className)}
       >
@@ -74,11 +78,12 @@ Dropdown.Menu = function Menu({
 
 // TODO implement Title component
 
-Dropdown.Item = function Item({ children, onClick, className }) {
+Dropdown.Item = function Item({ children, onClick, className, ...props }) {
   const { close } = useContext(Context)
 
   return (
     <div
+      {...props}
       className={cx(styles.item, className)}
       onClick={() => {
         close()

@@ -5,13 +5,14 @@ import styles from "./index.scss"
 
 export default function Burger({
   className,
-  onClick,
   isActive,
   size = "normal",
   appearance = "light",
+  ...props
 }) {
   return (
     <div
+      {...props}
       className={cx(
         styles.root,
         styles[appearance],
@@ -19,7 +20,6 @@ export default function Burger({
         isActive && styles.active,
         className
       )}
-      onClick={onClick}
     >
       <MenuIcon className={styles.icon} />
     </div>

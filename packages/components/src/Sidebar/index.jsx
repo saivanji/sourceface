@@ -3,22 +3,38 @@ import cx from "classnames"
 import styles from "./index.scss"
 
 // TODO: implement light appearance
-export default function Sidebar({ children, className }) {
-  return <div className={cx(styles.root, className)}>{children}</div>
+export default function Sidebar({ children, className, ...props }) {
+  return (
+    <div {...props} className={cx(styles.root, className)}>
+      {children}
+    </div>
+  )
 }
 
 // TODO: add iconBefore prop
-Sidebar.Title = function Title({ children, className }) {
-  return <span className={cx(styles.title, className)}>{children}</span>
+Sidebar.Title = function Title({ children, className, ...props }) {
+  return (
+    <span {...props} className={cx(styles.title, className)}>
+      {children}
+    </span>
+  )
 }
 
 // TODO: have title here and remove GroupTitle?
-Sidebar.Group = function Group({ children, className }) {
-  return <div className={cx(styles.group, className)}>{children}</div>
+Sidebar.Group = function Group({ children, className, ...props }) {
+  return (
+    <div {...props} className={cx(styles.group, className)}>
+      {children}
+    </div>
+  )
 }
 
-Sidebar.GroupTitle = function GroupTitle({ children, className }) {
-  return <span className={cx(styles.groupTitle, className)}>{children}</span>
+Sidebar.GroupTitle = function GroupTitle({ children, className, ...props }) {
+  return (
+    <span {...props} className={cx(styles.groupTitle, className)}>
+      {children}
+    </span>
+  )
 }
 
 // TODO: rename to Link

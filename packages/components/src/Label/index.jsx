@@ -7,9 +7,10 @@ export default function Label({
   title,
   isOptional,
   helperMessage,
+  ...props
 }) {
   return (
-    <label className={className}>
+    <label {...props} className={className}>
       <span className={styles.title}>
         {title}
         {isOptional && <span className={styles.optional}>(optional)</span>}
