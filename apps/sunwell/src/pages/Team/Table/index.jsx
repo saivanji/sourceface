@@ -12,20 +12,8 @@ import styles from "./index.scss"
 const Context = createContext("table")
 
 export default function Table({ children, className, size }) {
-  const cells = useRef()
-
-  useEffect(() => {
-    function onResize() {
-      console.log(cells.current)
-    }
-
-    window.addEventListener("resize", onResize)
-
-    return () => window.removeEventListener("resize", onResize)
-  }, [])
-
   return (
-    <Context.Provider value={{ size, cells }}>
+    <Context.Provider value={{ size }}>
       <div className={cx(styles.root, className)}>{children}</div>
     </Context.Provider>
   )
@@ -56,13 +44,8 @@ Table.Row = function Row({
 }
 
 Table.Cell = function Cell({ children, className, align = "left" }) {
-  const { cells } = useContext(Context)
-
   return (
-    <div
-      ref={el => console.log([...el.parentElement.children].indexOf(el))}
-      className={cx(styles.cell, styles[alignClassNames[align]], className)}
-    >
+    <div className={cx(styles.cell, styles[alignClassNames[align]], className)}>
       {children}
     </div>
   )
