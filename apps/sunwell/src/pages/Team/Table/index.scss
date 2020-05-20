@@ -3,25 +3,15 @@
 .root {
 }
 
-.head,
-.row {
+.tr {
   border-bottom: 1px solid $color-gray-tint-50;
 }
 
-.heading {
+.th {
   font-weight: 600;
 }
 
-.head {
-  display: flex;
-  padding-bottom: $value-4;
-}
-
-.row + .head {
-  padding-top: $value-4;
-}
-
-.row {
+.tr {
   // display: grid;
   // grid-template-columns: repeat(3, 1fr);
   display: flex;
@@ -32,14 +22,14 @@
   }
 }
 
-.heading,
-.cell {
+.th,
+.td {
   display: flex;
   align-items: center;
 }
 
-.heading,
-.cell {
+.th,
+.td {
   &.align-left {
     justify-content: flex-start;
   }
@@ -51,7 +41,7 @@
   }
 }
 
-/* .heading + .heading, */
-/* .cell + .cell { */
+/* .th + .th, */
+/* .td + .td { */
 /*   padding-left: $value-4; */
 /* } */
