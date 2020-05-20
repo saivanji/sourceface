@@ -1,5 +1,4 @@
-import React, { useContext, createContext } from "react"
-import { useTable, useFlexLayout } from "react-table"
+import React, { cloneElement, createContext, useContext } from "react"
 import cx from "classnames"
 import styles from "./index.scss"
 
@@ -8,53 +7,45 @@ import styles from "./index.scss"
 // table should not have so much features, complex tables should be implemented by a components composition instead. for example compose to a table side view, collapse or pagination, filters and so on
 // table should have checkboxes and sorting at max probably. also implement heading groups
 
-// TODO: implement multiple sizes
-
-const TableContext = createContext()
-const HeaderGroupContext = createContext()
-const ColumnContext = createContext()
-const RowContext = createContext()
-const CellContext = createContext()
+const Context = createContext()
 
 export default function Table({
   children,
   className,
   columns,
-  data,
+  size = "normal",
+  bordered = false,
   ...props
 }) {
-  const tableProps = useTable({ columns, data }, useFlexLayout)
-
   return (
-    <TableContext.Provider value={tableProps}>
+    <Context.Provider value={{ columns }}>
       <div
         {...props}
-        {...tableProps.getTableProps()}
-        className={cx(styles.root, className)}
+        className={cx(
+          styles.root,
+          styles[size],
+          bordered && styles.bordered,
+          className
+        )}
       >
         {children}
       </div>
-    </TableContext.Provider>
+    </Context.Provider>
   )
 }
 
-Table.Thead = function Thead({ children }) {
-  const { headerGroups } = useContext(TableContext)
-
-  return React.Children.map(children(headerGroups), (el, i) => (
-    <HeaderGroupContext.Provider key={i} value={headerGroups[i]}>
-      {el}
-    </HeaderGroupContext.Provider>
-  ))
+Table.Thead = function Thead({ children, className, ...props }) {
+  return (
+    <div {...props} className={cx(styles.thead, className)}>
+      {children}
+    </div>
+  )
 }
 
 Table.Th = function Th({ children, className, align = "left", ...props }) {
-  const { getHeaderProps } = useContext(ColumnContext)
-
   return (
     <div
       {...props}
-      {...getHeaderProps()}
       className={cx(styles.th, styles[alignClassNames[align]], className)}
     >
       {children}
@@ -62,17 +53,12 @@ Table.Th = function Th({ children, className, align = "left", ...props }) {
   )
 }
 
-Table.Tbody = function Tbody({ children }) {
-  const { rows } = useContext(TableContext)
-  const { prepareRow } = useContext(TableContext)
-
-  rows.forEach(row => prepareRow(row))
-
-  return React.Children.map(children(rows), (el, i) => (
-    <RowContext.Provider key={i} value={rows[i]}>
-      {el}
-    </RowContext.Provider>
-  ))
+Table.Tbody = function Thead({ children, className, ...props }) {
+  return (
+    <div {...props} className={cx(styles.tbody, className)}>
+      {children}
+    </div>
+  )
 }
 
 Table.Tr = function Tr({
@@ -83,47 +69,25 @@ Table.Tr = function Tr({
   // isSelectable,
   // isSelected,
 }) {
-  const headerGroup = useContext(HeaderGroupContext)
-  const row = useContext(RowContext)
+  const { columns } = useContext(Context)
+  const count = React.Children.count(children)
+  const widths = calcWidths(columns || new Array(count).fill("auto"))
 
-  if (headerGroup) {
-    return (
-      <div
-        {...props}
-        {...headerGroup.getHeaderGroupProps()}
-        className={cx(styles.tr, className)}
-      >
-        {React.Children.map(children, (el, i) => (
-          <ColumnContext.Provider key={i} value={headerGroup.headers[i]}>
-            {el}
-          </ColumnContext.Provider>
-        ))}
-      </div>
-    )
-  } else {
-    return (
-      <div
-        {...props}
-        {...row.getRowProps()}
-        className={cx(styles.tr, className)}
-      >
-        {React.Children.map(children, (el, i) => (
-          <CellContext.Provider key={i} value={row.cells[i]}>
-            {el}
-          </CellContext.Provider>
-        ))}
-      </div>
-    )
-  }
+  return (
+    <div {...props} className={cx(styles.tr, className)}>
+      {React.Children.map(children, (el, i) =>
+        cloneElement(el, {
+          style: { width: widths[i] },
+        })
+      )}
+    </div>
+  )
 }
 
 Table.Td = function Td({ children, className, align = "left", ...props }) {
-  const { getCellProps } = useContext(CellContext)
-
   return (
     <div
       {...props}
-      {...getCellProps()}
       className={cx(styles.td, styles[alignClassNames[align]], className)}
     >
       {children}
@@ -135,4 +99,15 @@ const alignClassNames = {
   left: "alignLeft",
   center: "alignCenter",
   right: "alignRight",
+}
+
+const calcWidths = columns => {
+  const autoCount = columns.filter(el => el == "auto").length
+  const customCols = columns.filter(el => el !== "auto").join(" + ") || "0px"
+
+  const widths = columns.map(el =>
+    el !== "auto" ? el : `calc((100% - calc(${customCols})) / ${autoCount})`
+  )
+
+  return widths
 }

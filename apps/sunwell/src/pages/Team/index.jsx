@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react"
+import React, { useState } from "react"
 import { times } from "ramda"
 import Avatar from "@sourceface/components/avatar"
 import Badge from "@sourceface/components/badge"
@@ -62,82 +62,51 @@ export default () => {
 }
 
 function TeamTable({ setChangingPass, setRemoving }) {
-  const columns = useMemo(
-    () => [
-      { Header: "Email", accessor: "email" },
-      {
-        Header: "Groups",
-        accessor: "groups",
-      },
-    ],
-    []
-  )
-  const data = useMemo(
-    () =>
-      times(
-        () => ({
-          email: "aiven715@gmail.comaiven715@gmail.com",
-          groups: "root",
-        }),
-        5
-      ),
-    []
-  )
-
   return (
-    <Table data={data} columns={columns}>
+    <Table columns={["16rem", "auto", "4rem"]}>
       <Table.Thead>
-        {groups =>
-          groups.map((group, i) => (
-            <Table.Tr key={i}>
-              {group.headers.map((column, i) => (
-                <Table.Th key={i}>{column.render("Header")}</Table.Th>
-              ))}
-            </Table.Tr>
-          ))
-        }
+        <Table.Tr>
+          <Table.Th>Email</Table.Th>
+          <Table.Th>Groups</Table.Th>
+          <Table.Th />
+        </Table.Tr>
       </Table.Thead>
       <Table.Tbody>
-        {rows =>
-          rows.map((row, i) => (
+        {times(
+          i => (
             <Table.Tr key={i}>
-              {row.cells.map((cell, i) => (
-                <Table.Td key={i}>{cell.render("Cell")}</Table.Td>
-              ))}
+              <Table.Td>
+                <Avatar value="A" />
+                <span className={styles.email}>aiven715@gmail.com</span>
+              </Table.Td>
+              <Table.Td>
+                <Badge value="root" appearance="light" shape="squared" />
+              </Table.Td>
+              <Table.Td align="right">
+                <Dropdown className={styles.more}>
+                  <Dropdown.Trigger>
+                    <Button appearance="secondary" size="compact">
+                      <MoreIcon />
+                    </Button>
+                  </Dropdown.Trigger>
+                  <Dropdown.Menu>
+                    <Dropdown.Item onClick={() => setChangingPass(true)}>
+                      Change password
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => setRemoving(true)}>
+                      Remove from the app
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </Table.Td>
             </Table.Tr>
-          ))
-        }
+          ),
+          5
+        )}
       </Table.Tbody>
     </Table>
   )
 }
-
-// <Table.Row key={i}>
-//   <Table.Cell>
-//     <Avatar value="A" />
-//     <span className={styles.email}>aiven715@gmail.com</span>
-//   </Table.Cell>
-//   <Table.Cell>
-//     <Badge value="root" appearance="light" shape="squared" />
-//   </Table.Cell>
-//   <Table.Cell align="right">
-//     <Dropdown className={styles.more}>
-//       <Dropdown.Trigger>
-//         <Button appearance="secondary" size="compact">
-//           <MoreIcon />
-//         </Button>
-//       </Dropdown.Trigger>
-//       <Dropdown.Menu>
-//         <Dropdown.Item onClick={() => setChangingPass(true)}>
-//           Change password
-//         </Dropdown.Item>
-//         <Dropdown.Item onClick={() => setRemoving(true)}>
-//           Remove from the app
-//         </Dropdown.Item>
-//       </Dropdown.Menu>
-//     </Dropdown>
-//   </Table.Cell>
-// </Table.Row>
 
 function PassModal({ isChangingPass, setChangingPass }) {
   return (

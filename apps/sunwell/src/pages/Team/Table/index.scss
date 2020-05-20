@@ -1,10 +1,59 @@
 @import "~@sourceface/style/index.scss";
 
-.root {
-}
+$border-color: $color-gray-tint-50;
+$sizes: "compact" $value-2, "normal" $value-4, "loose" $value-6;
 
-.tr {
-  border-bottom: 1px solid $color-gray-tint-50;
+.root {
+  &.bordered {
+    border: 1px solid $border-color;
+    border-radius: $rounded-base;
+  }
+  @each $name, $spacing in $sizes {
+    &.#{$name} {
+      .th,
+      .td {
+        &:not(:first-child, :last-child) {
+          padding-left: $spacing;
+          padding-right: $spacing;
+        }
+        &:first-child {
+          padding-right: $spacing;
+        }
+        &:last-child {
+          padding-left: $spacing;
+        }
+      }
+
+      .tr:not(:first-child) {
+        padding-top: $spacing;
+      }
+
+      .tr:not(:last-child) {
+        padding-bottom: $spacing;
+      }
+
+      .tbody + .thead,
+      .thead + .tbody,
+      .tbody + .tbody,
+      .thead + .thead {
+        margin-top: $spacing;
+        padding-top: $spacing;
+      }
+
+      &.bordered {
+        padding-top: $spacing;
+        padding-bottom: $spacing;
+        .th,
+        .td {
+          &:first-child,
+          &:last-child {
+            padding-left: $spacing;
+            padding-right: $spacing;
+          }
+        }
+      }
+    }
+  }
 }
 
 .th {
@@ -12,13 +61,10 @@
 }
 
 .tr {
-  // display: grid;
-  // grid-template-columns: repeat(3, 1fr);
   display: flex;
-  padding: $value-4 0;
+  border-bottom: 1px solid $border-color;
   &:last-child {
     border-bottom: 0;
-    padding-bottom: 0;
   }
 }
 
@@ -26,10 +72,6 @@
 .td {
   display: flex;
   align-items: center;
-}
-
-.th,
-.td {
   &.align-left {
     justify-content: flex-start;
   }
@@ -41,7 +83,9 @@
   }
 }
 
-/* .th + .th, */
-/* .td + .td { */
-/*   padding-left: $value-4; */
-/* } */
+.tbody + .thead,
+.thead + .tbody,
+.tbody + .tbody,
+.thead + .thead {
+  border-top: 1px solid $border-color;
+}
