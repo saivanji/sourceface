@@ -6,7 +6,6 @@
 .head,
 .row {
   border-bottom: 1px solid $color-gray-tint-50;
-  display: flex;
 }
 
 .heading {
@@ -14,6 +13,7 @@
 }
 
 .head {
+  display: flex;
   padding-bottom: $value-4;
 }
 
@@ -22,6 +22,9 @@
 }
 
 .row {
+  // display: grid;
+  // grid-template-columns: repeat(3, 1fr);
+  display: flex;
   padding: $value-4 0;
   &:last-child {
     border-bottom: 0;

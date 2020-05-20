@@ -6,6 +6,7 @@ import Label from "@sourceface/components/label"
 import { Layout } from "components/common"
 import styles from "./index.scss"
 
+// separation of sections will be done with cards in desktop and with labeled panes(similar to native ios and android) on mobile
 export default () => {
   return (
     <Layout>

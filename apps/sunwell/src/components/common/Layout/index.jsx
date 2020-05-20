@@ -39,6 +39,8 @@ const items = [
   },
 ]
 
+// Mobile menu will be a separate component with nesting(tapping on a settings menu will produce a dropdown) which is sliding from a top
+
 // will be getting current page object from Page provided context and depending on it will render the data in breadcrumbs and sidebar
 export default ({ children }) => {
   const isLargeSize = useMediaQuery({ minWidth: breakpoints.lg })

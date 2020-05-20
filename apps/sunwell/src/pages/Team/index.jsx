@@ -61,7 +61,7 @@ export default () => {
 
 function TeamTable({ setChangingPass, setRemoving }) {
   return (
-    <Table>
+    <Table s={[""]}>
       <Table.Head>
         <Table.Heading>Email</Table.Heading>
         <Table.Heading>Groups</Table.Heading>
