@@ -25,4 +25,5 @@ yarn-error.log*
 /select
 /sidebar
 /spinner
+/table
 /tabs

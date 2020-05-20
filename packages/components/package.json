@@ -23,6 +23,7 @@
     "select",
     "sidebar",
     "spinner",
+    "table",
     "tabs"
   ],
   "scripts": {

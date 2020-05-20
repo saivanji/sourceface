@@ -8,13 +8,13 @@ import Input from "@sourceface/components/input"
 import Loader from "@sourceface/components/loader"
 import Modal from "@sourceface/components/modal"
 // import Pagination from "@sourceface/components/pagination"
+import Table from "@sourceface/components/table"
 import { InviteForm, UsersTabs } from "components/settings"
 import { Layout } from "components/common"
 import SearchIcon from "assets/search.svg"
 import AlertIcon from "assets/alert.svg"
 import MoreIcon from "assets/more.svg"
 import styles from "./index.scss"
-import Table from "./Table"
 
 export default () => {
   // const [page, setPage] = useState(0)
