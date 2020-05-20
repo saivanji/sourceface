@@ -50,5 +50,8 @@
     "migrate": "^1.6.2",
     "nodemon": "1.18.11",
     "prettier": "^2.0.5"
+  },
+  "scarfSettings": {
+    "enabled": false
   }
 }
