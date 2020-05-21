@@ -1,0 +1,2 @@
+- Export library as a single js file.
+- Migrate to styled components
