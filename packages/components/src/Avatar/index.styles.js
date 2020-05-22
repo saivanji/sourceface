@@ -1,9 +1,8 @@
-import styled from "styled-components"
-import { color, values, rounded, fontSizes } from "@sourceface/style"
-import { variant } from "../utils"
+import { css } from "@emotion/core"
+import { colors, values, rounded, fontSizes } from "@sourceface/style"
+import { variants } from "../utils"
 
-const sizes = variant(
-  "size",
+export const sizes = variants(
   {
     compact: {
       value: values[6],
@@ -25,12 +24,11 @@ const sizes = variant(
     `
 )
 
-export const Root = styled.div`
+export const root = css`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: ${color("light")};
-  background-color: ${color("primary-shade", 7)};
   border-radius: ${rounded.full};
-  ${sizes}
+  background-color: ${colors.primary.shades[7]};
+  color: ${colors.light};
 `
