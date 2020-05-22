@@ -98,7 +98,7 @@ export const Element = styled.input`
   border-radius: ${rounded.base};
   border: 1px solid ${color("primary-tint", 4)};
   &:focus {
-    background-color: ${color("front")};
+    background-color: ${color("light")};
     border-color: ${color("primary-tint", 9)};
     box-shadow: 0 0 0 3px ${color("primary-tint", 11)};
   }
@@ -136,6 +136,6 @@ export const IconAfter = styled.div`
 
 export const ErrorText = styled.span`
   display: block;
-  color: ${color("back")};
+  color: ${color("dark")};
   margin-top: ${values[1]};
 `

@@ -42,7 +42,7 @@ const appearances = variant(
   {
     primary: {
       bg: color("primary-shade", 7),
-      fg: color("front"),
+      fg: color("light"),
       hover: color("primary-shade", 8),
       active: color("primary-shade", 9),
       focus: color("primary-tint", 11),
@@ -52,7 +52,7 @@ const appearances = variant(
       },
     },
     secondary: {
-      bg: color("front"),
+      bg: color("light"),
       fg: color("primary-shade", 5),
       hover: color("primary-tint", 12),
       active: color("primary-tint", 11),

@@ -41,7 +41,7 @@ export const Root = styled.div`
 export const Container = styled.div`
   width: 100%;
   margin: ${values[4]};
-  background-color: ${color("front")};
+  background-color: ${color("light")};
   border-radius: ${rounded.base};
   padding: ${values[4]};
   box-shadow: ${shadows.sm};

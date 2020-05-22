@@ -19,7 +19,7 @@ const appearances = variant(
   "appearance",
   {
     primary: color("primary-shade", 7),
-    secondary: color("front"),
+    secondary: color("light"),
   },
   color => css`
     border-color: ${color};

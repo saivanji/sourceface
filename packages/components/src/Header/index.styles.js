@@ -16,7 +16,7 @@ const appearances = variant(
   "appearance",
   {
     primary: {
-      bg: color("front"),
+      bg: color("light"),
       fg: color("primary-tint", 10),
     },
     secondary: {

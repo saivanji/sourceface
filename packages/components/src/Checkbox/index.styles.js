@@ -39,14 +39,14 @@ export const Checkbox = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${color("front")};
+  background-color: ${color("light")};
   border: 1px solid ${color("primary-tint", 4)};
   border-radius: ${rounded.sm};
 `
 
 export const Icon = styled(OriginalIcon)`
   display: none;
-  fill: ${color("front")};
+  fill: ${color("light")};
 `
 
 export const Root = styled.label`

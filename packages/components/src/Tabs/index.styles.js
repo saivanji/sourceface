@@ -37,7 +37,7 @@ export const Tab = styled.button`
   color: ${color("primary-shade", 7)};
   &:focus {
     outline: 0;
-    background-color: ${color("front")};
+    background-color: ${color("light")};
     box-shadow: 0 0 0 3px ${color("primary-tint", 11)};
   }
   ${ifProp("isSelected", selected)}

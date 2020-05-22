@@ -39,7 +39,7 @@ const appearances = variant(
       active: color("primary-shade", 10),
     },
     secondary: {
-      bg: color("front"),
+      bg: color("light"),
       fg: color("primary-shade", 7),
       active: color("primary-tint", 9),
     },

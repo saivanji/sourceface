@@ -14,7 +14,7 @@ const linkDisabled = css`
 const linkSelected = css`
   background-color: ${color("primary-shade", 7)};
   border-color: ${color("primary-shade", 7)};
-  color: ${color("front")};
+  color: ${color("light")};
 `
 
 const linkClickable = css`
@@ -39,7 +39,7 @@ export const Link = styled.a`
   height: ${values[8]};
   padding-left: ${values[3]};
   padding-right: ${values[3]};
-  background-color: ${color("front")};
+  background-color: ${color("light")};
   color: ${color("primary-shade", 5)};
   border: 1px solid ${color("primary-tint", 4)};
   &:focus {

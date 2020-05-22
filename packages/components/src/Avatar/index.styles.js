@@ -29,7 +29,7 @@ export const Root = styled.div`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: ${color("front")};
+  color: ${color("light")};
   background-color: ${color("primary-shade", 7)};
   border-radius: ${rounded.full};
   ${sizes}

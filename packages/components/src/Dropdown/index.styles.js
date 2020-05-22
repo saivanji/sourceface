@@ -31,7 +31,7 @@ export const Menu = styled.div`
   display: inline-flex;
   flex-direction: column;
   z-index: 1;
-  background-color: ${color("front")};
+  background-color: ${color("light")};
   width: ${values[48]};
   border-radius: ${rounded.base};
   box-shadow: ${shadows.md};

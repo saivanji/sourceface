@@ -26,7 +26,7 @@ const sizes = variant(
 
 export const Root = styled.div`
   box-shadow: ${shadows.sm};
-  background-color: ${color("front")};
+  background-color: ${color("light")};
   border: 1px solid ${color("primary-tint", 8)};
   ${sizes}
 `

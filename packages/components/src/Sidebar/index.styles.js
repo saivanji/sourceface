@@ -13,7 +13,7 @@ export const Title = styled.span`
   margin-bottom: -1px;
   height: calc(${values[10]} + ${values[2]});
   margin-bottom: ${values[4]};
-  color: ${color("front")};
+  color: ${color("light")};
   font-size: ${fontSizes.xl};
   border-bottom: 1px solid ${color("primary-shade", 8)};
 `
