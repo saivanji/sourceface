@@ -9,7 +9,9 @@ const makeProps = () => ({
 
 export default { title: "Spinner", decorators: [withKnobs, withA11y] }
 
-export const Light = () => (
-  <Spinner {...makeProps()} appearance="light"></Spinner>
+export const Primary = () => (
+  <Spinner {...makeProps()} appearance="primary"></Spinner>
 )
-export const Dark = () => <Spinner {...makeProps()} appearance="dark"></Spinner>
+export const Secondary = () => (
+  <Spinner {...makeProps()} appearance="secondary"></Spinner>
+)

@@ -10,6 +10,6 @@ export const Regular = () => (
     pageCount={9}
     pageMargin={1}
     pageSurroundings={2}
-    selectedPage={5}
+    selectedPage={0}
   />
 )

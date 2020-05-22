@@ -1,7 +1,5 @@
 import React from "react"
-import cx from "classnames"
-import styles from "./index.scss"
-import ArrowIcon from "./assets/arrow.svg"
+import * as styles from "./index.styles"
 import Dropdown from "../Dropdown"
 
 // TODO: if select will have "clear" feature applied, display separator between arrow and clear icon
@@ -13,7 +11,6 @@ export default function Select({
   onChange,
   placeholder,
   options,
-  className,
   error,
   ...props
 }) {
@@ -21,23 +18,15 @@ export default function Select({
     value && options.find(option => option.value === value).label
 
   return (
-    <div {...props} className={cx(styles.root, styles[size], className)}>
+    <styles.Root {...props} size={size}>
       <Dropdown>
-        <Dropdown.Trigger className={styles.full}>
-          <button
-            className={cx(
-              styles.element,
-              !value && styles.placeholder,
-              error && styles.error
-            )}
-          >
-            <span className={styles.selection}>
-              {selectedLabel || placeholder}
-            </span>
-            <ArrowIcon className={styles.arrow} />
-          </button>
+        <Dropdown.Trigger style={{ width: "100%" }}>
+          <styles.Element hasValue={!!value} hasError={!!error}>
+            <styles.Selection>{selectedLabel || placeholder}</styles.Selection>
+            <styles.Arrow />
+          </styles.Element>
         </Dropdown.Trigger>
-        <Dropdown.Menu position="bottomLeft" className={styles.dropdown}>
+        <Dropdown.Menu style={{ width: "100%" }} position="bottomLeft">
           {options.map(option => (
             <Dropdown.Item
               onClick={() => {
@@ -57,7 +46,7 @@ export default function Select({
           ))}
         </Dropdown.Menu>
       </Dropdown>
-      {error && <div className={styles.errorText}>{error}</div>}
-    </div>
+      {error && <styles.ErrorText>{error}</styles.ErrorText>}
+    </styles.Root>
   )
 }

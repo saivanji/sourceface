@@ -11,7 +11,7 @@ export const Regular = () => (
     size={select("Size", ["compact", "normal", "loose"], "normal")}
     isOpened
   >
-    <Modal.Header iconBefore={<AlertIcon />}>User removal</Modal.Header>
+    <Modal.Header>User removal</Modal.Header>
     <Modal.Body>
       Are you sure that you want to remove that user? This can not be undone
     </Modal.Body>

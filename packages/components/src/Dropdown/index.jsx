@@ -7,11 +7,11 @@ import React, {
   useRef,
 } from "react"
 import cx from "classnames"
-import styles from "./index.scss"
+import * as styles from "./index.styles"
 
 const Context = createContext("dropdown")
 
-export default function Dropdown({ children, className, ...props }) {
+export default function Dropdown({ children, ...props }) {
   const [isOpened, setOpened] = useState(false)
   const close = useCallback(() => setOpened(false), [setOpened])
   const toggle = useCallback(() => setOpened(!isOpened), [isOpened, setOpened])
@@ -20,30 +20,23 @@ export default function Dropdown({ children, className, ...props }) {
 
   return (
     <Context.Provider value={{ isOpened, toggle, close, buttonRef, menuRef }}>
-      <div {...props} className={cx(styles.root, className)}>
-        {children}
-      </div>
+      <styles.Root {...props}>{children}</styles.Root>
     </Context.Provider>
   )
 }
 
-Dropdown.Trigger = function Trigger({ children, className, ...props }) {
+Dropdown.Trigger = function Trigger({ children, ...props }) {
   const { toggle, buttonRef } = useContext(Context)
 
   return (
-    <div {...props} className={className} ref={buttonRef} onClick={toggle}>
+    <div {...props} ref={buttonRef} onClick={toggle}>
       {children}
     </div>
   )
 }
 
 // TODO: remove in favor of future implemented list component? same for Item?
-Dropdown.Menu = function Menu({
-  children,
-  position = "bottomRight",
-  className,
-  ...props
-}) {
+Dropdown.Menu = function Menu({ children, ...props }) {
   const { isOpened, close, buttonRef, menuRef } = useContext(Context)
   const onClickOutside = useCallback(
     event =>
@@ -65,26 +58,21 @@ Dropdown.Menu = function Menu({
 
   return (
     isOpened && (
-      <div
-        {...props}
-        ref={menuRef}
-        className={cx(styles.menu, styles[position], className)}
-      >
+      <styles.Menu {...props} ref={menuRef}>
         {children}
-      </div>
+      </styles.Menu>
     )
   )
 }
 
 // TODO implement Title component
 
-Dropdown.Item = function Item({ children, onClick, className, ...props }) {
+Dropdown.Item = function Item({ children, onClick, ...props }) {
   const { close } = useContext(Context)
 
   return (
-    <div
+    <styles.Item
       {...props}
-      className={cx(styles.item, className)}
       onClick={() => {
         close()
 
@@ -94,6 +82,10 @@ Dropdown.Item = function Item({ children, onClick, className, ...props }) {
       }}
     >
       {children}
-    </div>
+    </styles.Item>
   )
+}
+
+Dropdown.Menu.defaultProps = {
+  position: "bottomRight",
 }

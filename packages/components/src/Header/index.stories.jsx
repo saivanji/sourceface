@@ -26,13 +26,14 @@ const Regular = ({ appearance }) => (
   <Header
     appearance={appearance}
     size={select("Size", ["compact", "normal", "loose"], "normal")}
+    style={{ display: "flex", alignItems: "center" }}
   >
     <Breadcrumbs items={items} />
     <div style={{ marginLeft: "auto" }}>
-      <Avatar value="A" />
+      <Avatar>A</Avatar>
     </div>
   </Header>
 )
 
-export const Light = () => <Regular appearance="light" />
-export const Dark = () => <Regular appearance="dark" />
+export const Primary = () => <Regular appearance="primary" />
+export const Secondary = () => <Regular appearance="secondary" />

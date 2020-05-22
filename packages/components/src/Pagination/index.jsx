@@ -1,9 +1,7 @@
 import React from "react"
-import cx from "classnames"
-import styles from "./index.scss"
+import * as styles from "./index.styles"
 
 export default function Pagination({
-  className,
   pageCount,
   selectedPage,
   onPageClick,
@@ -16,8 +14,8 @@ export default function Pagination({
   const isNextDisabled = selectedPage === pageCount - 1
 
   return (
-    <nav {...props} className={className}>
-      <ul className={styles.root}>
+    <nav {...props}>
+      <styles.List>
         <Item
           onClick={() => !isPrevDisabled && onPageClick(selectedPage - 1)}
           isDisabled={isPrevDisabled}
@@ -61,21 +59,18 @@ export default function Pagination({
         >
           Next
         </Item>
-      </ul>
+      </styles.List>
     </nav>
   )
 }
 
 function Item({ children, isSelected, isDisabled, onClick, ...props }) {
   return (
-    <li {...props} className={styles.item}>
-      <a
+    <styles.Item {...props}>
+      <styles.Link
+        isSelected={isSelected}
+        isDisabled={isDisabled}
         href="#"
-        className={cx(
-          styles.link,
-          isSelected && styles.selected,
-          isDisabled && styles.disabled
-        )}
         onClick={e => {
           e.preventDefault()
 
@@ -89,8 +84,8 @@ function Item({ children, isSelected, isDisabled, onClick, ...props }) {
         })}
       >
         {children}
-      </a>
-    </li>
+      </styles.Link>
+    </styles.Item>
   )
 }
 

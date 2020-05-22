@@ -1,5 +1,5 @@
 import React from "react"
-import styles from "./index.scss"
+import * as styles from "./index.styles"
 
 export default function Label({
   children,
@@ -11,12 +11,12 @@ export default function Label({
 }) {
   return (
     <label {...props} className={className}>
-      <span className={styles.title}>
+      <styles.Title>
         {title}
-        {isOptional && <span className={styles.optional}>(optional)</span>}
-      </span>
+        {isOptional && <styles.Optional>(optional)</styles.Optional>}
+      </styles.Title>
       {children}
-      {helperMessage && <span className={styles.helper}>{helperMessage}</span>}
+      {helperMessage && <styles.Helper>{helperMessage}</styles.Helper>}
     </label>
   )
 }

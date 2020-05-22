@@ -1,29 +1,23 @@
 import React from "react"
-import cx from "classnames"
-import styles from "./index.scss"
+import * as styles from "./index.styles"
 
-export default function Breadcrumbs({
-  className,
-  items,
-  renderLink,
-  ...props
-}) {
+export default function Breadcrumbs({ items, renderLink, ...props }) {
   const path = items.slice(0, -1)
   const current = items.slice(-1)[0]
 
   return (
-    <div {...props} className={cx(styles.root, className)}>
-      <span className={styles.path}>
+    <styles.Root {...props}>
+      <styles.Path>
         {path.map((item, i) => (
           <React.Fragment key={i}>
             {i !== 0 && " › "}
-            <a className={styles.link} key={i} href="#">
+            <styles.Link key={i} href="#">
               {item.name}
-            </a>
+            </styles.Link>
           </React.Fragment>
         ))}
-      </span>
-      <span className={styles.current}>{current.name}</span>
-    </div>
+      </styles.Path>
+      <styles.Current>{current.name}</styles.Current>
+    </styles.Root>
   )
 }

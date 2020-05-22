@@ -10,6 +10,8 @@ const makeProps = () => ({
   isActive: boolean("Is active"),
 })
 
-export const Light = () => <Burger {...makeProps()} appearance="light" />
+export const Primary = () => <Burger {...makeProps()} appearance="primary" />
 
-export const Dark = () => <Burger {...makeProps()} appearance="dark" />
+export const Secondary = () => (
+  <Burger {...makeProps()} appearance="secondary" />
+)

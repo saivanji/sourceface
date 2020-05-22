@@ -6,8 +6,7 @@ import Avatar from "./index"
 export default { title: "Avatar", decorators: [withKnobs, withA11y] }
 
 export const Regular = () => (
-  <Avatar
-    value={select("Value", ["A", "B", "C"], "A")}
-    size={select("Size", ["compact", "normal", "loose"], "normal")}
-  />
+  <Avatar size={select("Size", ["compact", "normal", "loose"], "normal")}>
+    {select("Value", ["A", "B", "C"], "A")}
+  </Avatar>
 )

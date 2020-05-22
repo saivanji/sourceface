@@ -1,31 +1,29 @@
 import React from "react"
-import cx from "classnames"
-import styles from "./index.scss"
+import * as styles from "./index.styles"
 
 export default function Input({
   size = "normal",
   className,
+  style,
   iconAfter,
   iconBefore,
   error,
   ...props
 }) {
   return (
-    <div className={cx(styles.root, styles[size], className)}>
-      <div className={styles.wrap}>
-        {iconBefore && <div className={styles.iconBefore}>{iconBefore}</div>}
-        <input
-          className={cx(
-            styles.element,
-            error && styles.error,
-            iconBefore && styles.hasIconBefore,
-            iconAfter && styles.hasIconAfter
-          )}
-          {...props}
-        />
-        {iconAfter && <div className={styles.iconAfter}>{iconAfter}</div>}
-      </div>
-      {error && <div className={styles.errorText}>{error}</div>}
-    </div>
+    <styles.Root
+      style={style}
+      className={className}
+      size={size}
+      hasIconBefore={!!iconBefore}
+      hasIconAfter={!!iconAfter}
+    >
+      <styles.Wrap>
+        {iconBefore && <styles.IconBefore>{iconBefore}</styles.IconBefore>}
+        <styles.Element hasError={!!error} {...props} />
+        {iconAfter && <styles.IconAfter>{iconAfter}</styles.IconAfter>}
+      </styles.Wrap>
+      {error && <styles.ErrorText>{error}</styles.ErrorText>}
+    </styles.Root>
   )
 }

@@ -5,13 +5,10 @@ import Badge from "./index"
 
 const makeProps = () => ({
   shape: select("Shape", ["rounded", "squared"], "rounded"),
+  children: text("Value", "25"),
 })
 
 export default { title: "Badge", decorators: [withKnobs, withA11y] }
 
-export const Light = () => (
-  <Badge {...makeProps()} appearance="light" value={text("Value", "25")} />
-)
-export const Dark = () => (
-  <Badge {...makeProps()} appearance="dark" value={text("Value", "25")} />
-)
+export const Primary = () => <Badge {...makeProps()} appearance="primary" />
+export const Secondary = () => <Badge {...makeProps()} appearance="secondary" />

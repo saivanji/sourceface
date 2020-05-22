@@ -1,25 +1,20 @@
 import React from "react"
-import cx from "classnames"
-import styles from "./index.scss"
-import Icon from "./assets/check.svg"
+import * as styles from "./index.styles"
 
 // TODO: implement indeterminate state
-export default function Checkbox({
-  label,
-  size = "normal",
-  isDisabled,
-  ...props
-}) {
+export default function Checkbox({ label, ...props }) {
   return (
-    <label
-      {...props}
-      className={cx(styles.root, styles[size], isDisabled && styles.disabled)}
-    >
-      <input disabled={isDisabled} type="checkbox" />
-      <span className={styles.checkbox}>
-        <Icon className={styles.icon} />
-      </span>
-      {label && <span className={styles.label}>{label}</span>}
-    </label>
+    <styles.Root {...props}>
+      <input disabled={props.isDisabled} type="checkbox" />
+      <styles.Checkbox>
+        <styles.Icon />
+      </styles.Checkbox>
+      {label && <styles.Label>{label}</styles.Label>}
+    </styles.Root>
   )
+}
+
+Checkbox.defaultProps = {
+  size: "normal",
+  isDisabled: false,
 }

@@ -1,6 +1,5 @@
 import React from "react"
-import cx from "classnames"
-import styles from "./index.scss"
+import * as styles from "./index.styles"
 
 // TODO: use ul/li
 export default function List({ children, className, ...props }) {
@@ -11,10 +10,6 @@ export default function List({ children, className, ...props }) {
   )
 }
 
-List.Item = function Item({ children, className, ...props }) {
-  return (
-    <div {...props} className={cx(styles.item, className)}>
-      {children}
-    </div>
-  )
-}
+List.Item = styles.Item
+
+styles.Item.displayName = "Item"

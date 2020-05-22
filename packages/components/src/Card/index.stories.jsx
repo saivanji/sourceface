@@ -1,5 +1,5 @@
 import React from "react"
-import { withKnobs, select, text } from "@storybook/addon-knobs"
+import { withKnobs, select } from "@storybook/addon-knobs"
 import { withA11y } from "@storybook/addon-a11y"
 import Card from "./index"
 

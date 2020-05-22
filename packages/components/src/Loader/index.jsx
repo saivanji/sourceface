@@ -1,16 +1,16 @@
 import React from "react"
 import Spinner from "../Spinner"
-import styles from "./index.scss"
+import * as styles from "./index.styles"
 
 export default function Loader({ isLoading, children, ...props }) {
   return (
-    <div {...props} className={styles.root}>
-      <div className={isLoading && styles.loading}>{children}</div>
+    <styles.Root {...props}>
+      <styles.Wrap isLoading={isLoading}>{children}</styles.Wrap>
       {isLoading && (
-        <div className={styles.spinner}>
+        <styles.SpinnerWrap>
           <Spinner />
-        </div>
+        </styles.SpinnerWrap>
       )}
-    </div>
+    </styles.Root>
   )
 }

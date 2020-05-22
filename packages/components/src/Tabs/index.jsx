@@ -1,51 +1,33 @@
 import React from "react"
-import cx from "classnames"
 import Card from "../Card"
-import styles from "./index.scss"
+import * as styles from "./index.styles"
 
 // TODO: should not be rendered inside a card
-export default function Tabs({ children, className, ...props }) {
+export default function Tabs({ children, ...props }) {
   return (
     <Card>
-      <div {...props} className={cx(styles.root, className)}>
-        {children}
-      </div>
+      <styles.Root {...props}>{children}</styles.Root>
     </Card>
   )
 }
 
 Tabs.Tab = function Tab({
   children,
-  isSelected,
+  isSelected = false,
   iconAfter,
   iconBefore,
   ...props
 }) {
   return (
-    <button
-      {...props}
-      className={cx(styles.item, isSelected && styles.selected)}
-    >
-      {iconBefore && <div className={styles.iconBefore}>{iconBefore}</div>}
+    <styles.Tab {...props} isSelected={isSelected}>
+      {iconBefore && <styles.IconBefore>{iconBefore}</styles.IconBefore>}
       {children}
-      {iconAfter && <div className={styles.iconAfter}>{iconAfter}</div>}
-    </button>
+      {iconAfter && <styles.IconAfter>{iconAfter}</styles.IconAfter>}
+    </styles.Tab>
   )
 }
 
-Tabs.Header = function Header({ children, ...props }) {
-  return (
-    <div {...props} className={styles.header}>
-      {children}
-    </div>
-  )
-}
+Tabs.Header = styles.Header
 
 // TODO: rename to Content
-Tabs.Body = function Body({ children, ...props }) {
-  return (
-    <div {...props} className={styles.body}>
-      {children}
-    </div>
-  )
-}
+Tabs.Body = styles.Body

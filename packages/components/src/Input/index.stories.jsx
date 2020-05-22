@@ -14,3 +14,6 @@ export const Regular = () => <Input {...makeProps()} />
 export const Error = () => (
   <Input {...makeProps()} error="This field is required" />
 )
+export const WithIcons = () => (
+  <Input {...makeProps()} iconBefore="🔥" iconAfter="🔥" />
+)
