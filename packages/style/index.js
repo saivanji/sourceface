@@ -1,27 +1,23 @@
 const Values = require("values.js")
-const gray = "#bdc3c7"
-const white = "#ffffff"
-const black = "#000000"
-const grayColor = new Values(gray)
+const primary = "#bdc3c7"
+const light = "#ffffff"
+const dark = "#000000"
+const primaryColor = new Values(primary)
 
-const grayTints = grayColor.tints(7)
-const grayShades = grayColor.shades(7)
+const primaryTints = primaryColor.tints(7)
+const primaryShades = primaryColor.shades(7)
 
-const mapColors = items =>
-  items.reduce(
-    (acc, item, i) =>
-      Object.assign({}, acc, {
-        [i + 1 + "0"]: `#${item.hex}`,
-      }),
-    {}
-  )
+const mapColors = items => items.map(item => `#${item.hex}`)
 
 exports.colors = {
-  white,
-  black,
-  gray,
-  "gray-tint": mapColors(grayTints),
-  "gray-shade": mapColors(grayShades),
+  light: light,
+  dark: dark,
+  // TODO: have one color scale instead of 3
+  primary: {
+    base: primary,
+    tints: mapColors(primaryTints),
+    shades: mapColors(primaryShades),
+  },
 }
 
 exports.values = {
@@ -95,3 +91,34 @@ exports.breakpoints = {
   lg: "992px",
   xl: "1200px",
 }
+
+// exports.color = (name, depth) => theme => {
+//   const palette = (theme && theme.palette) || exports.palettes.light
+//   const color = palette[name]
+
+//   return typeof color === "string" ? color : color[depth]
+// }
+
+exports.color = () => () => {}
+
+// exports.css = (...args) => {
+//   let cachedTheme
+//   const funcs = args.reduce((acc, el, i) => {
+//     if (typeof el !== "function") return acc
+//     el.i = i
+//     return [...acc, el]
+//   }, [])
+
+//   return theme => {
+//     if (theme !== cachedTheme && funcs.length > 0) {
+//       cachedTheme = theme
+//       console.log(theme)
+
+//       for (let i = 0; i < funcs.length; i++) {
+//         args[funcs[i].i] = funcs[i](theme)
+//       }
+//     }
+
+//     return css.apply(undefined, args)
+//   }
+// }
