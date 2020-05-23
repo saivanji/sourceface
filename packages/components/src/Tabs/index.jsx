@@ -6,28 +6,42 @@ import * as styles from "./index.styles"
 export default function Tabs({ children, ...props }) {
   return (
     <Card>
-      <styles.Root {...props}>{children}</styles.Root>
+      <div {...props} css={styles.root}>
+        {children}
+      </div>
     </Card>
   )
 }
 
 Tabs.Tab = function Tab({
   children,
-  isSelected = false,
+  isSelected,
   iconAfter,
   iconBefore,
   ...props
 }) {
   return (
-    <styles.Tab {...props} isSelected={isSelected}>
-      {iconBefore && <styles.IconBefore>{iconBefore}</styles.IconBefore>}
+    <button {...props} css={[styles.item, isSelected && styles.selected]}>
+      {iconBefore && <div css={styles.iconBefore}>{iconBefore}</div>}
       {children}
-      {iconAfter && <styles.IconAfter>{iconAfter}</styles.IconAfter>}
-    </styles.Tab>
+      {iconAfter && <div css={styles.iconAfter}>{iconAfter}</div>}
+    </button>
   )
 }
 
-Tabs.Header = styles.Header
+Tabs.Header = function Header({ children, ...props }) {
+  return (
+    <div {...props} css={styles.header}>
+      {children}
+    </div>
+  )
+}
 
 // TODO: rename to Content
-Tabs.Body = styles.Body
+Tabs.Body = function Body({ children, ...props }) {
+  return (
+    <div {...props} css={styles.body}>
+      {children}
+    </div>
+  )
+}

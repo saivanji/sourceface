@@ -1,46 +1,18 @@
-import styled, { css } from "styled-components"
-import { prop, switchProp, ifProp } from "styled-tools"
-import { rounded, color, values } from "@sourceface/style"
-import { variant } from "../utils"
+import { css } from "@emotion/core"
+import { rounded, colors, values } from "@sourceface/style"
+import { apply } from "../utils"
 
-const borderColor = color("primary-tint", 4)
+const borderColor = colors.primary.tints[4]
 
-const cell = css`
-  display: flex;
-  align-items: center;
-  justify-content: ${switchProp(prop("align"), {
-    left: "flex-start",
-    center: "center",
-    right: "end",
-  })};
-`
-
-const bordered = spacing => css`
-  border: 1px solid ${borderColor};
-  border-radius: ${rounded.base};
-  padding-top: ${spacing};
-  padding-bottom: ${spacing};
-  ${Th},
-  ${Td} {
-    &:first-child,
-    &:last-child {
-      padding-left: ${spacing};
-      padding-right: ${spacing};
-    }
-  }
-`
-
-const sizes = variant(
-  "size",
+export const sizes = apply(
   {
     compact: values[2],
     normal: values[4],
     loose: values[6],
   },
   spacing =>
-    !console.log(spacing) &&
     css`
-    ${Th}, ${Td} {
+    ${th}, ${td} {
       &:not(:first-child, :last-child) {
         padding-left: ${spacing};
         padding-right: ${spacing};
@@ -53,48 +25,75 @@ const sizes = variant(
       }
     }
 
-    ${Tr}:not(:first-child) {
+    ${tr}:not(:first-child) {
       padding-top: ${spacing};
     }
 
-    ${Tr}:not(:last-child) {
+    ${tr}:not(:last-child) {
       padding-bottom: ${spacing};
     }
 
-    ${Tbody} + ${Thead},
-    ${Thead} + ${Tbody},
-    ${Tbody} + ${Tbody},
-    ${Thead} + ${Thead} {
+    ${tbody} + ${thead},
+    ${thead} + ${tbody},
+    ${tbody} + ${tbody},
+    ${thead} + ${thead} {
       margin-top: ${spacing};
       padding-top: ${spacing};
       border-top: 1px solid ${borderColor};
     }
 
-    ${ifProp("bordered", bordered(spacing))}
-`
+    &${bordered} {
+      padding-top: ${spacing};
+      padding-bottom: ${spacing};
+      ${th},
+      ${td} {
+        &:first-child,
+        &:last-child {
+          padding-left: ${spacing};
+          padding-right: ${spacing};
+        }
+      }
+    }
+  `
 )
 
-export const Thead = styled.div``
+export const align = apply(
+  {
+    left: "flex-start",
+    center: "center",
+    right: "end",
+  },
+  value => css`
+    justify-content: ${value};
+  `
+)
 
-export const Tbody = styled.div``
-
-export const Root = styled.div`
-  ${sizes}
+export const bordered = css`
+  border: 1px solid ${borderColor};
+  border-radius: ${rounded.base};
 `
 
-export const Th = styled.div`
+export const th = css`
   font-weight: 600;
-  ${cell}
+  display: flex;
+  align-items: center;
 `
 
-export const Td = styled.div`
-  ${cell}
+export const td = css`
+  display: flex;
+  align-items: center;
 `
 
-export const Tr = styled.div`
+export const tr = css`
   display: flex;
   border-bottom: 1px solid ${borderColor};
   &:last-child {
     border-bottom: 0;
   }
 `
+
+export const thead = css``
+
+export const tbody = css``
+
+export const root = css``

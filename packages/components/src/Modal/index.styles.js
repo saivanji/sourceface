@@ -1,89 +1,83 @@
-import styled, { css } from "styled-components"
-import { ifProp, ifNotProp } from "styled-tools"
+import { css } from "@emotion/core"
 import {
   shadows,
   sizes,
   rounded,
-  color,
+  colors,
   fontSizes,
   values,
 } from "@sourceface/style"
-import { variant } from "../utils"
+import { apply } from "../utils"
 
-const sizesVariants = variant(
-  "size",
+export const sizesVariants = apply(
   {
     compact: sizes.xs,
     normal: sizes.lg,
     loose: sizes["2xl"],
   },
-  maxWidth => `max-width: ${maxWidth};`
+  maxWidth =>
+    css`
+      max-width: ${maxWidth};
+    `
 )
 
-export const Root = styled.div`
+export const root = css`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.8);
-  ${ifNotProp(
-    "isPortal",
-    `
-      position: fixed;
-      z-index: 99999;
-      top: 0;
-      left: 0;
-    `
-  )}
 `
 
-export const Container = styled.div`
+export const overlay = css`
+  position: fixed;
+  z-index: 99999;
+  top: 0;
+  left: 0;
+`
+
+export const container = css`
   width: 100%;
   margin: ${values[4]};
-  background-color: ${color("light")};
+  background-color: ${colors.light};
   border-radius: ${rounded.base};
   padding: ${values[4]};
   box-shadow: ${shadows.sm};
-  ${sizesVariants}
 `
 
-export const Row = styled.div`
+export const row = css`
   padding-bottom: ${values[4]};
   &:last-child {
     padding-bottom: 0;
   }
-  ${ifProp(
-    "isHeader",
-    `
-      display: flex;
-      align-items: center;
-    `
-  )}
-  ${ifProp(
-    "isFooter",
-    `
-      display: flex;
-    `
-  )}
 `
 
-export const Title = styled.h4`
+export const header = css`
+  display: flex;
+  align-items: center;
+`
+
+export const footer = css`
+  display: flex;
+`
+
+export const title = css`
   margin: 0;
   padding: 0;
   font-weight: 700;
   font-size: ${fontSizes.lg};
-  color: ${color("primary-shade", 11)};
+  color: ${colors.primary.shades[11]};
 `
 
-export const HeaderIcon = styled.span`
+export const headerIcon = css`
   display: flex;
   align-items: center;
   width: ${values[5]};
   margin-right: ${values[2]};
 `
 
-export const Close = styled.button`
+export const close = css`
   display: flex;
   margin-left: auto;
   cursor: pointer;
@@ -92,26 +86,26 @@ export const Close = styled.button`
   background: none;
   width: ${values[6]};
   & svg {
-    fill: ${color("primary-shade", 8)};
+    fill: ${colors.primary.shades[8]};
     &:hover {
-      fill: ${color("primary-shade", 11)};
+      fill: ${colors.primary.shades[11]};
     }
   }
   &:focus {
     outline: 0;
     border-radius: ${rounded.base};
-    box-shadow: 0 0 0 3px ${color("primary-tint", 11)};
+    box-shadow: 0 0 0 3px ${colors.primary.tints[11]};
   }
 `
 
-export const Actions = styled.div`
+export const actions = css`
   margin-left: auto;
   display: flex;
   align-items: center;
   padding-top: ${values[2]};
 `
 
-export const Action = styled.div`
+export const action = css`
   margin-right: ${values[2]};
   &:last-child {
     margin-right: 0;

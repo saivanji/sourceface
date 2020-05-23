@@ -1,23 +1,22 @@
-import styled, { css } from "styled-components"
-import { ifProp } from "styled-tools"
-import { rounded, color, values } from "@sourceface/style"
+import { css } from "@emotion/core"
+import { rounded, colors, values } from "@sourceface/style"
 
-export const Root = styled.div`
+export const root = css`
   width: calc(${values[10]} + ${values[4]});
-  background-color: ${color("primary-shade", 11)};
+  background-color: ${colors.primary.shades[11]};
   padding: 0 ${values[2]} ${values[2]};
 `
 
 /* margin: 0 -$value-2; */
 /* background-color: $color-gray-shade-130; */
-export const Logo = styled.div`
+export const logo = css`
   height: calc(${values[10]} + ${values[4]});
-  border-bottom: 1px solid ${color("primary-shade", 8)};
+  border-bottom: 1px solid ${colors.primary.shades[8]};
   margin-bottom: ${values[4]};
 `
 
 // TODO: emotion
-export const Link = styled.span`
+export const link = css`
   padding: 0;
   border: 0;
   background: none;
@@ -30,32 +29,30 @@ export const Link = styled.span`
   height: ${values[10]};
   border-radius: ${rounded.md};
   &:hover {
-    background-color: ${color("primary-shade", 10)};
+    background-color: ${colors.primary.shades[10]};
     & svg {
-      fill: ${color("primary-tint", 1)};
+      fill: ${colors.primary.tints[1]};
     }
   }
   &:active {
-    background-color: ${color("primary-shade", 9)};
+    background-color: ${colors.primary.shades[9]};
     & svg {
-      fill: ${color("primary-tint", 4)};
+      fill: ${colors.primary.tints[4]};
     }
   }
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 3px ${color("primary-shade", 8)};
+    box-shadow: 0 0 0 3px ${colors.primary.shades[8]};
   }
   svg {
-    fill: ${color("primary-shade", 9)};
+    fill: ${colors.primary.shades[9]};
     width: ${values[5]};
   }
-  ${ifProp(
-    "isSelected",
-    css`
-      background-color: ${color("primary-shade", 9)};
-      & svg {
-        fill: ${color("primary-tint", 4)};
-      }
-    `
-  )}
+`
+
+export const selected = css`
+  background-color: ${colors.primary.shades[9]};
+  & svg {
+    fill: ${colors.primary.tints[4]};
+  }
 `

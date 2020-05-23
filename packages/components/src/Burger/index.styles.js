@@ -1,11 +1,8 @@
-import styled, { css } from "styled-components"
-import { ifProp } from "styled-tools"
-import { color, values, shadows } from "@sourceface/style"
-import { variant } from "../utils"
-import MenuIcon from "./assets/menu.svg"
+import { css } from "@emotion/core"
+import { colors, values, shadows } from "@sourceface/style"
+import { apply } from "../utils"
 
-const sizes = variant(
-  "size",
+export const sizes = apply(
   {
     compact: {
       value: values[12],
@@ -20,46 +17,47 @@ const sizes = variant(
       icon: values[10],
     },
   },
-  ({ value, icon }) => `
+  ({ value, icon }) => css`
     width: ${value};
     height: ${value};
-    ${Icon} {
+    ${icon} {
       width: ${icon};
       height: ${icon};
     }
-`
+  `
 )
 
-const appearances = variant(
-  "appearance",
+export const variants = apply(
   {
     primary: {
-      bg: color("primary-shade", 9),
-      fg: color("primary-tint", 3),
-      active: color("primary-shade", 10),
+      bg: colors.primary.shades[9],
+      fg: colors.primary.tints[3],
+      activeColor: colors.primary.shades[10],
     },
     secondary: {
-      bg: color("light"),
-      fg: color("primary-shade", 7),
-      active: color("primary-tint", 9),
+      bg: colors.light,
+      fg: colors.primary.shades[7],
+      activeColor: colors.primary.tints[9],
     },
   },
-  ({ bg, fg, active }) => css`
-    background-color: ${ifProp("isActive", active, bg)};
-    ${Icon} {
+  ({ bg, fg, activeColor }) => css`
+    background-color: ${bg};
+    &${active} {
+      backgrond-color: ${activeColor};
+    }
+    ${icon} {
       fill: ${fg};
     }
   `
 )
 
-export const Root = styled.div`
+export const root = css`
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   box-shadow: ${shadows.base};
-  ${sizes}
-  ${appearances}
 `
 
-export const Icon = styled(MenuIcon)``
+export const active = css``
+export const icon = css``

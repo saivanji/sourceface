@@ -1,11 +1,8 @@
-import styled, { css } from "styled-components"
-import { ifProp, switchProp, prop } from "styled-tools"
-import { color, values, rounded, fontSizes } from "@sourceface/style"
-import OriginalSpinner from "../Spinner"
-import { variant } from "../utils"
+import { css } from "@emotion/core"
+import { colors, values, rounded, fontSizes } from "@sourceface/style"
+import { apply } from "../utils"
 
-const sizes = variant(
-  "size",
+export const sizes = apply(
   {
     compact: {
       fontSize: fontSizes.xs,
@@ -31,50 +28,43 @@ const sizes = variant(
     padding-left: ${space};
     padding-right: ${space};
     font-size: ${fontSize};
-    ${Spinner} {
+    ${spinner} {
       margin-right: ${spinnerOffset};
     }
   `
 )
 
-const appearances = variant(
-  "appearance",
+export const variants = apply(
   {
     primary: {
-      bg: color("primary-shade", 7),
-      fg: color("light"),
-      hover: color("primary-shade", 8),
-      active: color("primary-shade", 9),
-      focus: color("primary-tint", 11),
-      disabled: {
-        bg: color("primary-tint", 7),
-        fg: color("primary-shade", 9),
-      },
+      bg: colors.primary.shades[7],
+      fg: colors.light,
+      hover: colors.primary.shades[8],
+      active: colors.primary.shades[9],
+      focus: colors.primary.tints[11],
+      disabledBg: colors.primary.tints[7],
+      disabledFg: colors.primary.shades[9],
     },
     secondary: {
-      bg: color("light"),
-      fg: color("primary-shade", 5),
-      hover: color("primary-tint", 12),
-      active: color("primary-tint", 11),
-      focus: color("primary-tint", 11),
-      disabled: {
-        bg: color("primary-tint", 11),
-        fg: color("primary-shade", 0),
-      },
+      bg: colors.light,
+      fg: colors.primary.shades[5],
+      hover: colors.primary.tints[12],
+      active: colors.primary.tints[11],
+      focus: colors.primary.tints[11],
+      disabledBg: colors.primary.tints[11],
+      disabledFg: colors.primary.shades[0],
     },
     tertiary: {
       bg: "transparent",
-      fg: color("primary-shade", 10),
-      hover: color("primary-tint", 12),
-      active: color("primary-tint", 11),
-      focus: color("primary-tint", 11),
-      disabled: {
-        bg: "transparent",
-        fg: color("primary-shade", 0),
-      },
+      fg: colors.primary.shades[10],
+      hover: colors.primary.tints[12],
+      active: colors.primary.tints[11],
+      focus: colors.primary.tints[11],
+      disabledBg: "transparent",
+      disabledFg: colors.primary.shades[0],
     },
   },
-  ({ bg, fg, hover, active, focus, disabled }) => css`
+  ({ bg, fg, hover, active, focus, disabledBg, disabledFg }) => css`
     background-color: ${bg};
     color: ${fg};
     &:hover:not(:disabled) {
@@ -86,27 +76,14 @@ const appearances = variant(
     &:focus {
       box-shadow: 0 0 0 3px ${focus};
     }
-    ${ifProp(
-      "isDisabled",
-      css`
-        cursor: not-allowed;
-        background-color: ${disabled.bg};
-        color: ${disabled.fg};
-      `
-    )}
+    &${disabled} {
+      background-color: ${disabledBg};
+      color: ${disabledFg};
+    }
   `
 )
 
-const extra = switchProp(prop("appearance"), {
-  secondary: css`
-    border: 1px solid ${color("primary-tint", 4)};
-  `,
-  tertiary: `
-    font-weight: 700
-  `,
-})
-
-export const Root = styled.button`
+export const root = css`
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -118,13 +95,23 @@ export const Root = styled.button`
   &:focus {
     outline: 0;
   }
-  ${ifProp("shouldFitContainer", "width: 100%;")}
-  ${sizes}
-  ${appearances}
-  ${extra}
+  &${variants.secondary} {
+    border: 1px solid ${colors.primary.tints[4]};
+  }
+  &${variants.tertiary} {
+    font-weight: 700;
+  }
 `
 
-export const Spinner = styled(OriginalSpinner)``
+export const disabled = css`
+  cursor: not-allowed;
+`
+
+export const full = css`
+  width: 100%;
+`
+
+export const spinner = css``
 
 //   &.link {
 //     background: none;

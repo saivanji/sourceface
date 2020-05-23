@@ -1,8 +1,8 @@
-import styled from "styled-components"
-import { color, values } from "@sourceface/style"
+import { css } from "@emotion/core"
+import { colors, values } from "@sourceface/style"
 
-export const Item = styled.div`
-  border-bottom: 1px solid ${color("primary-tint", 4)};
+export const Item = css`
+  border-bottom: 1px solid ${colors.primary.tints[4]};
   padding: ${values[4]} 0;
   &:first-child {
     padding-top: 0;

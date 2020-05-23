@@ -15,7 +15,7 @@ export default function Pagination({
 
   return (
     <nav {...props}>
-      <styles.List>
+      <ul css={styles.list}>
         <Item
           onClick={() => !isPrevDisabled && onPageClick(selectedPage - 1)}
           isDisabled={isPrevDisabled}
@@ -59,18 +59,21 @@ export default function Pagination({
         >
           Next
         </Item>
-      </styles.List>
+      </ul>
     </nav>
   )
 }
 
 function Item({ children, isSelected, isDisabled, onClick, ...props }) {
   return (
-    <styles.Item {...props}>
-      <styles.Link
-        isSelected={isSelected}
-        isDisabled={isDisabled}
+    <li {...props} css={styles.item}>
+      <a
         href="#"
+        css={[
+          styles.link,
+          isSelected && styles.selected,
+          isDisabled && styles.disabled,
+        ]}
         onClick={e => {
           e.preventDefault()
 
@@ -84,8 +87,8 @@ function Item({ children, isSelected, isDisabled, onClick, ...props }) {
         })}
       >
         {children}
-      </styles.Link>
-    </styles.Item>
+      </a>
+    </li>
   )
 }
 

@@ -1,10 +1,8 @@
-import styled, { css } from "styled-components"
-import { ifProp } from "styled-tools"
-import { rounded, color, fontSizes, values } from "@sourceface/style"
-import { variant } from "../utils"
+import { css } from "@emotion/core"
+import { rounded, colors, fontSizes, values } from "@sourceface/style"
+import { apply } from "../utils"
 
-const sizes = variant(
-  "size",
+export const sizes = apply(
   {
     compact: {
       fontSize: fontSizes.xs,
@@ -43,77 +41,67 @@ const sizes = variant(
     iconOffset,
     iconSpace,
   }) => css`
-    ${Wrap} {
+    ${wrap} {
       height: ${height};
     }
-    ${Element} {
+    ${element} {
       font-size: ${fontSize};
       padding: 0 ${space};
     }
-    ${IconBefore},
-    ${IconAfter} {
+    ${iconBefore},
+    ${iconAfter} {
       width: ${iconWidth};
     }
-    ${IconBefore} {
+    ${iconBefore} {
       margin-left: ${iconOffset};
     }
-    ${IconAfter} {
+    ${iconAfter} {
       margin-right: ${iconOffset};
     }
-    ${ErrorText} {
+    ${errorText} {
       font-size: ${errorFontSize};
     }
-    ${ifProp(
-      "hasIconBefore",
-      `
-        ${Element} {
-          padding-left: ${iconSpace};
-        }
-      `
-    )}
-    ${ifProp(
-      "hasIconAfter",
-      `
-        ${Element} {
-          padding-right: ${iconSpace};
-        }
-      `
-    )}
+    &${hasIconBefore} {
+      ${element} {
+        padding-left: ${iconSpace};
+      }
+    }
+    &${hasIconAfter} {
+      ${element} {
+        padding-left: ${iconSpace};
+      }
+    }
   `
 )
 
-export const Root = styled.div`
-  ${sizes}
-`
+export const root = css``
 
-export const Wrap = styled.div`
+export const wrap = css`
   position: relative;
 `
 
-export const Element = styled.input`
+export const element = css`
   width: 100%;
   height: 100%;
-  background-color: ${color("primary-tint", 12)};
-  color: ${color("primary-shade", 10)};
+  background-color: ${colors.primary.tints[12]};
+  color: ${colors.primary.shades[10]};
   border-radius: ${rounded.base};
-  border: 1px solid ${color("primary-tint", 4)};
+  border: 1px solid ${colors.primary.tints[4]};
   &:focus {
-    background-color: ${color("light")};
-    border-color: ${color("primary-tint", 9)};
-    box-shadow: 0 0 0 3px ${color("primary-tint", 11)};
+    background-color: ${colors.light};
+    border-color: ${colors.primary.tints[9]};
+    box-shadow: 0 0 0 3px ${colors.primary.tints[11]};
   }
   &::placeholder {
-    color: ${color("primary-shade", 2)};
+    color: ${colors.primary.shades[2]};
   }
-  ${ifProp(
-    "hasError",
-    css`
-      border-color: ${color("primary-shade", 9)};
-      &:focus {
-        box-shadow: none;
-      }
-    `
-  )}
+`
+
+export const error = css`
+  border-color: ${colors.primary.shades[9]};
+  &:focus {
+    box-shadow: none;
+  }
 `
 
 const icon = css`
@@ -124,18 +112,21 @@ const icon = css`
   align-items: center;
 `
 
-export const IconBefore = styled.div`
+export const iconBefore = css`
   ${icon}
   left: 0;
 `
 
-export const IconAfter = styled.div`
+export const iconAfter = css`
   ${icon}
   right: 0;
 `
 
-export const ErrorText = styled.span`
+export const errorText = css`
   display: block;
-  color: ${color("dark")};
+  color: ${colors.dark};
   margin-top: ${values[1]};
 `
+
+export const hasIconBefore = css``
+export const hasIconAfter = css``

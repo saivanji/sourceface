@@ -1,29 +1,28 @@
-import styled, { css } from "styled-components"
-import { ifProp } from "styled-tools"
-import { rounded, color, fontSizes, values } from "@sourceface/style"
+import { css } from "@emotion/core"
+import { rounded, colors, fontSizes, values } from "@sourceface/style"
 
-export const Root = styled.div`
+export const root = css`
   display: flex;
   flex-direction: column;
   margin: -${values[4]};
   font-size: ${fontSizes.sm};
 `
 
-export const Header = styled.div`
+export const header = css`
   display: flex;
-  border-bottom: 1px solid ${color("primary-tint", 2)};
+  border-bottom: 1px solid ${colors.primary.tints[2]};
 `
 
-export const Body = styled.div`
+export const body = css`
   padding: ${values[4]};
 `
 
-const selected = css`
+export const selected = css`
   font-weight: 700;
-  border-bottom: 2px solid ${color("primary-shade", 7)};
+  border-bottom: 2px solid ${colors.primary.shades[7]};
 `
 
-export const Tab = styled.button`
+export const tab = css`
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -34,21 +33,20 @@ export const Tab = styled.button`
   margin-bottom: -1px;
   padding: 0 ${values[4]};
   height: ${values[10]};
-  color: ${color("primary-shade", 7)};
+  color: ${colors.primary.shades[7]};
   &:focus {
     outline: 0;
-    background-color: ${color("light")};
-    box-shadow: 0 0 0 3px ${color("primary-tint", 11)};
+    background-color: ${colors.light};
+    box-shadow: 0 0 0 3px ${colors.primary.tints[11]};
   }
-  ${ifProp("isSelected", selected)}
 `
 
-export const IconBefore = styled.div`
+export const iconBefore = css`
   width: ${values[3]};
   margin-right: ${values[2]};
 `
 
-export const IconAfter = styled.div`
+export const iconAfter = css`
   width: ${values[3]};
   margin-left: ${values[2]};
 `

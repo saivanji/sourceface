@@ -4,13 +4,13 @@ import * as styles from "./index.styles"
 
 export default function Loader({ isLoading, children, ...props }) {
   return (
-    <styles.Root {...props}>
-      <styles.Wrap isLoading={isLoading}>{children}</styles.Wrap>
+    <div {...props} css={styles.root}>
+      <div css={isLoading && styles.loading}>{children}</div>
       {isLoading && (
-        <styles.SpinnerWrap>
+        <div css={styles.spinner}>
           <Spinner />
-        </styles.SpinnerWrap>
+        </div>
       )}
-    </styles.Root>
+    </div>
   )
 }

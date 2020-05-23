@@ -6,7 +6,6 @@ import React, {
   useEffect,
   useRef,
 } from "react"
-import cx from "classnames"
 import * as styles from "./index.styles"
 
 const Context = createContext("dropdown")
@@ -20,7 +19,9 @@ export default function Dropdown({ children, ...props }) {
 
   return (
     <Context.Provider value={{ isOpened, toggle, close, buttonRef, menuRef }}>
-      <styles.Root {...props}>{children}</styles.Root>
+      <div {...props} css={styles.root}>
+        {children}
+      </div>
     </Context.Provider>
   )
 }
@@ -36,7 +37,11 @@ Dropdown.Trigger = function Trigger({ children, ...props }) {
 }
 
 // TODO: remove in favor of future implemented list component? same for Item?
-Dropdown.Menu = function Menu({ children, ...props }) {
+Dropdown.Menu = function Menu({
+  children,
+  position = "bottomRight",
+  ...props
+}) {
   const { isOpened, close, buttonRef, menuRef } = useContext(Context)
   const onClickOutside = useCallback(
     event =>
@@ -58,9 +63,13 @@ Dropdown.Menu = function Menu({ children, ...props }) {
 
   return (
     isOpened && (
-      <styles.Menu {...props} ref={menuRef}>
+      <div
+        {...props}
+        ref={menuRef}
+        css={[styles.menu, styles.positions[position]]}
+      >
         {children}
-      </styles.Menu>
+      </div>
     )
   )
 }
@@ -71,8 +80,9 @@ Dropdown.Item = function Item({ children, onClick, ...props }) {
   const { close } = useContext(Context)
 
   return (
-    <styles.Item
+    <div
       {...props}
+      css={styles.item}
       onClick={() => {
         close()
 
@@ -82,10 +92,6 @@ Dropdown.Item = function Item({ children, onClick, ...props }) {
       }}
     >
       {children}
-    </styles.Item>
+    </div>
   )
-}
-
-Dropdown.Menu.defaultProps = {
-  position: "bottomRight",
 }

@@ -1,11 +1,8 @@
-import styled, { css } from "styled-components"
-import { ifProp, ifNotProp } from "styled-tools"
-import { rounded, color, fontSizes, values } from "@sourceface/style"
-import ArrowIcon from "./assets/arrow.svg"
-import { variant } from "../utils"
+import { css } from "@emotion/core"
+import { rounded, colors, fontSizes, values } from "@sourceface/style"
+import { apply } from "../utils"
 
-const sizes = variant(
-  "size",
+export const sizes = apply(
   {
     compact: {
       fontSize: fontSizes.xs,
@@ -26,66 +23,63 @@ const sizes = variant(
       space: values[3],
     },
   },
-  ({ fontSize, errorFontSize, height, space }) => `
-    ${Element} {
+  ({ fontSize, errorFontSize, height, space }) => css`
+    ${element} {
       font-size: ${fontSize};
       height: ${height};
       padding: 0 ${space};
     }
-    ${ErrorText} {
+    ${errorText} {
       font-size: ${errorFontSize};
     }
-`
+  `
 )
 
-export const Root = styled.div`
+export const root = css`
   display: flex;
   flex-direction: column;
-  ${sizes}
 `
 
-const placeholder = css`
+export const placeholder = css`
   color: ${color("primary")};
 `
 
-const error = css`
-  border-color: ${color("primary-shade", 9)};
+export const error = css`
+  border-color: ${colors.primary.shades[9]};
   &:focus {
     box-shadow: none;
   }
 `
 
-export const Element = styled.div`
+export const element = css`
   width: 100%;
   display: flex;
   align-items: center;
-  background-color: ${color("primary-tint", 12)};
-  color: ${color("primary-shade", 10)};
-  border-radius: ${rounded.base};
-  border: 1px solid ${color("primary-tint", 4)};
   cursor: pointer;
+  background-color: ${colors.primary.tints[12]};
+  color: ${colors.primary.shades[10]};
+  border-radius: ${rounded.base};
+  border: 1px solid ${colors.primary.tints[4]};
   &:focus {
     outline: none;
-    background-color: ${color("light")};
-    border-color: ${color("primary-tint", 9)};
-    box-shadow: 0 0 0 3px ${color("primary-tint", 11)};
+    background-color: ${colors.light};
+    border-color: ${colors.primary.tints[9]};
+    box-shadow: 0 0 0 3px ${colors.primary.tints[11]};
   }
-  ${ifProp("hasError", error)}
-  ${ifNotProp("hasValue", placeholder)}
 `
 
-export const Arrow = styled(ArrowIcon)`
+export const arrow = css`
   margin-left: auto;
   width: ${values[4]};
-  fill: ${color("primary-shade", 11)};
+  fill: ${colors.primary.shades[11]};
 `
 
-export const Selection = styled.span`
+export const selection = css`
   margin-right: ${values[2]};
 `
 
-export const ErrorText = styled.span`
+export const errorText = css`
   display: block;
-  color: ${color("dark")};
+  color: ${colors.dark};
   margin-top: ${values[1]};
 `

@@ -1,20 +1,14 @@
-import styled from "styled-components"
-import { ifProp } from "styled-tools"
+import { css } from "@emotion/core"
 
-export const Root = styled.div`
+export const root = css`
   position: relative;
 `
 
-export const Wrap = styled.div`
-  ${ifProp(
-    "isLoading",
-    `
-      opacity: 0.2;
-    `
-  )}
+export const loading = css`
+  opacity: 0.2;
 `
 
-export const SpinnerWrap = styled.div`
+export const spinner = css`
   position: absolute;
   top: 0;
   left: 0;

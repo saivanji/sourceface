@@ -1,56 +1,54 @@
-import styled from "styled-components"
-import { prop, switchProp } from "styled-tools"
-import { shadows, color, fontSizes, values, rounded } from "@sourceface/style"
+import { css } from "@emotion/core"
+import { shadows, colors, fontSizes, values, rounded } from "@sourceface/style"
 
-const position = switchProp(prop("position"), {
-  topLeft: `
+export const positions = {
+  topLeft: css`
     bottom: calc(100% + ${values[2]});
     left: 0;
   `,
-  topRight: `
+  topRight: css`
     bottom: calc(100% + ${values[2]});
     right: 0;
   `,
-  bottomLeft: `
+  bottomLeft: css`
     top: calc(100% + ${values[2]});
     left: 0;
   `,
-  bottomRight: `
+  bottomRight: css`
     top: calc(100% + ${values[2]});
     right: 0;
   `,
-})
+}
 
-export const Root = styled.div`
+export const root = css`
   position: relative;
   display: inline-flex;
 `
 
-export const Menu = styled.div`
+export const menu = css`
   position: absolute;
   display: inline-flex;
   flex-direction: column;
   z-index: 1;
-  background-color: ${color("light")};
+  background-color: ${colors.light};
   width: ${values[48]};
   border-radius: ${rounded.base};
   box-shadow: ${shadows.md};
   padding: ${values[2]} 0;
-  border: 1px solid ${color("primary-tint", 8)};
-  ${position}
+  border: 1px solid ${colors.primary.tints[8]};
 `
 
-export const Item = styled.div`
-  font-size: ${fontSizes.sm};
-  padding: 0 ${values[3]};
-  height: ${values[8]};
+export const item = css`
   display: flex;
   align-items: center;
   cursor: pointer;
+  font-size: ${fontSizes.sm};
+  padding: 0 ${values[3]};
+  height: ${values[8]};
   &:hover {
-    background-color: ${color("primary-tint", 11)};
+    background-color: ${colors.primary.tints[11]};
   }
   &:active {
-    background-color: ${color("primary-tint", 10)};
+    background-color: ${colors.primary.tints[10]};
   }
 `

@@ -22,11 +22,18 @@ export default function Modal({
   }, [portalId])
 
   const modal = (
-    <styles.Root {...props} onClick={() => onDismiss()} isPortal={!!portalId}>
-      <styles.Container onClick={e => e.stopPropagation()} size={size}>
+    <div
+      {...props}
+      onClick={() => onDismiss()}
+      css={[styles.root, !portalId && styles.overlay]}
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        css={[styles.container, styles.sizesVariants[size]]}
+      >
         {children}
-      </styles.Container>
-    </styles.Root>
+      </div>
+    </div>
   )
 
   return (
@@ -42,28 +49,34 @@ Modal.Header = function Header({ children, iconBefore, ...props }) {
   const { onDismiss } = useContext(Context)
 
   return (
-    <styles.Row {...props} isHeader>
-      {iconBefore && <styles.HeaderIcon>{iconBefore}</styles.HeaderIcon>}
-      <styles.Title>{children}</styles.Title>
-      <styles.Close>
+    <div {...props} css={[styles.row, styles.header]}>
+      {iconBefore && <span css={styles.headerIcon}>{iconBefore}</span>}
+      <h4 css={styles.title}>{children}</h4>
+      <button css={styles.close}>
         <CloseIcon onClick={onDismiss} />
-      </styles.Close>
-    </styles.Row>
+      </button>
+    </div>
   )
 }
 
 Modal.Body = function Body({ children, ...props }) {
-  return <styles.Row {...props}>{children}</styles.Row>
+  return (
+    <div {...props} css={styles.row}>
+      {children}
+    </div>
+  )
 }
 
 Modal.Footer = function Footer({ children, ...props }) {
   return (
-    <styles.Row {...props} isFooter>
-      <styles.Actions>
+    <div {...props} css={[styles.row, styles.footer]}>
+      <div css={styles.actions}>
         {React.Children.toArray(children).map((action, i) => (
-          <styles.Action key={i}>{action}</styles.Action>
+          <div css={styles.action} key={i}>
+            {action}
+          </div>
         ))}
-      </styles.Actions>
-    </styles.Row>
+      </div>
+    </div>
   )
 }

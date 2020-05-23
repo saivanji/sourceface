@@ -1,27 +1,28 @@
-import styled, { css } from "styled-components"
-import { color, shadows, values } from "@sourceface/style"
-import { variant } from "../utils"
+import { css } from "@emotion/core"
+import { colors, shadows, values } from "@sourceface/style"
+import { apply } from "../utils"
 
-const sizes = variant(
-  "size",
+export const sizes = apply(
   {
     compact: values[12],
     normal: `calc(${values[10]} + ${values[4]})`,
     loose: values[16],
   },
-  height => `height: ${height};`
+  height =>
+    css`
+      height: ${height};
+    `
 )
 
-const appearances = variant(
-  "appearance",
+export const variants = apply(
   {
     primary: {
-      bg: color("light"),
-      fg: color("primary-tint", 10),
+      bg: colors.light,
+      fg: colors.primary.tints[10],
     },
     secondary: {
-      bg: color("primary-shade", 9),
-      fg: color("primary-tint", 6),
+      bg: colors.primary.shades[9],
+      fg: colors.primary.tints[6],
     },
   },
   ({ bg, fg }) => css`
@@ -30,9 +31,7 @@ const appearances = variant(
   `
 )
 
-export const Root = styled.div`
+export const Root = css`
   box-shadow: ${shadows.base};
   padding: 0 ${values[4]};
-  ${sizes}
-  ${appearances}
 `

@@ -17,10 +17,37 @@ export default function Table({
 }) {
   return (
     <Context.Provider value={{ columns }}>
-      <styles.Root bordered={bordered} size={size} {...props}>
+      <div
+        {...props}
+        css={[styles.root, styles.sizes[size], bordered && styles.bordered]}
+      >
         {children}
-      </styles.Root>
+      </div>
     </Context.Provider>
+  )
+}
+
+Table.Thead = function Thead({ children, ...props }) {
+  return (
+    <div {...props} css={styles.thead}>
+      {children}
+    </div>
+  )
+}
+
+Table.Th = function Th({ children, align = "left", ...props }) {
+  return (
+    <div {...props} css={[styles.th, styles.align[align]]}>
+      {children}
+    </div>
+  )
+}
+
+Table.Tbody = function Thead({ children, ...props }) {
+  return (
+    <div {...props} css={styles.tbody}>
+      {children}
+    </div>
   )
 }
 
@@ -36,20 +63,23 @@ Table.Tr = function Tr({
   const widths = calcWidths(columns || new Array(count).fill("auto"))
 
   return (
-    <styles.Tr {...props}>
+    <div {...props} css={styles.tr}>
       {React.Children.map(children, (el, i) =>
         cloneElement(el, {
           style: { width: widths[i] },
         })
       )}
-    </styles.Tr>
+    </div>
   )
 }
 
-Table.Thead = styles.Thead
-Table.Tbody = styles.Tbody
-Table.Th = styles.Th
-Table.Td = styles.Td
+Table.Td = function Td({ children, align = "left", ...props }) {
+  return (
+    <div {...props} css={[styles.td, styles.align[align]]}>
+      {children}
+    </div>
+  )
+}
 
 const calcWidths = columns => {
   const autoCount = columns.filter(el => el == "auto").length

@@ -1,5 +1,6 @@
 import React from "react"
 import * as styles from "./index.styles"
+import ArrowIcon from "./assets/arrow.svg"
 import Dropdown from "../Dropdown"
 
 // TODO: if select will have "clear" feature applied, display separator between arrow and clear icon
@@ -18,15 +19,21 @@ export default function Select({
     value && options.find(option => option.value === value).label
 
   return (
-    <styles.Root {...props} size={size}>
+    <div {...props} css={[styles.root, styles.sizes[size]]}>
       <Dropdown>
-        <Dropdown.Trigger style={{ width: "100%" }}>
-          <styles.Element hasValue={!!value} hasError={!!error}>
-            <styles.Selection>{selectedLabel || placeholder}</styles.Selection>
-            <styles.Arrow />
-          </styles.Element>
+        <Dropdown.Trigger css={styles.full}>
+          <button
+            css={[
+              styles.element,
+              !value && styles.placeholder,
+              error && styles.error,
+            ]}
+          >
+            <span css={styles.selection}>{selectedLabel || placeholder}</span>
+            <ArrowIcon css={styles.arrow} />
+          </button>
         </Dropdown.Trigger>
-        <Dropdown.Menu style={{ width: "100%" }} position="bottomLeft">
+        <Dropdown.Menu position="bottomLeft" css={styles.dropdown}>
           {options.map(option => (
             <Dropdown.Item
               onClick={() => {
@@ -46,7 +53,7 @@ export default function Select({
           ))}
         </Dropdown.Menu>
       </Dropdown>
-      {error && <styles.ErrorText>{error}</styles.ErrorText>}
-    </styles.Root>
+      {error && <div css={styles.errorText}>{error}</div>}
+    </div>
   )
 }

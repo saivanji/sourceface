@@ -1,8 +1,8 @@
 import { css } from "@emotion/core"
 import { colors, values, rounded, fontSizes } from "@sourceface/style"
-import { variants } from "../utils"
+import { apply } from "../utils"
 
-export const sizes = variants(
+export const sizes = apply(
   {
     compact: {
       value: values[6],
@@ -17,11 +17,11 @@ export const sizes = variants(
       fontSize: fontSizes.xl,
     },
   },
-  ({ value, fontSize }) => `
-      width: ${value};
-      height: ${value};
-      font-size: ${fontSize};
-    `
+  ({ value, fontSize }) => css`
+    width: ${value};
+    height: ${value};
+    font-size: ${fontSize};
+  `
 )
 
 export const root = css`

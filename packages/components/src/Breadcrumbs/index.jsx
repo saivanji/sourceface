@@ -6,18 +6,18 @@ export default function Breadcrumbs({ items, renderLink, ...props }) {
   const current = items.slice(-1)[0]
 
   return (
-    <styles.Root {...props}>
-      <styles.Path>
+    <div {...props} css={styles.root}>
+      <span css={styles.path}>
         {path.map((item, i) => (
           <React.Fragment key={i}>
             {i !== 0 && " › "}
-            <styles.Link key={i} href="#">
+            <a css={styles.link} key={i} href="#">
               {item.name}
-            </styles.Link>
+            </a>
           </React.Fragment>
         ))}
-      </styles.Path>
-      <styles.Current>{current.name}</styles.Current>
-    </styles.Root>
+      </span>
+      <span css={styles.current}>{current.name}</span>
+    </div>
   )
 }

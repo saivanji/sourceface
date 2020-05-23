@@ -3,20 +3,19 @@ import * as styles from "./index.styles"
 
 export default function Label({
   children,
-  className,
   title,
   isOptional,
   helperMessage,
   ...props
 }) {
   return (
-    <label {...props} className={className}>
-      <styles.Title>
+    <label {...props}>
+      <span css={styles.title}>
         {title}
-        {isOptional && <styles.Optional>(optional)</styles.Optional>}
-      </styles.Title>
+        {isOptional && <span css={styles.optional}>(optional)</span>}
+      </span>
       {children}
-      {helperMessage && <styles.Helper>{helperMessage}</styles.Helper>}
+      {helperMessage && <span css={styles.helper}>{helperMessage}</span>}
     </label>
   )
 }

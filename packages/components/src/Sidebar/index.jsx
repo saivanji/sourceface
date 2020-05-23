@@ -2,37 +2,61 @@ import React from "react"
 import * as styles from "./index.styles"
 
 // TODO: define bg/color at the root component(in css with nesting) and not for the children. Make sure the rest components in the kit are following that convention
-// TODO: implement light appearance
-export default styles.Root
+// TODO: implement light variant
+export default function Sidebar({ children, ...props }) {
+  return (
+    <div {...props} css={styles.root}>
+      {children}
+    </div>
+  )
+}
 
 // TODO: add iconBefore prop
-styles.Root.Title = styles.Title
+Sidebar.Title = function Title({ children, ...props }) {
+  return (
+    <span {...props} css={styles.title}>
+      {children}
+    </span>
+  )
+}
 
 // TODO: have title here and remove GroupTitle?
-styles.Root.Group = styles.Group
+Sidebar.Group = function Group({ children, ...props }) {
+  return (
+    <div {...props} css={styles.group}>
+      {children}
+    </div>
+  )
+}
 
-styles.Root.GroupTitle = styles.GroupTitle
+Sidebar.GroupTitle = function GroupTitle({ children, ...props }) {
+  return (
+    <span {...props} css={styles.groupTitle}>
+      {children}
+    </span>
+  )
+}
 
 // TODO: rename to Link
-styles.Root.GroupLink = function GroupLink({
+Sidebar.GroupLink = function GroupLink({
   children,
+
   iconBefore,
   isSelected,
   component: Component = "a",
   ...props
 }) {
-  const iconType = iconBefore && (iconBefore.type || "span")
-
   return (
-    <Component {...props}>
-      <styles.GroupLink isSelected={isSelected}>
-        {iconBefore && <iconType className={styles.GroupIcon} />}
-        {children}
-      </styles.GroupLink>
+    <Component
+      {...props}
+      css={[styles.groupLink, isSelected && styles.selected]}
+    >
+      {iconBefore && <iconBefore.type css={styles.groupIcon} />}
+      {children}
     </Component>
   )
 }
 
-styles.Root.Back = function Back() {}
+Sidebar.Back = function Back() {}
 
-styles.Root.Switcher = function Switcher() {}
+Sidebar.Switcher = function Switcher() {}

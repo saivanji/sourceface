@@ -22,9 +22,9 @@ const items = [
 
 export default { title: "Header", decorators: [withKnobs, withA11y] }
 
-const Regular = ({ appearance }) => (
+const Regular = ({ variant }) => (
   <Header
-    appearance={appearance}
+    variant={variant}
     size={select("Size", ["compact", "normal", "loose"], "normal")}
     style={{ display: "flex", alignItems: "center" }}
   >
@@ -35,5 +35,5 @@ const Regular = ({ appearance }) => (
   </Header>
 )
 
-export const Primary = () => <Regular appearance="primary" />
-export const Secondary = () => <Regular appearance="secondary" />
+export const Dark = () => <Regular variant="dark" />
+export const Light = () => <Regular variant="light" />

@@ -1,25 +1,23 @@
-import styled, { css, keyframes } from "styled-components"
-import { rounded, color, values } from "@sourceface/style"
-import { variant } from "../utils"
+import { css, keyframes } from "@emotion/core"
+import { rounded, colors, values } from "@sourceface/style"
+import { apply } from "../utils"
 
-const sizes = variant(
-  "size",
+export const sizes = apply(
   {
     compact: values[3],
     normal: values[4],
     loose: values[5],
   },
-  size => `
+  size => css`
     width: ${size};
     height: ${size};
   `
 )
 
-const appearances = variant(
-  "appearance",
+export const variants = apply(
   {
-    primary: color("primary-shade", 7),
-    secondary: color("light"),
+    primary: colors.primary.shades[7],
+    secondary: colors.light,
   },
   color => css`
     border-color: ${color};
@@ -32,11 +30,9 @@ const animation = keyframes`
   }
 `
 
-export const Root = styled.div`
+export const root = css`
   border-right-color: transparent !important;
-  animation: ${animation} 0.75s linear infinite;
   border: 2px solid;
+  animation: ${animation} 0.75s linear infinite;
   border-radius: ${rounded.full};
-  ${sizes}
-  ${appearances}
 `

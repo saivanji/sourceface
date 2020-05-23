@@ -1,55 +1,54 @@
-import styled, { css } from "styled-components"
-import { ifProp } from "styled-tools"
-import { rounded, color, fontSizes, values } from "@sourceface/style"
+import { css } from "@emotion/core"
+import { rounded, colors, fontSizes, values } from "@sourceface/style"
 
-export const Root = styled.div`
+export const root = css`
   padding: ${values[2]} ${values[4]};
-  background-color: ${color("primary-shade", 10)};
+  background-color: ${colors.primary.shades[10]};
 `
 
-export const Title = styled.span`
+export const title = css`
   display: flex;
   align-items: center;
   margin-bottom: -1px;
   height: calc(${values[10]} + ${values[2]});
   margin-bottom: ${values[4]};
-  color: ${color("light")};
+  color: ${colors.light};
   font-size: ${fontSizes.xl};
-  border-bottom: 1px solid ${color("primary-shade", 8)};
+  border-bottom: 1px solid ${colors.primary.shades[8]};
 `
 
-export const Group = styled.div`
+export const group = css`
   margin-left: -${values[2]};
   & + .group {
     margin-top: ${values[5]};
   }
 `
 
-export const GroupTitle = styled.span`
+export const groupTitle = css`
   text-transform: uppercase;
   font-weight: 700;
   display: block;
   padding-left: ${values[2]};
-  color: ${color("primary-shade", 2)};
+  color: ${colors.primary.shades[2]};
   font-size: ${fontSizes.xs};
   margin-bottom: ${values[1]};
 `
 
 // TODO: emotion
-export const GroupIcon = styled.div`
+export const groupIcon = css`
   width: ${values[4]};
   margin-right: ${values[2]};
-  fill: ${color("primary-shade", 9)};
+  fill: ${colors.primary.shades[9]};
 `
 
-const selected = css`
-  background-color: ${color("primary-shade", 11)};
+export const selected = css`
+  background-color: ${colors.primary.shades[11]};
   .group-icon {
-    fill: ${color("primary-tint", 4)};
+    fill: ${colors.primary.tints[4]};
   }
 `
 
-export const GroupLink = styled.div`
+export const groupLink = css`
   border: 0;
   background: none;
   cursor: pointer;
@@ -58,25 +57,24 @@ export const GroupLink = styled.div`
   display: flex;
   align-items: center;
   padding: 0 $value-2;
-  color: ${color("primary-tint", 9)};
+  color: ${colors.primary.tints[9]};
   border-radius: ${rounded.md};
   height: ${values[10]};
   text-decoration: none;
   &:hover {
-    background-color: ${color("primary-shade", 9)};
+    background-color: ${colors.primary.shades[9]};
     .group-icon {
-      fill: ${color("primary-tint", 1)};
+      fill: ${colors.primary.tints[1]};
     }
   }
   &:active {
-    background-color: ${color("primary-shade", 11)};
+    background-color: ${colors.primary.shades[11]};
     .group-icon {
-      fill: ${color("primary-tint", 4)};
+      fill: ${colors.primary.tints[4]};
     }
   }
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 3px ${color("primary-shade", 8)};
+    box-shadow: 0 0 0 3px ${colors.primary.shades[8]};
   }
-  ${ifProp("isSelected", selected)}
 `

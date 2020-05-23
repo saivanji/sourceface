@@ -3,27 +3,27 @@ import * as styles from "./index.styles"
 
 export default function Input({
   size = "normal",
-  className,
-  style,
   iconAfter,
   iconBefore,
   error,
   ...props
 }) {
   return (
-    <styles.Root
-      style={style}
-      className={className}
-      size={size}
-      hasIconBefore={!!iconBefore}
-      hasIconAfter={!!iconAfter}
-    >
-      <styles.Wrap>
-        {iconBefore && <styles.IconBefore>{iconBefore}</styles.IconBefore>}
-        <styles.Element hasError={!!error} {...props} />
-        {iconAfter && <styles.IconAfter>{iconAfter}</styles.IconAfter>}
-      </styles.Wrap>
-      {error && <styles.ErrorText>{error}</styles.ErrorText>}
-    </styles.Root>
+    <div css={[styles.root, styles.sizes[size]]}>
+      <div css={styles.wrap}>
+        {iconBefore && <div css={styles.iconBefore}>{iconBefore}</div>}
+        <input
+          css={[
+            styles.element,
+            error && styles.error,
+            iconBefore && styles.hasIconBefore,
+            iconAfter && styles.hasIconAfter,
+          ]}
+          {...props}
+        />
+        {iconAfter && <div css={styles.iconAfter}>{iconAfter}</div>}
+      </div>
+      {error && <div css={styles.errorText}>{error}</div>}
+    </div>
   )
 }

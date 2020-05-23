@@ -1,20 +1,32 @@
 import React from "react"
 import * as styles from "./index.styles"
 
-// TODO: implement light appearance
-export default styles.Root
+// TODO: implement light variant
+export default function Nav({ children, ...props }) {
+  return (
+    <div {...props} css={styles.root}>
+      {children}
+    </div>
+  )
+}
 
-styles.Root.Logo = styles.Logo
+Nav.Logo = function Logo({ children, ...props }) {
+  return (
+    <div {...props} css={styles.logo}>
+      {children}
+    </div>
+  )
+}
 
-styles.Root.Link = function Link({
+Nav.Link = function Link({
   children,
   isSelected,
   component: Component = "a",
   ...props
 }) {
   return (
-    <Component {...props}>
-      <styles.Link isSelected={isSelected}>{children}</styles.Link>
+    <Component {...props} css={[styles.link, isSelected && styles.selected]}>
+      {children}
     </Component>
   )
 }

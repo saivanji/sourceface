@@ -1,9 +1,8 @@
-import styled from "styled-components"
-import { color, shadows, values, rounded } from "@sourceface/style"
-import { variant } from "../utils"
+import { css } from "@emotion/core"
+import { colors, shadows, values, rounded } from "@sourceface/style"
+import { apply } from "../utils"
 
-const sizes = variant(
-  "size",
+export const sizes = apply(
   {
     compact: {
       radius: rounded.sm,
@@ -18,15 +17,14 @@ const sizes = variant(
       space: values[6],
     },
   },
-  ({ radius, space }) => `
+  ({ radius, space }) => css`
     border-radius: ${radius};
     padding: ${space};
-`
+  `
 )
 
-export const Root = styled.div`
+export const root = css`
   box-shadow: ${shadows.sm};
-  background-color: ${color("light")};
-  border: 1px solid ${color("primary-tint", 8)};
-  ${sizes}
+  background-color: ${colors.light};
+  border: 1px solid ${colors.primary.tints[8]};
 `

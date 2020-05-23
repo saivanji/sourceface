@@ -1,26 +1,27 @@
-import styled, { css } from "styled-components"
-import { color, values, rounded, fontSizes } from "@sourceface/style"
-import { variant } from "../utils"
+import { css } from "@emotion/core"
+import { colors, values, rounded, fontSizes } from "@sourceface/style"
+import { apply } from "../utils"
 
-const shapes = variant(
-  "shape",
+export const shapes = apply(
   {
     rounded: rounded.full,
     squared: rounded.base,
   },
-  radius => `border-radius: ${radius};`
+  radius =>
+    css`
+      border-radius: ${radius};
+    `
 )
 
-const appearances = variant(
-  "appearance",
+export const variants = apply(
   {
-    primary: {
-      bg: color("primary-shade", 7),
-      fg: color("light"),
+    dark: {
+      bg: colors.primary.shades[7],
+      fg: colors.light,
     },
-    secondary: {
-      bg: color("primary-tint", 8),
-      fg: color("primary-shade", 6),
+    light: {
+      bg: colors.primary.tints[8],
+      fg: colors.primary.shades[6],
     },
   },
   ({ bg, fg }) => css`
@@ -29,12 +30,10 @@ const appearances = variant(
   `
 )
 
-export const Root = styled.span`
+export const root = css`
   display: inline-flex;
   align-items: center;
   font-size: ${fontSizes.xs};
   padding: 0 ${values[1]};
   height: ${values[4]};
-  ${shapes}
-  ${appearances}
 `

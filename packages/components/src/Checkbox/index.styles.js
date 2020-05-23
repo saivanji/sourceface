@@ -1,11 +1,8 @@
-import styled, { css } from "styled-components"
-import { ifProp } from "styled-tools"
-import { color, fontSizes, values, rounded } from "@sourceface/style"
-import OriginalIcon from "./assets/check.svg"
-import { variant } from "../utils"
+import { css } from "@emotion/core"
+import { colors, fontSizes, values, rounded } from "@sourceface/style"
+import { apply } from "../utils"
 
-const sizes = variant(
-  "size",
+export const sizes = apply(
   {
     compact: {
       value: values[4],
@@ -24,66 +21,63 @@ const sizes = variant(
     },
   },
   ({ value, fontSize, labelOffset }) => css`
-    ${Checkbox} {
+    ${checkbox} {
       width: ${value};
       height: ${value};
     }
-    ${Label} {
+    ${label} {
       font-size: ${fontSize};
       margin-left: ${labelOffset};
     }
   `
 )
 
-export const Checkbox = styled.span`
+export const checkbox = css`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${color("light")};
-  border: 1px solid ${color("primary-tint", 4)};
+  background-color: ${colors.light};
+  border: 1px solid ${colors.primary.tints[4]};
   border-radius: ${rounded.sm};
 `
 
-export const Icon = styled(OriginalIcon)`
+export const icon = css`
   display: none;
-  fill: ${color("light")};
+  fill: ${colors.light};
 `
 
-export const Root = styled.label`
+export const root = css`
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  &:hover ${Checkbox} {
-    background-color: ${color("primary-tint", 12)};
+  &:hover ${checkbox} {
+    background-color: ${colors.primary.tints[12]};
   }
   input[type="checkbox"] {
     position: absolute;
     width: 0;
     height: 0;
     opacity: 0;
-    &:checked + ${Checkbox} {
-      background-color: ${color("primary-shade", 7)};
-      border-color: ${color("primary-shade", 7)};
-      ${Icon} {
+    &:checked + ${checkbox} {
+      background-color: ${colors.primary.shades[7]};
+      border-color: ${colors.primary.shades[7]};
+      ${icon} {
         display: block;
       }
     }
-    &:focus + ${Checkbox} {
+    &:focus + ${checkbox} {
       box-shadow: 0 0 0 3px $color-gray-tint-120;
     }
   }
-  ${ifProp(
-    "isDisabled",
-    css`
-      cursor: not-allowed;
-      ${Checkbox} {
-        background-color: ${color("primary-tint", 10)};
-      }
-    `
-  )}
-  ${sizes}
 `
 
-export const Label = styled.span`
+export const disabled = css`
+  cursor: not-allowed;
+  ${checkbox} {
+    background-color: ${colors.primary.tints[10]};
+  }
+`
+
+export const label = css`
   user-select: none;
 `
