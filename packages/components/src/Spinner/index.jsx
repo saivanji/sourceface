@@ -1,15 +1,17 @@
 import React from "react"
-import * as styles from "./index.styles"
+import cx from "classnames"
+import styles from "./index.scss"
 
 export default function Spinner({
-  variant = "dark",
+  appearance = "dark",
   size = "normal",
+  className,
   ...props
 }) {
   return (
     <div
       {...props}
-      css={[styles.root, styles.variants[variant], styles.sizes[size]]}
+      className={cx(styles.root, styles[appearance], styles[size], className)}
     ></div>
   )
 }

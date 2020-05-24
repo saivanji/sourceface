@@ -1,10 +1,17 @@
 import React from "react"
-import * as styles from "./index.styles"
+import cx from "classnames"
+import styles from "./index.scss"
 
-export default ({ value, variant = "light", shape = "rounded", ...props }) => (
+export default ({
+  value,
+  appearance = "dark",
+  shape = "rounded",
+  className,
+  ...props
+}) => (
   <span
     {...props}
-    css={[styles.root, styles.variants[variant], styles.shapes[shape]]}
+    className={cx(className, styles.root, styles[appearance], styles[shape])}
   >
     {value}
   </span>

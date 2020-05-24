@@ -1,24 +1,27 @@
 import React from "react"
+import cx from "classnames"
 import MenuIcon from "./assets/menu.svg"
-import * as styles from "./index.styles"
+import styles from "./index.scss"
 
 export default function Burger({
+  className,
   isActive,
   size = "normal",
-  variant = "light",
+  appearance = "light",
   ...props
 }) {
   return (
     <div
       {...props}
-      css={[
+      className={cx(
         styles.root,
-        styles.variants[variant],
-        styles.sizes[size],
+        styles[appearance],
+        styles[size],
         isActive && styles.active,
-      ]}
+        className
+      )}
     >
-      <MenuIcon css={styles.icon} />
+      <MenuIcon className={styles.icon} />
     </div>
   )
 }

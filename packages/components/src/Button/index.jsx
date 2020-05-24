@@ -1,16 +1,18 @@
 import React from "react"
+import cx from "classnames"
 import Spinner from "../Spinner"
-import * as styles from "./index.styles"
+import styles from "./index.scss"
 
 // TODO: should link be a separate component?
 export default function Button({
   children,
-  variant = "primary",
+  appearance = "primary",
   size = "normal",
   type = "button",
   shouldFitContainer = false,
   isDisabled,
   isLoading,
+  className,
   // iconAfter,
   // iconBefore,
   ...props
@@ -18,21 +20,22 @@ export default function Button({
   return (
     <button
       {...props}
-      css={[
+      className={cx(
+        className,
         styles.root,
-        styles.variants[variant],
-        styles.sizes[size],
+        styles[appearance],
+        styles[size],
         shouldFitContainer && styles.full,
-        isDisabled && styles.disabled,
-      ]}
+        isDisabled && styles.disabled
+      )}
       disabled={isDisabled || isLoading}
       type={type}
     >
       {isLoading && (
         <Spinner
           size="compact"
-          variant={getSpinnerVariant(variant)}
-          css={styles.spinner}
+          appearance={getSpinnerAppearance(appearance)}
+          className={styles.spinner}
         />
       )}
       {children}
@@ -45,7 +48,7 @@ const spinners = {
   dark: ["secondary", "link"],
 }
 
-const getSpinnerVariant = btn =>
+const getSpinnerAppearance = btn =>
   Object.keys(spinners).reduce((acc, key) =>
     spinners[key].includes(btn) ? key : acc
   )

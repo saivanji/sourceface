@@ -1,0 +1,55 @@
+@import "~@sourceface/style/index.scss";
+
+.root {
+  display: flex;
+  flex-direction: column;
+  margin: -$value-4;
+  font-size: $font-size-sm;
+}
+
+.header {
+  display: flex;
+  border-bottom: 1px solid $color-gray-tint-30;
+}
+
+.body {
+  padding: $value-4;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border: 0;
+  border-top-left-radius: $rounded-base;
+  border-top-right-radius: $rounded-base;
+  background: none;
+  margin-bottom: -1px;
+  padding: 0 $value-4;
+  height: $value-10;
+  color: $color-gray-shade-80;
+  &:hover {
+  }
+  &:focus {
+    outline: 0;
+    background-color: $color-white;
+    box-shadow: 0 0 0 3px $color-gray-tint-120;
+  }
+  &.selected {
+    font-weight: 700;
+    border-bottom: 2px solid $color-gray-shade-80;
+  }
+}
+
+.icon-before,
+.icon-after {
+  width: $value-3;
+}
+
+.icon-before {
+  margin-right: $value-2;
+}
+
+.icon-after {
+  margin-left: $value-2;
+}

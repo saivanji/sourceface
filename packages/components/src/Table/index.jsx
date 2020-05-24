@@ -1,5 +1,6 @@
 import React, { cloneElement, createContext, useContext } from "react"
-import * as styles from "./index.styles"
+import cx from "classnames"
+import styles from "./index.scss"
 
 // side view is not a table feature. it should be implemented somewhere else, but it's a feature of table module
 
@@ -10,6 +11,7 @@ const Context = createContext()
 
 export default function Table({
   children,
+  className,
   columns,
   size = "normal",
   bordered = false,
@@ -19,7 +21,12 @@ export default function Table({
     <Context.Provider value={{ columns }}>
       <div
         {...props}
-        css={[styles.root, styles.sizes[size], bordered && styles.bordered]}
+        className={cx(
+          styles.root,
+          styles[size],
+          bordered && styles.bordered,
+          className
+        )}
       >
         {children}
       </div>
@@ -27,25 +34,28 @@ export default function Table({
   )
 }
 
-Table.Thead = function Thead({ children, ...props }) {
+Table.Thead = function Thead({ children, className, ...props }) {
   return (
-    <div {...props} css={styles.thead}>
+    <div {...props} className={cx(styles.thead, className)}>
       {children}
     </div>
   )
 }
 
-Table.Th = function Th({ children, align = "left", ...props }) {
+Table.Th = function Th({ children, className, align = "left", ...props }) {
   return (
-    <div {...props} css={[styles.th, styles.align[align]]}>
+    <div
+      {...props}
+      className={cx(styles.th, styles[alignClassNames[align]], className)}
+    >
       {children}
     </div>
   )
 }
 
-Table.Tbody = function Thead({ children, ...props }) {
+Table.Tbody = function Thead({ children, className, ...props }) {
   return (
-    <div {...props} css={styles.tbody}>
+    <div {...props} className={cx(styles.tbody, className)}>
       {children}
     </div>
   )
@@ -53,6 +63,7 @@ Table.Tbody = function Thead({ children, ...props }) {
 
 Table.Tr = function Tr({
   children,
+  className,
   ...props
   // onClick,
   // isSelectable,
@@ -63,7 +74,7 @@ Table.Tr = function Tr({
   const widths = calcWidths(columns || new Array(count).fill("auto"))
 
   return (
-    <div {...props} css={styles.tr}>
+    <div {...props} className={cx(styles.tr, className)}>
       {React.Children.map(children, (el, i) =>
         cloneElement(el, {
           style: { width: widths[i] },
@@ -73,12 +84,21 @@ Table.Tr = function Tr({
   )
 }
 
-Table.Td = function Td({ children, align = "left", ...props }) {
+Table.Td = function Td({ children, className, align = "left", ...props }) {
   return (
-    <div {...props} css={[styles.td, styles.align[align]]}>
+    <div
+      {...props}
+      className={cx(styles.td, styles[alignClassNames[align]], className)}
+    >
       {children}
     </div>
   )
+}
+
+const alignClassNames = {
+  left: "alignLeft",
+  center: "alignCenter",
+  right: "alignRight",
 }
 
 const calcWidths = columns => {

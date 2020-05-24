@@ -1,18 +1,19 @@
 import React from "react"
-import * as styles from "./index.styles"
+import cx from "classnames"
+import styles from "./index.scss"
 
-// TODO: implement light variant
-export default function Nav({ children, ...props }) {
+// TODO: implement light appearance
+export default function Nav({ children, className, ...props }) {
   return (
-    <div {...props} css={styles.root}>
+    <div {...props} className={cx(styles.root, className)}>
       {children}
     </div>
   )
 }
 
-Nav.Logo = function Logo({ children, ...props }) {
+Nav.Logo = function Logo({ children, className, ...props }) {
   return (
-    <div {...props} css={styles.logo}>
+    <div {...props} className={cx(styles.logo, className)}>
       {children}
     </div>
   )
@@ -20,12 +21,16 @@ Nav.Logo = function Logo({ children, ...props }) {
 
 Nav.Link = function Link({
   children,
+  className,
   isSelected,
   component: Component = "a",
   ...props
 }) {
   return (
-    <Component {...props} css={[styles.link, isSelected && styles.selected]}>
+    <Component
+      {...props}
+      className={cx(styles.link, isSelected && styles.selected, className)}
+    >
       {children}
     </Component>
   )

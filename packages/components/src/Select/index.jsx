@@ -1,5 +1,6 @@
 import React from "react"
-import * as styles from "./index.styles"
+import cx from "classnames"
+import styles from "./index.scss"
 import ArrowIcon from "./assets/arrow.svg"
 import Dropdown from "../Dropdown"
 
@@ -12,6 +13,7 @@ export default function Select({
   onChange,
   placeholder,
   options,
+  className,
   error,
   ...props
 }) {
@@ -19,21 +21,23 @@ export default function Select({
     value && options.find(option => option.value === value).label
 
   return (
-    <div {...props} css={[styles.root, styles.sizes[size]]}>
+    <div {...props} className={cx(styles.root, styles[size], className)}>
       <Dropdown>
-        <Dropdown.Trigger css={styles.full}>
+        <Dropdown.Trigger className={styles.full}>
           <button
-            css={[
+            className={cx(
               styles.element,
               !value && styles.placeholder,
-              error && styles.error,
-            ]}
+              error && styles.error
+            )}
           >
-            <span css={styles.selection}>{selectedLabel || placeholder}</span>
-            <ArrowIcon css={styles.arrow} />
+            <span className={styles.selection}>
+              {selectedLabel || placeholder}
+            </span>
+            <ArrowIcon className={styles.arrow} />
           </button>
         </Dropdown.Trigger>
-        <Dropdown.Menu position="bottomLeft" css={styles.full}>
+        <Dropdown.Menu position="bottomLeft" className={styles.dropdown}>
           {options.map(option => (
             <Dropdown.Item
               onClick={() => {
@@ -53,7 +57,7 @@ export default function Select({
           ))}
         </Dropdown.Menu>
       </Dropdown>
-      {error && <div css={styles.errorText}>{error}</div>}
+      {error && <div className={styles.errorText}>{error}</div>}
     </div>
   )
 }

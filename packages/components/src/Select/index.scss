@@ -1,0 +1,89 @@
+@import "~@sourceface/style/index.scss";
+
+.root {
+  display: flex;
+  flex-direction: column;
+  &.normal,
+  &.loose {
+    .element {
+      font-size: $font-size-sm;
+    }
+  }
+  &.compact,
+  &.normal {
+    .error-text {
+      font-size: $font-size-xs;
+    }
+  }
+  &.compact {
+    .element {
+      font-size: $font-size-xs;
+      height: $value-6;
+      padding: 0 $value-1;
+    }
+  }
+  &.normal {
+    .element {
+      height: $value-8;
+      padding: 0 $value-2;
+    }
+  }
+  &.loose {
+    .element {
+      height: $value-10;
+      padding: 0 $value-3;
+    }
+    .error-text {
+      font-size: $font-size-sm;
+    }
+  }
+}
+
+.element {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  background-color: $color-gray-tint-130;
+  color: $color-gray-shade-110;
+  border-radius: $rounded-base;
+  border: 1px solid $color-gray-tint-50;
+  cursor: pointer;
+  &:focus {
+    outline: none;
+    background-color: $color-white;
+    border-color: $color-gray-tint-10;
+    box-shadow: 0 0 0 3px $color-gray-tint-120;
+  }
+  &.placeholder {
+    color: $color-gray;
+  }
+  &.error {
+    border-color: $color-gray-shade-100;
+    &:focus {
+      box-shadow: none;
+    }
+  }
+}
+
+.arrow {
+  margin-left: auto;
+  width: $value-4;
+  fill: $color-gray-shade-120;
+}
+
+.selection {
+  margin-right: $value-2;
+}
+
+.dropdown {
+  width: 100%;
+}
+
+.error-text {
+  color: $color-black;
+  margin-top: $value-1;
+}
+
+.full {
+  width: 100%;
+}

@@ -1,13 +1,13 @@
 import React from "react"
 import Spinner from "../Spinner"
-import * as styles from "./index.styles"
+import styles from "./index.scss"
 
 export default function Loader({ isLoading, children, ...props }) {
   return (
-    <div {...props} css={styles.root}>
-      <div css={isLoading && styles.loading}>{children}</div>
+    <div {...props} className={styles.root}>
+      <div className={isLoading && styles.loading}>{children}</div>
       {isLoading && (
-        <div css={styles.spinner}>
+        <div className={styles.spinner}>
           <Spinner />
         </div>
       )}

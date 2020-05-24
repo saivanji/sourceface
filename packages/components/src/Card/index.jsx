@@ -1,8 +1,9 @@
 import React from "react"
-import * as styles from "./index.styles"
+import cx from "classnames"
+import styles from "./index.scss"
 
-export default ({ children, size = "normal", ...props }) => (
-  <div {...props} css={[styles.root, styles.sizes[size]]}>
+export default ({ children, className, size = "normal", ...props }) => (
+  <div {...props} className={cx(styles.root, styles[size], className)}>
     {children}
   </div>
 )

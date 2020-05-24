@@ -18,8 +18,8 @@ export const Regular = () => (
       </Table.Tr>
     </Table.Thead>
     <Table.Tbody>
-      {new Array(10).fill().map(
-        (_, i) => (
+      {new Array(10).fill()(
+        i => (
           <Table.Tr key={i}>
             <Table.Td>aiven715@gmail.com</Table.Td>
             <Table.Td>manager</Table.Td>

@@ -6,11 +6,12 @@ import React, {
   useEffect,
   useRef,
 } from "react"
-import * as styles from "./index.styles"
+import cx from "classnames"
+import styles from "./index.scss"
 
 const Context = createContext("dropdown")
 
-export default function Dropdown({ children, ...props }) {
+export default function Dropdown({ children, className, ...props }) {
   const [isOpened, setOpened] = useState(false)
   const close = useCallback(() => setOpened(false), [setOpened])
   const toggle = useCallback(() => setOpened(!isOpened), [isOpened, setOpened])
@@ -19,18 +20,18 @@ export default function Dropdown({ children, ...props }) {
 
   return (
     <Context.Provider value={{ isOpened, toggle, close, buttonRef, menuRef }}>
-      <div {...props} css={styles.root}>
+      <div {...props} className={cx(styles.root, className)}>
         {children}
       </div>
     </Context.Provider>
   )
 }
 
-Dropdown.Trigger = function Trigger({ children, ...props }) {
+Dropdown.Trigger = function Trigger({ children, className, ...props }) {
   const { toggle, buttonRef } = useContext(Context)
 
   return (
-    <div {...props} ref={buttonRef} onClick={toggle}>
+    <div {...props} className={className} ref={buttonRef} onClick={toggle}>
       {children}
     </div>
   )
@@ -40,6 +41,7 @@ Dropdown.Trigger = function Trigger({ children, ...props }) {
 Dropdown.Menu = function Menu({
   children,
   position = "bottomRight",
+  className,
   ...props
 }) {
   const { isOpened, close, buttonRef, menuRef } = useContext(Context)
@@ -66,7 +68,7 @@ Dropdown.Menu = function Menu({
       <div
         {...props}
         ref={menuRef}
-        css={[styles.menu, styles.positions[position]]}
+        className={cx(styles.menu, styles[position], className)}
       >
         {children}
       </div>
@@ -76,13 +78,13 @@ Dropdown.Menu = function Menu({
 
 // TODO implement Title component
 
-Dropdown.Item = function Item({ children, onClick, ...props }) {
+Dropdown.Item = function Item({ children, onClick, className, ...props }) {
   const { close } = useContext(Context)
 
   return (
     <div
       {...props}
-      css={styles.item}
+      className={cx(styles.item, className)}
       onClick={() => {
         close()
 

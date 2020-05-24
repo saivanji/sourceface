@@ -1,37 +1,38 @@
 import React from "react"
-import * as styles from "./index.styles"
+import cx from "classnames"
+import styles from "./index.scss"
 
 // TODO: define bg/color at the root component(in css with nesting) and not for the children. Make sure the rest components in the kit are following that convention
-// TODO: implement light variant
-export default function Sidebar({ children, ...props }) {
+// TODO: implement light appearance
+export default function Sidebar({ children, className, ...props }) {
   return (
-    <div {...props} css={styles.root}>
+    <div {...props} className={cx(styles.root, className)}>
       {children}
     </div>
   )
 }
 
 // TODO: add iconBefore prop
-Sidebar.Title = function Title({ children, ...props }) {
+Sidebar.Title = function Title({ children, className, ...props }) {
   return (
-    <span {...props} css={styles.title}>
+    <span {...props} className={cx(styles.title, className)}>
       {children}
     </span>
   )
 }
 
 // TODO: have title here and remove GroupTitle?
-Sidebar.Group = function Group({ children, ...props }) {
+Sidebar.Group = function Group({ children, className, ...props }) {
   return (
-    <div {...props} css={styles.group}>
+    <div {...props} className={cx(styles.group, className)}>
       {children}
     </div>
   )
 }
 
-Sidebar.GroupTitle = function GroupTitle({ children, ...props }) {
+Sidebar.GroupTitle = function GroupTitle({ children, className, ...props }) {
   return (
-    <span {...props} css={styles.groupTitle}>
+    <span {...props} className={cx(styles.groupTitle, className)}>
       {children}
     </span>
   )
@@ -40,7 +41,7 @@ Sidebar.GroupTitle = function GroupTitle({ children, ...props }) {
 // TODO: rename to Link
 Sidebar.GroupLink = function GroupLink({
   children,
-
+  className,
   iconBefore,
   isSelected,
   component: Component = "a",
@@ -49,9 +50,9 @@ Sidebar.GroupLink = function GroupLink({
   return (
     <Component
       {...props}
-      css={[styles.groupLink, isSelected && styles.selected]}
+      className={cx(styles.groupLink, isSelected && styles.selected, className)}
     >
-      {iconBefore && <iconBefore.type css={styles.groupIcon} />}
+      {iconBefore && <iconBefore.type className={styles.groupIcon} />}
       {children}
     </Component>
   )

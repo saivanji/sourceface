@@ -1,21 +1,22 @@
 import React from "react"
-import * as styles from "./index.styles"
+import styles from "./index.scss"
 
 export default function Label({
   children,
+  className,
   title,
   isOptional,
   helperMessage,
   ...props
 }) {
   return (
-    <label {...props}>
-      <span css={styles.title}>
+    <label {...props} className={className}>
+      <span className={styles.title}>
         {title}
-        {isOptional && <span css={styles.optional}>(optional)</span>}
+        {isOptional && <span className={styles.optional}>(optional)</span>}
       </span>
       {children}
-      {helperMessage && <span css={styles.helper}>{helperMessage}</span>}
+      {helperMessage && <span className={styles.helper}>{helperMessage}</span>}
     </label>
   )
 }

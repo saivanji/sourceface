@@ -17,4 +17,4 @@ export const Primary = () => <Button {...makeProps()} appearance="primary" />
 export const Secondary = () => (
   <Button {...makeProps()} appearance="secondary" />
 )
-export const Tertiary = () => <Button {...makeProps()} appearance="tertiary" />
+export const Link = () => <Button {...makeProps()} appearance="link" />

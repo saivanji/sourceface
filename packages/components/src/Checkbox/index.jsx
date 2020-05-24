@@ -1,5 +1,6 @@
 import React from "react"
-import * as styles from "./index.styles"
+import cx from "classnames"
+import styles from "./index.scss"
 import Icon from "./assets/check.svg"
 
 // TODO: implement indeterminate state
@@ -12,13 +13,13 @@ export default function Checkbox({
   return (
     <label
       {...props}
-      css={[styles.root, styles.sizes[size], isDisabled && styles.disabled]}
+      className={cx(styles.root, styles[size], isDisabled && styles.disabled)}
     >
       <input disabled={isDisabled} type="checkbox" />
-      <span css={styles.checkbox}>
-        <Icon css={styles.icon} />
+      <span className={styles.checkbox}>
+        <Icon className={styles.icon} />
       </span>
-      {label && <span css={styles.label}>{label}</span>}
+      {label && <span className={styles.label}>{label}</span>}
     </label>
   )
 }

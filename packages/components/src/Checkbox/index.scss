@@ -1,0 +1,84 @@
+@import "~@sourceface/style/index.scss";
+
+.root {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  &:hover .checkbox {
+    background-color: $color-gray-tint-130;
+  }
+  &.normal,
+  &.loose {
+    .label {
+      font-size: $font-size-sm;
+    }
+  }
+  &.compact {
+    .checkbox {
+      width: $value-4;
+      height: $value-4;
+    }
+    .label {
+      font-size: $font-size-xs;
+      margin-left: $value-1;
+    }
+  }
+  &.normal {
+    .checkbox {
+      width: $value-5;
+      height: $value-5;
+    }
+    .label {
+      margin-left: $value-2;
+    }
+  }
+  &.loose {
+    .checkbox {
+      width: $value-6;
+      height: $value-6;
+    }
+    .label {
+      margin-left: $value-3;
+    }
+  }
+  &.disabled {
+    cursor: not-allowed;
+    .checkbox {
+      background-color: $color-gray-tint-110;
+    }
+  }
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid $color-gray-tint-50;
+  border-radius: $rounded-sm;
+}
+
+input[type="checkbox"] {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  &:checked + .checkbox {
+    background-color: $color-gray-shade-80;
+    border-color: $color-gray-shade-80;
+    .icon {
+      display: block;
+    }
+  }
+  &:focus + .checkbox {
+    box-shadow: 0 0 0 3px $color-gray-tint-120;
+  }
+}
+
+.label {
+  user-select: none;
+}
+
+.icon {
+  display: none;
+  fill: $color-white;
+}

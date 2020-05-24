@@ -9,7 +9,7 @@ const makeProps = () => ({
 
 export default { title: "Spinner", decorators: [withKnobs, withA11y] }
 
-export const Dark = () => <Spinner {...makeProps()} appearance="dark"></Spinner>
 export const Light = () => (
   <Spinner {...makeProps()} appearance="light"></Spinner>
 )
+export const Dark = () => <Spinner {...makeProps()} appearance="dark"></Spinner>

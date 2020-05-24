@@ -22,18 +22,17 @@ const items = [
 
 export default { title: "Header", decorators: [withKnobs, withA11y] }
 
-const Regular = ({ variant }) => (
+const Regular = ({ appearance }) => (
   <Header
-    variant={variant}
+    appearance={appearance}
     size={select("Size", ["compact", "normal", "loose"], "normal")}
-    style={{ display: "flex", alignItems: "center" }}
   >
     <Breadcrumbs items={items} />
     <div style={{ marginLeft: "auto" }}>
-      <Avatar>A</Avatar>
+      <Avatar value="A" />
     </div>
   </Header>
 )
 
-export const Dark = () => <Regular variant="dark" />
-export const Light = () => <Regular variant="light" />
+export const Light = () => <Regular appearance="light" />
+export const Dark = () => <Regular appearance="dark" />

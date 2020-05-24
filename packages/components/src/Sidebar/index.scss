@@ -1,0 +1,73 @@
+@import "~@sourceface/style/index.scss";
+
+.root {
+  padding: $value-2 $value-4;
+  background-color: $color-gray-shade-110;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  margin-bottom: -1px;
+  height: $value-10 + $value-2;
+  margin-bottom: $value-4;
+  color: $color-white;
+  font-size: $font-size-xl;
+  border-bottom: 1px solid $color-gray-shade-90;
+}
+
+.group {
+  margin-left: -$value-2;
+  & + .group {
+    margin-top: $value-5;
+  }
+}
+
+.group-title {
+  text-transform: uppercase;
+  font-weight: 700;
+  display: block;
+  padding-left: $value-2;
+  color: $color-gray-shade-30;
+  font-size: $font-size-xs;
+  margin-bottom: $value-1;
+}
+
+.group-icon {
+  width: $value-4;
+  margin-right: $value-2;
+  fill: $color-gray-shade-10;
+}
+
+.group-link {
+  border: 0;
+  background: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  padding: 0 $value-2;
+  color: $color-gray-tint-100;
+  border-radius: $rounded-md;
+  height: $value-10;
+  text-decoration: none;
+  &:hover {
+    background-color: $color-gray-shade-100;
+    .group-icon {
+      fill: $color-gray-tint-20;
+    }
+  }
+  /* most likely active color should be different from selected */
+  &.selected,
+  &:active {
+    background-color: $color-gray-shade-120;
+    .group-icon {
+      fill: $color-gray-tint-50;
+    }
+  }
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px $color-gray-shade-90;
+  }
+}

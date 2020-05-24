@@ -1,7 +1,8 @@
 import React, { createContext, useRef, useEffect, useContext } from "react"
 import { createPortal } from "react-dom"
+import cx from "classnames"
 import CloseIcon from "./assets/close.svg"
-import * as styles from "./index.styles"
+import styles from "./index.scss"
 
 const Context = createContext("modal")
 
@@ -25,11 +26,11 @@ export default function Modal({
     <div
       {...props}
       onClick={() => onDismiss()}
-      css={[styles.root, !portalId && styles.overlay]}
+      className={cx(styles.root, !portalId && styles.overlay)}
     >
       <div
         onClick={e => e.stopPropagation()}
-        css={[styles.container, styles.sizesVariants[size]]}
+        className={cx(styles.container, styles[size])}
       >
         {children}
       </div>
@@ -49,10 +50,10 @@ Modal.Header = function Header({ children, iconBefore, ...props }) {
   const { onDismiss } = useContext(Context)
 
   return (
-    <div {...props} css={[styles.row, styles.header]}>
-      {iconBefore && <span css={styles.headerIcon}>{iconBefore}</span>}
-      <h4 css={styles.title}>{children}</h4>
-      <button css={styles.close}>
+    <div {...props} className={cx(styles.row, styles.header)}>
+      {iconBefore && <span className={styles.headerIcon}>{iconBefore}</span>}
+      <h4 className={styles.title}>{children}</h4>
+      <button className={styles.close}>
         <CloseIcon onClick={onDismiss} />
       </button>
     </div>
@@ -61,7 +62,7 @@ Modal.Header = function Header({ children, iconBefore, ...props }) {
 
 Modal.Body = function Body({ children, ...props }) {
   return (
-    <div {...props} css={styles.row}>
+    <div {...props} className={styles.row}>
       {children}
     </div>
   )
@@ -69,10 +70,10 @@ Modal.Body = function Body({ children, ...props }) {
 
 Modal.Footer = function Footer({ children, ...props }) {
   return (
-    <div {...props} css={[styles.row, styles.footer]}>
-      <div css={styles.actions}>
+    <div {...props} className={cx(styles.row, styles.footer)}>
+      <div className={styles.actions}>
         {React.Children.toArray(children).map((action, i) => (
-          <div css={styles.action} key={i}>
+          <div className={styles.action} key={i}>
             {action}
           </div>
         ))}

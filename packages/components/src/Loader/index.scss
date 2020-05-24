@@ -1,14 +1,12 @@
-import { css } from "@emotion/core"
-
-export const root = css`
+.root {
   position: relative;
-`
+}
 
-export const loading = css`
+.loading {
   opacity: 0.2;
-`
+}
 
-export const spinner = css`
+.spinner {
   position: absolute;
   top: 0;
   left: 0;
@@ -17,4 +15,4 @@ export const spinner = css`
   display: flex;
   align-items: center;
   justify-content: center;
-`
+}
