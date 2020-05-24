@@ -2,6 +2,11 @@ import { css } from "@emotion/core"
 import { colors, shadows, values } from "@sourceface/style"
 import { apply } from "../utils"
 
+export const root = css`
+  box-shadow: ${shadows.base};
+  padding: 0 ${values[4]};
+`
+
 export const sizes = apply(
   {
     compact: values[12],
@@ -30,8 +35,3 @@ export const variants = apply(
     color: ${fg};
   `
 )
-
-export const Root = css`
-  box-shadow: ${shadows.base};
-  padding: 0 ${values[4]};
-`

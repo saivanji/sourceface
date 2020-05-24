@@ -9,18 +9,6 @@ import {
 } from "@sourceface/style"
 import { apply } from "../utils"
 
-export const sizesVariants = apply(
-  {
-    compact: sizes.xs,
-    normal: sizes.lg,
-    loose: sizes["2xl"],
-  },
-  maxWidth =>
-    css`
-      max-width: ${maxWidth};
-    `
-)
-
 export const root = css`
   display: flex;
   align-items: center;
@@ -111,3 +99,15 @@ export const action = css`
     margin-right: 0;
   }
 `
+
+export const sizesVariants = apply(
+  {
+    compact: sizes.xs,
+    normal: sizes.lg,
+    loose: sizes["2xl"],
+  },
+  maxWidth =>
+    css`
+      max-width: ${maxWidth};
+    `
+)

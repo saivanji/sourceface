@@ -10,5 +10,5 @@ const makeProps = () => ({
 
 export default { title: "Badge", decorators: [withKnobs, withA11y] }
 
-export const Dark = () => <Badge {...makeProps()} appearance="dark" />
-export const Light = () => <Badge {...makeProps()} appearance="light" />
+export const Dark = () => <Badge {...makeProps()} variant="dark" />
+export const Light = () => <Badge {...makeProps()} variant="light" />

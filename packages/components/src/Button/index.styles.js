@@ -2,37 +2,15 @@ import { css } from "@emotion/core"
 import { colors, values, rounded, fontSizes } from "@sourceface/style"
 import { apply } from "../utils"
 
-export const sizes = apply(
-  {
-    compact: {
-      fontSize: fontSizes.xs,
-      spinnerOffset: values[1],
-      height: values[6],
-      space: values[2],
-    },
-    normal: {
-      fontSize: fontSizes.sm,
-      spinnerOffset: values[2],
-      height: values[8],
-      space: values[3],
-    },
-    loose: {
-      fontSize: fontSizes.sm,
-      spinnerOffset: values[3],
-      height: values[10],
-      space: values[4],
-    },
-  },
-  ({ fontSize, spinnerOffset, height, space }) => css`
-    height: ${height};
-    padding-left: ${space};
-    padding-right: ${space};
-    font-size: ${fontSize};
-    ${spinner} {
-      margin-right: ${spinnerOffset};
-    }
-  `
-)
+export const spinner = css``
+
+export const disabled = css`
+  cursor: not-allowed;
+`
+
+export const full = css`
+  width: 100%;
+`
 
 export const variants = apply(
   {
@@ -83,6 +61,38 @@ export const variants = apply(
   `
 )
 
+export const sizes = apply(
+  {
+    compact: {
+      fontSize: fontSizes.xs,
+      spinnerOffset: values[1],
+      height: values[6],
+      space: values[2],
+    },
+    normal: {
+      fontSize: fontSizes.sm,
+      spinnerOffset: values[2],
+      height: values[8],
+      space: values[3],
+    },
+    loose: {
+      fontSize: fontSizes.sm,
+      spinnerOffset: values[3],
+      height: values[10],
+      space: values[4],
+    },
+  },
+  ({ fontSize, spinnerOffset, height, space }) => css`
+    height: ${height};
+    padding-left: ${space};
+    padding-right: ${space};
+    font-size: ${fontSize};
+    ${spinner} {
+      margin-right: ${spinnerOffset};
+    }
+  `
+)
+
 export const root = css`
   display: inline-flex;
   justify-content: center;
@@ -102,16 +112,6 @@ export const root = css`
     font-weight: 700;
   }
 `
-
-export const disabled = css`
-  cursor: not-allowed;
-`
-
-export const full = css`
-  width: 100%;
-`
-
-export const spinner = css``
 
 //   &.link {
 //     background: none;

@@ -33,7 +33,7 @@ export default function Select({
             <ArrowIcon css={styles.arrow} />
           </button>
         </Dropdown.Trigger>
-        <Dropdown.Menu position="bottomLeft" css={styles.dropdown}>
+        <Dropdown.Menu position="bottomLeft" css={styles.full}>
           {options.map(option => (
             <Dropdown.Item
               onClick={() => {

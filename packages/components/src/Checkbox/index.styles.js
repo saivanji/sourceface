@@ -2,36 +2,6 @@ import { css } from "@emotion/core"
 import { colors, fontSizes, values, rounded } from "@sourceface/style"
 import { apply } from "../utils"
 
-export const sizes = apply(
-  {
-    compact: {
-      value: values[4],
-      fontSize: fontSizes.xs,
-      labelOffset: values[1],
-    },
-    normal: {
-      value: values[5],
-      fontSize: fontSizes.sm,
-      labelOffset: values[2],
-    },
-    loose: {
-      value: values[6],
-      fontSize: fontSizes.sm,
-      labelOffset: values[3],
-    },
-  },
-  ({ value, fontSize, labelOffset }) => css`
-    ${checkbox} {
-      width: ${value};
-      height: ${value};
-    }
-    ${label} {
-      font-size: ${fontSize};
-      margin-left: ${labelOffset};
-    }
-  `
-)
-
 export const checkbox = css`
   display: flex;
   align-items: center;
@@ -39,6 +9,10 @@ export const checkbox = css`
   background-color: ${colors.light};
   border: 1px solid ${colors.primary.tints[4]};
   border-radius: ${rounded.sm};
+`
+
+export const label = css`
+  user-select: none;
 `
 
 export const icon = css`
@@ -78,6 +52,32 @@ export const disabled = css`
   }
 `
 
-export const label = css`
-  user-select: none;
-`
+export const sizes = apply(
+  {
+    compact: {
+      value: values[4],
+      fontSize: fontSizes.xs,
+      labelOffset: values[1],
+    },
+    normal: {
+      value: values[5],
+      fontSize: fontSizes.sm,
+      labelOffset: values[2],
+    },
+    loose: {
+      value: values[6],
+      fontSize: fontSizes.sm,
+      labelOffset: values[3],
+    },
+  },
+  ({ value, fontSize, labelOffset }) => css`
+    ${checkbox} {
+      width: ${value};
+      height: ${value};
+    }
+    ${label} {
+      font-size: ${fontSize};
+      margin-left: ${labelOffset};
+    }
+  `
+)

@@ -2,46 +2,13 @@ import { css } from "@emotion/core"
 import { rounded, colors, fontSizes, values } from "@sourceface/style"
 import { apply } from "../utils"
 
-export const sizes = apply(
-  {
-    compact: {
-      fontSize: fontSizes.xs,
-      errorFontSize: fontSizes.xs,
-      height: values[6],
-      space: values[1],
-    },
-    normal: {
-      fontSize: fontSizes.sm,
-      errorFontSize: fontSizes.xs,
-      height: values[8],
-      space: values[2],
-    },
-    loose: {
-      fontSize: fontSizes.sm,
-      errorFontSize: fontSizes.sm,
-      height: values[10],
-      space: values[3],
-    },
-  },
-  ({ fontSize, errorFontSize, height, space }) => css`
-    ${element} {
-      font-size: ${fontSize};
-      height: ${height};
-      padding: 0 ${space};
-    }
-    ${errorText} {
-      font-size: ${errorFontSize};
-    }
-  `
-)
-
 export const root = css`
   display: flex;
   flex-direction: column;
 `
 
 export const placeholder = css`
-  color: ${color("primary")};
+  color: ${colors.primary};
 `
 
 export const error = css`
@@ -49,6 +16,10 @@ export const error = css`
   &:focus {
     box-shadow: none;
   }
+`
+
+export const full = css`
+  width: 100%;
 `
 
 export const element = css`
@@ -83,3 +54,36 @@ export const errorText = css`
   color: ${colors.dark};
   margin-top: ${values[1]};
 `
+
+export const sizes = apply(
+  {
+    compact: {
+      fontSize: fontSizes.xs,
+      errorFontSize: fontSizes.xs,
+      height: values[6],
+      space: values[1],
+    },
+    normal: {
+      fontSize: fontSizes.sm,
+      errorFontSize: fontSizes.xs,
+      height: values[8],
+      space: values[2],
+    },
+    loose: {
+      fontSize: fontSizes.sm,
+      errorFontSize: fontSizes.sm,
+      height: values[10],
+      space: values[3],
+    },
+  },
+  ({ fontSize, errorFontSize, height, space }) => css`
+    ${element} {
+      font-size: ${fontSize};
+      height: ${height};
+      padding: 0 ${space};
+    }
+    ${errorText} {
+      font-size: ${errorFontSize};
+    }
+  `
+)

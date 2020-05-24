@@ -21,7 +21,7 @@ Tabs.Tab = function Tab({
   ...props
 }) {
   return (
-    <button {...props} css={[styles.item, isSelected && styles.selected]}>
+    <button {...props} css={[styles.tab, isSelected && styles.selected]}>
       {iconBefore && <div css={styles.iconBefore}>{iconBefore}</div>}
       {children}
       {iconAfter && <div css={styles.iconAfter}>{iconAfter}</div>}

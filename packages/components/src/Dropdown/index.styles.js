@@ -1,25 +1,6 @@
 import { css } from "@emotion/core"
 import { shadows, colors, fontSizes, values, rounded } from "@sourceface/style"
 
-export const positions = {
-  topLeft: css`
-    bottom: calc(100% + ${values[2]});
-    left: 0;
-  `,
-  topRight: css`
-    bottom: calc(100% + ${values[2]});
-    right: 0;
-  `,
-  bottomLeft: css`
-    top: calc(100% + ${values[2]});
-    left: 0;
-  `,
-  bottomRight: css`
-    top: calc(100% + ${values[2]});
-    right: 0;
-  `,
-}
-
 export const root = css`
   position: relative;
   display: inline-flex;
@@ -52,3 +33,22 @@ export const item = css`
     background-color: ${colors.primary.tints[10]};
   }
 `
+
+export const positions = {
+  topLeft: css`
+    bottom: calc(100% + ${values[2]});
+    left: 0;
+  `,
+  topRight: css`
+    bottom: calc(100% + ${values[2]});
+    right: 0;
+  `,
+  bottomLeft: css`
+    top: calc(100% + ${values[2]});
+    left: 0;
+  `,
+  bottomRight: css`
+    top: calc(100% + ${values[2]});
+    right: 0;
+  `,
+}

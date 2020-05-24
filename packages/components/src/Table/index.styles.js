@@ -4,6 +4,36 @@ import { apply } from "../utils"
 
 const borderColor = colors.primary.tints[4]
 
+export const bordered = css`
+  border: 1px solid ${borderColor};
+  border-radius: ${rounded.base};
+`
+
+export const th = css`
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+`
+
+export const td = css`
+  display: flex;
+  align-items: center;
+`
+
+export const tr = css`
+  display: flex;
+  border-bottom: 1px solid ${borderColor};
+  &:last-child {
+    border-bottom: 0;
+  }
+`
+
+export const thead = css``
+
+export const tbody = css``
+
+export const root = css``
+
 export const sizes = apply(
   {
     compact: values[2],
@@ -67,33 +97,3 @@ export const align = apply(
     justify-content: ${value};
   `
 )
-
-export const bordered = css`
-  border: 1px solid ${borderColor};
-  border-radius: ${rounded.base};
-`
-
-export const th = css`
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-`
-
-export const td = css`
-  display: flex;
-  align-items: center;
-`
-
-export const tr = css`
-  display: flex;
-  border-bottom: 1px solid ${borderColor};
-  &:last-child {
-    border-bottom: 0;
-  }
-`
-
-export const thead = css``
-
-export const tbody = css``
-
-export const root = css``
