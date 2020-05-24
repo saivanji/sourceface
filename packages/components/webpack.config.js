@@ -1,5 +1,4 @@
 const path = require("path")
-const glob = require("glob")
 const pkg = require("./package.json")
 
 const NODE_ENV = process.env.NODE_ENV || "production"
@@ -8,16 +7,10 @@ const isProd = NODE_ENV === "production"
 module.exports = {
   mode: isProd ? "production" : "development",
   devtool: "source-map",
-  entry: glob.sync("./src/**/index.jsx").reduce((acc, p) => {
-    const componentName = p.replace(/^\.\/src\/([a-z]+)\/index\.jsx$/i, "$1")
-    return {
-      ...acc,
-      [componentName.toLowerCase()]: p,
-    }
-  }, {}),
+  entry: "./src/index.js",
   output: {
-    path: path.resolve(__dirname),
-    filename: isProd ? "[name]/prod/index.js" : "[name]/dev/index.js",
+    path: path.resolve(__dirname, "lib"),
+    filename: isProd ? "index.min.js" : "index.js",
     libraryTarget: "umd",
   },
   externals: Object.keys(
