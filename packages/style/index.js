@@ -13,21 +13,21 @@ exports.colors = {
   light: light,
   dark: dark,
   // TODO: have one color scale instead of 3?
-  mono: {
-    base: {},
-    tints: {},
-    shades: {},
-  },
+  // mono: {
+  //   base: {},
+  //   tints: {},
+  //   shades: {},
+  // },
   primary: {
     base: primary,
     tints: mapColors(primaryTints),
     shades: mapColors(primaryShades),
   },
-  secondary: {
-    base: {},
-    tints: {},
-    shades: {},
-  },
+  // secondary: {
+  //   base: {},
+  //   tints: {},
+  //   shades: {},
+  // },
 }
 
 const theme = {
