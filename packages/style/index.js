@@ -12,12 +12,27 @@ const mapColors = items => items.map(item => `#${item.hex}`)
 exports.colors = {
   light: light,
   dark: dark,
-  // TODO: have one color scale instead of 3
+  // TODO: have one color scale instead of 3?
+  mono: {
+    base: {},
+    tints: {},
+    shades: {},
+  },
   primary: {
     base: primary,
     tints: mapColors(primaryTints),
     shades: mapColors(primaryShades),
   },
+  secondary: {
+    base: {},
+    tints: {},
+    shades: {},
+  },
+}
+
+const theme = {
+  mode: "light | dark",
+  palette: {}, // colors
 }
 
 exports.values = {

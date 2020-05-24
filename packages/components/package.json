@@ -34,11 +34,8 @@
     "build": "./scripts/build.js"
   },
   "dependencies": {
-    "@emotion/core": "^10.0.28",
     "@sourceface/style": "0.0.1",
-    "classnames": "^2.2.6",
-    "styled-components": "^5.1.0",
-    "styled-tools": "^1.7.1"
+    "classnames": "^2.2.6"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
