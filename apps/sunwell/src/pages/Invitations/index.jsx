@@ -1,13 +1,15 @@
 import React, { useState } from "react"
 import { times } from "ramda"
+import {
+  Button,
+  Dropdown,
+  List,
+  Loader,
+  Modal,
+  Pagination,
+} from "@sourceface/components"
 import { UsersTabs } from "components/settings"
 import { Layout } from "components/common"
-import Button from "@sourceface/components/button"
-import Dropdown from "@sourceface/components/dropdown"
-import List from "@sourceface/components/list"
-import Loader from "@sourceface/components/loader"
-import Modal from "@sourceface/components/modal"
-import Pagination from "@sourceface/components/pagination"
 import AlertIcon from "assets/alert.svg"
 import MoreIcon from "assets/more.svg"
 import styles from "./index.scss"

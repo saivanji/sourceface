@@ -3,10 +3,8 @@
   "version": "0.0.1",
   "author": "aiven715 <aiven715@gmail.com>",
   "license": "MIT",
-  "files": [
-    "lib",
-    "index.js"
-  ],
+  "main": "./index.js",
+  "files": ["lib", "index.js"],
   "scripts": {
     "format": "prettier --write \"src/**/*.js\"",
     "lint": "prettier --check \"src/**/*.js\" && eslint \"src/**/*.js\"",

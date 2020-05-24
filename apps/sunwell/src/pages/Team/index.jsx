@@ -1,14 +1,15 @@
 import React, { useState } from "react"
 import { times } from "ramda"
-import Avatar from "@sourceface/components/avatar"
-import Badge from "@sourceface/components/badge"
-import Button from "@sourceface/components/button"
-import Dropdown from "@sourceface/components/dropdown"
-import Input from "@sourceface/components/input"
-import Loader from "@sourceface/components/loader"
-import Modal from "@sourceface/components/modal"
-// import Pagination from "@sourceface/components/pagination"
-import Table from "@sourceface/components/table"
+import {
+  Avatar,
+  Badge,
+  Button,
+  Dropdown,
+  Input,
+  Loader,
+  Modal,
+  Table,
+} from "@sourceface/components"
 import { InviteForm, UsersTabs } from "components/settings"
 import { Layout } from "components/common"
 import SearchIcon from "assets/search.svg"

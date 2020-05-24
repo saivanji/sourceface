@@ -1,8 +1,5 @@
 import React from "react"
-import Button from "@sourceface/components/button"
-import Card from "@sourceface/components/card"
-import Input from "@sourceface/components/input"
-import Label from "@sourceface/components/label"
+import { Button, Card, Input, Label } from "@sourceface/components"
 import { Layout } from "components/common"
 import styles from "./index.scss"
 

@@ -2,12 +2,14 @@ import React, { useState } from "react"
 import cx from "classnames"
 import { useMediaQuery } from "react-responsive"
 import { breakpoints } from "@sourceface/style"
-import Avatar from "@sourceface/components/avatar"
-import Breadcrumbs from "@sourceface/components/breadcrumbs"
-import Burger from "@sourceface/components/burger"
-import Header from "@sourceface/components/header"
-import Nav from "@sourceface/components/nav"
-import Sidebar from "@sourceface/components/sidebar"
+import {
+  Avatar,
+  Breadcrumbs,
+  Burger,
+  Header,
+  Nav,
+  Sidebar,
+} from "@sourceface/components"
 import ContentIcon from "assets/content-line.svg"
 import GroupIcon from "assets/group-line.svg"
 import LockIcon from "assets/lock-line.svg"

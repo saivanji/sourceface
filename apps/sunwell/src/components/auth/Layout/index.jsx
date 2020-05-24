@@ -1,8 +1,8 @@
 import React from "react"
 import { useMediaQuery } from "react-responsive"
-import Card from "@sourceface/components/card"
-import styles from "./index.scss"
+import { Card } from "@sourceface/components"
 import { breakpoints } from "@sourceface/style"
+import styles from "./index.scss"
 
 export default ({ children, title, description }) => {
   const isLargeSize = useMediaQuery({ minWidth: breakpoints.lg })

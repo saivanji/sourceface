@@ -1,7 +1,6 @@
 import React from "react"
 import cx from "classnames"
-import Button from "@sourceface/components/button"
-import Input from "@sourceface/components/input"
+import { Button, Input } from "@sourceface/components"
 import styles from "./index.scss"
 
 export default ({ className }) => {
