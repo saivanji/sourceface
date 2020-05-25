@@ -24,10 +24,6 @@ import styles from "./index.scss"
 
 const items = [
   {
-    name: "Home",
-    link: "/",
-  },
-  {
     name: "Settings",
     link: "/settings",
   },
@@ -65,7 +61,7 @@ function Initial({ children }) {
       />
       <Header className={styles.header} size="compact">
         Users management
-        <Avatar value="A" />
+        <Avatar size="compact" value="A" />
       </Header>
 
       <div className={styles.main}>{children}</div>

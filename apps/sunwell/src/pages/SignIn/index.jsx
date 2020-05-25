@@ -3,6 +3,7 @@ import { Button, Checkbox, Input, Label } from "@sourceface/components"
 import { Layout } from "components/auth"
 import styles from "./index.scss"
 
+// TODO: have logo somewhere?
 export default () => {
   return (
     <Layout

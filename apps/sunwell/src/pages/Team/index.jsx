@@ -81,7 +81,7 @@ function TeamTable({ setChangingPass, setRemoving }) {
                 <span className={styles.email}>aiven715@gmail.com</span>
               </Table.Td>
               <Table.Td>
-                <Badge value="root" appearance="light" shape="squared" />
+                <Badge value="root" appearance="light" />
               </Table.Td>
               <Table.Td align="right">
                 <Dropdown className={styles.more}>
