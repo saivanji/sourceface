@@ -31,10 +31,6 @@ const items = [
     name: "Users",
     link: "/settings/users",
   },
-  {
-    name: "Team",
-    link: "/settings/users/team",
-  },
 ]
 
 // Mobile menu will be a separate component with nesting(tapping on a settings menu will produce a dropdown) which is sliding from a top
@@ -114,10 +110,16 @@ function Sidenav() {
         <Sidebar.Group>
           <Sidebar.GroupTitle>Organization</Sidebar.GroupTitle>
           <Sidebar.GroupLink href="#" iconBefore={<GroupIcon />} isSelected>
-            Users management
+            Users
           </Sidebar.GroupLink>
           <Sidebar.GroupLink href="#" iconBefore={<LockIcon />}>
-            Access management
+            Permissions
+          </Sidebar.GroupLink>
+          <Sidebar.GroupLink href="#" iconBefore={<LockIcon />}>
+            Pages
+          </Sidebar.GroupLink>
+          <Sidebar.GroupLink href="#" iconBefore={<LockIcon />}>
+            Resources
           </Sidebar.GroupLink>
         </Sidebar.Group>
       </Sidebar>

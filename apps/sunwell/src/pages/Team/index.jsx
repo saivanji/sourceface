@@ -4,13 +4,14 @@ import {
   Avatar,
   Badge,
   Button,
+  Card,
   Dropdown,
   Input,
   Loader,
   Modal,
   Table,
 } from "@sourceface/components"
-import { InviteForm, UsersTabs } from "components/settings"
+import { InviteForm } from "components/settings"
 import { Layout } from "components/common"
 import SearchIcon from "assets/search.svg"
 import AlertIcon from "assets/alert.svg"
@@ -25,7 +26,7 @@ export default () => {
   return (
     <>
       <Layout>
-        <UsersTabs selected="team" invitationsCount={30}>
+        <Card>
           <div className={styles.header}>
             <Input
               className={styles.search}
@@ -51,7 +52,7 @@ export default () => {
             //   selectedPage={page}
             // />
           }
-        </UsersTabs>
+        </Card>
       </Layout>
       <PassModal
         isChangingPass={isChangingPass}
