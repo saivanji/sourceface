@@ -4,7 +4,10 @@
   "author": "aiven715 <aiven715@gmail.com>",
   "license": "MIT",
   "main": "./index.js",
-  "files": ["lib", "index.js"],
+  "files": [
+    "lib",
+    "index.js"
+  ],
   "scripts": {
     "format": "prettier --write \"src/**/*.js\"",
     "lint": "prettier --check \"src/**/*.js\" && eslint \"src/**/*.js\"",
@@ -21,7 +24,6 @@
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@babel/preset-react": "^7.9.4",
-    "@emotion/babel-preset-css-prop": "^10.0.27",
     "@sourceface/config": "0.0.16",
     "@storybook/addon-a11y": "^5.3.18",
     "@storybook/addon-knobs": "^5.3.18",
