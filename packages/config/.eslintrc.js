@@ -4,28 +4,22 @@ module.exports = {
     es6: true,
     node: true,
   },
-  extends: ["eslint:recommended"],
-  parserOptions: {
-    ecmaFeatures: {
-      jsx: true,
-    },
-    ecmaVersion: 2018,
-    sourceType: "module",
-  },
-  plugins: ["import", "react"],
+  parser: "@typescript-eslint/parser",
+  extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  plugins: ["@typescript-eslint", "react"],
   rules: {
     quotes: ["error", "double"],
     "comma-dangle": "off",
-    "import/no-unresolved": ["error", { commonjs: true }],
+    // "import/no-unresolved": ["error", { commonjs: true }],
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
   },
-  settings: {
-    "import/resolver": {
-      node: {
-        extensions: [".js", ".jsx"],
-        moduleDirectory: ["node_modules", "src/"],
-      },
-    },
-  },
+  // settings: {
+  //   "import/resolver": {
+  //     node: {
+  //       extensions: [".ts", ".tsx"],
+  //       moduleDirectory: ["node_modules", "src/"],
+  //     },
+  //   },
+  // },
 }

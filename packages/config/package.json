@@ -1,6 +1,6 @@
 {
   "name": "@sourceface/config",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "author": "aiven715 <aiven715@gmail.com>",
   "license": "MIT",
   "files": [
@@ -13,6 +13,8 @@
     "lint": "prettier --check \"src/**/*.js\" && eslint \"src/**/*.js\""
   },
   "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^3.0.1",
+    "@typescript-eslint/parser": "^3.0.1",
     "autoprefixer": "^9.7.6",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-react": "^7.19.0",
