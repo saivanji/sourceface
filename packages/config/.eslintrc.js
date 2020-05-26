@@ -5,6 +5,10 @@ module.exports = {
     node: true,
   },
   extends: ["eslint:recommended"],
+  rules: {
+    quotes: ["error", "double"],
+    "comma-dangle": "off",
+  },
   overrides: [
     {
       files: ["*.ts?(x)"],
@@ -17,8 +21,4 @@ module.exports = {
       },
     },
   ],
-  rules: {
-    quotes: ["error", "double"],
-    "comma-dangle": "off",
-  },
 }

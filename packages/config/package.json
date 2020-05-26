@@ -1,16 +1,17 @@
 {
   "name": "@sourceface/config",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "author": "aiven715 <aiven715@gmail.com>",
   "license": "MIT",
   "files": [
     ".prettierrc.js",
     ".eslintrc.js",
-    "postcss.config.js"
+    "postcss.config.js",
+    "tsconfig.json"
   ],
   "scripts": {
     "format": "prettier --write \"src/**/*.js\"",
-    "lint": "prettier --check \"src/**/*.js\" && eslint \"src/**/*.js\""
+    "check": "prettier --check \"src/**/*.js\" && eslint \"src/**/*.js\""
   },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^3.0.1",
