@@ -1,16 +1,18 @@
 @import "~@sourceface/style/index.scss";
 
 .root {
-  padding: $value-2 $value-4;
+  padding: $value-4;
   background-color: $color-gray-shade-110;
 }
 
 .title {
   display: flex;
+  line-height: 1;
   align-items: center;
   margin-bottom: -1px;
-  height: $value-10 + $value-2;
-  margin-bottom: $value-4;
+  margin-bottom: $value-3;
+  padding-top: $value-2;
+  padding-bottom: $value-4;
   color: $color-white;
   font-size: $font-size-xl;
   border-bottom: 1px solid $color-gray-shade-90;
@@ -43,6 +45,7 @@
   border: 0;
   background: none;
   cursor: pointer;
+  font-size: $font-size-sm;
   width: 100%;
   text-align: left;
   display: flex;

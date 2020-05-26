@@ -13,10 +13,8 @@ import {
 import ContentIcon from "assets/content-line.svg"
 import GroupIcon from "assets/group-line.svg"
 import LockIcon from "assets/lock-line.svg"
-import LogoutIcon from "assets/logout-line.svg"
 import QuestionIcon from "assets/question-line.svg"
 import SettingsIcon from "assets/settings-line.svg"
-import ShieldIcon from "assets/shield-line.svg"
 import StackIcon from "assets/stack-line.svg"
 import styles from "./index.scss"
 
@@ -95,20 +93,9 @@ function Sidenav() {
         <Nav.Link href="#">
           <SettingsIcon />
         </Nav.Link>
-        <Nav.Link href="#">
-          <LogoutIcon />
-        </Nav.Link>
       </Nav>
       <Sidebar appearance="dark" className={styles.sidebar}>
-        <Sidebar.Title>Settings</Sidebar.Title>
         <Sidebar.Group>
-          <Sidebar.GroupTitle>Personal</Sidebar.GroupTitle>
-          <Sidebar.GroupLink href="#" iconBefore={<ShieldIcon />}>
-            Security
-          </Sidebar.GroupLink>
-        </Sidebar.Group>
-        <Sidebar.Group>
-          <Sidebar.GroupTitle>Organization</Sidebar.GroupTitle>
           <Sidebar.GroupLink href="#" iconBefore={<GroupIcon />} isSelected>
             Users
           </Sidebar.GroupLink>

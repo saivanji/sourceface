@@ -46,7 +46,7 @@
 @media (min-width: $break-lg) {
   .root {
     grid-template-areas:
-      "nav sidebar header"
+      "nav header header"
       "nav sidebar main";
     grid-template-columns: auto $value-64 1fr;
     background-color: transparent;
