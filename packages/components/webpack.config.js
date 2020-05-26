@@ -7,7 +7,7 @@ const isProd = NODE_ENV === "production"
 module.exports = {
   mode: isProd ? "production" : "development",
   devtool: "source-map",
-  entry: "./src/index.js",
+  entry: "./src/index.ts",
   output: {
     path: path.resolve(__dirname, "lib"),
     filename: isProd ? "index.min.js" : "index.js",
@@ -19,7 +19,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.tsx?$/,
         exclude: /(node_modules)/,
         use: {
           loader: "babel-loader",
@@ -56,6 +56,9 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: [".js", ".jsx"],
+    extensions: [".ts", ".tsx"],
+  },
+  optimization: {
+    noEmitOnErrors: true,
   },
 }
