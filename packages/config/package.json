@@ -16,7 +16,6 @@
     "@typescript-eslint/eslint-plugin": "^3.0.1",
     "@typescript-eslint/parser": "^3.0.1",
     "autoprefixer": "^9.7.6",
-    "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-react": "^7.19.0",
     "postcss-preset-env": "^6.7.0"
   },
