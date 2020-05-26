@@ -21,7 +21,8 @@ services:
     stdin_open: true
     build: ./apps/sunwell
     command: >
-      bash -c "mkdir -p /mnt/sunwell &&
+      bash -c "rm -rf /mnt/sunwell &&
+               mkdir /mnt/sunwell &&
                ln -s /var/www/node_modules /mnt/sunwell/node_modules &&
                rm -rf /var/www/node_modules/@sourceface/components &&
                ln -s /mnt/components /var/www/node_modules/@sourceface/components &&

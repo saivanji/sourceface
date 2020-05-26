@@ -26,7 +26,7 @@
     "@babel/preset-env": "^7.9.6",
     "@babel/preset-react": "^7.9.4",
     "@babel/preset-typescript": "^7.9.0",
-    "@sourceface/config": "0.0.18",
+    "@sourceface/config": "0.0.19",
     "@storybook/addon-a11y": "^5.3.18",
     "@storybook/addon-knobs": "^5.3.18",
     "@storybook/react": "^5.3.18",

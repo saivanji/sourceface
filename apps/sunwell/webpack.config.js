@@ -11,7 +11,7 @@ const isDev = !!process.env.WEBPACK_DEV_SERVER
 module.exports = {
   mode: isDev ? "development" : "production",
   devtool: isDev && "cheap-module-source-map",
-  entry: "./src/index.jsx",
+  entry: "./src/index.tsx",
   optimization: {
     minimize: !isDev,
     minimizer: [new TerserJSPlugin(), new OptimizeCSSAssetsPlugin()],
@@ -23,7 +23,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.tsx?$/,
         exclude: /(node_modules)/,
         use: {
           loader: "babel-loader",
@@ -55,7 +55,7 @@ module.exports = {
       {
         test: /\.svg$/,
         issuer: {
-          test: /\.jsx$/,
+          test: /\.tsx$/,
         },
         use: {
           loader: "@svgr/webpack",
@@ -67,7 +67,7 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: [".js", ".jsx"],
+    extensions: [".ts", ".tsx", ".js"],
     modules: [path.resolve(__dirname, "src"), "node_modules"],
   },
   plugins: [

@@ -1237,10 +1237,10 @@
     prop-types "^15.6.1"
     react-lifecycles-compat "^3.0.4"
 
-"@sourceface/config@0.0.18":
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/@sourceface/config/-/config-0.0.18.tgz#557f6d70ac3a0c4bf17b11a7f82670bd9cf61ed1"
-  integrity sha512-M8YVIIw+ytg7zLmOn1N+xwRfB0bWg5IXV01DbhvvfkQyenkFmU0ZOmwW/PAheHuK3AzP62JS2IETfmhFwQpTNw==
+"@sourceface/config@0.0.19":
+  version "0.0.19"
+  resolved "https://registry.yarnpkg.com/@sourceface/config/-/config-0.0.19.tgz#9f84f1d64ae4a960ed30cd713a4238d76aca5de7"
+  integrity sha512-NLjH4mRKdrd1jd/oG7WBQm4ZjVKjc3/5yMiHlnQpNUFuV7hjFoMASBcpD+nB4piS0LOJ9ydG9jtx7yj5zvzvog==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^3.0.1"
     "@typescript-eslint/parser" "^3.0.1"
