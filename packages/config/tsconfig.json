@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
-    "noImplicitAny": false,
-    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
     "noEmit": true,
+    "strict": true,
     "jsx": "react"
   }
 }
