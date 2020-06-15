@@ -10,9 +10,9 @@ services:
       - NODE_ENV=development
       - DATABASE_URL
       - SECRET
-      - PORT=5000
+      - PORT=5001
     ports:
-      - "5000:5000"
+      - "5001:5001"
     depends_on:
       - postgres
 
@@ -38,25 +38,26 @@ services:
       - style_node_modules:/mnt/style/node_modules
     environment:
       - AGORA_HOST=${AGORA_HOST}
+      - PORT=3001
     ports:
-      - "3000:3000"
+      - "3001:3001"
 
-  components:
-    build: ./packages/components
-    command: >
-      bash -c "rm -rf /var/www/node_modules/react &&
-               ln -s /mnt/sunwell/node_modules/react /var/www/node_modules/react &&
-               rm -rf /var/www/node_modules/@sourceface/style &&
-               ln -s /mnt/style /var/www/node_modules/@sourceface/style &&
-               yarn start"
-    volumes:
-      - ./packages/components:/var/www
-      - components_node_modules:/var/www/node_modules
-      - ./packages/style:/mnt/style
-      - style_node_modules:/mnt/style/node_modules
-      - sunwell_node_modules:/mnt/sunwell/node_modules
-    ports:
-      - "4000:4000"
+  # components:
+  #   build: ./packages/components
+  #   command: >
+  #     bash -c "rm -rf /var/www/node_modules/react &&
+  #              ln -s /mnt/sunwell/node_modules/react /var/www/node_modules/react &&
+  #              rm -rf /var/www/node_modules/@sourceface/style &&
+  #              ln -s /mnt/style /var/www/node_modules/@sourceface/style &&
+  #              yarn start"
+  #   volumes:
+  #     - ./packages/components:/var/www
+  #     - components_node_modules:/var/www/node_modules
+  #     - ./packages/style:/mnt/style
+  #     - style_node_modules:/mnt/style/node_modules
+  #     - sunwell_node_modules:/mnt/sunwell/node_modules
+  #   ports:
+  #     - "4000:4000"
 
   style:
     build: ./packages/style

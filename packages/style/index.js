@@ -1,39 +1,46 @@
-const Values = require("values.js")
-const primary = "#bdc3c7"
-const light = "#ffffff"
-const dark = "#000000"
-const primaryColor = new Values(primary)
-
-const primaryTints = primaryColor.tints(7)
-const primaryShades = primaryColor.shades(7)
-
-const mapColors = items => items.map(item => `#${item.hex}`)
-
 exports.colors = {
-  light: light,
-  dark: dark,
-  // TODO: have one color scale instead of 3?
-  // mono: {
-  //   base: {},
-  //   tints: {},
-  //   shades: {},
-  // },
-  primary: {
-    base: primary,
-    tints: mapColors(primaryTints),
-    shades: mapColors(primaryShades),
+  white: "#fff",
+  gray: {
+    100: "hsla(216, 33%, 98%, 1)",
+    200: "hsla(218, 28%, 95%, 1)",
+    300: "hsla(216, 26%, 92%, 1)",
+    400: "hsla(212, 24%, 86%, 1)",
+    500: "hsla(218, 21%, 80%, 1)",
+    600: "hsla(210, 21%, 65%, 1)",
+    700: "hsla(211, 17%, 48%, 1)",
+    800: "hsla(208, 26%, 33%, 1)",
+    900: "hsla(215, 49%, 14%, 1)",
   },
-  // secondary: {
-  //   base: {},
-  //   tints: {},
-  //   shades: {},
-  // },
+  blue: {
+    100: "hsla(205, 77%, 96%, 1)",
+    200: "hsla(203, 73%, 87%, 1)",
+    300: "hsla(204, 71%, 75%, 1)",
+    400: "hsla(207, 68%, 63%, 1)",
+    500: "hsla(210, 64%, 47%, 1)",
+    600: "hsla(210, 67%, 42%, 1)",
+    700: "hsla(208, 71%, 37%, 1)",
+    800: "hsla(208, 75%, 30%, 1)",
+    900: "hsla(207, 82%, 22%, 1)",
+  },
+  red: {
+    100: "hsla(358, 91%, 94%, 1)",
+    200: "hsla(358, 95%, 87%, 1)",
+    300: "hsla(358, 90%, 80%, 1)",
+    400: "hsla(358, 75%, 66%, 1)",
+    500: "hsla(358, 62%, 52%, 1)",
+    600: "hsla(357, 70%, 42%, 1)",
+    700: "hsla(354, 84%, 35%, 1)",
+    800: "hsla(354, 90%, 27%, 1)",
+    900: "hsla(360, 94%, 20%, 1)",
+  },
 }
 
 const theme = {
   mode: "light | dark",
   palette: {}, // colors
 }
+
+exports.leading = {}
 
 exports.values = {
   1: "0.25rem",
@@ -82,10 +89,8 @@ exports.fontSizes = {
 }
 
 exports.rounded = {
-  sm: "0.125rem",
-  base: "0.25rem",
-  md: "0.375rem",
-  lg: "0.5rem",
+  sm: "0.25rem",
+  base: "0.3125rem",
   full: "9999px",
 }
 
@@ -106,34 +111,3 @@ exports.breakpoints = {
   lg: "992px",
   xl: "1200px",
 }
-
-// exports.color = (name, depth) => theme => {
-//   const palette = (theme && theme.palette) || exports.palettes.light
-//   const color = palette[name]
-
-//   return typeof color === "string" ? color : color[depth]
-// }
-
-exports.color = () => () => {}
-
-// exports.css = (...args) => {
-//   let cachedTheme
-//   const funcs = args.reduce((acc, el, i) => {
-//     if (typeof el !== "function") return acc
-//     el.i = i
-//     return [...acc, el]
-//   }, [])
-
-//   return theme => {
-//     if (theme !== cachedTheme && funcs.length > 0) {
-//       cachedTheme = theme
-//       console.log(theme)
-
-//       for (let i = 0; i < funcs.length; i++) {
-//         args[funcs[i].i] = funcs[i](theme)
-//       }
-//     }
-
-//     return css.apply(undefined, args)
-//   }
-// }

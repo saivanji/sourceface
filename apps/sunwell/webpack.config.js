@@ -7,6 +7,7 @@ const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin")
 const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 
 const isDev = !!process.env.WEBPACK_DEV_SERVER
+const { PORT } = process.env
 
 module.exports = {
   mode: isDev ? "development" : "production",
@@ -83,7 +84,7 @@ module.exports = {
   ],
   devServer: {
     host: "0.0.0.0",
-    port: 3000,
+    port: PORT,
     contentBase: path.resolve(__dirname, "static"),
   },
 }
