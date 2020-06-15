@@ -1,5 +1,6 @@
 import React from "react"
+import { Button } from "kit/index"
 
 export default () => {
-  return <div>Hello</div>
+  return <Button>Add order</Button>
 }

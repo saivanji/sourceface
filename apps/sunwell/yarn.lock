@@ -945,10 +945,10 @@
   resolved "https://registry.yarnpkg.com/@sourceface/components/-/components-0.0.1.tgz#723bea5adc61cfc0a948a7cacc4c2e106a2168d1"
   integrity sha512-3zX8RIo+IAfZRWDdJFIRHpOMLCc/a3gccjr+5fe4P+5YWFl/rqTjVe0DqqrGU6mmUcMxF8eP8kjAadWmpEK3Cg==
 
-"@sourceface/config@0.0.19":
-  version "0.0.19"
-  resolved "https://registry.yarnpkg.com/@sourceface/config/-/config-0.0.19.tgz#9f84f1d64ae4a960ed30cd713a4238d76aca5de7"
-  integrity sha512-NLjH4mRKdrd1jd/oG7WBQm4ZjVKjc3/5yMiHlnQpNUFuV7hjFoMASBcpD+nB4piS0LOJ9ydG9jtx7yj5zvzvog==
+"@sourceface/config@0.0.20":
+  version "0.0.20"
+  resolved "https://registry.yarnpkg.com/@sourceface/config/-/config-0.0.20.tgz#8ca00fd161c3f19e21a32e42afcccf6a94140895"
+  integrity sha512-shJVtSi1QWwszceoz/KozxWFXINHRhTcOoCrhlr7Z1N2wvwcVGSYaIWWMLX1u0v3i25bq9UfEqnjMQ6nlNuJpw==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^3.0.1"
     "@typescript-eslint/parser" "^3.0.1"
@@ -1113,10 +1113,30 @@
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
 
+"@types/prop-types@*":
+  version "15.7.3"
+  resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.3.tgz#2ab0d5da2e5815f94b0b9d4b95d1e5f243ab2ca7"
+  integrity sha512-KfRL3PuHmqQLOG+2tGpRO26Ctg+Cq1E01D2DMriKEATHgWLfeNDmq9e29Q9WIky0dQ3NPkd1mzYH8Lm936Z9qw==
+
 "@types/q@^1.5.1":
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/@types/q/-/q-1.5.2.tgz#690a1475b84f2a884fd07cd797c00f5f31356ea8"
   integrity sha512-ce5d3q03Ex0sy4R14722Rmt6MT07Ua+k4FwDfdcToYJcMKNtRVQvJ6JCAPdAmAnbRb6CsX6aYb9m96NGod9uTw==
+
+"@types/react-dom@^16.9.8":
+  version "16.9.8"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.9.8.tgz#fe4c1e11dfc67155733dfa6aa65108b4971cb423"
+  integrity sha512-ykkPQ+5nFknnlU6lDd947WbQ6TE3NNzbQAkInC2EKY1qeYdTKp7onFusmYZb+ityzx2YviqT6BXSu+LyWWJwcA==
+  dependencies:
+    "@types/react" "*"
+
+"@types/react@*", "@types/react@^16.9.36":
+  version "16.9.36"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.36.tgz#ade589ff51e2a903e34ee4669e05dbfa0c1ce849"
+  integrity sha512-mGgUb/Rk/vGx4NCvquRuSH0GHBQKb1OqpGS9cT9lFxlTLHZgkksgI60TuIxubmn7JuCb+sENHhQciqa0npm0AQ==
+  dependencies:
+    "@types/prop-types" "*"
+    csstype "^2.2.0"
 
 "@types/source-list-map@*":
   version "0.1.2"
@@ -2684,6 +2704,11 @@ csso@^4.0.2:
   integrity sha512-NL3spysxUkcrOgnpsT4Xdl2aiEiBG6bXswAABQVHcMrfjjBisFOKwLDOmf4wf32aPdcJws1zds2B0Rg+jqMyHQ==
   dependencies:
     css-tree "1.0.0-alpha.39"
+
+csstype@^2.2.0:
+  version "2.6.10"
+  resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.6.10.tgz#e63af50e66d7c266edb6b32909cfd0aabe03928b"
+  integrity sha512-D34BqZU4cIlMCY93rZHbrq9pjTAQJ3U8S8rfBqjwHxkGPThWFjzZDQpgMJY0QViLxth6ZKYiwFBo14RdN44U/w==
 
 cyclist@^1.0.1:
   version "1.0.1"
