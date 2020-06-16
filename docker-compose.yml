@@ -21,19 +21,12 @@ services:
     stdin_open: true
     build: ./apps/sunwell
     command: >
-      bash -c "rm -rf /mnt/sunwell &&
-               mkdir /mnt/sunwell &&
-               ln -s /var/www/node_modules /mnt/sunwell/node_modules &&
-               rm -rf /var/www/node_modules/@sourceface/components &&
-               ln -s /mnt/components /var/www/node_modules/@sourceface/components &&
-               rm -rf /var/www/node_modules/@sourceface/style &&
+      bash -c "rm -rf /var/www/node_modules/@sourceface/style &&
                ln -s /mnt/style /var/www/node_modules/@sourceface/style &&
                yarn start"
     volumes:
       - ./apps/sunwell:/var/www
-      - sunwell_node_modules:/var/www/node_modules
-      - ./packages/components:/mnt/components
-      - components_node_modules:/mnt/components/node_modules
+      - /var/www/node_modules
       - ./packages/style:/mnt/style
       - style_node_modules:/mnt/style/node_modules
     environment:
@@ -57,7 +50,7 @@ services:
   #     - style_node_modules:/mnt/style/node_modules
   #     - sunwell_node_modules:/mnt/sunwell/node_modules
   #   ports:
-  #     - "4000:4000"
+  #     - "4001:4001"
 
   style:
     build: ./packages/style
@@ -75,6 +68,4 @@ services:
       POSTGRES_PASSWORD: admin
 
 volumes:
-  components_node_modules:
   style_node_modules:
-  sunwell_node_modules:

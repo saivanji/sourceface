@@ -86,5 +86,6 @@ module.exports = {
     host: "0.0.0.0",
     port: PORT,
     contentBase: path.resolve(__dirname, "static"),
+    stats: "errors-only",
   },
 }
