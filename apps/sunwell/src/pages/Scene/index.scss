@@ -1,0 +1,40 @@
+@import "~@sourceface/style/index.scss";
+
+.root {
+  margin: 0 auto;
+  max-width: $size-6xl;
+  padding: $value-3;
+}
+
+.title {
+  font-weight: 500;
+  font-size: $font-size-2xl;
+  font-family: $font-montserrat;
+}
+
+.panel {
+  display: flex;
+  margin-top: $value-12;
+  margin-bottom: $value-6;
+}
+
+.new-order {
+  margin-left: auto;
+}
+
+.table-footer {
+  display: flex;
+  align-items: center;
+}
+
+.pagination {
+  margin-left: auto;
+}
+
+.pagination-info {
+  color: $color-gray-800;
+}
+
+.pagination-info > span {
+  font-weight: 600;
+}

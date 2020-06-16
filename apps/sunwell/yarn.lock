@@ -945,10 +945,10 @@
   resolved "https://registry.yarnpkg.com/@sourceface/components/-/components-0.0.1.tgz#723bea5adc61cfc0a948a7cacc4c2e106a2168d1"
   integrity sha512-3zX8RIo+IAfZRWDdJFIRHpOMLCc/a3gccjr+5fe4P+5YWFl/rqTjVe0DqqrGU6mmUcMxF8eP8kjAadWmpEK3Cg==
 
-"@sourceface/config@0.0.20":
-  version "0.0.20"
-  resolved "https://registry.yarnpkg.com/@sourceface/config/-/config-0.0.20.tgz#8ca00fd161c3f19e21a32e42afcccf6a94140895"
-  integrity sha512-shJVtSi1QWwszceoz/KozxWFXINHRhTcOoCrhlr7Z1N2wvwcVGSYaIWWMLX1u0v3i25bq9UfEqnjMQ6nlNuJpw==
+"@sourceface/config@0.0.22":
+  version "0.0.22"
+  resolved "https://registry.yarnpkg.com/@sourceface/config/-/config-0.0.22.tgz#6b8b00c0fba2777321709463ef64e4c3310989f3"
+  integrity sha512-2cn0KLLUaCRJSAf84envA1tAp1Aly4uXhzIPFHf0sMz+SJCROT5DjIzGAAUEsWa3DjUOZNJS0/xnN3VyX6iXGA==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^3.0.1"
     "@typescript-eslint/parser" "^3.0.1"
@@ -1063,6 +1063,11 @@
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/@types/anymatch/-/anymatch-1.3.1.tgz#336badc1beecb9dacc38bea2cf32adf627a8421a"
   integrity sha512-/+CRPXpBDpo2RK9C68N3b2cOvO0Cf5B9aPijHsoDQTHivnGSObdOF2BRQOYjojWTDy6nQvMjmqRXIxH55VjxxA==
+
+"@types/classnames@^2.2.10":
+  version "2.2.10"
+  resolved "https://registry.yarnpkg.com/@types/classnames/-/classnames-2.2.10.tgz#cc658ca319b6355399efc1f5b9e818f1a24bf999"
+  integrity sha512-1UzDldn9GfYYEsWWnn/P4wkTlkZDH7lDb0wBMGbtIQc9zXEQq7FlKBdZUn6OBqD8sKZZ2RQO2mAjGpXiDGoRmQ==
 
 "@types/color-name@^1.1.1":
   version "1.1.1"

@@ -1,0 +1,75 @@
+@import "~@sourceface/style/index.scss";
+
+.root {
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
+  font-size: $font-size-sm;
+  line-height: $leading-5;
+}
+
+.item {
+  display: flex;
+  user-select: none;
+  background-color: $color-white;
+  &:first-child .link {
+    border-top-left-radius: $rounded-base;
+    border-bottom-left-radius: $rounded-base;
+  }
+  &:last-child .link {
+    border-top-right-radius: $rounded-base;
+    border-bottom-right-radius: $rounded-base;
+  }
+  &:first-child,
+  &:last-child {
+    .link {
+      padding: 0 $value-1;
+    }
+  }
+  &:not(:first-child, :last-child) {
+    .link:not(.dots) {
+      padding: $value-2 $value-4;
+    }
+  }
+  &:not(:last-child) .link {
+    border-right: 0;
+  }
+}
+
+.link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  border: 1px solid $color-gray-400;
+  color: $color-gray-700;
+  svg {
+    width: $value-6;
+  }
+  &.selected {
+    background-color: $color-gray-300;
+  }
+  &.disabled {
+    cursor: not-allowed;
+    background-color: $color-gray-100;
+    color: $color-gray-600;
+  }
+  &.dots {
+    padding: $value-2 $value-3;
+  }
+  &:hover:not(.selected, .disabled) {
+    background-color: $color-gray-100;
+  }
+  &:active:not(.selected, .disabled) {
+    background-color: $color-gray-200;
+  }
+  &:focus:not(.disabled) {
+    z-index: 10;
+    border-radius: $rounded-sm;
+    box-shadow: 0 0 0 3px $color-blue-200;
+  }
+  &:focus {
+    outline: none;
+  }
+}

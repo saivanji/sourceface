@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "date": "1/12/2020",
+    "name": "Britta Preskett",
+    "address": "076 Sycamore Avenue",
+    "delivery_type": "Pickup",
+    "status": "Pending",
+    "payment_type": "Credit card",
+    "amount": "$3.10"
+  },
+  {
+    "id": 2,
+    "date": "4/2/2020",
+    "name": "Kaylyn Fitzmaurice",
+    "address": "512 Northwestern Terrace",
+    "delivery_type": "Pickup",
+    "status": "In progress",
+    "payment_type": "Cash",
+    "amount": "$6.78"
+  },
+  {
+    "id": 3,
+    "date": "12/17/2019",
+    "name": "Chick Haselup",
+    "address": "192 Columbus Trail",
+    "delivery_type": "Delivery",
+    "status": "In progress",
+    "payment_type": "Cash",
+    "amount": "$9.19"
+  },
+  {
+    "id": 4,
+    "date": "6/7/2020",
+    "name": "Erda Eustanch",
+    "address": "58 Sunbrook Alley",
+    "delivery_type": "Pickup",
+    "status": "Dispatched",
+    "payment_type": "Cash",
+    "amount": "$3.07"
+  },
+  {
+    "id": 5,
+    "date": "1/21/2020",
+    "name": "Linnea Haselden",
+    "address": "3229 Scott Avenue",
+    "delivery_type": "Pickup",
+    "status": "In progress",
+    "payment_type": "Credit card",
+    "amount": "$8.20"
+  },
+  {
+    "id": 6,
+    "date": "2/23/2020",
+    "name": "Cristal Benns",
+    "address": "28194 Hoffman Point",
+    "delivery_type": "Pickup",
+    "status": "Pending",
+    "payment_type": "Cash",
+    "amount": "$1.45"
+  },
+  {
+    "id": 7,
+    "date": "8/16/2019",
+    "name": "Vickie Plues",
+    "address": "5969 Larry Junction",
+    "delivery_type": "Pickup",
+    "status": "In progress",
+    "payment_type": "Cash",
+    "amount": "$2.86"
+  }
+]

@@ -7,7 +7,9 @@ const {
   sizes,
   rounded,
   fontSizes,
+  fonts,
   shadows,
+  leading,
 } = require("./index")
 
 const mapObj = (obj, fn) =>
@@ -48,12 +50,20 @@ const fontSizesDefinition = mapObj(fontSizes, (k, v) => ({
   [`font-size-${k}`]: v,
 }))
 
+const fontsDefinition = mapObj(fonts, (k, v) => ({
+  [`font-${k}`]: v,
+}))
+
 const roundedDefinition = mapObj(rounded, (k, v) => ({
   [`rounded-${k}`]: v,
 }))
 
 const shadowsDefinition = mapObj(shadows, (k, v) => ({
   [`shadow-${k}`]: v,
+}))
+
+const leadingDefinition = mapObj(leading, (k, v) => ({
+  [`leading-${k}`]: v,
 }))
 
 fs.writeFileSync(
@@ -64,8 +74,10 @@ fs.writeFileSync(
     ...valuesDefinition,
     ...sizesDefinition,
     ...fontSizesDefinition,
+    ...fontsDefinition,
     ...roundedDefinition,
     ...shadowsDefinition,
+    ...leadingDefinition,
   }),
   "utf-8"
 )

@@ -40,7 +40,16 @@ const theme = {
   palette: {}, // colors
 }
 
-exports.leading = {}
+exports.leading = {
+  "3": ".75rem",
+  "4": "1rem",
+  "5": "1.25rem",
+  "6": "1.5rem",
+  "7": "1.75rem",
+  "8": "2rem",
+  "9": "2.25rem",
+  "10": "2.5rem",
+}
 
 exports.values = {
   1: "0.25rem",
@@ -88,6 +97,13 @@ exports.fontSizes = {
   "6xl": "4rem",
 }
 
+/* eslint-disable */
+exports.fonts = {
+  nunito: '"Nunito", sans-serif',
+  montserrat: '"Montserrat", sans-serif',
+}
+/* eslint-enable */
+
 exports.rounded = {
   sm: "0.25rem",
   base: "0.3125rem",
@@ -95,14 +111,7 @@ exports.rounded = {
 }
 
 exports.shadows = {
-  xs: "0 0 0 1px rgba(0, 0, 0, 0.05)",
-  sm: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-  base: "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
-  md: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-  lg: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-  xl:
-    "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-  "2xl": "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+  base: "0 2px 5px hsla(0, 0%, 0%, 0.2)",
 }
 
 exports.breakpoints = {

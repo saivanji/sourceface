@@ -9,7 +9,7 @@ export default function Button({
   shouldFitContainer = false,
   className,
   ...props
-}: ButtonProps) {
+}: Props) {
   return (
     <button
       {...props}
@@ -26,7 +26,7 @@ export default function Button({
   )
 }
 
-type ButtonProps = {
+interface Props {
   children: React.ReactNode
   size?: "small" | "regular" | "large"
   type?: "button" | "submit"
