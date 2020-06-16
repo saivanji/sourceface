@@ -12,7 +12,6 @@
 .item {
   display: flex;
   user-select: none;
-  background-color: $color-white;
   &:first-child .link {
     border-top-left-radius: $rounded-base;
     border-bottom-left-radius: $rounded-base;
@@ -42,18 +41,19 @@
   display: flex;
   align-items: center;
   text-decoration: none;
+  background-color: $color-white;
   border: 1px solid $color-gray-400;
   color: $color-gray-700;
   svg {
     width: $value-6;
   }
   &.selected {
-    background-color: $color-gray-300;
+    background-color: $color-gray-200;
+    color: $color-gray-800;
   }
   &.disabled {
     cursor: not-allowed;
-    background-color: $color-gray-100;
-    color: $color-gray-600;
+    color: $color-gray-500;
   }
   &.dots {
     padding: $value-2 $value-3;
