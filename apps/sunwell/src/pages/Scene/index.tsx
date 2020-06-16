@@ -44,21 +44,23 @@ export default () => {
           ))}
         </Table.Tbody>
         <Table.Tfoot>
-          <Table.Td colSpan={8}>
-            <div className={styles.tableFooter}>
-              <div className={styles.paginationInfo}>
-                Showing <span>1</span> to <span>10</span> of <span>97</span>{" "}
-                results
+          <Table.Tr>
+            <Table.Td colSpan={8}>
+              <div className={styles.tableFooter}>
+                <div className={styles.paginationInfo}>
+                  Showing <span>1</span> to <span>10</span> of <span>97</span>{" "}
+                  results
+                </div>
+                <Pagination
+                  className={styles.pagination}
+                  pageCount={20}
+                  selectedPage={4}
+                  pageSurroundings={1}
+                  onPageClick={console.log}
+                />
               </div>
-              <Pagination
-                className={styles.pagination}
-                pageCount={20}
-                selectedPage={4}
-                pageSurroundings={1}
-                onPageClick={console.log}
-              />
-            </div>
-          </Table.Td>
+            </Table.Td>
+          </Table.Tr>
         </Table.Tfoot>
       </Table>
     </div>

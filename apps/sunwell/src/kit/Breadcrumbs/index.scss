@@ -10,16 +10,15 @@
 
 .link {
   text-decoration: none;
-  border: 2px solid transparent;
   margin: 0 $value-1;
-  padding: calc(#{$value-1} - 2px);
+  padding: $value-1;
   color: $color-gray-900;
   border-radius: $rounded-base;
   &:hover {
     background-color: $color-gray-300;
   }
   &:focus {
-    outline: none;
-    border-color: $color-blue-600;
+    // outline: none;
+    // box-shadow: 0 0 0 3px $color-blue-500;
   }
 }

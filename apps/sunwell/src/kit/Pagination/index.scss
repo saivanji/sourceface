@@ -12,27 +12,19 @@
 .item {
   display: flex;
   user-select: none;
-  &:first-child .link {
-    border-top-left-radius: $rounded-base;
-    border-bottom-left-radius: $rounded-base;
-  }
-  &:last-child .link {
-    border-top-right-radius: $rounded-base;
-    border-bottom-right-radius: $rounded-base;
-  }
   &:first-child,
   &:last-child {
     .link {
-      padding: 0 $value-1;
+      color: $color-gray-700;
     }
   }
   &:not(:first-child, :last-child) {
-    .link:not(.dots) {
-      padding: $value-2 $value-4;
+    .link {
+      padding: $value-1 $value-2;
     }
-  }
-  &:not(:last-child) .link {
-    border-right: 0;
+    .link:not(.dots) {
+      margin: 0 $value-1;
+    }
   }
 }
 
@@ -42,8 +34,8 @@
   align-items: center;
   text-decoration: none;
   background-color: $color-white;
-  border: 1px solid $color-gray-400;
-  color: $color-gray-700;
+  color: $color-gray-800;
+  border-radius: $rounded-base;
   svg {
     width: $value-6;
   }
@@ -53,10 +45,7 @@
   }
   &.disabled {
     cursor: not-allowed;
-    color: $color-gray-500;
-  }
-  &.dots {
-    padding: $value-2 $value-3;
+    color: $color-gray-600;
   }
   &:hover:not(.selected, .disabled) {
     background-color: $color-gray-100;
