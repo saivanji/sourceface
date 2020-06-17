@@ -3,15 +3,15 @@ import { Button, Breadcrumbs, Table, Pagination } from "kit/index"
 import styles from "./index.scss"
 import data from "./data.json"
 
+/* <Breadcrumbs */
+/*   path={[ */
+/*     { title: "Administration", link: "#" }, */
+/*     { title: "Users", link: "#" }, */
+/*   ]} */
+/* /> */
 export default () => {
   return (
     <div className={styles.root}>
-      <Breadcrumbs
-        path={[
-          { title: "Administration", link: "#" },
-          { title: "Users", link: "#" },
-        ]}
-      />
       <div className={styles.panel}>
         <span className={styles.title}>Orders</span>
         <Button className={styles.newOrder}>New order</Button>

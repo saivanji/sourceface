@@ -1,3 +1,5 @@
+// TODO: get rid of ts
+
 import "normalize.css"
 import "./index.scss"
 

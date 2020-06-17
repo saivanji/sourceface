@@ -16,6 +16,20 @@ services:
     depends_on:
       - postgres
 
+  absinthe:
+    build:
+      context: ./apps/absinthe
+      args:
+        - POSTGRES_URL=${POSTGRES_MOCK_URL}
+    command: "tail -f /dev/null"
+    volumes:
+      - ./apps/absinthe:/var/www
+      - /var/www/node_modules
+    environment:
+      - POSTGRES_URL=${POSTGRES_MOCK_URL}
+    depends_on:
+      - postgres_mock
+
   sunwell:
     # temporary option in order webpack not to exit
     stdin_open: true
@@ -63,6 +77,14 @@ services:
     image: postgres:9.5
     ports:
       - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+
+  postgres_mock:
+    image: postgres:9.5
+    ports:
+      - "5433:5432"
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
