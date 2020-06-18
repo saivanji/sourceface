@@ -1,0 +1,25 @@
+enum Database {
+  POSTGRES
+}
+
+type Source {
+  id: Int!
+  createdAt: DateTime!
+  database: Database!
+  name: String!
+  connection: String!
+}
+
+type Query_ {
+  id: Int!
+  createdAt: DateTime!
+  source: Source!
+  name: String!
+  value: String!
+}
+
+extend type Mutation {
+  executeQuery(queryId: Int!): JSON
+}
+
+value = "SELECT * FROM orders"

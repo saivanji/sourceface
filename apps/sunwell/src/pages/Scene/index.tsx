@@ -1,3 +1,5 @@
+// order creation will be in a modal
+
 import React from "react"
 import { Button, Breadcrumbs, Table, Pagination } from "kit/index"
 import styles from "./index.scss"

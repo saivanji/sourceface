@@ -17,11 +17,8 @@ services:
       - postgres
 
   absinthe:
-    build:
-      context: ./apps/absinthe
-      args:
-        - POSTGRES_URL=${POSTGRES_MOCK_URL}
-    command: "tail -f /dev/null"
+    build: ./apps/absinthe
+    command: "yarn start"
     volumes:
       - ./apps/absinthe:/var/www
       - /var/www/node_modules
