@@ -7,3 +7,5 @@ type Mutation
 scalar Email
 
 scalar DateTime
+
+scalar JSON

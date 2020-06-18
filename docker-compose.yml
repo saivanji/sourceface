@@ -8,9 +8,10 @@ services:
       - /var/www/node_modules
     environment:
       - NODE_ENV=development
-      - DATABASE_URL
-      - SECRET
       - PORT=5001
+      - SECRET
+      - DATABASE_URL
+      - POSTGRES_MOCK_URL
     ports:
       - "5001:5001"
     depends_on:
