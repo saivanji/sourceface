@@ -10,55 +10,57 @@ import connectDrivers from "./drivers"
 
 const NODE_ENV = process.env.NODE_ENV
 const GRAPHQL_ENDPOINT = "/graphql"
-
 const app = express()
-const pg = postgres()
-const connections = connectDrivers(pg)
-// const PgSession = connectPgSimple(session)
 
-// app
-//   .use
-// session({
-//   store: new PgSession({
-//     pgPromise: pg,
-//     tableName: "sessions",
-//   }),
-//   secret: process.env.SECRET,
-//   cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 },
-//   resave: false,
-//   saveUninitialized: false,
-// })
-// ()
+;(async () => {
+  const pg = postgres()
+  // const PgSession = connectPgSimple(session)
+  const connections = await connectDrivers(pg)
 
-app.post(
-  GRAPHQL_ENDPOINT,
-  graphqlHTTP(req => ({
-    schema,
-    context: Object.assign(req, {
-      pg,
-      connections,
-      // TODO: generate loaders in the same place as sources instead of at request time?
-      // loaders: loaders(pg)
-    }),
-  }))
-)
+  // app
+  //   .use
+  // session({
+  //   store: new PgSession({
+  //     pgPromise: pg,
+  //     tableName: "sessions",
+  //   }),
+  //   secret: process.env.SECRET,
+  //   cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 },
+  //   resave: false,
+  //   saveUninitialized: false,
+  // })
+  // ()
 
-if (NODE_ENV === "production") {
-  app.use(express.static(path.resolve(__dirname, "public")))
-} else {
-  app.get(
+  if (NODE_ENV === "production") {
+    app.use(express.static(path.resolve(__dirname, "public")))
+  } else {
+    app.get(
+      GRAPHQL_ENDPOINT,
+      playground({
+        endpoint: GRAPHQL_ENDPOINT,
+        settings: {
+          "request.credentials": "include",
+          "schema.polling.enable": false,
+        },
+      })
+    )
+  }
+
+  app.pg = pg
+
+  app.post(
     GRAPHQL_ENDPOINT,
-    playground({
-      endpoint: GRAPHQL_ENDPOINT,
-      settings: {
-        "request.credentials": "include",
-        "schema.polling.enable": false,
-      },
-    })
+    graphqlHTTP(req => ({
+      schema,
+      context: Object.assign(req, {
+        pg,
+        connections,
+        // TODO: generate loaders in the same place as sources instead of at request time?
+        // loaders: loaders(pg)
+      }),
+    }))
   )
-}
-
-app.pg = pg
+})()
 
 export default app
 
