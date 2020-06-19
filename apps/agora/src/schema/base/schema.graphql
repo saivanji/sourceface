@@ -9,3 +9,5 @@ scalar Email
 scalar DateTime
 
 scalar JSON
+
+scalar JSONObject

@@ -19,7 +19,7 @@
 # }
 
 extend type Mutation {
-  executeQuery(queryId: Int!): JSON
+  executeQuery(queryId: Int!, args: JSONObject): JSON
 }
 
 extend type Query {

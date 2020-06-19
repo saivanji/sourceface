@@ -22,10 +22,10 @@ export default async pg => {
 }
 
 const makeConnection = source => {
-  const { connect, execute } = drivers[source.database]
+  const { connect, execute, escape } = drivers[source.database]
   const cn = connect(source.connection)
 
   return {
-    execute: query => execute(query, cn),
+    execute: renderQuery => execute(renderQuery(escape), cn),
   }
 }

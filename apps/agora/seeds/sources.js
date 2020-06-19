@@ -13,7 +13,7 @@ export default db =>
     await t.none(
       `
       INSERT INTO queries (source_id, name, value)
-      VALUES ($1, 'orders list', 'SELECT * FROM orders')
+      VALUES ($1, 'orders list', 'SELECT * FROM orders LIMIT {{limit}} OFFSET {{offset}}')
     `,
       [id]
     )

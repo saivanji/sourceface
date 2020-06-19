@@ -20,7 +20,7 @@ services:
 
   absinthe:
     build: ./apps/absinthe
-    command: "yarn start"
+    command: "tail -f /dev/null"
     volumes:
       - ./apps/absinthe:/var/www
       - /var/www/node_modules

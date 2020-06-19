@@ -23,3 +23,5 @@ export default makeExecutableSchema({
   //   // ...userDirectives,
   // },
 })
+
+// TODO: handle errors. For example, when something is not found on postgres side - throw corresponding error
