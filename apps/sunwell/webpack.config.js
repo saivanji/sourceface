@@ -70,6 +70,7 @@ module.exports = {
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
     modules: [path.resolve(__dirname, "src"), "node_modules"],
+    mainFields: ["browser", "main"],
   },
   plugins: [
     new HtmlPlugin({

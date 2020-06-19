@@ -42,7 +42,8 @@ services:
       - ./packages/style:/mnt/style
       - style_node_modules:/mnt/style/node_modules
     environment:
-      - AGORA_HOST=${AGORA_HOST}
+      - NODE_ENV=development
+      - AGORA_HOST
       - PORT=3001
     ports:
       - "3001:3001"

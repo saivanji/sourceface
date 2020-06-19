@@ -5,6 +5,15 @@ import "./index.scss"
 
 import React from "react"
 import ReactDOM from "react-dom"
+import { createClient, Provider } from "urql"
 import * as pages from "./pages"
 
-ReactDOM.render(<pages.Scene />, document.getElementById("root"))
+const endpoint = "http://localhost:5001/graphql"
+const client = createClient({ url: endpoint })
+
+ReactDOM.render(
+  <Provider value={client}>
+    <pages.Scene />
+  </Provider>,
+  document.getElementById("root")
+)

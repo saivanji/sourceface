@@ -1,6 +1,7 @@
 // order creation will be in a modal
 
-import React from "react"
+import React, { useEffect } from "react"
+import { useMutation } from "urql"
 import { Button, Breadcrumbs, Table, Pagination } from "kit/index"
 import styles from "./index.scss"
 import data from "./data.json"
@@ -12,6 +13,16 @@ import data from "./data.json"
 /*   ]} */
 /* /> */
 export default () => {
+  const [result, send] = useMutation(`
+    mutation {
+      executeQuery(queryId: 1)
+    }
+ `)
+
+  useEffect(() => {
+    send()
+  }, [])
+
   return (
     <div className={styles.root}>
       <div className={styles.panel}>
