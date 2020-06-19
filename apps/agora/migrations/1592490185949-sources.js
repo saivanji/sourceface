@@ -1,3 +1,4 @@
+// TODO: rename "connection" to "settings" JSON type in future?
 export const up = () =>
   global.pg.tx(async t => {
     await t.none(`
