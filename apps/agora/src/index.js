@@ -1,4 +1,5 @@
 import express from "express"
+import cors from "cors"
 import graphqlHTTP from "express-graphql"
 import path from "path"
 import playground from "graphql-playground-middleware-express"
@@ -8,7 +9,7 @@ import postgres from "./postgres"
 import schema from "./schema"
 import connectDrivers from "./drivers"
 
-const NODE_ENV = process.env.NODE_ENV
+const { NODE_ENV, SUNWELL_HOST } = process.env
 const GRAPHQL_ENDPOINT = "/graphql"
 const app = express()
 
@@ -16,6 +17,12 @@ const app = express()
   const pg = postgres()
   // const PgSession = connectPgSimple(session)
   const connections = await connectDrivers(pg)
+
+  app.use(
+    cors({
+      origin: SUNWELL_HOST,
+    })
+  )
 
   // app
   //   .use
