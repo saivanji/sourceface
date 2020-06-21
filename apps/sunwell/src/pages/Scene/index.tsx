@@ -1,11 +1,12 @@
 // order creation will be in a modal
 
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { useMutation } from "urql"
 import moment from "moment"
 import { Button, Breadcrumbs, Table, Pagination } from "kit/index"
 import styles from "./index.scss"
-import data from "./data.json"
+
+// TODO: start defining editor interface with simple text module, which can display free form string or data from the query
 
 /* <Breadcrumbs */
 /*   path={[ */
@@ -28,21 +29,22 @@ export default () => {
 const TableModule = () => {
   const [result, send] = useMutation(`
     mutation ($args: JSONObject) {
-      executeQuery(queryId: 2, args: $args)
+      rows: executeQuery(queryId: 2, args: $args)
+      count: executeQuery(queryId: 3)
     }
  `)
-  const limit = 10
-  const offset = 20
+  const [page, setPage] = useState(0)
+  const itemsPerPage = 10
 
   useEffect(() => {
-    send({ args: { limit, offset } })
-  }, [])
+    send({ args: { limit: itemsPerPage, offset: itemsPerPage * page } })
+  }, [page])
 
   if (!result.data) {
     return "Loading..."
   }
 
-  const rows = result.data.executeQuery
+  const { rows, count } = result.data
 
   return (
     <Table>
@@ -81,15 +83,16 @@ const TableModule = () => {
           <Table.Td colSpan={8}>
             <div className={styles.tableFooter}>
               <div className={styles.paginationInfo}>
-                Showing <span>1</span> to <span>10</span> of <span>97</span>{" "}
-                results
+                Showing <span>{itemsPerPage * page + 1}</span> to{" "}
+                <span>{itemsPerPage * (page + 1)}</span> of{" "}
+                <span>{+count[0].count}</span> results
               </div>
               <Pagination
                 className={styles.pagination}
-                pageCount={20}
-                selectedPage={4}
+                pageCount={Math.ceil(+count[0].count / itemsPerPage)}
+                selectedPage={page}
                 pageSurroundings={1}
-                onPageClick={console.log}
+                onPageClick={setPage}
               />
             </div>
           </Table.Td>

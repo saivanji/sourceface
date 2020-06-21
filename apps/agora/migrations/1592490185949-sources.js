@@ -1,5 +1,6 @@
 // TODO: rename "database" to "type"
 // TODO: rename "connection" to "settings" JSON type in future? Settings will depend on type.
+// TODO: remove "value" in favor of "settings"
 // have settings on both queries and sources?
 export const up = () =>
   global.pg.tx(async t => {
