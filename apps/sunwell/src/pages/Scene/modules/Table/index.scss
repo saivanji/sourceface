@@ -1,0 +1,18 @@
+@import "~@sourceface/style/index.scss";
+
+.table-footer {
+  display: flex;
+  align-items: center;
+}
+
+.pagination {
+  margin-left: auto;
+}
+
+.pagination-info {
+  color: $color-gray-800;
+}
+
+.pagination-info > span {
+  font-weight: 600;
+}
