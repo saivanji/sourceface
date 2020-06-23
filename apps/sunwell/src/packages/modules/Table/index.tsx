@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useMutation } from "urql"
 import moment from "moment"
-import { Table, Pagination } from "kit/index"
+import { Table, Pagination } from "packages/kit"
 import styles from "./index.scss"
 
 export default () => {
@@ -59,7 +59,7 @@ export default () => {
       <Table.Tfoot>
         <Table.Tr>
           <Table.Td colSpan={8}>
-            <div className={styles.tableFooter}>
+            <div className={styles.footer}>
               <div className={styles.paginationInfo}>
                 Showing <span>{itemsPerPage * page + 1}</span> to{" "}
                 <span>{itemsPerPage * (page + 1)}</span> of{" "}

@@ -1,10 +1,9 @@
 // order creation will be in a modal
 
 import React from "react"
-import { Button } from "kit/index"
+/* import { Button } from "packages/kit/index" */
 import styles from "./index.scss"
-import TableModule from "./modules/Table"
-import TextModule from "./modules/Text"
+import { Text } from "packages/modules"
 
 // TODO: start defining editor interface with simple text module, which can display free form string or data from the query
 
@@ -23,7 +22,7 @@ import TextModule from "./modules/Text"
 export default () => {
   return (
     <div className={styles.root}>
-      <TextModule />
+      <Text />
     </div>
   )
 }
