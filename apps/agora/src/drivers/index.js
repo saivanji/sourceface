@@ -1,4 +1,3 @@
-import * as R from "ramda"
 import * as sourceRepo from "repos/source"
 import * as postgres from "./postgres"
 
@@ -23,10 +22,10 @@ export default async pg => {
 }
 
 const makeConnection = source => {
-  const { connect, execute, escape = R.identity } = drivers[source.database]
-  const cn = connect && connect(source.connection)
+  const { createState, execute } = drivers[source.type]
+  const state = createState && createState(source.config)
 
   return {
-    execute: renderQuery => execute(renderQuery(escape), cn),
+    execute: (config, args) => execute(config, args, state),
   }
 }

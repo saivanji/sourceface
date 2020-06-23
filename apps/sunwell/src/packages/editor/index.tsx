@@ -3,9 +3,9 @@
 import React from "react"
 /* import { Button } from "packages/kit/index" */
 import styles from "./index.scss"
-import { Text } from "packages/modules"
+import { Text, Table } from "./modules"
 
-// TODO: start defining editor interface with simple text module, which can display free form string or data from the query
+// TODO: read about suspence, data fetching, recoil
 
 /* <Breadcrumbs */
 /*   path={[ */
@@ -22,7 +22,7 @@ import { Text } from "packages/modules"
 export default () => {
   return (
     <div className={styles.root}>
-      <Text />
+      <Table />
     </div>
   )
 }

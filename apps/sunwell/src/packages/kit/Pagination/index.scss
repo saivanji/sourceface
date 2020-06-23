@@ -14,7 +14,7 @@
   user-select: none;
   &:first-child,
   &:last-child {
-    .link {
+    .link:not(.disabled) {
       color: $color-gray-700;
     }
   }
@@ -45,7 +45,7 @@
   }
   &.disabled {
     cursor: not-allowed;
-    color: $color-gray-600;
+    color: $color-gray-500;
   }
   &:hover:not(.selected, .disabled) {
     background-color: $color-gray-100;

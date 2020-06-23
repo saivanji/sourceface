@@ -1,22 +1,24 @@
-import React, { useEffect, useState } from "react"
-import { useMutation } from "urql"
+import React, { useState } from "react"
+import { useQuery } from "urql"
 import moment from "moment"
 import { Table, Pagination } from "packages/kit"
 import styles from "./index.scss"
 
 export default () => {
-  const [result, send] = useMutation(`
-    mutation ($args: JSONObject) {
-      rows: executeQuery(queryId: 35, args: $args)
-      count: executeQuery(queryId: 36)
-    }
- `)
   const [page, setPage] = useState(0)
   const itemsPerPage = 10
 
-  useEffect(() => {
-    send({ args: { limit: itemsPerPage, offset: itemsPerPage * page } })
-  }, [page])
+  const [result] = useQuery({
+    query: `
+      mutation ($args: JSONObject) {
+        rows: executeQuery(queryId: "listOrders", args: $args)
+        count: executeQuery(queryId: "countOrders")
+      }
+   `,
+    variables: {
+      args: { limit: itemsPerPage, offset: itemsPerPage * page },
+    },
+  })
 
   if (!result.data) {
     return "Loading..."
@@ -63,11 +65,11 @@ export default () => {
               <div className={styles.paginationInfo}>
                 Showing <span>{itemsPerPage * page + 1}</span> to{" "}
                 <span>{itemsPerPage * (page + 1)}</span> of{" "}
-                <span>{+count[0].count}</span> results
+                <span>{count.count}</span> results
               </div>
               <Pagination
                 className={styles.pagination}
-                pageCount={Math.ceil(+count[0].count / itemsPerPage)}
+                pageCount={Math.ceil(count.count / itemsPerPage)}
                 selectedPage={page}
                 pageSurroundings={1}
                 onPageClick={setPage}

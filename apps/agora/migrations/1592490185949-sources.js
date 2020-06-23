@@ -1,35 +1,21 @@
-// TODO: rename "database" to "type"
-// TODO: rename "connection" to "settings" JSON type in future? Settings will depend on type.
-// TODO: remove "value" in favor of "settings"
-// have settings on both queries and sources?
 export const up = () =>
   global.pg.tx(async t => {
     await t.none(`
       CREATE TABLE sources(
-        id serial PRIMARY KEY,
+        id text UNIQUE NOT NULL,
         created_at timestamp NOT NULL DEFAULT NOW(),
-        database text NOT NULL CHECK (
-          database = 'postgres'
+        type text NOT NULL CHECK (
+          type = 'postgres'
         ),
-        name text NOT NULL CHECK (
-          name <> ''
-        ),
-        connection text NOT NULL CHECK (
-          connection <> ''
-        )
+        config json NOT NULL
       )
     `)
     await t.none(`
       CREATE TABLE queries(
-        id serial PRIMARY KEY,
+        id text UNIQUE NOT NULL,
         created_at timestamp NOT NULL DEFAULT NOW(),
-        source_id integer NOT NULL REFERENCES sources(id) ON DELETE CASCADE,
-        name text NOT NULL CHECK (
-          name <> ''
-        ),
-        value text NOT NULL CHECK (
-          value <> ''
-        )
+        source_id text NOT NULL REFERENCES sources(id) ON DELETE CASCADE,
+        config json NOT NULL
       )
     `)
   })

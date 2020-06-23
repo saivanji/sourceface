@@ -1,25 +1,37 @@
-# enum Database {
-#   POSTGRES
+# interface DataSource {
+#   id: String!
+#   createdAt: DateTime!
 # }
 
-# type Source {
-#   id: Int!
+# interface DataQuery {
+#   id: String
 #   createdAt: DateTime!
-#   database: Database!
-#   name: String!
-#   connection: String!
 # }
 
-# type SourceQuery {
-#   id: Int!
+# type PostgresSource implements DataSource {
+#   id: String!
 #   createdAt: DateTime!
-#   source: Source!
-#   name: String!
-#   value: String!
+#   # type: 'postgres'
+#   config: PostgresSourceConfig
+# }
+
+# type PostgresSourceConfig {
+#   connection: String
+# }
+
+# type PostgresQuery implements DataQuery {
+#   id: String
+#   createdAt: DateTime!
+#   source: PostgresSource
+#   config: PostgresSourceConfig
+# }
+
+# type PostgresQueryConfig {
+#   value: String
 # }
 
 extend type Mutation {
-  executeQuery(queryId: Int!, args: JSONObject): JSON
+  executeQuery(queryId: String!, args: JSONObject): JSON
 }
 
 extend type Query {

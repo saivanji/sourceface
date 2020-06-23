@@ -1,10 +1,23 @@
 // use raw pg driver instead of pg promise?
+import * as R from "ramda"
 import pgPromise from "pg-promise"
+import { renderTemplate } from "utils/index"
+
+export const createState = config => ({ cn: pgp(config.connection) })
+
+export const execute = (
+  config = R.mergeRight(defaultConfig, config),
+  args,
+  state
+) => state.cn[results[config.result]](renderTemplate(config.value, args))
+
+const defaultConfig = {
+  result: "many",
+}
 
 const pgp = pgPromise()
 
-export const escape = value => value
-
-export const connect = connection => pgp(connection)
-
-export const execute = (query, cn) => cn.manyOrNone(query)
+const results = {
+  single: "oneOrNone",
+  many: "manyOrNone",
+}
