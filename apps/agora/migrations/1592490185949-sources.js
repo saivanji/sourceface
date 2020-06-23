@@ -1,12 +1,13 @@
 export const up = () =>
   global.pg.tx(async t => {
     await t.none(`
+      CREATE TYPE source AS ENUM ('postgres')
+    `)
+    await t.none(`
       CREATE TABLE sources(
         id text UNIQUE NOT NULL,
         created_at timestamp NOT NULL DEFAULT NOW(),
-        type text NOT NULL CHECK (
-          type = 'postgres'
-        ),
+        type source NOT NULL,
         config json NOT NULL
       )
     `)
@@ -27,5 +28,8 @@ export const down = () =>
     `)
     await t.none(`
       DROP TABLE sources
+    `)
+    await t.none(`
+      DROP TYPE source
     `)
   })

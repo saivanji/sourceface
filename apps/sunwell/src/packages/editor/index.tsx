@@ -22,7 +22,7 @@ import { Text, Table } from "./modules"
 export default () => {
   return (
     <div className={styles.root}>
-      <Table />
+      <Text />
     </div>
   )
 }
