@@ -1,7 +1,7 @@
 // move to 2 separate packages, "templating" and "eval"?
 
 export const render = (template, scope) =>
-  template.replace(/\{\{\s*(.*?)\s*\}\}/g, (full, match) => exec(match, scope))
+  template.replace(regex, (full, match) => exec(match, scope))
 
 export const exec = (input, scope) => {
   const vars = Object.keys(scope)
@@ -14,7 +14,17 @@ export const exec = (input, scope) => {
   return eval(`${vars};${expr}`)
 }
 
-export const stringify = val =>
+export const parseTemplate = template => {
+  let result = []
+
+  template.replace(regex, (full, match) => result.push(match))
+
+  return result
+}
+
+const regex = /\{\{\s*(.*?)\s*\}\}/g
+
+const stringify = val =>
   typeof val === "function"
     ? val.toString()
     : typeof val === "object" && !(val instanceof Array)
