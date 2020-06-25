@@ -5,7 +5,7 @@ export const up = () =>
     `)
     await t.none(`
       CREATE TABLE modules(
-        id text UNIQUE NOT NULL,
+        id serial NOT NULL,
         created_at timestamp NOT NULL DEFAULT NOW(),
         type module NOT NULL,
         config json NOT NULL

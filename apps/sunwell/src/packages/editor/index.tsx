@@ -1,6 +1,7 @@
 // order creation will be in a modal
 
 import React from "react"
+import { useQuery } from "urql"
 /* import { Button } from "packages/kit/index" */
 import styles from "./index.scss"
 import { Text, Table } from "./modules"
@@ -20,9 +21,36 @@ import { Text, Table } from "./modules"
 /* </div> */
 
 export default () => {
+  const [result] = useQuery({
+    query: `
+      query {
+        modules {
+          id
+          type
+          config
+        }
+      }
+   `,
+  })
+
   return (
     <div className={styles.root}>
-      <Text />
+      {!result.data ? (
+        "Page is loading..."
+      ) : (
+        <>
+          {result.data.modules.map(module =>
+            React.createElement(modules[module.type], {
+              key: module.id,
+              config: module.config,
+            })
+          )}
+        </>
+      )}
     </div>
   )
+}
+
+const modules = {
+  text: Text,
 }

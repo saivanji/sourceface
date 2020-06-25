@@ -1,0 +1,14 @@
+enum ModuleType {
+  text
+}
+
+type Module {
+  id: Int!
+  createdAt: DateTime!
+  type: ModuleType
+  config: JSONObject!
+}
+
+extend type Query {
+  modules: [Module!]!
+}

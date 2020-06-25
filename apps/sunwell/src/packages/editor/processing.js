@@ -14,8 +14,17 @@ export const exec = (input, scope) => {
   return eval(`${vars};${expr}`)
 }
 
-const stringify = val =>
-  typeof val === "function" ? val.toString() : JSON.stringify(val)
+export const stringify = val =>
+  typeof val === "function"
+    ? val.toString()
+    : typeof val === "object" && !(val instanceof Array)
+    ? "{" +
+      Object.keys(val).reduce(
+        (acc, key) => acc + `${[JSON.stringify(key)]}: ${stringify(val[key])}`,
+        ""
+      ) +
+      "}"
+    : JSON.stringify(val)
 
 // console.log(exec("a + b", { a: 1, b: 2 }));
 
