@@ -1,5 +1,7 @@
 import * as esprima from "esprima"
 
+// TODO: async. queries will be executed asynchronously(without urql hook) and pushed into cache afterwards. Have no data pre-population
+// TODO: provide variables scope differently?
 export const exec = (input, scope) => {
   const vars =
     scope &&
@@ -106,95 +108,95 @@ export const parseExpression = input => {
 }
 
 // resolve issue with deep member expressions(more than 2)?
-export const getVariables = (expression, arr = []) => {
-  if (
-    expression.type === "Identifier" ||
-    (expression.type === "MemberExpression" &&
-      expression.object.type !== "CallExpression")
-  )
-    return [...arr, expression]
+// export const getVariables = (expression, arr = []) => {
+//   if (
+//     expression.type === "Identifier" ||
+//     (expression.type === "MemberExpression" &&
+//       expression.object.type !== "CallExpression")
+//   )
+//     return [...arr, expression]
 
-  if (expression.type === "Program")
-    return getVariables(expression.body[0].expression, arr)
+//   if (expression.type === "Program")
+//     return getVariables(expression.body[0].expression, arr)
 
-  if (
-    expression.type === "MemberExpression" &&
-    expression.object.type === "CallExpression"
-  ) {
-    return getVariables(expression.object, arr)
-  }
+//   if (
+//     expression.type === "MemberExpression" &&
+//     expression.object.type === "CallExpression"
+//   ) {
+//     return getVariables(expression.object, arr)
+//   }
 
-  if (expression.type === "CallExpression") {
-    return [
-      ...getVariables(expression.callee, arr),
-      ...expression.arguments.reduce((acc, arg) => getVariables(arg, acc), []),
-    ]
-  }
+//   if (expression.type === "CallExpression") {
+//     return [
+//       ...getVariables(expression.callee, arr),
+//       ...expression.arguments.reduce((acc, arg) => getVariables(arg, acc), []),
+//     ]
+//   }
 
-  if (expression.type === "ObjectExpression") {
-    return [
-      ...arr,
-      ...expression.properties.reduce(
-        (acc, prop) => getVariables(prop.value, acc),
-        []
-      ),
-    ]
-  }
+//   if (expression.type === "ObjectExpression") {
+//     return [
+//       ...arr,
+//       ...expression.properties.reduce(
+//         (acc, prop) => getVariables(prop.value, acc),
+//         []
+//       ),
+//     ]
+//   }
 
-  if (expression.type === "ArrayExpression") {
-    return [
-      ...arr,
-      ...expression.elements.reduce(
-        (acc, elem) =>
-          getVariables(
-            elem.type === "SpreadElement" ? elem.argument : elem,
-            acc
-          ),
-        []
-      ),
-    ]
-  }
+//   if (expression.type === "ArrayExpression") {
+//     return [
+//       ...arr,
+//       ...expression.elements.reduce(
+//         (acc, elem) =>
+//           getVariables(
+//             elem.type === "SpreadElement" ? elem.argument : elem,
+//             acc
+//           ),
+//         []
+//       ),
+//     ]
+//   }
 
-  if (expression.type === "UnaryExpression") {
-    return getVariables(expression.argument, arr)
-  }
+//   if (expression.type === "UnaryExpression") {
+//     return getVariables(expression.argument, arr)
+//   }
 
-  if (expression.type === "TemplateLiteral") {
-    return [
-      ...arr,
-      ...expression.expressions.reduce(
-        (acc, expr) => getVariables(expr, acc),
-        []
-      ),
-    ]
-  }
+//   if (expression.type === "TemplateLiteral") {
+//     return [
+//       ...arr,
+//       ...expression.expressions.reduce(
+//         (acc, expr) => getVariables(expr, acc),
+//         []
+//       ),
+//     ]
+//   }
 
-  if (
-    expression.type === "LogicalExpression" ||
-    expression.type === "BinaryExpression"
-  ) {
-    return [
-      ...arr,
-      ...getVariables(expression.left),
-      ...getVariables(expression.right),
-    ]
-  }
+//   if (
+//     expression.type === "LogicalExpression" ||
+//     expression.type === "BinaryExpression"
+//   ) {
+//     return [
+//       ...arr,
+//       ...getVariables(expression.left),
+//       ...getVariables(expression.right),
+//     ]
+//   }
 
-  if (expression.type === "ConditionalExpression") {
-    return [
-      ...arr,
-      ...getVariables(expression.test),
-      ...getVariables(expression.consequent),
-      ...getVariables(expression.alternate),
-    ]
-  }
+//   if (expression.type === "ConditionalExpression") {
+//     return [
+//       ...arr,
+//       ...getVariables(expression.test),
+//       ...getVariables(expression.consequent),
+//       ...getVariables(expression.alternate),
+//     ]
+//   }
 
-  if (expression.type === "ArrowFunctionExpression") {
-    return getVariables(expression.body, arr)
-  }
+//   if (expression.type === "ArrowFunctionExpression") {
+//     return getVariables(expression.body, arr)
+//   }
 
-  return arr
-}
+//   return arr
+// }
 
 const stringify = val =>
   typeof val === "function"

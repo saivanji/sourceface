@@ -17,71 +17,72 @@ export default ({
 }
 
 const Expression = ({ children, input, pause }) => {
-  const variables = getVariables(parseExpression(input))
-  console.log(variables)
+  return "WIP"
+
+  /* const variables = getVariables(parseExpression(input)) */
   // unique queries without duplicates(name + args)
-  const queries = [["countOrders", { a: 1, b: 2 }], ["countOrders"]]
+  /* const queries = [["countOrders", { a: 1, b: 2 }], ["countOrders"]] */
 
-  const [response, send] = useQuery({
-    query: graphqlRequest(queries),
-    pause,
-  })
+  /* const [response, send] = useQuery({ */
+  /*   query: graphqlRequest(queries), */
+  /*   pause, */
+  /* }) */
 
-  if (!response.data && response.fetching) return "Loading..."
+  /* if (!response.data && response.fetching) return "Loading..." */
 
-  if (response.error) return "Error"
+  /* if (response.error) return "Error" */
 
-  const value =
-    response.data &&
-    exec(input, {
-      queries: passQueries(response.data, queries),
-    })
+  /* const value = */
+  /*   response.data && */
+  /*   exec(input, { */
+  /*     queries: passQueries(response.data, queries), */
+  /*   }) */
 
-  return children
-    ? children({ value, send, fetching: response.fetching })
-    : value || false
+  /* return children */
+  /*   ? children({ value, send, fetching: response.fetching }) */
+  /*   : value || false */
 }
 
-const passQueries = (res, queries) => {
-  const map = queries.reduce(
-    (acc, [name, args], i) => ({
-      ...acc,
-      [name]: {
-        ...acc[name],
-        [JSON.stringify(args)]: JSON.stringify(res[`i${i}`]),
-      },
-    }),
-    {}
-  )
+/* const passQueries = (res, queries) => { */
+/*   const map = queries.reduce( */
+/*     (acc, [name, args], i) => ({ */
+/*       ...acc, */
+/*       [name]: { */
+/*         ...acc[name], */
+/*         [JSON.stringify(args)]: JSON.stringify(res[`i${i}`]), */
+/*       }, */
+/*     }), */
+/*     {} */
+/*   ) */
 
-  return Object.keys(map).reduce((acc, name) => {
-    const all = `(${JSON.stringify(map[name])})`
+/*   return Object.keys(map).reduce((acc, name) => { */
+/*     const all = `(${JSON.stringify(map[name])})` */
 
-    return {
-      ...acc,
-      [name]: new Function(
-        "args",
-        `return JSON.parse(${all}[JSON.stringify(args)])`
-      ),
-    }
-  }, {})
-}
+/*     return { */
+/*       ...acc, */
+/*       [name]: new Function( */
+/*         "args", */
+/*         `return JSON.parse(${all}[JSON.stringify(args)])` */
+/*       ), */
+/*     } */
+/*   }, {}) */
+/* } */
 
-const graphqlRequest = queries => {
-  const body = queries.reduce(
-    (acc, [name, args], i) =>
-      acc +
-      `i${i}: executeQuery(queryId: "${name}"${
-        args
-          ? `, args: ${JSON.stringify(args).replace(/"([^"]+)":/g, "$1:")}`
-          : ""
-      })`,
-    ""
-  )
+/* const graphqlRequest = queries => { */
+/*   const body = queries.reduce( */
+/*     (acc, [name, args], i) => */
+/*       acc + */
+/*       `i${i}: executeQuery(queryId: "${name}"${ */
+/*         args */
+/*           ? `, args: ${JSON.stringify(args).replace(/"([^"]+)":/g, "$1:")}` */
+/*           : "" */
+/*       })`, */
+/*     "" */
+/*   ) */
 
-  return `
-    mutation {
-      ${body}
-    }
-  `
-}
+/*   return ` */
+/*     mutation { */
+/*       ${body} */
+/*     } */
+/*   ` */
+/* } */
