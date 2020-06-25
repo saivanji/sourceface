@@ -22,11 +22,11 @@ export default db =>
       [
         id,
         {
-          value: "SELECT * FROM orders LIMIT {{limit}} OFFSET {{offset}}",
+          value: "`SELECT * FROM orders LIMIT ${limit} OFFSET ${offset}`",
           result: "many",
         },
         {
-          value: "SELECT count(id)::integer FROM orders",
+          value: "`SELECT count(id)::integer FROM orders`",
           result: "single",
         },
       ]
