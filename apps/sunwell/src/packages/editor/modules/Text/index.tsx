@@ -18,7 +18,10 @@ export default ({
 // TODO: parse input with esprima
 const Template = ({ children, value }) => {
   // unique queries without duplicates(name + args)
-  const queries = [["countOrders", { a: 1, b: 2 }]]
+  const queries = [
+    ["countOrders", { a: 1, b: 2 }],
+    ["countOrders", { a: 2, b: 2 }],
+  ]
 
   const query = graphqlRequest(queries)
 
@@ -30,9 +33,37 @@ const Template = ({ children, value }) => {
 
   if (result.error) return "Error"
 
+  console.log(passQueries2(result.data, queries))
+
   return render(value, {
     queries: passQueries(result.data, queries),
   })
+}
+
+const passQueries2 = (res, queries) => {
+  const withArgs = queries.reduce(
+    (acc, [name, args], i) => ({
+      ...acc,
+      [name]: {
+        ...acc[name],
+        [JSON.stringify(args)]: JSON.stringify(res[`i${i}`]),
+      },
+    }),
+    {}
+  )
+
+  return Object.keys(withArgs).reduce((acc, name) => {
+    const argsList = withArgs[name]
+
+    const all = JSON.stringify(argsList)
+
+    console.log(`${all}[JSON.stringify(args)]`)
+
+    return {
+      ...acc,
+      [name]: new Function("args", `${all}[JSON.stringify(args)]`),
+    }
+  }, {})
 }
 
 // TODO: handle same queries with different args
