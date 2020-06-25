@@ -2,10 +2,6 @@ import React from "react"
 import { useQuery } from "urql"
 import { exec, parseExpression, getVariables } from "../../runtime"
 
-// what if all evaluation will happen on server side?
-// instead of executeQuery, have "renderTemplate", and "evaluate" queries
-// will not work, since we need to execute some code on a client side, such as redirect and state related functions
-
 export default ({
   config,
   /* t: Template, e: Expression */
