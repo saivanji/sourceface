@@ -19,7 +19,7 @@ export default ({ children, input, scope, pause }) => {
       )
     )
     setLoading(false)
-  }, [input])
+  }, [input, scope])
 
   useEffect(() => {
     if (!pause) exec()

@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useMemo } from "react"
 import moment from "moment"
 import { Table, Pagination } from "packages/kit"
 import styles from "./index.scss"
@@ -6,12 +6,11 @@ import styles from "./index.scss"
 export default ({ config, e: Expression }) => {
   const [page, setPage] = useState(0)
   const itemsPerPage = 10
+  const scope = useMemo(() => ({ page, itemsPerPage }), [page, itemsPerPage])
+  const input = useMemo(() => [config.items, config.count], [config])
 
   return (
-    <Expression
-      scope={{ page, itemsPerPage }}
-      input={[config.items, config.count]}
-    >
+    <Expression scope={scope} input={input}>
       {({ value: [rows, count] }) => (
         <Table>
           <Table.Thead>
