@@ -1,5 +1,9 @@
 import * as queryRepo from "repos/query"
 
+const queries = async (parent, args, { pg }) => {
+  return await queryRepo.all(pg)
+}
+
 const executeQuery = async (parent, { queryId, args }, { pg, connections }) => {
   const query = await queryRepo.byId(queryId, pg)
 
@@ -7,6 +11,9 @@ const executeQuery = async (parent, { queryId, args }, { pg, connections }) => {
 }
 
 export default {
+  Query: {
+    queries,
+  },
   Mutation: {
     executeQuery,
   },

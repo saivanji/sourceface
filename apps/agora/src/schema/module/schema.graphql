@@ -1,5 +1,6 @@
 enum ModuleType {
   text
+  table
 }
 
 type Module {

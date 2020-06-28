@@ -1,10 +1,11 @@
 // order creation will be in a modal
 
-import React from "react"
+import React, { createContext } from "react"
 import { useQuery } from "urql"
 /* import { Button } from "packages/kit/index" */
 import styles from "./index.scss"
 import { Text, Table } from "./modules"
+import { Expression } from "./components"
 
 // TODO: read about suspence, data fetching, recoil
 
@@ -20,6 +21,8 @@ import { Text, Table } from "./modules"
 /*   <Button className={styles.newOrder}>New order</Button> */
 /* </div> */
 
+export const context = createContext({})
+
 export default () => {
   const [result] = useQuery({
     query: `
@@ -28,6 +31,9 @@ export default () => {
           id
           type
           config
+        }
+        queries {
+          id
         }
       }
    `,
@@ -38,14 +44,15 @@ export default () => {
       {!result.data ? (
         "Page is loading..."
       ) : (
-        <>
+        <context.Provider value={result.data}>
           {result.data.modules.map(module =>
             React.createElement(modules[module.type], {
               key: module.id,
               config: module.config,
+              e: Expression,
             })
           )}
-        </>
+        </context.Provider>
       )}
     </div>
   )
@@ -53,4 +60,5 @@ export default () => {
 
 const modules = {
   text: Text,
+  table: Table,
 }
