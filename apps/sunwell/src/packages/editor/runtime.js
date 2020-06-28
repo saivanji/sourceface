@@ -1,4 +1,4 @@
-export const exec = (input, scope) => {
+export const evaluate = (input, scope) => {
   const scopeKeys = Object.keys(scope || {})
 
   return new Function(

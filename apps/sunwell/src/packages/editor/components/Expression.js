@@ -9,10 +9,10 @@ export default ({ children, input, scope, pause }) => {
   const [loading, setLoading] = useState(false)
   const { commands } = useContext(context)
   const client = useClient()
-  const exec = useCallback(async () => {
+  const evaluate = useCallback(async () => {
     setLoading(true)
     setValue(
-      await execMany(
+      await evaluateMany(
         input,
         provideScope(
           commands.map(q => q.id),
@@ -25,20 +25,20 @@ export default ({ children, input, scope, pause }) => {
   }, [input, scope])
 
   useEffect(() => {
-    if (!pause) exec()
-  }, [pause, exec])
+    if (!pause) evaluate()
+  }, [pause, evaluate])
 
   if (!value) {
     return "Loading..."
   }
 
-  return !children ? value || null : children({ value, exec, loading })
+  return !children ? value || null : children({ value, evaluate, loading })
 }
 
-const execMany = (input, scope) =>
+const evaluateMany = (input, scope) =>
   input instanceof Array
-    ? Promise.all(input.map(value => runtime.exec(value, scope)))
-    : runtime.exec(input, scope)
+    ? Promise.all(input.map(value => runtime.evaluate(value, scope)))
+    : runtime.evaluate(input, scope)
 
 const provideScope = (commands, scope, client) => ({
   ...scope,
