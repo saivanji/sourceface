@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useCallback, useContext } from "react"
-import axios from "axios"
+import { useClient } from "urql"
 import * as runtime from "../runtime"
 import { context } from "../"
 
+// TODO: abstract execution from loading component?
 export default ({ children, input, scope, pause }) => {
   const [value, setValue] = useState()
   const [loading, setLoading] = useState(false)
   const { queries } = useContext(context)
+  const client = useClient()
   const exec = useCallback(async () => {
     setLoading(true)
     setValue(
@@ -14,7 +16,8 @@ export default ({ children, input, scope, pause }) => {
         input,
         provideScope(
           queries.map(q => q.id),
-          scope
+          scope,
+          client
         )
       )
     )
@@ -37,43 +40,28 @@ const execMany = (input, scope) =>
     ? Promise.all(input.map(value => runtime.exec(value, scope)))
     : runtime.exec(input, scope)
 
-const provideScope = (queries, scope) => ({
+const provideScope = (queries, scope, client) => ({
   ...scope,
   queries: queries.reduce(
     (acc, name) => ({
       ...acc,
-      [name]: query(name),
+      [name]: query(name, client),
     }),
     {}
   ),
 })
 
-const query = name => async args => {
-  const { res } = await graphql(
-    `mutation ($args: JSONObject) {
-      res: executeQuery(queryId: "${name}", args: $args)
-    }`,
-    { args }
-  )
+const query = (name, client) => async args => {
+  const {
+    data: { res },
+  } = await client
+    .query(
+      `mutation ($args: JSONObject) {
+        res: executeQuery(queryId: "${name}", args: $args)
+      }`,
+      { args }
+    )
+    .toPromise()
 
   return res
-}
-
-// TODO: send request with urql client so it may be cached
-const graphql = async (query, variables) => {
-  const res = await axios.post(
-    "http://localhost:5001/graphql",
-    {
-      query,
-      variables,
-    },
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    }
-  )
-
-  return res.data.data
 }
