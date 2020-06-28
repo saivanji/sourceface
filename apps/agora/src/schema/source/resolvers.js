@@ -1,20 +1,24 @@
-import * as queryRepo from "repos/query"
+import * as commandRepo from "repos/command"
 
-const queries = async (parent, args, { pg }) => {
-  return await queryRepo.all(pg)
+const commands = async (parent, args, { pg }) => {
+  return await commandRepo.all(pg)
 }
 
-const executeQuery = async (parent, { queryId, args }, { pg, connections }) => {
-  const query = await queryRepo.byId(queryId, pg)
+const executeCommand = async (
+  parent,
+  { commandId, args },
+  { pg, connections }
+) => {
+  const command = await commandRepo.byId(commandId, pg)
 
-  return await connections[query.sourceId].execute(query.config, args)
+  return await connections[command.sourceId].execute(command.config, args)
 }
 
 export default {
   Query: {
-    queries,
+    commands,
   },
   Mutation: {
-    executeQuery,
+    executeCommand,
   },
 }

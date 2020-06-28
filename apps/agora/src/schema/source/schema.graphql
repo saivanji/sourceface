@@ -3,13 +3,13 @@
 # }
 
 # union SourceConfig = PostgresSourceConfig
-union QueryConfig = PostgresQueryConfig
+union CommandConfig = PostgresCommandConfig
 
 # type PostgresSourceConfig {
 #   connection: String!
 # }
 
-type PostgresQueryConfig {
+type PostgresCommandConfig {
   value: String
 }
 
@@ -20,17 +20,17 @@ type PostgresQueryConfig {
 #   config: SourceConfig!
 # }
 
-type SourceQuery {
+type Command {
   id: String!
   createdAt: DateTime!
   # source: Source!
-  config: QueryConfig!
+  config: CommandConfig!
 }
 
 extend type Query {
-  queries: [SourceQuery!]!
+  commands: [Command!]!
 }
 
 extend type Mutation {
-  executeQuery(queryId: String!, args: JSONObject): JSON
+  executeCommand(commandId: String!, args: JSONObject): JSON
 }

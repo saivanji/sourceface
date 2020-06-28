@@ -7,7 +7,7 @@ import { context } from "../"
 export default ({ children, input, scope, pause }) => {
   const [value, setValue] = useState()
   const [loading, setLoading] = useState(false)
-  const { queries } = useContext(context)
+  const { commands } = useContext(context)
   const client = useClient()
   const exec = useCallback(async () => {
     setLoading(true)
@@ -15,7 +15,7 @@ export default ({ children, input, scope, pause }) => {
       await execMany(
         input,
         provideScope(
-          queries.map(q => q.id),
+          commands.map(q => q.id),
           scope,
           client
         )
@@ -40,24 +40,24 @@ const execMany = (input, scope) =>
     ? Promise.all(input.map(value => runtime.exec(value, scope)))
     : runtime.exec(input, scope)
 
-const provideScope = (queries, scope, client) => ({
+const provideScope = (commands, scope, client) => ({
   ...scope,
-  queries: queries.reduce(
+  commands: commands.reduce(
     (acc, name) => ({
       ...acc,
-      [name]: query(name, client),
+      [name]: command(name, client),
     }),
     {}
   ),
 })
 
-const query = (name, client) => async args => {
+const command = (name, client) => async args => {
   const {
     data: { res },
   } = await client
     .query(
       `mutation ($args: JSONObject) {
-        res: executeQuery(queryId: "${name}", args: $args)
+        res: executeCommand(commandId: "${name}", args: $args)
       }`,
       { args }
     )

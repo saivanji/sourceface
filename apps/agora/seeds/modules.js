@@ -19,14 +19,14 @@ export default (db, pgp) =>
             type: "text",
             config: {
               value:
-                "queries.countOrders().then(data => `Orders count is ${data.count}`)",
+                "commands.countOrders().then(data => `Orders count is ${data.count}`)",
             },
           },
           {
             type: "table",
             config: {
-              items: "queries.listOrders({limit, offset})",
-              count: "queries.countOrders().then(res => res.count)",
+              items: "commands.listOrders({limit, offset})",
+              count: "commands.countOrders().then(res => res.count)",
             },
           },
         ],

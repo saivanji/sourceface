@@ -32,7 +32,7 @@ export default () => {
           type
           config
         }
-        queries {
+        commands {
           id
         }
       }

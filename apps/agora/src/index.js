@@ -74,4 +74,4 @@ export default app
 // TODO: all configuration is writen in es5 JS. src, migrations, tests - in esnext
 // TODO: remove invitations. Invitation is a user in a corresponding state?
 // TODO: have groups instead of roles.
-// TODO: Remove permissions. Permission is ability to execute specific query attached to group.
+// TODO: Remove permissions. Permission is ability to execute specific command attached to group.

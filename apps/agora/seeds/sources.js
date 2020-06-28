@@ -16,7 +16,7 @@ export default db =>
     )
     await t.none(
       `
-      INSERT INTO queries (id, source_id, config)
+      INSERT INTO commands (id, source_id, config)
       VALUES ('listOrders', $1, $2), ('countOrders', $1, $3)
       `,
       [
