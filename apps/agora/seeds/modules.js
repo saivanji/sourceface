@@ -25,8 +25,7 @@ export default (db, pgp) =>
           {
             type: "table",
             config: {
-              items:
-                "queries.listOrders({limit: itemsPerPage, offset: itemsPerPage * page})",
+              items: "queries.listOrders({limit, offset})",
               count: "queries.countOrders().then(res => res.count)",
             },
           },

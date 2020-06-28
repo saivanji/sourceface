@@ -59,6 +59,7 @@ const query = name => async args => {
   return res
 }
 
+// TODO: send request with urql client so it may be cached
 const graphql = async (query, variables) => {
   const res = await axios.post(
     "http://localhost:5001/graphql",

@@ -5,8 +5,9 @@ import styles from "./index.scss"
 
 export default ({ config, e: Expression }) => {
   const [page, setPage] = useState(0)
-  const itemsPerPage = 10
-  const scope = useMemo(() => ({ page, itemsPerPage }), [page, itemsPerPage])
+  const limit = 10
+  const offset = limit * page
+  const scope = useMemo(() => ({ page, limit, offset }), [page, limit, offset])
   const input = useMemo(() => [config.items, config.count], [config])
 
   return (
@@ -48,13 +49,13 @@ export default ({ config, e: Expression }) => {
               <Table.Td colSpan={8}>
                 <div className={styles.footer}>
                   <div className={styles.paginationInfo}>
-                    Showing <span>{itemsPerPage * page + 1}</span> to{" "}
-                    <span>{itemsPerPage * (page + 1)}</span> of{" "}
-                    <span>{count}</span> results
+                    Showing <span>{offset + 1}</span> to{" "}
+                    <span>{limit * (page + 1)}</span> of <span>{count}</span>{" "}
+                    results
                   </div>
                   <Pagination
                     className={styles.pagination}
-                    pageCount={Math.ceil(count / itemsPerPage)}
+                    pageCount={Math.ceil(count / limit)}
                     selectedPage={page}
                     pageSurroundings={1}
                     onPageClick={setPage}
