@@ -1,6 +1,0 @@
-{
-  "extends": "@sourceface/config/tsconfig.json",
-  "compilerOptions": {
-    "baseUrl": "./src"
-  }
-}

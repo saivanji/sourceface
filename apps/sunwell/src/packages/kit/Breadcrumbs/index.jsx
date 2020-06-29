@@ -1,7 +1,7 @@
 import React from "react"
 import styles from "./index.scss"
 
-export default function Breadcrumbs({ path }: Props) {
+export default function Breadcrumbs({ path }) {
   return (
     <div className={styles.root}>
       {path.map((item, i) => (
@@ -14,13 +14,4 @@ export default function Breadcrumbs({ path }: Props) {
       ))}
     </div>
   )
-}
-
-interface Props {
-  path: Link[]
-}
-
-interface Link {
-  title: string
-  link: string
 }

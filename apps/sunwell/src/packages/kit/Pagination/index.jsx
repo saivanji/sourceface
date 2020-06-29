@@ -4,16 +4,17 @@ import ChevL from "assets/chev-l.svg"
 import ChevR from "assets/chev-r.svg"
 import styles from "./index.scss"
 
-export default function Pagination({
-  className,
-  pageCount,
-  selectedPage,
-  onPageClick,
-  pageMargin = 1,
-  pageSurroundings = 2,
-  ...props
-}: // makePage,
-Props) {
+export default function Pagination(
+  {
+    className,
+    pageCount,
+    selectedPage,
+    onPageClick,
+    pageMargin = 1,
+    pageSurroundings = 2,
+    ...props
+  } // makePage,
+) {
   const isPrevDisabled = selectedPage === 0
   const isNextDisabled = selectedPage === pageCount - 1
 
@@ -72,14 +73,7 @@ Props) {
   )
 }
 
-function Item({
-  children,
-  isSelected,
-  isDisabled,
-  isDots,
-  onClick,
-  ...props
-}: ItemProps) {
+function Item({ children, isSelected, isDisabled, isDots, onClick, ...props }) {
   return (
     <li {...props} className={styles.item}>
       <a
@@ -108,13 +102,7 @@ function Item({
   )
 }
 
-const shouldRenderPage = (
-  i: number,
-  selected: number,
-  count: number,
-  margin: number,
-  surroundings: number
-) => {
+const shouldRenderPage = (i, selected, count, margin, surroundings) => {
   return (
     // selected
     i === selected ||
@@ -134,22 +122,5 @@ const shouldRenderPage = (
   )
 }
 
-const pad = (n: number, margin: number, surroundings: number) =>
+const pad = (n, margin, surroundings) =>
   n <= margin + surroundings ? margin + surroundings - n : 0
-
-interface Props {
-  pageCount: number
-  selectedPage: number
-  onPageClick: (page: number) => void
-  className?: string
-  pageMargin?: number
-  pageSurroundings?: number
-}
-
-interface ItemProps {
-  children: React.ReactNode
-  isSelected?: boolean
-  isDisabled?: boolean
-  isDots?: boolean
-  onClick?: () => void
-}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useContext } from "react"
 import { useClient } from "urql"
-import * as runtime from "../runtime"
-import { context } from "../"
+import * as runtime from "packages/runtime"
+import { context } from "./"
 
 // TODO: abstract execution from loading component?
 export default ({ children, input, scope, pause }) => {

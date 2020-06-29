@@ -12,7 +12,7 @@ const { PORT } = process.env
 module.exports = {
   mode: isDev ? "development" : "production",
   devtool: isDev && "cheap-module-source-map",
-  entry: "./src/index.tsx",
+  entry: "./src/index.jsx",
   optimization: {
     minimize: !isDev,
     minimizer: [new TerserJSPlugin(), new OptimizeCSSAssetsPlugin()],
@@ -24,7 +24,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
+        test: /\.(j|t)sx?$/,
         exclude: /(node_modules)/,
         use: {
           loader: "babel-loader",
@@ -56,7 +56,7 @@ module.exports = {
       {
         test: /\.svg$/,
         issuer: {
-          test: /\.tsx$/,
+          test: /\.jsx$/,
         },
         use: {
           loader: "@svgr/webpack",
@@ -68,7 +68,7 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: [".ts", ".tsx", ".js"],
+    extensions: [".jsx", ".js"],
     modules: [path.resolve(__dirname, "src"), "node_modules"],
     mainFields: ["browser", "main"],
   },

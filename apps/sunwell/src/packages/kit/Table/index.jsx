@@ -4,11 +4,7 @@ import styles from "./index.scss"
 
 // TODO: test whether the css is compatible with all way html table can be used
 
-export default function Table({
-  children,
-  className,
-  ...props
-}: React.TableHTMLAttributes<HTMLTableElement>) {
+export default function Table({ children, className, ...props }) {
   return (
     <table {...props} className={cx(styles.root, className)}>
       {children}
@@ -16,11 +12,7 @@ export default function Table({
   )
 }
 
-Table.Thead = function Thead({
-  children,
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLTableSectionElement>) {
+Table.Thead = function Thead({ children, className, ...props }) {
   return (
     <thead {...props} className={cx(styles.thead, className)}>
       {children}
@@ -28,11 +20,7 @@ Table.Thead = function Thead({
   )
 }
 
-Table.Tfoot = function Tfoot({
-  children,
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLTableSectionElement>) {
+Table.Tfoot = function Tfoot({ children, className, ...props }) {
   return (
     <tfoot {...props} className={cx(styles.tfoot, className)}>
       {children}
@@ -40,11 +28,7 @@ Table.Tfoot = function Tfoot({
   )
 }
 
-Table.Tbody = function Thead({
-  children,
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLTableSectionElement>) {
+Table.Tbody = function Thead({ children, className, ...props }) {
   return (
     <tbody {...props} className={cx(styles.tbody, className)}>
       {children}
@@ -52,11 +36,7 @@ Table.Tbody = function Thead({
   )
 }
 
-Table.Th = function Th({
-  children,
-  className,
-  ...props
-}: React.ThHTMLAttributes<HTMLTableHeaderCellElement>) {
+Table.Th = function Th({ children, className, ...props }) {
   return (
     <th {...props} className={cx(styles.th, className)}>
       {children}
@@ -64,11 +44,7 @@ Table.Th = function Th({
   )
 }
 
-Table.Tr = function Tr({
-  children,
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLTableRowElement>) {
+Table.Tr = function Tr({ children, className, ...props }) {
   return (
     <tr {...props} className={cx(styles.tr, className)}>
       {children}
@@ -76,11 +52,7 @@ Table.Tr = function Tr({
   )
 }
 
-Table.Td = function Td({
-  children,
-  className,
-  ...props
-}: React.TdHTMLAttributes<HTMLTableDataCellElement>) {
+Table.Td = function Td({ children, className, ...props }) {
   return (
     <td {...props} className={cx(styles.td, className)}>
       {children}
