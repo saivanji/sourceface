@@ -6,14 +6,14 @@ import "./index.scss"
 import React from "react"
 import ReactDOM from "react-dom"
 import { createClient, Provider } from "urql"
-import Constructor from "packages/constructor"
+import Construction from "packages/construction"
 
 const endpoint = "http://localhost:5001/graphql"
 const client = createClient({ url: endpoint })
 
 ReactDOM.render(
   <Provider value={client}>
-    <Constructor />
+    <Construction />
   </Provider>,
   document.getElementById("root")
 )
