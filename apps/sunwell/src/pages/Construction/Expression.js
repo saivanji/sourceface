@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useContext } from "react"
+import { useState, useEffect, useCallback, useContext } from "react"
 import { useClient } from "urql"
 import * as runtime from "packages/runtime"
 import { context } from "./"

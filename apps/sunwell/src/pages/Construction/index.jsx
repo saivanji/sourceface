@@ -1,23 +1,14 @@
 // order creation will be in a modal
 
-import React, { createContext, useContext } from "react"
+import React, { createContext, useContext, useState, useMemo } from "react"
 import { useQuery } from "urql"
-/* import { Button } from "packages/kit/index" */
 import { Text, Table } from "modules/index"
-import { When, Frame } from "components/index"
+import { Frame, Editor, Module, When } from "components/index"
 import * as state from "state.js"
 import Expression from "./Expression"
-import styles from "./index.scss"
 import * as schema from "./schema"
 
 // TODO: read about suspence, data fetching, recoil
-
-/* <Breadcrumbs */
-/*   path={[ */
-/*     { title: "Administration", link: "#" }, */
-/*     { title: "Users", link: "#" }, */
-/*   ]} */
-/* /> */
 
 /* <div className={styles.panel}> */
 /*   <span className={styles.title}>Orders</span> */
@@ -27,33 +18,73 @@ import * as schema from "./schema"
 export const context = createContext({})
 
 export default () => {
-  const { isEditing, enableEditMode } = useContext(state.context)
   const [result] = useQuery({
     query: schema.root,
   })
+  const { isEditing, enableEditMode, disableEditMode } = useContext(
+    state.context
+  )
 
   return (
-    <When cond={!isEditing} component={Frame}>
-      <div className={styles.root}>
+    <When
+      cond={!isEditing}
+      component={Frame}
+      path={[
+        { title: "Administration", link: "#" },
+        { title: "Users", link: "#" },
+      ]}
+      actions={<button onClick={enableEditMode}>Edit</button>}
+    >
+      <>
         {!result.data ? (
           "Page is loading..."
         ) : (
           <context.Provider value={result.data}>
-            {result.data.modules.map(module =>
-              React.createElement(modules[module.type], {
-                key: module.id,
-                config: module.config,
-                e: Expression,
-              })
-            )}
+            <Body
+              modules={result.data.modules}
+              isEditing={isEditing}
+              onEditorCancel={disableEditMode}
+            />
           </context.Provider>
         )}
-      </div>
+      </>
     </When>
   )
 }
 
-const modules = {
+const Body = ({ modules, isEditing, onEditorCancel }) => {
+  const [selectedModuleId, setSeletedModuleId] = useState()
+  const selectedModule = useMemo(
+    () => modules.find(m => m.id === selectedModuleId),
+    [modules, selectedModuleId]
+  )
+
+  return (
+    <When
+      cond={isEditing}
+      component={Editor}
+      selectedModule={selectedModule}
+      onCancel={onEditorCancel}
+    >
+      {modules.map(module => (
+        <When
+          cond={isEditing}
+          component={Module}
+          key={module.id}
+          isSelected={selectedModuleId === module.id}
+          onClick={() => setSeletedModuleId(module.id)}
+        >
+          {React.createElement(modulesMap[module.type], {
+            config: module.config,
+            e: Expression,
+          })}
+        </When>
+      ))}
+    </When>
+  )
+}
+
+const modulesMap = {
   text: Text,
   table: Table,
 }

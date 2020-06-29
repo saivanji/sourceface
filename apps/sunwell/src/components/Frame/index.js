@@ -1,6 +1,16 @@
-import React, { useState } from "react"
+import React from "react"
+import { Breadcrumbs } from "packages/kit/index"
+import styles from "./index.scss"
 
 // dashboard frame component containing Header component and so on
-export default ({ children }) => {
-  return children
+export default ({ children, path, actions }) => {
+  return (
+    <div className={styles.root}>
+      <div className={styles.pane}>
+        <Breadcrumbs path={path} />
+        {actions && <div className={styles.actions}>{actions}</div>}
+      </div>
+      {children}
+    </div>
+  )
 }

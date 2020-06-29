@@ -1,0 +1,12 @@
+@import "~@sourceface/style/index.scss";
+
+.root {
+  display: inline-flex;
+  border-radius: $rounded-base;
+  &:hover {
+    box-shadow: 0 0 0 2px $color-blue-300;
+  }
+  &.selected {
+    box-shadow: 0 0 0 2px $color-blue-500;
+  }
+}

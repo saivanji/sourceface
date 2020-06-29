@@ -10,6 +10,7 @@ export const Provider = ({ children }) => {
       value={{
         isEditing,
         enableEditMode: () => setEditing(true),
+        disableEditMode: () => setEditing(false),
       }}
     >
       {children}

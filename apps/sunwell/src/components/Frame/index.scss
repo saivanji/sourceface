@@ -1,0 +1,17 @@
+@import "~@sourceface/style/index.scss";
+
+.root {
+  margin: 0 auto;
+  max-width: $size-6xl;
+  padding: $value-3;
+}
+
+.pane {
+  margin-bottom: $value-3;
+  display: flex;
+  align-items: center;
+}
+
+.actions {
+  margin-left: auto;
+}
