@@ -1,12 +1,16 @@
 @import "~@sourceface/style/index.scss";
 
 .root {
+  position: fixed;
   display: grid;
+  width: 100%;
   grid-template-columns: auto $size-sm;
   grid-template-rows: auto 1fr;
   grid-template-areas:
     "header modules"
     "body modules";
+  top: 0;
+  left: 0;
   height: 100vh;
 }
 
@@ -28,7 +32,6 @@
 
 .body {
   grid-area: body;
-  margin: 0 auto;
-  max-width: $size-6xl;
+  overflow-y: auto;
   padding: $value-3;
 }

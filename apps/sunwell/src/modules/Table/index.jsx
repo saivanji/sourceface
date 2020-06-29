@@ -3,7 +3,7 @@ import moment from "moment"
 import { Table, Pagination } from "packages/kit"
 import styles from "./index.scss"
 
-export default ({ config, e: Expression }) => {
+function TableModule({ config, e: Expression }) {
   const [page, setPage] = useState(0)
   const limit = 10
   const offset = limit * page
@@ -69,3 +69,9 @@ export default ({ config, e: Expression }) => {
     </Expression>
   )
 }
+
+TableModule.Configuration = function TableModuleConfiguration() {
+  return "Table configuration"
+}
+
+export default TableModule

@@ -9,9 +9,7 @@ export default ({ children, selectedModule, onCancel }) => {
       </div>
       <div className={styles.body}>{children}</div>
       <div className={styles.modules}>
-        {selectedModule
-          ? JSON.stringify(selectedModule, null, 2)
-          : "All modules list"}
+        {selectedModule || "All modules list"}
       </div>
     </div>
   )

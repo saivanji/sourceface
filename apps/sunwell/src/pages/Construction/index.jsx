@@ -1,6 +1,12 @@
 // order creation will be in a modal
 
-import React, { createContext, useContext, useState, useMemo } from "react"
+import React, {
+  createElement,
+  createContext,
+  useContext,
+  useState,
+  useMemo,
+} from "react"
 import { useQuery } from "urql"
 import { Text, Table } from "modules/index"
 import { Frame, Editor, Module, When } from "components/index"
@@ -54,10 +60,17 @@ export default () => {
 
 const Body = ({ modules, isEditing, onEditorCancel }) => {
   const [selectedModuleId, setSeletedModuleId] = useState()
-  const selectedModule = useMemo(
-    () => modules.find(m => m.id === selectedModuleId),
-    [modules, selectedModuleId]
-  )
+  const selectedModule = useMemo(() => {
+    const module = modules.find(m => m.id === selectedModuleId)
+
+    return (
+      module &&
+      createElement(modulesMap[module.type].Configuration, {
+        key: module.id,
+        config: module.config,
+      })
+    )
+  }, [modules, selectedModuleId])
 
   return (
     <When
@@ -74,7 +87,7 @@ const Body = ({ modules, isEditing, onEditorCancel }) => {
           isSelected={selectedModuleId === module.id}
           onClick={() => setSeletedModuleId(module.id)}
         >
-          {React.createElement(modulesMap[module.type], {
+          {createElement(modulesMap[module.type], {
             config: module.config,
             e: Expression,
           })}
