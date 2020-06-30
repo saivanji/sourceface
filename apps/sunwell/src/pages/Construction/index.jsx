@@ -73,18 +73,17 @@ const Body = ({ modules, isEditing, onEditorCancel }) => {
       onCancel={onEditorCancel}
     >
       {modules.map(module => (
-        <When
-          cond={isEditing}
-          component={Module}
+        <Module
           key={module.id}
-          isSelected={selectedModuleId === module.id}
-          onClick={() => setSeletedModuleId(module.id)}
+          isEditable={isEditing}
+          isSelected={isEditing && selectedModuleId === module.id}
+          onClick={() => isEditing && setSeletedModuleId(module.id)}
         >
           {createElement(modulesMap[module.type], {
             config: module.config,
             e: Expression,
           })}
-        </When>
+        </Module>
       ))}
     </When>
   )

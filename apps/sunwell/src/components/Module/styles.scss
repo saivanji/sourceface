@@ -3,6 +3,9 @@
 .root {
   display: inline-flex;
   border-radius: $rounded-sm;
+}
+
+.editable {
   &:hover {
     box-shadow: 0 0 0 2px $color-blue-300;
   }
