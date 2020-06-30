@@ -1,16 +1,9 @@
 // order creation will be in a modal
 
-import React, {
-  createElement,
-  createContext,
-  useContext,
-  useState,
-  useMemo,
-} from "react"
+import React, { createElement, createContext, useState, useMemo } from "react"
 import { useQuery } from "urql"
 import { Text, Table } from "modules/index"
 import { Frame, Editor, Module, When } from "components/index"
-import * as state from "state.js"
 import Expression from "./Expression"
 import * as schema from "./schema"
 
@@ -27,9 +20,9 @@ export default () => {
   const [result] = useQuery({
     query: schema.root,
   })
-  const { isEditing, enableEditMode, disableEditMode } = useContext(
-    state.context
-  )
+  const [isEditing, setEditing] = useState(false)
+  const enableEditMode = () => setEditing(true)
+  const disableEditMode = () => setEditing(false)
 
   return (
     <When
