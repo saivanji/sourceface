@@ -15,6 +15,7 @@
     "migrate:down": "migrate down --store='./setup/migrationStore' --compiler='js:@babel/register'"
   },
   "dependencies": {
+    "@babel/standalone": "^7.10.4",
     "bcryptjs": "^2.4.3",
     "connect-pg-simple": "^6.1.0",
     "core-js": "^3.6.4",

@@ -9,6 +9,7 @@
     "check": "prettier --check \"src/**/*.{js,jsx}\" && eslint \"src/**/*.{js,jsx}\""
   },
   "dependencies": {
+    "@babel/standalone": "^7.10.4",
     "@sourceface/style": "0.0.1",
     "classnames": "^2.2.6",
     "formik": "^2.1.4",

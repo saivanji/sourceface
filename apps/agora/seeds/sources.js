@@ -28,6 +28,7 @@ export default db =>
         {
           value: "`SELECT count(id)::integer FROM orders`",
           result: "single",
+          resultMap: "result => result.count",
         },
       ]
     )
