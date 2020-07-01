@@ -20,9 +20,6 @@ TextModule.Configuration = function TextModuleConfiguration({ config }) {
           <b>Content:</b>
         </div>
         <Field name="value" component="input" />
-        <div>
-          <button type="submit">Save</button>
-        </div>
       </Form>
     </Formik>
   )

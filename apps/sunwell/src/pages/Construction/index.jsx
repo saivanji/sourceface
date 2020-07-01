@@ -58,7 +58,7 @@ export default () => {
       ) : (
         <Editor.Elements
           selectedModule={selectedModule}
-          onCancel={closeEditor}
+          onClose={closeEditor}
         />
       )}
       {!result.data
@@ -93,6 +93,10 @@ const renderSelectedModule = (id, modules) => {
     })
   )
 }
+
+// const components = {
+//   Input: ""
+// }
 
 const modulesMap = {
   text: Text,

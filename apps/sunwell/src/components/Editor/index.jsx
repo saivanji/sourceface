@@ -1,9 +1,9 @@
 import React from "react"
 import styles from "./index.scss"
 
-export default function Editor({ children, selectedModule, onCancel }) {
+export default function Editor({ children, selectedModule, onClose }) {
   return Editor.renderRoot(
-    <Editor.Elements selectedModule={selectedModule} onCancel={onCancel}>
+    <Editor.Elements selectedModule={selectedModule} onClose={onClose}>
       {children}
     </Editor.Elements>
   )
@@ -12,12 +12,12 @@ export default function Editor({ children, selectedModule, onCancel }) {
 Editor.Elements = function EditorElements({
   children,
   selectedModule,
-  onCancel,
+  onClose,
 }) {
   return (
     <>
       <div className={styles.header}>
-        <button onClick={onCancel}>Cancel</button>
+        <button onClick={onClose}>Close</button>
       </div>
       <div className={styles.modules}>
         {selectedModule || "All modules list"}
