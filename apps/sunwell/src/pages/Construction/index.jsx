@@ -34,6 +34,10 @@ export default () => {
   })
   const [isEditing, enableEditing, disableEditing] = useBooleanState(false)
   const [selectedModuleId, setSeletedModuleId] = useState()
+  const closeEditor = useCallback(() => {
+    disableEditing()
+    setSeletedModuleId(null)
+  }, [disableEditing, setSeletedModuleId])
   const editModule = useCallback(id => isEditing && setSeletedModuleId(id), [
     isEditing,
     setSeletedModuleId,
@@ -54,7 +58,7 @@ export default () => {
       ) : (
         <Editor.Elements
           selectedModule={selectedModule}
-          onCancel={disableEditing}
+          onCancel={closeEditor}
         />
       )}
       {!result.data
