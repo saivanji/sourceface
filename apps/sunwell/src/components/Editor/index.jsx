@@ -1,9 +1,9 @@
 import React from "react"
 import styles from "./index.scss"
 
-export default function Editor({ children, selectedModule, onClose }) {
+export default function Editor({ children, configuration, onClose }) {
   return Editor.renderRoot(
-    <Editor.Elements selectedModule={selectedModule} onClose={onClose}>
+    <Editor.Elements configuration={configuration} onClose={onClose}>
       {children}
     </Editor.Elements>
   )
@@ -11,7 +11,7 @@ export default function Editor({ children, selectedModule, onClose }) {
 
 Editor.Elements = function EditorElements({
   children,
-  selectedModule,
+  configuration,
   onClose,
 }) {
   return (
@@ -20,7 +20,7 @@ Editor.Elements = function EditorElements({
         <button onClick={onClose}>Close</button>
       </div>
       <div className={styles.modules}>
-        {selectedModule || "All modules list"}
+        {configuration || "All modules list"}
       </div>
       {children && Editor.renderChildren(children)}
     </>

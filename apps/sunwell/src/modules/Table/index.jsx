@@ -70,6 +70,8 @@ function TableModule({ config, e: Expression }) {
   )
 }
 
+TableModule.moduleName = "table"
+
 TableModule.Configuration = function TableModuleConfiguration() {
   return "Table configuration"
 }

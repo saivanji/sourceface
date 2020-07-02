@@ -84,6 +84,14 @@ exports.sizes = {
   "6xl": "72rem",
 }
 
+exports.fontWeights = {
+  regular: 400,
+  semibold: 600,
+  bold: 700,
+  extrabold: 800,
+  black: 900,
+}
+
 exports.fontSizes = {
   xs: ".75rem",
   sm: ".875rem",
