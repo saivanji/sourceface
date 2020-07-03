@@ -34,3 +34,5 @@ export default function Configuration({ module, component: Component }) {
     </context.Provider>
   )
 }
+
+// TODO: should be no distincion from the input point of view between readable and writable. For the user everything is an expression

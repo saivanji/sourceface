@@ -46,8 +46,8 @@ export default () => {
     () => result.data?.modules.find(m => m.id === selectedModuleId),
     [result.data?.modules, selectedModuleId]
   )
-
   const Parent = isEditing ? Editor : Frame
+
   return Parent.renderRoot(
     <>
       {!isEditing ? (

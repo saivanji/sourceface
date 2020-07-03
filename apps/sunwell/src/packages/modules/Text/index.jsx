@@ -4,7 +4,7 @@ import * as system from "@sourceface/style"
 import styles from "./index.scss"
 
 // every module should have correspoding loader(depending on type)
-function TextModule({ config, e: Expression }) {
+function TextModule({ config, e: Expression, query: Query }) {
   return (
     <span
       className={styles.root}
