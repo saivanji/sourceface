@@ -12,14 +12,14 @@ export const execute = async (config, args, state) => {
     await evaluate(config.value, args)
   )
 
-  const resultMap = await evaluate(config.resultMap)
+  const compute = await evaluate(config.compute)
 
-  return resultMap(result)
+  return compute(result)
 }
 
 const defaultConfig = {
   result: "many",
-  resultMap: "a => a",
+  compute: "a => a",
 }
 
 const pgp = pgPromise()
