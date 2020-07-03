@@ -3,7 +3,6 @@ import { useClient } from "urql"
 import * as runtime from "packages/runtime"
 import { context } from "./"
 
-// TODO: have QueryExpression and Mutation expression?
 // TODO: abstract execution from loading component?
 export default ({ children, input, scope, pause }) => {
   const [value, setValue] = useState()
@@ -56,7 +55,6 @@ const command = (name, client) => async args => {
   const {
     data: { res },
   } = await client
-    // TODO: should we have different queries/mutations depending on command type? So graphql clients could properly cache results on queries
     .query(
       `query ($args: JSONObject) {
         res: readCommand(commandId: "${name}", args: $args)
