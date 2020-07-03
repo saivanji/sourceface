@@ -3,11 +3,9 @@ import "./index.scss"
 
 import React from "react"
 import ReactDOM from "react-dom"
-import { createClient, Provider as ClientProvider } from "urql"
+import { Provider as ClientProvider } from "urql"
 import * as pages from "./pages"
-
-const endpoint = "http://localhost:5001/graphql"
-const client = createClient({ url: endpoint })
+import client from "./graphql"
 
 ReactDOM.render(
   <ClientProvider value={client}>

@@ -11,6 +11,7 @@
   "dependencies": {
     "@babel/standalone": "^7.10.4",
     "@sourceface/style": "0.0.1",
+    "@urql/exchange-graphcache": "^3.0.1",
     "classnames": "^2.2.6",
     "formik": "^2.1.4",
     "graphql": "^15.1.0",
