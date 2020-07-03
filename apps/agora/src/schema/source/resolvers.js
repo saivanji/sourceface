@@ -17,8 +17,9 @@ const executeCommand = async (
 export default {
   Query: {
     commands,
+    readCommand: executeCommand,
   },
   Mutation: {
-    executeCommand,
+    writeCommand: executeCommand,
   },
 }

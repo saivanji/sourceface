@@ -29,8 +29,9 @@ type Command {
 
 extend type Query {
   commands: [Command!]!
+  readCommand(commandId: String!, args: JSONObject): JSON
 }
 
 extend type Mutation {
-  executeCommand(commandId: String!, args: JSONObject): JSON
+  writeCommand(commandId: String!, args: JSONObject): JSON
 }
