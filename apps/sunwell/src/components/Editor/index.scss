@@ -33,5 +33,7 @@
 .body {
   grid-area: body;
   overflow-y: auto;
+  margin: 0 auto;
   padding: $value-3;
+  max-width: $size-6xl;
 }
