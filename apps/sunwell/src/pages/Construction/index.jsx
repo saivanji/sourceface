@@ -9,7 +9,7 @@ import React, {
 } from "react"
 import { useQuery } from "urql"
 import { useBooleanState } from "hooks/index"
-import { Text, Table } from "modules/index"
+import { Text, Table } from "packages/modules"
 import { Frame, Editor, Module } from "components/index"
 import Expression from "./Expression"
 import Configuration from "./Configuration"
