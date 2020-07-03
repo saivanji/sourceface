@@ -57,9 +57,9 @@ const command = (name, client) => async args => {
     data: { res },
   } = await client
     // TODO: should we have different queries/mutations depending on command type? So graphql clients could properly cache results on queries
-    .mutation(
-      `mutation ($args: JSONObject) {
-        res: executeCommand(commandId: "${name}", args: $args)
+    .query(
+      `query ($args: JSONObject) {
+        res: readCommand(commandId: "${name}", args: $args)
       }`,
       { args }
     )
