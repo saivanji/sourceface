@@ -7,7 +7,7 @@ export default (db, pgp) =>
             type: "text",
             config: {
               value: "'Hello world'",
-              size: "sm",
+              fontSize: "sm",
               fontWeight: "semibold",
               alignmentX: "left",
               alignmentY: "baseline",
@@ -19,7 +19,7 @@ export default (db, pgp) =>
             type: "text",
             config: {
               value: "'Hola!'",
-              size: "lg",
+              fontSize: "lg",
               fontWeight: "regular",
               alignmentX: "left",
               alignmentY: "baseline",
@@ -31,7 +31,7 @@ export default (db, pgp) =>
             type: "text",
             config: {
               value: "`Orders count is ${await commands.countOrders()}`",
-              size: "base",
+              fontSize: "base",
               fontWeight: "bold",
               alignmentX: "left",
               alignmentY: "baseline",

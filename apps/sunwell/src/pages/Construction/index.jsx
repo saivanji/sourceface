@@ -8,16 +8,12 @@ import React, {
   useCallback,
 } from "react"
 import { useQuery } from "urql"
-import { mergeRight } from "ramda"
 import { useBooleanState } from "hooks/index"
 import { Text, Table } from "modules/index"
 import { Frame, Editor, Module } from "components/index"
-import * as kit from "packages/kit"
 import Expression from "./Expression"
+import Configuration from "./Configuration"
 import * as schema from "./schema"
-import Form, { populateField } from "./Form"
-
-// TODO: read about suspence, data fetching, recoil
 
 /* <div className={styles.panel}> */
 /*   <span className={styles.title}>Orders</span> */
@@ -31,6 +27,7 @@ const path = [
 
 export const context = createContext({})
 
+// TODO: handle error on back-end requests
 export default () => {
   const [result] = useQuery({
     query: schema.root,
@@ -45,7 +42,10 @@ export default () => {
     isEditing,
     setSeletedModuleId,
   ])
-  const configuration = useConfiguration(selectedModuleId, result.data?.modules)
+  const selectedModule = useMemo(
+    () => result.data?.modules.find(m => m.id === selectedModuleId),
+    [result.data?.modules, selectedModuleId]
+  )
 
   const Parent = isEditing ? Editor : Frame
   return Parent.renderRoot(
@@ -56,7 +56,18 @@ export default () => {
           actions={<button onClick={enableEditing}>Edit</button>}
         />
       ) : (
-        <Editor.Elements configuration={configuration} onClose={closeEditor} />
+        <Editor.Elements
+          isLoadingModules={!result.data}
+          configuration={
+            selectedModule && (
+              <Configuration
+                module={selectedModule}
+                component={modulesMap[selectedModule.type].Configuration}
+              />
+            )
+          }
+          onClose={closeEditor}
+        />
       )}
       {!result.data
         ? "Page is loading..."
@@ -77,37 +88,6 @@ export default () => {
           )}
     </>
   )
-}
-
-// have separate name for modules and their configurations
-// rename selectedModule to the configuration?
-const useConfiguration = (id, modules) => {
-  return useMemo(() => {
-    // not good since we spread main render details to another function
-    // probably create Configuration(in a separate file here) component and use these hooks inside of that component in order to solve that
-    if (!modules || !id) return
-
-    const module = modules.find(m => m.id === id)
-    const onSave = (name, value) => console.log(id, name, value)
-
-    const components = {
-      elements: {
-        // automatically merge config data with values or not? Probably no, since we do not need to replace input value with previous one on optimistic update failure
-        Form: props =>
-          createElement(Form, {
-            ...props,
-            values: mergeRight(props.defaultValues, module.config),
-          }),
-        Input: populateField(kit.Input, onSave),
-      },
-    }
-
-    return createElement(modulesMap[module.type].Configuration, {
-      key: module.id,
-      config: module.config,
-      ...components,
-    })
-  }, [id, modules])
 }
 
 const modulesMap = {

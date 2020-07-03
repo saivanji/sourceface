@@ -11,6 +11,7 @@ export default function Editor({ children, configuration, onClose }) {
 
 Editor.Elements = function EditorElements({
   children,
+  isLoadingModules,
   configuration,
   onClose,
 }) {
@@ -20,7 +21,7 @@ Editor.Elements = function EditorElements({
         <button onClick={onClose}>Close</button>
       </div>
       <div className={styles.modules}>
-        {configuration || "All modules list"}
+        {isLoadingModules ? "Loading..." : configuration || "All modules list"}
       </div>
       {children && Editor.renderChildren(children)}
     </>
