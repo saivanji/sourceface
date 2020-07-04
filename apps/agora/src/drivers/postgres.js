@@ -1,7 +1,8 @@
 // use raw pg driver instead of pg promise?
 import { mergeRight } from "ramda"
 import pgPromise from "pg-promise"
-import { evaluate } from "lib/runtime"
+import * as engine from "lib/engine"
+import * as js from "lib/runtime"
 
 export const createState = config => ({ cn: pgp(config.connection) })
 
@@ -9,10 +10,11 @@ export const execute = async (config, args, state) => {
   config = mergeRight(defaultConfig, config)
 
   const result = await state.cn[results[config.result]](
-    await evaluate(config.value, args)
+    engine.render(config.value, { constants: args })
   )
 
-  const compute = await evaluate(config.compute)
+  // TODO: deprecate. use engine instead
+  const compute = await js.evaluate(config.compute)
 
   return compute(result)
 }

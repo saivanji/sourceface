@@ -5,9 +5,9 @@ import * as engine from "packages/engine"
 import { context } from "./"
 
 export function Value({
+  template,
   expression,
   expressions,
-  template,
   constants,
   children,
 }) {
@@ -18,10 +18,9 @@ export function Value({
     expression || expressions,
     createScope(commands, constants)
   )
-  const query = createQuery(requests)
 
   const [result] = useQuery({
-    query,
+    query: createQuery(requests),
   })
 
   if (!result.data) {
@@ -34,6 +33,8 @@ export function Value({
     ? data || null
     : children({ data, fetching: result.data.fetching })
 }
+
+// export function Template
 
 // export function Effect({ expression }) {}
 
@@ -76,11 +77,9 @@ const transformResponse = data => {
 
   for (let key of keys(data)) {
     const regex = /^res/
-
     if (!regex.test(key)) continue
 
     const i = key.replace(regex, "")
-
     result[i] = data[key]
   }
 
