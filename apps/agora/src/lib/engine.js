@@ -32,9 +32,20 @@ export const evaluate = (expression, scope) => {
 }
 
 export const render = (template, scope) =>
-  template.replace(/\{\{\s*(.*?)\s*\}\}/g, (full, match) =>
-    evaluate(match, scope)
+  template.replace(templateRegex, (full, match) => evaluate(match, scope))
+
+export const parseTemplate = temlate =>
+  Array.from(temlate.matchAll(templateRegex)).map(
+    ([, expression]) => expression
   )
+
+export const replaceTemplate = (template, fn) => {
+  let i = 0
+
+  return template.replace(templateRegex, () => fn(i++))
+}
+
+const templateRegex = /\{\{\s*(.*?)\s*\}\}/g
 
 const evaluateValue = (value, scope) => {
   try {

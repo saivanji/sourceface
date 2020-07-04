@@ -6,7 +6,7 @@ export default (db, pgp) =>
           {
             type: "text",
             config: {
-              value: "'Hello world'",
+              value: "Hello world",
               fontSize: "sm",
               fontWeight: "semibold",
               alignmentX: "left",
@@ -18,7 +18,7 @@ export default (db, pgp) =>
           {
             type: "text",
             config: {
-              value: "'Hola!'",
+              value: "Hola!",
               fontSize: "lg",
               fontWeight: "regular",
               alignmentX: "left",
@@ -30,7 +30,7 @@ export default (db, pgp) =>
           {
             type: "text",
             config: {
-              value: "~commands.countOrders",
+              value: "Orders count is {{ ~commands.countOrders }}",
               fontSize: "base",
               fontWeight: "bold",
               alignmentX: "left",

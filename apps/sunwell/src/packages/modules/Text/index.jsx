@@ -17,7 +17,7 @@ function TextModule({ config, fetching }) {
         color: config.color,
       }}
     >
-      <fetching.Value template={config.value} />
+      <fetching.Template value={config.value} />
     </span>
   )
 }

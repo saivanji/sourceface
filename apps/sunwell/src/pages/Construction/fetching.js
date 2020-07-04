@@ -4,39 +4,51 @@ import { useContext } from "react"
 import * as engine from "packages/engine"
 import { context } from "./"
 
-export function Value({
-  template,
-  expression,
-  expressions,
-  constants,
-  children,
-}) {
-  if (template) return ""
-
-  const { commands } = useContext(context)
-  const requests = evaluateMany(
+export function Value({ expression, expressions, constants, children }) {
+  const [data, { fetching }] = useExpressionsQuery(
     expression || expressions,
-    createScope(commands, constants)
+    constants
   )
+
+  if (!data) {
+    return "Initial loading..."
+  }
+
+  return children({ data, fetching })
+}
+
+export function Template({ value, constants, children }) {
+  const expressions = engine.parseTemplate(value)
+
+  // TODO: fix, component should return the same amount of hooks on every render
+  if (!expressions.length) return !children ? value : children({ data: value })
+
+  const [data, { fetching }] = useExpressionsQuery(expressions, constants)
+
+  if (!data) {
+    return "Initial loading..."
+  }
+
+  const replaced = engine.replaceTemplate(value, i => data[i])
+
+  return !children ? replaced || null : children({ data: replaced, fetching })
+}
+
+// export function Effect({ expression }) {}
+
+const useExpressionsQuery = (input, constants) => {
+  const { commands } = useContext(context)
+  const requests = evaluateMany(input, createScope(commands, constants))
 
   const [result] = useQuery({
     query: createQuery(requests),
   })
 
-  if (!result.data) {
-    return "Initial loading..."
-  }
-
-  const data = transformResponse(result.data)
-
-  return !children
-    ? data || null
-    : children({ data, fetching: result.data.fetching })
+  return [
+    result.data && transformResponse(result.data),
+    { fetching: result.fetching },
+  ]
 }
-
-// export function Template
-
-// export function Effect({ expression }) {}
 
 const createScope = (commands, constants) => ({
   funcs: {

@@ -8,12 +8,13 @@ import React, {
   useCallback,
 } from "react"
 import { useQuery } from "urql"
+import { values } from "ramda"
 import { useBooleanState } from "hooks/index"
-import { Text, Table } from "packages/modules"
 import { Frame, Editor, Module } from "components/index"
-import Configuration from "./Configuration"
+import * as modules from "packages/modules"
 import * as fetching from "./fetching"
 import * as schema from "./schema"
+import Configuration from "./Configuration"
 
 /* <div className={styles.panel}> */
 /*   <span className={styles.title}>Orders</span> */
@@ -90,7 +91,7 @@ export default () => {
   )
 }
 
-const modulesMap = {
-  text: Text,
-  table: Table,
-}
+const modulesMap = values(modules).reduce(
+  (acc, Module) => ({ ...acc, [Module.moduleName]: Module }),
+  {}
+)
