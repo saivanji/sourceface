@@ -31,6 +31,8 @@ export const evaluate = (expression, scope) => {
   return func(resultArgs)
 }
 
+export const render = (template, scope) => {}
+
 const evaluateValue = (value, scope) => {
   try {
     return JSON.parse(value.replace(/'/g, '"'))
