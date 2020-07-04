@@ -11,8 +11,8 @@ import { useQuery } from "urql"
 import { useBooleanState } from "hooks/index"
 import { Text, Table } from "packages/modules"
 import { Frame, Editor, Module } from "components/index"
-import Expression from "./Expression"
 import Configuration from "./Configuration"
+import * as fetching from "./fetching"
 import * as schema from "./schema"
 
 /* <div className={styles.panel}> */
@@ -80,7 +80,7 @@ export default () => {
                   isSelected={isEditing && selectedModuleId === module.id}
                   data={module}
                   onClick={editModule}
-                  expression={Expression}
+                  fetching={fetching}
                   component={modulesMap[module.type]}
                 />
               ))}

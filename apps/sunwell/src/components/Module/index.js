@@ -8,7 +8,7 @@ export default memo(
     isSelected,
     onClick,
     component: Component,
-    expression: Expression,
+    fetching,
     data,
   }) => {
     return (
@@ -20,7 +20,7 @@ export default memo(
           isSelected && styles.selected
         )}
       >
-        <Component config={data.config} e={Expression} />
+        <Component config={data.config} fetching={fetching} />
       </div>
     )
   }

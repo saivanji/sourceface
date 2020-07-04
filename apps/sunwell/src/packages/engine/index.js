@@ -43,16 +43,16 @@ const evaluateValue = (value, scope) => {
 
 class EngineSyntaxError extends Error {}
 
-console.log(
-  evaluate("~commands.ordersList limit: 1, offset: offset, foo, bar: '123'", {
-    funcs: {
-      commands: {
-        ordersList: ({ limit }) => limit,
-      },
-    },
-    constants: {
-      offset: 5,
-      foo: "hello",
-    },
-  })
-)
+// console.log(
+//   evaluate("~commands.ordersList limit: 1, offset: offset, foo, bar: '123'", {
+//     funcs: {
+//       commands: {
+//         ordersList: ({ limit }) => limit,
+//       },
+//     },
+//     constants: {
+//       offset: 5,
+//       foo: "hello",
+//     },
+//   })
+// )

@@ -3,16 +3,20 @@ import moment from "moment"
 import { Table, Pagination } from "packages/kit"
 import styles from "./index.scss"
 
-function TableModule({ config, e: Expression }) {
+function TableModule({ config, fetching }) {
   const [page, setPage] = useState(0)
   const limit = 10
   const offset = limit * page
-  const scope = useMemo(() => ({ page, limit, offset }), [page, limit, offset])
-  const input = useMemo(() => [config.items, config.count], [config])
+  const constants = useMemo(() => ({ page, limit, offset }), [
+    page,
+    limit,
+    offset,
+  ])
+  const expressions = useMemo(() => [config.items, config.count], [config])
 
   return (
-    <Expression scope={scope} input={input}>
-      {({ value: [rows, count] }) => (
+    <fetching.Value expressions={expressions} constants={constants}>
+      {({ data: [rows, count] }) => (
         <Table>
           <Table.Thead>
             <Table.Tr>
@@ -66,7 +70,7 @@ function TableModule({ config, e: Expression }) {
           </Table.Tfoot>
         </Table>
       )}
-    </Expression>
+    </fetching.Value>
   )
 }
 

@@ -30,7 +30,7 @@ export default (db, pgp) =>
           {
             type: "text",
             config: {
-              value: "`Orders count is ${await commands.countOrders()}`",
+              value: "~commands.countOrders",
               fontSize: "base",
               fontWeight: "bold",
               alignmentX: "left",
@@ -42,8 +42,8 @@ export default (db, pgp) =>
           {
             type: "table",
             config: {
-              items: "commands.listOrders({limit, offset})",
-              count: "commands.countOrders()",
+              items: "~commands.listOrders limit, offset",
+              count: "~commands.countOrders",
             },
           },
         ],

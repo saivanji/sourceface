@@ -4,7 +4,7 @@ import * as system from "@sourceface/style"
 import styles from "./index.scss"
 
 // every module should have correspoding loader(depending on type)
-function TextModule({ config, e: Expression, query: Query }) {
+function TextModule({ config, fetching }) {
   return (
     <span
       className={styles.root}
@@ -17,7 +17,7 @@ function TextModule({ config, e: Expression, query: Query }) {
         color: config.color,
       }}
     >
-      <Expression input={config.value} />
+      <fetching.Value template={config.value} />
     </span>
   )
 }
