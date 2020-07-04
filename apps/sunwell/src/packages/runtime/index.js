@@ -19,25 +19,22 @@ export const evaluate = (input, scope) => {
 // limit
 // offset
 // currentPage
-// commands.countOrders
-// commands.orders limit: 1, offset: 2
-// commands.orders limit: limit, offset: offset
-// commands.orders limit, offset
-// commands.removeOrder id: 5
+// ~commands.countOrders
+// ~commands.orders limit: 1, offset: 2
+// ~commands.orders limit: limit, offset: offset
+// ~commands.orders limit, offset
+// ~commands.removeOrder id: 5
 //
 // -- Notes --
-// Functions might be scoped(with dot) in order to have groupping, for example for commands
+// Functions might be prefixed(with dot) in order to have groupping, for example for commands
 // Readable and Writable distinction is needed only on module level, on a language level there is no difference, everything is a function
-// There are 3 types in the language. String or Integer(Primitives. Function accepts them as arguments), "Complex" type, is a function result type for some scopes, which could contain anything from integer to an object. Functions could also return primitives
-// After parsing the expression there are set of tags are produced, depending on these tags there are various operations are executed(for example sending async operations and so on)
-// Runtime is not aware of scopes and their types
-// Runtime returns various exceptions(type mismatch and so on)
-//
-// -- Questions --
-// How to allow pass function calls as arguments since we need to pass "currentPage"(Complex type) to the "commands.orders" expression
-// - With a return type. Depending on a scope, there will be a specific return type. For example commands scope will have complex type, but if it has no scope, for example "currentPage" - the return type is primitive
-// Have 2 functions - parse and evaluate?
+// There are 3 types in the language. String or Integer(Primitives. Function accepts them as arguments along with constants). Complex type is a return type of a function. It's not accepted as arguments.
+// Functions accept either constants or literal as input.
+// Runtime returns various syntax exceptions
 //
 // -- Conceptions --
-// Expression - is a function call to return a value
-// Value - is a result of a function call with a specific type
+// Expression - is a function call returning a complex type or expression is a Value
+//  - Function is prepended with tilda
+// Value
+// - Constant - named literal
+// - Literal - either string or number value
