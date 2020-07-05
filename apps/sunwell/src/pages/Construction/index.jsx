@@ -11,7 +11,7 @@ import { useQuery, useMutation } from "urql"
 import { keys, values } from "ramda"
 import camelCase from "camelcase"
 import { useBooleanState } from "hooks/index"
-import { Frame, Editor, Module } from "components/index"
+import { Frame, Editor, Module, Grid } from "components/index"
 import * as modules from "packages/modules"
 import * as fetching from "./fetching"
 import * as schema from "./schema"
@@ -47,7 +47,7 @@ export default () => {
     setSeletedModuleId,
   ])
   const onAddModule = useCallback(
-    type => addModuleReq({ type, config: modulesMap[type].defaultValues }),
+    type => addModule({ type, config: modulesMap[type].defaultValues }),
     []
   )
   const selectedModule = useMemo(
@@ -84,17 +84,21 @@ export default () => {
         ? "Page is loading..."
         : Parent.renderChildren(
             <context.Provider value={result.data}>
-              {result.data.modules.map(module => (
-                <Module
-                  key={module.id}
-                  isEditable={isEditing}
-                  isSelected={isEditing && selectedModuleId === module.id}
-                  data={module}
-                  fetching={fetching}
-                  component={modulesMap[module.type]}
-                  onClick={onModuleClick}
-                />
-              ))}
+              <Grid
+                isEditable={isEditing}
+                items={result.data.modules}
+                renderItem={module => (
+                  <Module
+                    key={module.id}
+                    isEditable={isEditing}
+                    isSelected={isEditing && selectedModuleId === module.id}
+                    data={module}
+                    fetching={fetching}
+                    component={modulesMap[module.type]}
+                    onClick={onModuleClick}
+                  />
+                )}
+              ></Grid>
             </context.Provider>
           )}
     </>

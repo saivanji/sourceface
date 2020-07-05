@@ -1,4 +1,5 @@
 export { default as Editor } from "./Editor"
 export { default as Frame } from "./Frame"
+export { default as Grid } from "./Grid"
 export { default as Module } from "./Module"
 export { default as When } from "./When"
