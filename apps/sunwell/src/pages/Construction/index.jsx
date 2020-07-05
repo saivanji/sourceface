@@ -27,6 +27,7 @@ const path = [
 ]
 
 export const context = createContext({})
+// TODO: think about real use case
 
 // TODO: handle error on back-end requests
 export default () => {
