@@ -5,8 +5,10 @@ import React from "react"
 // will keep grid information as a column in modules table
 
 export default function Grid({ isEditable, items, renderItem }) {
-  return items.map(item => (
-    <div style={{ display: "inline-flex" }}>{renderItem(item)}</div>
+  return items.map((item, i) => (
+    <div key={i} style={{ display: "inline-flex" }}>
+      {renderItem(item)}
+    </div>
   ))
 }
 
