@@ -19,11 +19,16 @@ const updateModule = async (parent, { moduleId, key, value }, { pg }) => {
   })
 }
 
+const addModule = async (parent, { type, config }, { pg }) => {
+  return await moduleRepo.create(type, config, pg)
+}
+
 export default {
   Query: {
     modules,
   },
   Mutation: {
     updateModule,
+    addModule,
   },
 }

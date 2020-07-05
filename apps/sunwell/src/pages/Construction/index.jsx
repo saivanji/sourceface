@@ -7,7 +7,7 @@ import React, {
   useMemo,
   useCallback,
 } from "react"
-import { useQuery } from "urql"
+import { useQuery, useMutation } from "urql"
 import { keys, values } from "ramda"
 import camelCase from "camelcase"
 import { useBooleanState } from "hooks/index"
@@ -35,16 +35,21 @@ export default () => {
   const [result] = useQuery({
     query: schema.root,
   })
+  const [, addModule] = useMutation(schema.addModule)
   const [isEditing, enableEditing, disableEditing] = useBooleanState(false)
   const [selectedModuleId, setSeletedModuleId] = useState()
-  const closeEditor = useCallback(() => {
+  const onCloseEditor = useCallback(() => {
     disableEditing()
     setSeletedModuleId(null)
   }, [disableEditing, setSeletedModuleId])
-  const editModule = useCallback(id => isEditing && setSeletedModuleId(id), [
+  const onModuleClick = useCallback(id => isEditing && setSeletedModuleId(id), [
     isEditing,
     setSeletedModuleId,
   ])
+  const onAddModule = useCallback(
+    type => addModuleReq({ type, config: modulesMap[type].defaultValues }),
+    []
+  )
   const selectedModule = useMemo(
     () => result.data?.modules.find(m => m.id === selectedModuleId),
     [result.data?.modules, selectedModuleId]
@@ -71,8 +76,8 @@ export default () => {
               />
             )
           }
-          onClose={closeEditor}
-          onModuleAdd={type => console.log(modulesMap[type].defaultValues)}
+          onClose={onCloseEditor}
+          onAddModule={onAddModule}
         />
       )}
       {!result.data
@@ -85,9 +90,9 @@ export default () => {
                   isEditable={isEditing}
                   isSelected={isEditing && selectedModuleId === module.id}
                   data={module}
-                  onClick={editModule}
                   fetching={fetching}
                   component={modulesMap[module.type]}
+                  onClick={onModuleClick}
                 />
               ))}
             </context.Provider>
@@ -97,13 +102,12 @@ export default () => {
 }
 
 const modulesMap = keys(modules).reduce((acc, key) => {
-  const type = camelCase(key)
   const Module = modules[key]
 
-  Module.type = type
+  Module.type = camelCase(key)
 
   return {
     ...acc,
-    [type]: Module,
+    [Module.type]: Module,
   }
 }, {})

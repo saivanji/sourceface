@@ -19,3 +19,13 @@ export const updateModule = `
     }
   }
 `
+
+export const addModule = `
+  mutation ($type: ModuleType!, $config: JSONObject!) {
+    addModule(type: $type, config: $config) {
+      id
+      type
+      config
+    }
+  }
+`

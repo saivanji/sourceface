@@ -12,6 +12,7 @@
     "@babel/standalone": "^7.10.4",
     "@sourceface/style": "0.0.1",
     "@urql/exchange-graphcache": "^3.0.1",
+    "@urql/exchange-populate": "^0.1.8",
     "camelcase": "5.3.1",
     "classnames": "^2.2.6",
     "formik": "^2.1.4",

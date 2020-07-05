@@ -99,7 +99,7 @@ const optionsProps = Object.keys({ ...options }).reduce(
 )
 
 TextModule.defaultValues = {
-  value: "",
+  value: "Hello world",
   fontSize: system.fontSizes.lg,
   fontWeight: system.fontWeights.regular,
   alignmentX: "left",

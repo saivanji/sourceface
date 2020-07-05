@@ -17,7 +17,7 @@ Editor.Elements = function EditorElements({
   availableModules,
   isLoadingModules,
   configuration,
-  onModuleAdd,
+  onAddModule,
   onClose,
 }) {
   return (
@@ -32,7 +32,7 @@ Editor.Elements = function EditorElements({
           ? "Loading..."
           : configuration ||
             availableModules.map(({ type }) => (
-              <div key={type} onClick={() => onModuleAdd(type)}>
+              <div key={type} onClick={() => onAddModule(type)}>
                 {type}
               </div>
             ))}
