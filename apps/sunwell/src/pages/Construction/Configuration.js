@@ -9,6 +9,7 @@ export const context = createContext({})
 export default function Configuration({ module, component: Component }) {
   const [, updateModule] = useMutation(schema.updateModule)
   const onSave = useCallback(
+    // TODO: implement debouncing
     (key, value) => updateModule({ moduleId: module.id, key, value }),
     [module.id]
   )
