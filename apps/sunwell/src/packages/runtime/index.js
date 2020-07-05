@@ -34,6 +34,7 @@ export const evaluate = (input, scope) => {
 // There will be a conception of a map. Map is an object. functions are already accepting it as a single argument. Also replace prefix conception by a map
 // There will be ability to define a function as following:
 // x, z -> x.y
+// There will be arithmetic operations introduced with constants and primitives(number), in place where we can put value(constant or literal) we can put arithmetic operation since it's return type is a value
 //
 // -- Conceptions --
 // Expression - is a function call returning a complex type or expression is a Value
