@@ -17,7 +17,7 @@
 .header {
   grid-area: header;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   padding: $value-3;
   background-color: $color-white;
   border-bottom: 1px solid $color-gray-400;

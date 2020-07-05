@@ -24,20 +24,13 @@ function TextModule({ config, fetching }) {
 
 TextModule.moduleName = "text"
 
+// TODO: most likely default values does not need to be passed since the module is created with default values and they will be passed as values to the form
 TextModule.Configuration = function TextModuleConfiguration({
   components: { Form, Input, Select, Row, Label },
 }) {
   return (
     <Form
-      defaultValues={{
-        value: "",
-        fontSize: system.fontSizes.lg,
-        fontWeight: system.fontWeights.regular,
-        alignmentX: "left",
-        alignmentY: "baseline",
-        decoration: "none",
-        color: "#000",
-      }}
+      defaultValues={TextModule.defaultValues}
       validationSchema={TextModule.validationSchema}
     >
       <Row>
@@ -106,6 +99,16 @@ const optionsProps = Object.keys({ ...options }).reduce(
   }),
   {}
 )
+
+TextModule.defaultValues = {
+  value: "",
+  fontSize: system.fontSizes.lg,
+  fontWeight: system.fontWeights.regular,
+  alignmentX: "left",
+  alignmentY: "baseline",
+  decoration: "none",
+  color: "#000",
+}
 
 TextModule.validationSchema = yup.object().shape({
   value: yup.string().required(),

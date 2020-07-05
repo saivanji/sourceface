@@ -31,6 +31,9 @@ export const evaluate = (input, scope) => {
 // There are 3 types in the language. String or Integer(Primitives. Function accepts them as arguments along with constants). Complex type is a return type of a function. It's not accepted as arguments.
 // Functions accept either constants or literal as input.
 // Runtime returns various syntax exceptions
+// There will be a conception of a map. Map is an object. functions are already accepting it as a single argument. Also replace prefix conception by a map
+// There will be ability to define a function as following:
+// x, z -> x.y
 //
 // -- Conceptions --
 // Expression - is a function call returning a complex type or expression is a Value

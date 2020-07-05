@@ -12,6 +12,7 @@ type Module {
 
 extend type Mutation {
   updateModule(moduleId: Int!, key: String!, value: JSON!): Module!
+  addModule(type: ModuleType!, config: JSONObject!): Module!
 }
 
 extend type Query {

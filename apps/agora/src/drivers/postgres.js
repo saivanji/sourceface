@@ -1,3 +1,5 @@
+// Have it as sql driver instead and user will choose specific dialects?
+//
 // use raw pg driver instead of pg promise?
 import { mergeRight } from "ramda"
 import pgPromise from "pg-promise"

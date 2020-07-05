@@ -9,6 +9,9 @@ export default function Editor({ children, configuration, onClose }) {
   )
 }
 
+// near the orders page will be a button opening a modal to edit current page properties(url, etc?)
+// page title is editable?
+// page creation button could be near page title
 Editor.Elements = function EditorElements({
   children,
   isLoadingModules,
@@ -18,6 +21,8 @@ Editor.Elements = function EditorElements({
   return (
     <>
       <div className={styles.header}>
+        Orders page
+        <div>mobile | tablet | desktop</div>
         <button onClick={onClose}>Close</button>
       </div>
       <div className={styles.modules}>

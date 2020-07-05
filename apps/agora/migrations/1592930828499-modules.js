@@ -3,6 +3,7 @@ export const up = () =>
     await t.none(`
       CREATE TYPE module AS ENUM ('text', 'table')
     `)
+    // TODO: add pageId
     await t.none(`
       CREATE TABLE modules(
         id serial NOT NULL,
