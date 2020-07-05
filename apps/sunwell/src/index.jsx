@@ -13,3 +13,7 @@ ReactDOM.render(
   </ClientProvider>,
   document.getElementById("root")
 )
+
+// TODO:
+// Table module configuration
+// Modules grid
