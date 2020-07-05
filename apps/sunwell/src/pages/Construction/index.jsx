@@ -8,7 +8,8 @@ import React, {
   useCallback,
 } from "react"
 import { useQuery } from "urql"
-import { values } from "ramda"
+import { keys, values } from "ramda"
+import camelCase from "camelcase"
 import { useBooleanState } from "hooks/index"
 import { Frame, Editor, Module } from "components/index"
 import * as modules from "packages/modules"
@@ -49,6 +50,7 @@ export default () => {
     [result.data?.modules, selectedModuleId]
   )
   const Parent = isEditing ? Editor : Frame
+  const availableModules = useMemo(() => values(modules), [])
 
   return Parent.renderRoot(
     <>
@@ -59,6 +61,7 @@ export default () => {
         />
       ) : (
         <Editor.Elements
+          availableModules={availableModules}
           isLoadingModules={!result.data}
           configuration={
             selectedModule && (
@@ -69,6 +72,7 @@ export default () => {
             )
           }
           onClose={closeEditor}
+          onModuleAdd={type => console.log(modulesMap[type].defaultValues)}
         />
       )}
       {!result.data
@@ -92,7 +96,14 @@ export default () => {
   )
 }
 
-const modulesMap = values(modules).reduce(
-  (acc, Module) => ({ ...acc, [Module.moduleName]: Module }),
-  {}
-)
+const modulesMap = keys(modules).reduce((acc, key) => {
+  const type = camelCase(key)
+  const Module = modules[key]
+
+  Module.type = type
+
+  return {
+    ...acc,
+    [type]: Module,
+  }
+}, {})

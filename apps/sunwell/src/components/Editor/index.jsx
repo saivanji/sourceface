@@ -14,8 +14,10 @@ export default function Editor({ children, configuration, onClose }) {
 // page creation button could be near page title
 Editor.Elements = function EditorElements({
   children,
+  availableModules,
   isLoadingModules,
   configuration,
+  onModuleAdd,
   onClose,
 }) {
   return (
@@ -26,7 +28,14 @@ Editor.Elements = function EditorElements({
         <button onClick={onClose}>Close</button>
       </div>
       <div className={styles.modules}>
-        {isLoadingModules ? "Loading..." : configuration || "All modules list"}
+        {isLoadingModules
+          ? "Loading..."
+          : configuration ||
+            availableModules.map(({ type }) => (
+              <div key={type} onClick={() => onModuleAdd(type)}>
+                {type}
+              </div>
+            ))}
       </div>
       {children && Editor.renderChildren(children)}
     </>

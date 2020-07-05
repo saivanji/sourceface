@@ -74,8 +74,6 @@ function TableModule({ config, fetching }) {
   )
 }
 
-TableModule.moduleName = "table"
-
 TableModule.Configuration = function TableModuleConfiguration() {
   return "Table configuration"
 }
