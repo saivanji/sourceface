@@ -16,4 +16,7 @@ ReactDOM.render(
 
 // TODO:
 // Table module configuration
+// Add other modules?
 // Modules grid
+// Improve / Change editor UI? start with a feature approach
+// Pages
