@@ -1,6 +1,7 @@
 import React from "react"
 import * as yup from "yup"
 import * as system from "@sourceface/style"
+import { Row, Label } from "packages/kit"
 import styles from "./index.scss"
 
 // every module should have correspoding loader(depending on type)
@@ -23,7 +24,7 @@ function TextModule({ config, fetching }) {
 }
 
 TextModule.Configuration = function TextModuleConfiguration({
-  components: { Form, Input, Select, Row, Label },
+  components: { Form, Input, Select },
 }) {
   return (
     <Form validationSchema={TextModule.validationSchema}>

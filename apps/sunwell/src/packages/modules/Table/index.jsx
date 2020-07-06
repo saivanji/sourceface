@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react"
+import * as yup from "yup"
 import moment from "moment"
-import { Table, Pagination } from "packages/kit"
+import { Table, Pagination, Row, Label } from "packages/kit"
 import styles from "./index.scss"
 
 function TableModule({ config, fetching }) {
@@ -74,10 +75,42 @@ function TableModule({ config, fetching }) {
   )
 }
 
+TableModule.defaultValues = {
+  items: "",
+}
+
+TableModule.validationSchema = yup.object().shape({
+  items: yup.string(),
+})
+
 TableModule.Configuration = function TableModuleConfiguration({
-  components: { Form, Input, Select, Row, Label },
+  components: { Form, Input },
 }) {
-  return "Table configuration"
+  return (
+    <Form validationSchema={TableModule.validationSchema}>
+      <Row>
+        <Label title="Data">
+          <Input name="items" type="text" />
+        </Label>
+      </Row>
+      Pagination:
+      <Row>
+        <Label title="Items per page">
+          <Input name="limit" type="text" />
+        </Label>
+      </Row>
+      <Row>
+        <Label title="Total count">
+          <Input name="totalCount" type="text" />
+        </Label>
+      </Row>
+      <Row>
+        <Label title="Current page">
+          <Input name="currentPage" type="text" />
+        </Label>
+      </Row>
+    </Form>
+  )
 }
 
 export default TableModule

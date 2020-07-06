@@ -5,7 +5,7 @@ import * as engine from "packages/engine"
 import { context } from "./"
 
 export function Value({ expression, expressions, constants, children }) {
-  const [data, { fetching }] = useExpressionsQuery(
+  const [data, { fetching }] = useExpressions(
     expression || expressions,
     constants
   )
@@ -23,7 +23,7 @@ export function Template({ value, constants, children }) {
   // TODO: fix, component should return the same amount of hooks on every render
   if (!expressions.length) return !children ? value : children({ data: value })
 
-  const [data, { fetching }] = useExpressionsQuery(expressions, constants)
+  const [data, { fetching }] = useExpressions(expressions, constants)
 
   if (!data) {
     return "Initial loading..."
@@ -36,7 +36,8 @@ export function Template({ value, constants, children }) {
 
 // export function Effect({ expression }) {}
 
-const useExpressionsQuery = (input, constants) => {
+// TODO: in case expression return value has no commands, do not send request to server
+const useExpressions = (input, constants) => {
   const { commands } = useContext(context)
   const requests = evaluateMany(input, createScope(commands, constants))
 

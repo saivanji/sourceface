@@ -16,6 +16,14 @@ ReactDOM.render(
 
 // TODO:
 // Table module configuration
+// - Sections Accordion
+// - Checkbox
+// - Expression value without fetching
+// - Required validation of configuration field
+// - Scope Tabs
+// - Total count and current page are required and by default will have internal variables as values
+// - Think of having generic way for providing string and other data type input, since it's inconsistent for the user to have 2 inputs(template and expression)
+//   - If braces are provided - then consider as template, otherthise as expression?
 // Add other modules?
 // Modules grid
 // Improve / Change editor UI? start with a feature approach

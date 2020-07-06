@@ -20,6 +20,7 @@ export function Field({ name, onChange, component: Component, ...props }) {
   return (
     <Component
       {...props}
+      style={{ width: "100%" }}
       value={value}
       onChange={event => {
         // console.log(validationSchema.fields[name].validateSync(value))
