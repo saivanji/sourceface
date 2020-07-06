@@ -1,12 +1,10 @@
 import React, { createContext, useContext } from "react"
-import { mergeRight } from "ramda"
 import { context as configContext } from "./Configuration"
 
 const context = createContext({})
 
-export default function Form({ defaultValues, validationSchema, children }) {
-  const config = useContext(configContext)
-  const values = mergeRight(defaultValues, config)
+export default function Form({ validationSchema, children }) {
+  const values = useContext(configContext)
 
   return (
     <context.Provider value={{ values, validationSchema }}>

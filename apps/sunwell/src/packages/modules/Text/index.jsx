@@ -22,15 +22,11 @@ function TextModule({ config, fetching }) {
   )
 }
 
-// TODO: most likely default values does not need to be passed since the module is created with default values and they will be passed as values to the form
 TextModule.Configuration = function TextModuleConfiguration({
   components: { Form, Input, Select, Row, Label },
 }) {
   return (
-    <Form
-      defaultValues={TextModule.defaultValues}
-      validationSchema={TextModule.validationSchema}
-    >
+    <Form validationSchema={TextModule.validationSchema}>
       <Row>
         <Label title="Text">
           <Input name="value" type="text" />

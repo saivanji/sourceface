@@ -7,9 +7,9 @@ import styles from "./index.scss"
 export default function Pagination(
   {
     className,
-    pageCount,
-    selectedPage,
     onPageClick,
+    selectedPage = 1,
+    pageCount = 1,
     pageMargin = 1,
     pageSurroundings = 2,
     ...props

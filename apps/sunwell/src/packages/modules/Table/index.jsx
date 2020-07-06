@@ -74,7 +74,9 @@ function TableModule({ config, fetching }) {
   )
 }
 
-TableModule.Configuration = function TableModuleConfiguration() {
+TableModule.Configuration = function TableModuleConfiguration({
+  components: { Form, Input, Select, Row, Label },
+}) {
   return "Table configuration"
 }
 
