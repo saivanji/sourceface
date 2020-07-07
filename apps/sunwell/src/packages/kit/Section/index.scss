@@ -1,0 +1,9 @@
+@import "~@sourceface/style/index.scss";
+
+.title {
+  font-weight: 700;
+  display: block;
+  margin-bottom: $value-2;
+  padding-bottom: $value-1;
+  border-bottom: 1px solid $color-gray-300;
+}

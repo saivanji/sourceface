@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react"
 import * as yup from "yup"
 import moment from "moment"
-import { Table, Pagination, Row, Label } from "packages/kit"
+import { Table, Pagination, Row, Label, Section } from "packages/kit"
 import styles from "./index.scss"
 
 function TableModule({ config, fetching }) {
@@ -14,6 +14,10 @@ function TableModule({ config, fetching }) {
     offset,
   ])
   const expressions = useMemo(() => [config.items, config.count], [config])
+
+  if (!config.items) {
+    return <div>No items</div>
+  }
 
   return (
     <fetching.Value expressions={expressions} constants={constants}>
@@ -88,27 +92,30 @@ TableModule.Configuration = function TableModuleConfiguration({
 }) {
   return (
     <Form validationSchema={TableModule.validationSchema}>
-      <Row>
-        <Label title="Data">
-          <Input name="items" type="text" />
-        </Label>
-      </Row>
-      Pagination:
-      <Row>
-        <Label title="Items per page">
-          <Input name="limit" type="text" />
-        </Label>
-      </Row>
-      <Row>
-        <Label title="Total count">
-          <Input name="totalCount" type="text" />
-        </Label>
-      </Row>
-      <Row>
-        <Label title="Current page">
-          <Input name="currentPage" type="text" />
-        </Label>
-      </Row>
+      <Section title="Basic">
+        <Row>
+          <Label title="Data">
+            <Input name="items" type="text" />
+          </Label>
+        </Row>
+      </Section>
+      <Section title="Pagination">
+        <Row>
+          <Label title="Items per page">
+            <Input name="limit" type="text" />
+          </Label>
+        </Row>
+        <Row>
+          <Label title="Total count">
+            <Input name="totalCount" type="text" />
+          </Label>
+        </Row>
+        <Row>
+          <Label title="Current page">
+            <Input name="currentPage" type="text" />
+          </Label>
+        </Row>
+      </Section>
     </Form>
   )
 }

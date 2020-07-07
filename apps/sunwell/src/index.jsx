@@ -16,7 +16,6 @@ ReactDOM.render(
 
 // TODO:
 // Table module configuration
-// - Sections Accordion
 // - Checkbox
 // - Expression value without fetching
 // - Required validation of configuration field
@@ -26,6 +25,8 @@ ReactDOM.render(
 //   - If braces are provided - then consider as template, otherthise as expression?
 // Add other modules?
 // Modules grid
+//  - Should we replicate size of a draggable source or use a simple line instead?
+//  - Implement nesting
 // Improve / Change editor UI? start with a feature approach
 // Pages
 // Performance optimizations
