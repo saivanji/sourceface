@@ -81,6 +81,7 @@ function TableModule({ config, fetching }) {
 
 TableModule.defaultValues = {
   items: "",
+  pagination: true,
 }
 
 TableModule.validationSchema = yup.object().shape({
@@ -88,7 +89,8 @@ TableModule.validationSchema = yup.object().shape({
 })
 
 TableModule.Configuration = function TableModuleConfiguration({
-  components: { Form, Input },
+  components: { Form, Input, Checkbox },
+  config,
 }) {
   return (
     <Form validationSchema={TableModule.validationSchema}>
@@ -101,20 +103,27 @@ TableModule.Configuration = function TableModuleConfiguration({
       </Section>
       <Section title="Pagination">
         <Row>
-          <Label title="Items per page">
-            <Input name="limit" type="text" />
-          </Label>
+          <Checkbox name="pagination" label="Enabled" />
         </Row>
-        <Row>
-          <Label title="Total count">
-            <Input name="totalCount" type="text" />
-          </Label>
-        </Row>
-        <Row>
-          <Label title="Current page">
-            <Input name="currentPage" type="text" />
-          </Label>
-        </Row>
+        {config.pagination && (
+          <>
+            <Row>
+              <Label title="Items per page">
+                <Input name="limit" type="text" />
+              </Label>
+            </Row>
+            <Row>
+              <Label title="Total count">
+                <Input name="totalCount" type="text" />
+              </Label>
+            </Row>
+            <Row>
+              <Label title="Current page">
+                <Input name="currentPage" type="text" />
+              </Label>
+            </Row>
+          </>
+        )}
       </Section>
     </Form>
   )

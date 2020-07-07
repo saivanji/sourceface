@@ -16,7 +16,6 @@ ReactDOM.render(
 
 // TODO:
 // Table module configuration
-// - Checkbox
 // - Expression value without fetching
 // - Required validation of configuration field
 // - Scope Tabs
@@ -31,6 +30,8 @@ ReactDOM.render(
 // Pages
 // Performance optimizations
 // Editor design(keep in mind mobile first approach)
+//  - Permissions will be defined in editor for every command(because they're related to the commands)?
+//    - Creating groups will be near users but assigning command to a group will be in command "permissions" tab
 //
 // Modules state
 // - 2 way binding vs 1 way binding, what's better?

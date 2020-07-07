@@ -19,6 +19,7 @@ export default function Configuration({ module, component: Component }) {
       Form,
       Input: populateField(kit.Input, onSave),
       Select: populateField(kit.Select, onSave),
+      Checkbox: populateField(kit.Checkbox, onSave),
     }),
     [onSave]
   )
