@@ -1,3 +1,4 @@
+//
 // Have it as sql driver instead and user will choose specific dialects?
 //
 // use raw pg driver instead of pg promise?
@@ -12,6 +13,7 @@ export const execute = async (config, args, state) => {
   config = mergeRight(defaultConfig, config)
 
   const result = await state.cn[results[config.result]](
+    // TODO: prevent from SQL injections
     engine.render(config.value, { constants: args })
   )
 
