@@ -4,7 +4,7 @@ import moment from "moment"
 import { Table, Pagination, Row, Label, Section } from "packages/kit"
 import styles from "./index.scss"
 
-function TableModule({ config, fetching }) {
+function TableModule({ config, expression }) {
   const [page, setPage] = useState(0)
   const limit = 10
   const offset = limit * page
@@ -20,7 +20,7 @@ function TableModule({ config, fetching }) {
   }
 
   return (
-    <fetching.Value expressions={expressions} constants={constants}>
+    <expression.Value input={expressions} constants={constants}>
       {({ data: [rows, count] }) => (
         <Table>
           <Table.Thead>
@@ -75,7 +75,7 @@ function TableModule({ config, fetching }) {
           </Table.Tfoot>
         </Table>
       )}
-    </fetching.Value>
+    </expression.Value>
   )
 }
 

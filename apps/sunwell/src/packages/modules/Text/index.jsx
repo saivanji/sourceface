@@ -5,7 +5,7 @@ import { Row, Label } from "packages/kit"
 import styles from "./index.scss"
 
 // every module should have correspoding loader(depending on type)
-function TextModule({ config, fetching }) {
+function TextModule({ config, expression }) {
   return (
     <span
       className={styles.root}
@@ -18,7 +18,7 @@ function TextModule({ config, fetching }) {
         color: config.color,
       }}
     >
-      <fetching.Template value={config.value} />
+      <expression.Template input={config.value} />
     </span>
   )
 }

@@ -4,11 +4,8 @@ import { useContext } from "react"
 import * as engine from "packages/engine"
 import { context } from "./"
 
-export function Value({ expression, expressions, constants, children }) {
-  const [data, { fetching }] = useExpressions(
-    expression || expressions,
-    constants
-  )
+export function Value({ input, constants, children }) {
+  const [data, { fetching }] = useExpressions(input, constants)
 
   if (!data) {
     return "Initial loading..."
@@ -17,11 +14,11 @@ export function Value({ expression, expressions, constants, children }) {
   return children({ data, fetching })
 }
 
-export function Template({ value, constants, children }) {
-  const expressions = engine.parseTemplate(value)
+export function Template({ input, constants, children }) {
+  const expressions = engine.parseTemplate(input)
 
   // TODO: fix, component should return the same amount of hooks on every render
-  if (!expressions.length) return !children ? value : children({ data: value })
+  if (!expressions.length) return !children ? input : children({ data: input })
 
   const [data, { fetching }] = useExpressions(expressions, constants)
 
@@ -29,7 +26,7 @@ export function Template({ value, constants, children }) {
     return "Initial loading..."
   }
 
-  const replaced = engine.replaceTemplate(value, i => data[i])
+  const replaced = engine.replaceTemplate(input, i => data[i])
 
   return !children ? replaced || null : children({ data: replaced, fetching })
 }

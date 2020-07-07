@@ -13,7 +13,7 @@ import camelCase from "camelcase"
 import { useBooleanState } from "hooks/index"
 import { Frame, Editor, Module, Grid } from "components/index"
 import * as modules from "packages/modules"
-import * as fetching from "./fetching"
+import * as expression from "./expression"
 import * as schema from "./schema"
 import Configuration from "./Configuration"
 
@@ -93,7 +93,7 @@ export default () => {
                     isEditable={isEditing}
                     isSelected={isEditing && selectedModuleId === module.id}
                     data={module}
-                    fetching={fetching}
+                    expression={expression}
                     component={modulesMap[module.type]}
                     onClick={onModuleClick}
                   />
