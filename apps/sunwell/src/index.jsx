@@ -28,6 +28,7 @@ ReactDOM.render(
 // Modules grid
 // Improve / Change editor UI? start with a feature approach
 // Pages
+// Editor design(keep in mind mobile first approach)
 //
 // Modules state
 // - 2 way binding vs 1 way binding, what's better?
