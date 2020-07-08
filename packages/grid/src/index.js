@@ -72,6 +72,8 @@ function Grid() {
 }
 
 // TODO:
+// Define UI approach of DnD
+//
 // Customize drag preview element
 // Implement drag handle
 // Define root grid component interface
