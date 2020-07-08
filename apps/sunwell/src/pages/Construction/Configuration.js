@@ -1,6 +1,6 @@
 import React, { createContext, useMemo, useCallback } from "react"
 import { useMutation } from "urql"
-import * as kit from "packages/kit"
+import { Input, Select, Checkbox, Tabs } from "packages/kit"
 import Form, { populateField } from "./Form"
 import * as schema from "./schema"
 
@@ -17,20 +17,27 @@ export default function Configuration({ module, component: Component }) {
   const components = useMemo(
     () => ({
       Form,
-      Input: populateField(kit.Input, onSave),
-      Select: populateField(kit.Select, onSave),
-      Checkbox: populateField(kit.Checkbox, onSave),
+      Input: populateField(Input, onSave),
+      Select: populateField(Select, onSave),
+      Checkbox: populateField(Checkbox, onSave),
     }),
     [onSave]
   )
 
+  // TODO: should tabs be in a different place?
   return (
     <context.Provider value={module.config}>
-      <Component
-        key={module.id}
-        config={module.config}
-        components={components}
-      />
+      <Tabs>
+        <Tabs.Header>
+          <Tabs.Tab isSelected>Configuration</Tabs.Tab>
+          <Tabs.Tab>Scope</Tabs.Tab>
+        </Tabs.Header>
+        <Component
+          key={module.id}
+          config={module.config}
+          components={components}
+        />
+      </Tabs>
     </context.Provider>
   )
 }

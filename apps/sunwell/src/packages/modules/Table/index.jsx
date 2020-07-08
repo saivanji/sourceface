@@ -93,6 +93,8 @@ TableModule.defaultValues = {
 TableModule.validationSchema = yup.object().shape({
   items: yup.string(),
   limit: yup.string().required(),
+  pagination: yup.boolean().required(),
+  // TODO: depending whether pagination is selected, other values are required
 })
 
 TableModule.Configuration = function TableModuleConfiguration({
