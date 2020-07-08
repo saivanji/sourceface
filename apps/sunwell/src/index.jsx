@@ -16,13 +16,12 @@ ReactDOM.render(
 
 // TODO:
 // Table module configuration
-// - Required validation of configuration field
 // - Scope Tabs
 // - Total count and current page are required and by default will have internal variables as values
 // - Think of having generic way for providing string and other data type input, since it's inconsistent for the user to have 2 inputs(template and expression)
 //   - If braces are provided - then consider as template, otherthise as expression
 //    - How to allow a user provide a string to input by default not surrounded by quotes? Dirty solution is to separate expressions and templates and provide ability to switch with a checkbox
-// Add other modules?
+// Add other modules? Input, Button
 // Modules grid
 //  - Should we replicate size of a draggable source or use a simple line instead?
 //  - Implement nesting

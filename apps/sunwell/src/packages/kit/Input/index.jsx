@@ -1,3 +1,9 @@
 import React from "react"
+import styles from "./index.scss"
 
-export default props => <input {...props} />
+export default ({ error, ...props }) => (
+  <>
+    <input {...props} />
+    {error && <span className={styles.error}>{error}</span>}
+  </>
+)

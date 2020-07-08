@@ -8,6 +8,7 @@ function TableModule({ config, expression }) {
   const [page, setPage] = useState(0)
   const limit = 10
   const offset = limit * page
+  // TODO: how to pass "limit" variable from `Value` in one evaluation loop?
   const constants = useMemo(() => ({ page, limit, offset }), [
     page,
     limit,
@@ -56,26 +57,28 @@ function TableModule({ config, expression }) {
               </Table.Tr>
             ))}
           </Table.Tbody>
-          <Table.Tfoot>
-            <Table.Tr>
-              <Table.Td colSpan={8}>
-                <div className={styles.footer}>
-                  <div className={styles.paginationInfo}>
-                    Showing <span>{offset + 1}</span> to{" "}
-                    <span>{limit * (page + 1)}</span> of <span>{count}</span>{" "}
-                    results
+          {config.pagination && limit !== 0 && (
+            <Table.Tfoot>
+              <Table.Tr>
+                <Table.Td colSpan={8}>
+                  <div className={styles.footer}>
+                    <div className={styles.paginationInfo}>
+                      Showing <span>{offset + 1}</span> to{" "}
+                      <span>{limit * (page + 1)}</span> of <span>{count}</span>{" "}
+                      results
+                    </div>
+                    <Pagination
+                      className={styles.pagination}
+                      pageCount={Math.ceil(count / limit)}
+                      selectedPage={page}
+                      pageSurroundings={1}
+                      onPageClick={setPage}
+                    />
                   </div>
-                  <Pagination
-                    className={styles.pagination}
-                    pageCount={Math.ceil(count / limit)}
-                    selectedPage={page}
-                    pageSurroundings={1}
-                    onPageClick={setPage}
-                  />
-                </div>
-              </Table.Td>
-            </Table.Tr>
-          </Table.Tfoot>
+                </Table.Td>
+              </Table.Tr>
+            </Table.Tfoot>
+          )}
         </Table>
       )}
     </expression.Value>
@@ -89,6 +92,7 @@ TableModule.defaultValues = {
 
 TableModule.validationSchema = yup.object().shape({
   items: yup.string(),
+  limit: yup.string().required(),
 })
 
 TableModule.Configuration = function TableModuleConfiguration({
@@ -117,7 +121,7 @@ TableModule.Configuration = function TableModuleConfiguration({
             </Row>
             <Row>
               <Label title="Total count">
-                <Input name="totalCount" type="text" />
+                <Input name="count" type="text" />
               </Label>
             </Row>
             <Row>
