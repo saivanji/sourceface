@@ -8,6 +8,7 @@ import Lines from "./Lines";
 function Grid() {
   const [{ x, y }, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setDragging] = useState(false);
+
   const container = useRef();
   const target = useRef({ x, y });
 
@@ -46,9 +47,10 @@ function Grid() {
         style={{ position: "relative", height: 500 }}
       >
         <Item
-          containerWidth={container.current?.width}
+          isDragging={isDragging}
           x={x}
           y={y}
+          containerWidth={container.current?.width}
           rows={rows}
           cols={cols}
           rowHeight={rowHeight}
@@ -72,6 +74,7 @@ function Grid() {
 // TODO:
 // Consider source boundaries while drag
 // Move element only when half area was hovered
-// Reduce width to 100px of drag preview
+// Reduce width to 100px of drag preview and replace it by image
+// If draggable item is having lot of rows, limit them to a static value
 
 ReactDOM.render(<Grid />, document.getElementById("root"));

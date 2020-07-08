@@ -5,6 +5,7 @@ const itemWidth = 1;
 const itemHeight = 1;
 
 export default function Item({
+  isDragging,
   x,
   y,
   cols,
