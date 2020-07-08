@@ -39,6 +39,7 @@ export const evaluate = (input, scope) => {
 // There will be arithmetic operations introduced with constants and primitives(number), in place where we can put value(constant or literal) we can put arithmetic operation since it's return type is a value
 // Think of having generic way for providing string and other data type input, since it's inconsistent for the user to have 2 inputs(template and expression)
 //   - If braces are provided - then consider as template, otherthise as expression?
+//    - Most likely no, since it's inconvenient to wrap text in a quotes in case string is needed by default
 // Think of having conditions inside of templates
 //
 // -- Conceptions --

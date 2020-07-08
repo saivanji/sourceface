@@ -13,7 +13,10 @@ function TableModule({ config, expression }) {
     limit,
     offset,
   ])
-  const expressions = useMemo(() => [config.items, config.count], [config])
+  const expressions = useMemo(
+    () => [config.items, config.count, config.limit],
+    [config]
+  )
 
   if (!config.items) {
     return <div>No items</div>
@@ -21,7 +24,7 @@ function TableModule({ config, expression }) {
 
   return (
     <expression.Value input={expressions} constants={constants}>
-      {({ data: [rows, count] }) => (
+      {({ data: [rows, count, limit] }) => (
         <Table>
           <Table.Thead>
             <Table.Tr>

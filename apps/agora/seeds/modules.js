@@ -44,6 +44,8 @@ export default (db, pgp) =>
             config: {
               items: "~commands.listOrders limit, offset",
               count: "~commands.countOrders",
+              limit: 10,
+              pagination: true,
             },
           },
         ],
