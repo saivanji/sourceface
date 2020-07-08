@@ -72,9 +72,15 @@ function Grid() {
 }
 
 // TODO:
+// Customize drag preview element
+// Implement drag handle
+// Define root grid component interface
+//
 // Consider source boundaries while drag
 // Move element only when half area was hovered
-// Reduce width to 100px of drag preview and replace it by image
+//
 // If draggable item is having lot of rows, limit them to a static value
+//
+// Have stacking and free movement at the same time
 
 ReactDOM.render(<Grid />, document.getElementById("root"));

@@ -53,6 +53,6 @@ const renderLine = (x1, y1, x2, y2) => `
     y1="${y1}"
     x2="${x2}"
     y2="${y2}"
-    style="stroke: skyblue; stroke-width: 1"
+    style="stroke: skyblue; stroke-width: 1; stroke-dasharray: 10, 10;"
   />
 `;

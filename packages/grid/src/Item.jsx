@@ -1,8 +1,8 @@
 import React from "react";
 import * as utils from "./utils";
 
-const itemWidth = 1;
-const itemHeight = 1;
+const itemWidth = 3;
+const itemHeight = 4;
 
 export default function Item({
   isDragging,
@@ -14,16 +14,20 @@ export default function Item({
   onDragStart,
   onDragEnd
 }) {
+  console.log(isDragging);
+
   return (
     <div
-      onDragStart={onDragStart}
-      onDragEnd={onDragEnd}
       draggable
+      onDragStart={event => {
+        return onDragStart && onDragStart(event);
+      }}
+      onDragEnd={onDragEnd}
       style={{
         transition: "transform .15s ease-out",
         position: "absolute",
         zIndex: 1,
-        backgroundColor: "darkcyan",
+        backgroundColor: isDragging ? "lightGray" : "darkcyan",
         height: utils.calcYCSS(itemHeight, rowHeight),
         ...(!containerWidth
           ? {
