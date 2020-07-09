@@ -14,25 +14,24 @@ export default function Item({
       const { left, top } = e.target.getBoundingClientRect();
       const shiftX = e.clientX - left;
       const shiftY = e.clientY - top;
-      onDragStart();
 
-      // TODO: use container node instead
-      document.body.onmousemove = e => {
-        console.log(shiftX, shiftY);
-        const x = e.pageX - shiftX;
-        const y = e.pageY - shiftY;
-
+      const move = e => {
         // // not allowing drag outside of a grid
         // if (cursorX < 0 || cursorY < 0) return;
 
-        e.target.style.transform = `translate(${x}px, ${y}px)`;
+        const x = e.pageX - shiftX;
+        const y = e.pageY - shiftY;
+        ref.current.style.transform = `translate(${x}px, ${y}px)`;
       };
+
+      onDragStart();
+      document.addEventListener("mousemove", move);
 
       ref.current.onmouseup = e => {
         ref.current.onmouseup = null;
-        document.body.onmousemove = null;
+        document.removeEventListener("mousemove", move);
 
-        e.target.style.transform = style.transform;
+        ref.current.style.transform = style.transform;
 
         onDragEnd();
       };

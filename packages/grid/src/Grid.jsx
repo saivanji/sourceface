@@ -17,7 +17,6 @@ export default function Grid({ children, rowHeight, rows, cols, layout }) {
 
         const { x, y, width, height } = layout[id];
 
-        const containerWidth = container?.offsetWidth;
         const pixelHeight = utils.calcPixelY(height, rowHeight);
         const pixelY = utils.calcPixelY(y, rowHeight);
         const pixelWidth =
