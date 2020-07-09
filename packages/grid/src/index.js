@@ -4,110 +4,117 @@ import "./index.css";
 import * as utils from "./utils";
 import Item from "./Item";
 import Lines from "./Lines";
+import Grid from "./Grid";
 
-const item = {
-  height: 3,
-  width: 2
-};
+// const item = {
+//   height: 3,
+//   width: 2
+// };
 
 const items = [
   {
     id: "john",
     text: "John",
-    x: 0,
-    y: 0,
-    height: 3,
-    width: 2,
     color: "darkCyan"
   }
 ];
 
-function Grid() {
-  const [{ x, y }, setPosition] = useState({ x: 0, y: 0 });
-  const [isDragging, setDragging] = useState(false);
+const layout = {
+  john: {
+    x: 0,
+    y: 0,
+    height: 3,
+    width: 2
+  }
+};
 
-  const container = useRef();
-  const target = useRef({ x, y });
+// function Grid() {
+//   const [{ x, y }, setPosition] = useState({ x: 0, y: 0 });
+//   const [isDragging, setDragging] = useState(false);
 
-  const rowHeight = 80;
-  const rows = 10; // infinite?
-  const cols = 8;
-  const containerWidth = container.current?.width;
+//   const container = useRef();
+//   const target = useRef({ x, y });
 
-  return (
-    <>
-      <div
-        onDragOver={e => {
-          const { x, y } = target.current;
-          const hoverX = utils.calcX(
-            e.pageX - container.current.element.offsetLeft,
-            cols,
-            container.current.width
-          );
-          const hoverY = utils.calcY(
-            e.pageY - container.current.element.offsetTop,
-            rowHeight
-          );
+//   const rowHeight = 80;
+//   const rows = 10; // infinite?
+//   const cols = 8;
+//   const containerWidth = container.current?.width;
 
-          if (hoverX === x && hoverY === y) return;
+//   return (
+//     <>
+//       <div
+//         onDragOver={e => {
+//           const { x, y } = target.current;
+//           const hoverX = utils.calcX(
+//             e.pageX - container.current.element.offsetLeft,
+//             cols,
+//             container.current.width
+//           );
+//           const hoverY = utils.calcY(
+//             e.pageY - container.current.element.offsetTop,
+//             rowHeight
+//           );
 
-          target.current.x = hoverX;
-          target.current.y = hoverY;
+//           if (hoverX === x && hoverY === y) return;
 
-          setPosition({ x: hoverX, y: hoverY });
-        }}
-        ref={element => {
-          if (!container.current && element) {
-            const { width, height } = element.getBoundingClientRect();
-            container.current = { width, height, element };
-          }
-        }}
-        style={{ position: "relative", height: 500 }}
-      >
-        <Item
-          style={{
-            height: utils.calcYCSS(item.height, rowHeight),
-            width: !containerWidth
-              ? utils.calcXCSSPercentage(item.width, cols)
-              : utils.calcXCSS(item.width, cols, containerWidth),
-            ...(!isDragging &&
-              (!containerWidth
-                ? {
-                    top: utils.calcYCSS(y, rowHeight),
-                    left: utils.calcXCSSPercentage(x, cols)
-                  }
-                : {
-                    transform: `translate(${utils.calcXCSS(
-                      x,
-                      cols,
-                      containerWidth
-                    )}px, ${utils.calcYCSS(y, rowHeight)}px)`
-                  }))
-          }}
-          onDrag={e => {
-            e.target.style.transform = `translate(${
-              e.pageX - container.current.element.offsetLeft
-            }px, ${e.pageY - container.current.element.offsetTop}px)`;
-          }}
-          onDragStart={() => setDragging(true)}
-          onDragEnd={e => {
-            e.target.style.transform = "";
-            setDragging(false);
-          }}
-        />
-        {isDragging && container.current && (
-          <Lines
-            style={{ position: "absolute", top: 0, left: 0 }}
-            rows={rows}
-            cols={cols}
-            rowHeight={rowHeight}
-            containerWidth={containerWidth}
-          />
-        )}
-      </div>
-    </>
-  );
-}
+//           target.current.x = hoverX;
+//           target.current.y = hoverY;
+
+//           setPosition({ x: hoverX, y: hoverY });
+//         }}
+//         ref={element => {
+//           if (!container.current && element) {
+//             const { width, height } = element.getBoundingClientRect();
+//             container.current = { width, height, element };
+//           }
+//         }}
+//         style={{ position: "relative", height: 500 }}
+//       >
+//         <Item
+//           style={{
+//             height: utils.calcYCSS(item.height, rowHeight),
+//             width: !containerWidth
+//               ? utils.calcXCSSPercentage(item.width, cols)
+//               : utils.calcXCSS(item.width, cols, containerWidth),
+//             ...(!isDragging &&
+//               (!containerWidth
+//                 ? {
+//                     top: utils.calcYCSS(y, rowHeight),
+//                     left: utils.calcXCSSPercentage(x, cols)
+//                   }
+//                 : {
+//                     transform: `translate(${utils.calcXCSS(
+//                       x,
+//                       cols,
+//                       containerWidth
+//                     )}px, ${utils.calcYCSS(y, rowHeight)}px)`
+//                   }))
+//           }}
+//           onDrag={e => {
+//             e.target.style.transform = `translate(${
+//               e.pageX - container.current.element.offsetLeft
+//             }px, ${e.pageY - container.current.element.offsetTop}px)`;
+//             console.log(e.target.style.transform);
+//           }}
+//           onDragStart={() => setDragging(true)}
+//           onDragEnd={e => {
+//             e.target.style.transform = "";
+//             setDragging(false);
+//           }}
+//         />
+//         {isDragging && container.current && (
+//           <Lines
+//             style={{ position: "absolute", top: 0, left: 0 }}
+//             rows={rows}
+//             cols={cols}
+//             rowHeight={rowHeight}
+//             containerWidth={containerWidth}
+//           />
+//         )}
+//       </div>
+//     </>
+//   );
+// }
 // Definition:
 // Drag preview - either original dimmed appearance, static placeholder image or colored bg (persisting dimensions) or generic card with static size. Most likely will have static size card with type of module
 // When drag preview reaches more than half of a cell - move it there
@@ -123,4 +130,16 @@ function Grid() {
 //
 // Have stacking and free movement at the same time
 
-ReactDOM.render(<Grid />, document.getElementById("root"));
+ReactDOM.render(
+  <Grid rowHeight={80} rows={10} cols={8} layout={layout}>
+    {items.map(item => (
+      <div
+        key={item.id}
+        style={{ width: "100%", height: "100%", backgroundColor: item.color }}
+      >
+        {item.text}
+      </div>
+    ))}
+  </Grid>,
+  document.getElementById("root")
+);
