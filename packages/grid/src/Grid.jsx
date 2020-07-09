@@ -14,8 +14,10 @@ export default function Grid({ children, rowHeight, rows, cols, layout }) {
       {React.Children.map(children, (item, i) => {
         const id = item.key;
         const isDragging = draggingId === id;
+
         const { x, y, width, height } = layout[id];
 
+        const containerWidth = container?.offsetWidth;
         const pixelHeight = utils.calcPixelY(height, rowHeight);
         const pixelY = utils.calcPixelY(y, rowHeight);
         const pixelWidth =
@@ -26,42 +28,20 @@ export default function Grid({ children, rowHeight, rows, cols, layout }) {
         const size = calcSize(cols, width, pixelWidth, pixelHeight);
         const position = calcPosition(cols, x, pixelX, pixelY);
 
+        const style = { ...size, ...position };
+
         return (
           <>
             <Item
-              {...layout[id]}
               key={item.key}
-              style={{
-                ...size,
-                ...position
-              }}
-              onDrag={e => {
-                const x =
-                  e.pageX - (e.clientX - e.target.getBoundingClientRect().left);
-                const y =
-                  e.pageY - (e.clientY - e.target.getBoundingClientRect().top);
-
-                // const cursorX = e.pageX - container.current?.offsetLeft;
-                // const cursorY = e.pageY - container.current?.offsetTop;
-                // // not allowing drag outside of a grid
-                // if (cursorX < 0 || cursorY < 0) return;
-                // const x = pixelX;
-                // const y = pixelY;
-                e.target.style.transform = `translate(${x}px, ${y}px)`;
-              }}
-              onDragStart={e => {
-                // console.log("start");
-                setDraggingId(id);
-              }}
-              onDragEnd={e => {
-                // console.log("end");
-                // e.target.style.transform = position.transform;
-                setDraggingId(null);
-              }}
+              isDragging={isDragging}
+              style={style}
+              onDragStart={() => setDraggingId(id)}
+              onDragEnd={() => setDraggingId(null)}
             >
               {item}
             </Item>
-            {isDragging && <Placeholder style={{ ...size, ...position }} />}
+            {isDragging && <Placeholder style={style} />}
           </>
         );
       })}
