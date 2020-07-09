@@ -6,11 +6,6 @@ import Item from "./Item";
 import Lines from "./Lines";
 import Grid from "./Grid";
 
-// const item = {
-//   height: 3,
-//   width: 2
-// };
-
 const items = [
   {
     id: "john",
@@ -21,8 +16,8 @@ const items = [
 
 const layout = {
   john: {
-    x: 0,
-    y: 0,
+    x: 1,
+    y: 2,
     height: 3,
     width: 2
   }
@@ -102,15 +97,6 @@ const layout = {
 //             setDragging(false);
 //           }}
 //         />
-//         {isDragging && container.current && (
-//           <Lines
-//             style={{ position: "absolute", top: 0, left: 0 }}
-//             rows={rows}
-//             cols={cols}
-//             rowHeight={rowHeight}
-//             containerWidth={containerWidth}
-//           />
-//         )}
 //       </div>
 //     </>
 //   );
@@ -135,7 +121,15 @@ ReactDOM.render(
     {items.map(item => (
       <div
         key={item.id}
-        style={{ width: "100%", height: "100%", backgroundColor: item.color }}
+        style={{
+          width: "100%",
+          height: "100%",
+          backgroundColor: item.color,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "2rem"
+        }}
       >
         {item.text}
       </div>
