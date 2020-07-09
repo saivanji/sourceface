@@ -33,8 +33,9 @@ export default function Grid({ children, rowHeight, rows, cols, layout }) {
           <>
             <Item
               key={item.key}
-              isDragging={isDragging}
               style={style}
+              isDragging={isDragging}
+              container={container}
               onDragStart={() => setDraggingId(id)}
               onDragEnd={() => setDraggingId(null)}
             >

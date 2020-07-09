@@ -3,6 +3,7 @@ import React, { useRef, useEffect } from "react";
 export default function Item({
   style,
   children,
+  container,
   isDragging,
   onDragStart,
   onDragEnd
@@ -10,31 +11,32 @@ export default function Item({
   const ref = useRef();
 
   useEffect(() => {
+    const { offsetLeft, offsetTop } = container.current;
+
     ref.current.onmousedown = e => {
+      if (e.which !== 1) return;
+
       const { left, top } = e.target.getBoundingClientRect();
       const shiftX = e.clientX - left;
       const shiftY = e.clientY - top;
 
       const move = e => {
-        // // not allowing drag outside of a grid
-        // if (cursorX < 0 || cursorY < 0) return;
+        const x = e.pageX - shiftX - offsetLeft;
+        const y = e.pageY - shiftY - offsetTop;
 
-        const x = e.pageX - shiftX;
-        const y = e.pageY - shiftY;
         ref.current.style.transform = `translate(${x}px, ${y}px)`;
+      };
+
+      const cleanup = () => {
+        document.removeEventListener("mouseup", cleanup);
+        document.removeEventListener("mousemove", move);
+        ref.current.style.transform = style.transform;
+        onDragEnd();
       };
 
       onDragStart();
       document.addEventListener("mousemove", move);
-
-      ref.current.onmouseup = e => {
-        ref.current.onmouseup = null;
-        document.removeEventListener("mousemove", move);
-
-        ref.current.style.transform = style.transform;
-
-        onDragEnd();
-      };
+      document.addEventListener("mouseup", cleanup);
     };
 
     return () => {
