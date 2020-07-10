@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import Grid from "./Grid";
@@ -14,10 +14,10 @@ const items = [
 
 const layout = {
   john: {
-    x: 1,
+    x: 2,
     y: 2,
     height: 1,
-    width: 1
+    width: 2
   }
 };
 
@@ -33,13 +33,38 @@ const layout = {
 // TODO:
 // Implement resizable
 //
-// Consider source boundaries while drag
-// Move element only when half area was hovered
+// Implement moving the element over the grid(that was implemented before)
+// - Consider source boundaries while drag
+// - Move element only when half area was hovered
+//
+// Implement updating the grid in respect to drag/resize
 //
 // Have stacking and free movement at the same time
 
+const Resize = forwardRef(function Resize({ position }, ref) {
+  const positions = {
+    nw: ["top", "left"],
+    sw: ["bottom", "left"],
+    ne: ["top", "right"],
+    se: ["bottom", "right"]
+  };
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        position: "absolute",
+        cursor: `${position}-resize`,
+        width: 20,
+        height: 20,
+        ...positions[position].reduce((acc, key) => ({ ...acc, [key]: 0 }), {})
+      }}
+    />
+  );
+});
+
 ReactDOM.render(
-  <Grid rowHeight={80} rows={10} cols={8} layout={layout}>
+  <Grid rowHeight={80} rows={10} cols={14} layout={layout}>
     {items.map(item => (
       <Item key={item.id}>
         {({ handleRef, resizable }) => (
@@ -54,6 +79,10 @@ ReactDOM.render(
               justifyContent: "center"
             }}
           >
+            <Resize ref={resizable.nwRef} position="nw" />
+            <Resize ref={resizable.swRef} position="sw" />
+            <Resize ref={resizable.neRef} position="ne" />
+            <Resize ref={resizable.seRef} position="se" />
             <div
               style={{
                 position: "absolute",

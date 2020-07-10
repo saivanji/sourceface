@@ -1,24 +1,40 @@
 import React, { useRef } from "react";
 import useDraggable from "./useDraggable";
+import useResizable from "./useResizable";
 
 export default function Item({
   style,
   containerRef,
   children,
-  onDragStart,
-  onDragEnd
+  onCustomizeStart,
+  onCustomizeEnd
 }) {
   const elementRef = useRef();
   const handleRef = useRef();
+  const nwRef = useRef();
+  const swRef = useRef();
+  const neRef = useRef();
+  const seRef = useRef();
+
   const isCustom = typeof children === "function";
 
   useDraggable({
+    containerRef,
     elementRef,
     handleRef: !isCustom ? elementRef : handleRef,
     style,
+    onDragStart: onCustomizeStart,
+    onDragEnd: onCustomizeEnd
+  });
+  useResizable({
     containerRef,
-    onDragStart,
-    onDragEnd
+    elementRef,
+    nwRef,
+    swRef,
+    neRef,
+    seRef,
+    onResizeStart: onCustomizeStart,
+    onResizeEnd: onCustomizeEnd
   });
 
   return (
@@ -31,7 +47,17 @@ export default function Item({
         ...style
       }}
     >
-      {!isCustom ? children : children({ handleRef })}
+      {!isCustom
+        ? children
+        : children({
+            handleRef,
+            resizable: {
+              nwRef,
+              swRef,
+              neRef,
+              seRef
+            }
+          })}
     </div>
   );
 }

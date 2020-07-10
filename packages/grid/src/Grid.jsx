@@ -4,7 +4,7 @@ import Placeholder from "./Placeholder";
 import * as utils from "./utils";
 
 export default function Grid({ children, rowHeight, rows, cols, layout }) {
-  const [draggingId, setDraggingId] = useState(null);
+  const [customizingId, setCustomizingId] = useState(null);
   const containerRef = useRef();
   const containerWidth = containerRef.current?.offsetWidth;
 
@@ -12,19 +12,12 @@ export default function Grid({ children, rowHeight, rows, cols, layout }) {
     <div ref={containerRef} style={{ position: "relative", height: 500 }}>
       {React.Children.map(children, (item, i) => {
         const id = item.key;
-        const isDragging = draggingId === id;
+        const isCustomizing = customizingId === id;
 
         const { x, y, width, height } = layout[id];
 
-        const pixelHeight = utils.calcPixelY(height, rowHeight);
-        const pixelY = utils.calcPixelY(y, rowHeight);
-        const pixelWidth =
-          containerWidth && utils.calcPixelX(width, cols, containerWidth);
-        const pixelX =
-          containerWidth && utils.calcPixelX(x, cols, containerWidth);
-
-        const size = calcSize(cols, width, pixelWidth, pixelHeight);
-        const position = calcPosition(cols, x, pixelX, pixelY);
+        const size = calcSize(containerWidth, cols, rowHeight, width, height);
+        const position = calcPosition(containerWidth, cols, rowHeight, x, y);
 
         const style = { ...size, ...position };
 
@@ -33,14 +26,14 @@ export default function Grid({ children, rowHeight, rows, cols, layout }) {
             {cloneElement(item, {
               style,
               containerRef,
-              onDragStart: () => setDraggingId(id),
-              onDragEnd: () => setDraggingId(null)
+              onCustomizeStart: () => setCustomizingId(id),
+              onCustomizeEnd: () => setCustomizingId(null)
             })}
-            {isDragging && <Placeholder style={style} />}
+            {isCustomizing && <Placeholder style={style} />}
           </>
         );
       })}
-      {draggingId && containerWidth && (
+      {customizingId && containerWidth && (
         <Lines
           style={{ position: "absolute", top: 0, left: 0 }}
           rows={rows}
@@ -53,13 +46,28 @@ export default function Grid({ children, rowHeight, rows, cols, layout }) {
   );
 }
 
-const calcSize = (cols, width, pixelWidth, pixelHeight) => ({
-  width: pixelWidth || utils.calcPercentageX(width, cols),
-  height: pixelHeight
-});
+const calcSize = (containerWidth, cols, rowHeight, width, height) => {
+  const pixelHeight = utils.calcPixelY(height, rowHeight);
+  const pixelWidth =
+    containerWidth && utils.calcPixelX(width, cols, containerWidth);
 
-const calcPosition = (cols, x, pixelX, pixelY) =>
-  !pixelX
+  const minPixelWidth =
+    containerWidth && utils.calcPixelX(1, cols, containerWidth);
+  const minPixelHeight = utils.calcPixelY(1, rowHeight);
+
+  return {
+    width: pixelWidth || utils.calcPercentageX(width, cols),
+    height: pixelHeight,
+    minWidth: minPixelWidth || utils.calcPercentageX(1, cols),
+    minHeight: minPixelHeight
+  };
+};
+
+const calcPosition = (containerWidth, cols, rowHeight, x, y) => {
+  const pixelX = containerWidth && utils.calcPixelX(x, cols, containerWidth);
+  const pixelY = utils.calcPixelY(y, rowHeight);
+
+  return !pixelX
     ? {
         left: utils.calcPercentageX(x, cols),
         top: pixelY
@@ -67,3 +75,4 @@ const calcPosition = (cols, x, pixelX, pixelY) =>
     : {
         transform: `translate(${pixelX}px, ${pixelY}px)`
       };
+};
