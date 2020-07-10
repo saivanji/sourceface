@@ -1,9 +1,6 @@
-import React, { useState, useRef } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import * as utils from "./utils";
-import Item from "./Item";
-import Lines from "./Lines";
 import Grid from "./Grid";
 
 const items = [

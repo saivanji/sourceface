@@ -12,9 +12,12 @@ export default function Item({
 
   useEffect(() => {
     const { offsetLeft, offsetTop } = container.current;
+    const node = ref.current;
 
-    ref.current.onmousedown = e => {
+    node.onmousedown = e => {
       if (e.which !== 1) return;
+
+      node.style.cursor = "grabbing";
 
       const { left, top } = e.target.getBoundingClientRect();
       const shiftX = e.clientX - left;
@@ -24,13 +27,14 @@ export default function Item({
         const x = e.pageX - shiftX - offsetLeft;
         const y = e.pageY - shiftY - offsetTop;
 
-        ref.current.style.transform = `translate(${x}px, ${y}px)`;
+        node.style.transform = `translate(${x}px, ${y}px)`;
       };
 
       const cleanup = () => {
         document.removeEventListener("mouseup", cleanup);
         document.removeEventListener("mousemove", move);
-        ref.current.style.transform = style.transform;
+        node.style.transform = style.transform;
+        node.style.cursor = "";
         onDragEnd();
       };
 
@@ -40,7 +44,7 @@ export default function Item({
     };
 
     return () => {
-      ref.current.onmousedown = null;
+      node.onmousedown = null;
     };
   }, []);
 
