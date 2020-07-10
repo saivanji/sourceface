@@ -5,11 +5,11 @@ import * as utils from "./utils";
 
 export default function Grid({ children, rowHeight, rows, cols, layout }) {
   const [draggingId, setDraggingId] = useState(null);
-  const container = useRef();
-  const containerWidth = container.current?.offsetWidth;
+  const containerRef = useRef();
+  const containerWidth = containerRef.current?.offsetWidth;
 
   return (
-    <div ref={container} style={{ position: "relative", height: 500 }}>
+    <div ref={containerRef} style={{ position: "relative", height: 500 }}>
       {React.Children.map(children, (item, i) => {
         const id = item.key;
         const isDragging = draggingId === id;
@@ -32,7 +32,7 @@ export default function Grid({ children, rowHeight, rows, cols, layout }) {
           <>
             {cloneElement(item, {
               style,
-              container,
+              containerRef,
               onDragStart: () => setDraggingId(id),
               onDragEnd: () => setDraggingId(null)
             })}

@@ -42,9 +42,10 @@ ReactDOM.render(
   <Grid rowHeight={80} rows={10} cols={8} layout={layout}>
     {items.map(item => (
       <Item key={item.id}>
-        {({ handleRef }) => (
+        {({ handleRef, resizable }) => (
           <div
             style={{
+              position: "relative",
               width: "100%",
               height: "100%",
               backgroundColor: item.color,

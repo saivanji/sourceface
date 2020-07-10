@@ -3,7 +3,7 @@ import useDraggable from "./useDraggable";
 
 export default function Item({
   style,
-  container,
+  containerRef,
   children,
   onDragStart,
   onDragEnd
@@ -16,7 +16,7 @@ export default function Item({
     elementRef,
     handleRef: !isCustom ? elementRef : handleRef,
     style,
-    container,
+    containerRef,
     onDragStart,
     onDragEnd
   });

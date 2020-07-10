@@ -1,15 +1,15 @@
 import { useEffect } from "react";
 
 export default ({
+  containerRef,
   handleRef,
   elementRef,
   style,
-  container,
   onDragStart,
   onDragEnd
 }) => {
   useEffect(() => {
-    const { offsetLeft, offsetTop } = container.current;
+    const { offsetLeft, offsetTop } = containerRef.current;
     const handle = handleRef.current;
     const element = elementRef.current;
 
