@@ -31,7 +31,7 @@ const layout = {
 // When dragging keep original dimensions of a dragging element in a placeholder regardless how drag preview will look like
 
 // TODO:
-// Implement drag handle
+// Implement resizable
 //
 // Consider source boundaries while drag
 // Move element only when half area was hovered
@@ -42,19 +42,36 @@ ReactDOM.render(
   <Grid rowHeight={80} rows={10} cols={8} layout={layout}>
     {items.map(item => (
       <Item key={item.id}>
-        <div
-          style={{
-            width: "100%",
-            height: "100%",
-            backgroundColor: item.color,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "2rem"
-          }}
-        >
-          {item.text}
-        </div>
+        {({ handleRef }) => (
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              backgroundColor: item.color,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center"
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                top: -20,
+                left: -20
+              }}
+              ref={handleRef}
+            >
+              Handle
+            </div>
+            <span
+              style={{
+                fontSize: "2rem"
+              }}
+            >
+              {item.text}
+            </span>
+          </div>
+        )}
       </Item>
     ))}
   </Grid>,

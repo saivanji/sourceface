@@ -8,12 +8,13 @@ export default function Item({
   onDragStart,
   onDragEnd
 }) {
-  const element = useRef();
-  const handle = useRef();
+  const elementRef = useRef();
+  const handleRef = useRef();
+  const isCustom = typeof children === "function";
 
   useDraggable({
-    element,
-    handle: typeof element !== "function" ? element : handle,
+    elementRef,
+    handleRef: !isCustom ? elementRef : handleRef,
     style,
     container,
     onDragStart,
@@ -22,7 +23,7 @@ export default function Item({
 
   return (
     <div
-      ref={element}
+      ref={elementRef}
       style={{
         position: "absolute",
         userSelect: "none",
@@ -30,7 +31,7 @@ export default function Item({
         ...style
       }}
     >
-      {children}
+      {!isCustom ? children : children({ handleRef })}
     </div>
   );
 }

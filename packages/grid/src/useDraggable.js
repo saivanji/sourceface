@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 
 export default ({
-  handle,
-  element,
+  handleRef,
+  elementRef,
   style,
   container,
   onDragStart,
@@ -10,15 +10,15 @@ export default ({
 }) => {
   useEffect(() => {
     const { offsetLeft, offsetTop } = container.current;
-    const node = handle.current;
+    const handle = handleRef.current;
+    const element = elementRef.current;
 
-    node.onmousedown = e => {
+    handle.onmousedown = e => {
       if (e.which !== 1) return;
 
-      node.style.cursor = "grabbing";
+      handle.style.cursor = "grabbing";
 
-      // TODO: element instead of e.target
-      const { left, top } = e.target.getBoundingClientRect();
+      const { left, top } = element.getBoundingClientRect();
       const shiftX = e.clientX - left;
       const shiftY = e.clientY - top;
 
@@ -26,14 +26,14 @@ export default ({
         const x = e.pageX - shiftX - offsetLeft;
         const y = e.pageY - shiftY - offsetTop;
 
-        node.style.transform = `translate(${x}px, ${y}px)`;
+        element.style.transform = `translate(${x}px, ${y}px)`;
       };
 
       const cleanup = () => {
         document.removeEventListener("mouseup", cleanup);
         document.removeEventListener("mousemove", move);
-        node.style.transform = style.transform;
-        node.style.cursor = "";
+        element.style.transform = style.transform;
+        handle.style.cursor = "";
         onDragEnd();
       };
 
@@ -43,7 +43,7 @@ export default ({
     };
 
     return () => {
-      node.onmousedown = null;
+      handle.onmousedown = null;
     };
   }, []);
 };
