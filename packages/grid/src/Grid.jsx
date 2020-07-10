@@ -1,5 +1,4 @@
-import React, { useState, useRef } from "react";
-import Item from "./Item";
+import React, { cloneElement, useState, useRef } from "react";
 import Lines from "./Lines";
 import Placeholder from "./Placeholder";
 import * as utils from "./utils";
@@ -31,16 +30,12 @@ export default function Grid({ children, rowHeight, rows, cols, layout }) {
 
         return (
           <>
-            <Item
-              key={item.key}
-              style={style}
-              isDragging={isDragging}
-              container={container}
-              onDragStart={() => setDraggingId(id)}
-              onDragEnd={() => setDraggingId(null)}
-            >
-              {item}
-            </Item>
+            {cloneElement(item, {
+              style,
+              container,
+              onDragStart: () => setDraggingId(id),
+              onDragEnd: () => setDraggingId(null)
+            })}
             {isDragging && <Placeholder style={style} />}
           </>
         );

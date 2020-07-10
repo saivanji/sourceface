@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import Grid from "./Grid";
+import Item from "./Item";
 
 const items = [
   {
@@ -40,21 +41,64 @@ const layout = {
 ReactDOM.render(
   <Grid rowHeight={80} rows={10} cols={8} layout={layout}>
     {items.map(item => (
-      <div
-        key={item.id}
-        style={{
-          width: "100%",
-          height: "100%",
-          backgroundColor: item.color,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: "2rem"
-        }}
-      >
-        {item.text}
-      </div>
+      <Item key={item.id}>
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            backgroundColor: item.color,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "2rem"
+          }}
+        >
+          {item.text}
+        </div>
+      </Item>
     ))}
   </Grid>,
   document.getElementById("root")
 );
+
+// <>
+//   <Draggable>
+//     <div>Element</div>
+//   </Draggable>
+//   <Draggable>
+//     {({ ref }) => (
+//       <div>
+//         <span ref={ref}>Handle</span>Element
+//       </div>
+//     )}
+//   </Draggable>
+//   <Resizable>
+//     {({ tlRef, trRef, blRef, brRef }) => (
+//       <div>
+//         <span ref={tlRef}>tl</span>
+//         <span ref={trRef}>tr</span>
+//         Element
+//         <span ref={blRef}>bl</span>
+//         <span ref={brRef}>br</span>
+//       </div>
+//     )}
+//   </Resizable>
+// </>;
+//
+//
+// <>
+//   <Item>
+//     <div>Element</div>
+//   </Item>
+//   <Item>
+//     {({ draggable, resizable }) => (
+//       <div>
+//         <span ref={resizable.tl}>tl</span>
+//         <span ref={resizable.tr}>tr</span>
+//         <span ref={draggable}>Handle</span>Element
+//         <span ref={resizable.bl}>bl</span>
+//         <span ref={resizable.br}>br</span>
+//       </div>
+//     )}
+//   </Item>
+// </>;
