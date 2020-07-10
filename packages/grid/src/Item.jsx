@@ -8,13 +8,21 @@ export default function Item({
   onDragStart,
   onDragEnd
 }) {
-  const draggable = useRef();
+  const element = useRef();
+  const handle = useRef();
 
-  useDraggable({ ref: draggable, style, container, onDragStart, onDragEnd });
+  useDraggable({
+    element,
+    handle: typeof element !== "function" ? element : handle,
+    style,
+    container,
+    onDragStart,
+    onDragEnd
+  });
 
   return (
     <div
-      ref={draggable}
+      ref={element}
       style={{
         position: "absolute",
         userSelect: "none",

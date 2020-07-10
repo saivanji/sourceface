@@ -1,15 +1,23 @@
 import { useEffect } from "react";
 
-export default ({ ref, style, container, onDragStart, onDragEnd }) => {
+export default ({
+  handle,
+  element,
+  style,
+  container,
+  onDragStart,
+  onDragEnd
+}) => {
   useEffect(() => {
     const { offsetLeft, offsetTop } = container.current;
-    const node = ref.current;
+    const node = handle.current;
 
     node.onmousedown = e => {
       if (e.which !== 1) return;
 
       node.style.cursor = "grabbing";
 
+      // TODO: element instead of e.target
       const { left, top } = e.target.getBoundingClientRect();
       const shiftX = e.clientX - left;
       const shiftY = e.clientY - top;

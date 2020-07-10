@@ -92,10 +92,10 @@ ReactDOM.render(
 //   </Item>
 //   <Item>
 //     {({ draggable, resizable }) => (
-//       <div>
+//       <div ref={draggable.element}>
 //         <span ref={resizable.tl}>tl</span>
 //         <span ref={resizable.tr}>tr</span>
-//         <span ref={draggable}>Handle</span>Element
+//         <span ref={draggable.handle}>Handle</span>Element
 //         <span ref={resizable.bl}>bl</span>
 //         <span ref={resizable.br}>br</span>
 //       </div>
