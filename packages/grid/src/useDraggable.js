@@ -9,6 +9,7 @@ export default ({
   onDragEnd
 }) => {
   useEffect(() => {
+    // TODO: replace
     const { offsetLeft, offsetTop } = containerRef.current;
     const handle = handleRef.current;
     const element = elementRef.current;

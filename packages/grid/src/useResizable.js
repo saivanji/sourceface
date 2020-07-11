@@ -1,85 +1,61 @@
 import { useEffect } from "react";
 
 export default ({
-  containerRef,
   elementRef,
   nwRef,
   swRef,
   neRef,
   seRef,
-  // minWidth = 100,
-  // minHeight,
   onResizeStart,
   onResizeEnd
 }) => {
   useEffect(() => {
-    const { offsetLeft, offsetTop } = containerRef.current;
     const element = elementRef.current;
-    // const nw = nwRef.current;
-    // const sw = swRef.current;
+    const nw = nwRef.current;
+    const sw = swRef.current;
     const ne = neRef.current;
     const se = seRef.current;
 
-    // wrong resize on scroll
-    // - take scroll into the account
     // dimensions are wrecked on customize end
+    // limit height and width
+    // can not resize multiple times without refreshing the page
 
-    const cleanNe =
-      ne &&
-      resize(
-        ne,
-        element,
-        (e, { left, top, height }) => {
-          const w = e.clientX - left;
-          const h = top + height - e.clientY;
-          const x = left;
-          const y = limit(top - (top - e.clientY), top) + window.scrollY;
-
-          element.style.width = `${w}px`;
-          element.style.height = `${h}px`;
-          element.style.transform = `translate(${x - offsetLeft}px, ${
-            y - offsetTop
-          }px)`;
-        },
-        onResizeStart,
-        onResizeEnd
-      );
-
-    const cleanSe =
-      se &&
-      resize(
-        se,
-        element,
-        (e, { left, top }) => {
-          const w = e.clientX - left;
-          const h = e.clientY - top;
-
-          element.style.width = `${w}px`;
-          element.style.height = `${h}px`;
-        },
-        onResizeStart,
-        onResizeEnd
-      );
+    const cleanup = [
+      nw && resize(nw, element, "nw", onResizeStart, onResizeEnd),
+      sw && resize(sw, element, "sw", onResizeStart, onResizeEnd),
+      ne && resize(ne, element, "ne", onResizeStart, onResizeEnd),
+      se && resize(se, element, "se", onResizeStart, onResizeEnd)
+    ];
 
     return () => {
-      cleanNe && cleanNe();
-      cleanSe && cleanSe();
+      for (let fn of cleanup) {
+        fn && fn();
+      }
     };
   }, []);
 };
 
-const resize = (node, element, onResize, onResizeStart, onResizeEnd) => {
+const resize = (node, element, position, onResizeStart, onResizeEnd) => {
   node.onmousedown = e => {
-    const rect = element.getBoundingClientRect();
-    const move = e => onResize(e, rect);
+    const payload = {
+      element,
+      startX: e.clientX,
+      startY: e.clientY,
+      width: element.offsetWidth,
+      height: element.offsetHeight,
+      offsetLeft: element.offsetLeft,
+      offsetTop: element.offsetTop
+    };
+
+    const move = e => draw(e, position, payload);
 
     const cleanup = e => {
       document.removeEventListener("mouseup", cleanup);
       document.removeEventListener("mousemove", move);
-      onResizeEnd(e, rect);
+      onResizeEnd(e);
     };
 
-    onResizeStart(e, rect);
+    onResizeStart(e);
     document.addEventListener("mousemove", move);
     document.addEventListener("mouseup", cleanup);
   };
@@ -90,3 +66,27 @@ const resize = (node, element, onResize, onResizeStart, onResizeEnd) => {
 };
 
 const limit = (a, b) => (a > b ? b : a);
+
+const draw = (
+  e,
+  position,
+  { startX, startY, width, height, offsetLeft, offsetTop, element }
+) => {
+  const deltaX = e.clientX - startX;
+  const deltaY = startY - e.clientY;
+
+  const w =
+    position === "nw" || position === "sw" ? width - deltaX : width + deltaX;
+  const h =
+    position === "nw" || position === "ne" ? height + deltaY : height - deltaY;
+
+  const x =
+    position === "nw" || position === "sw" ? offsetLeft + deltaX : offsetLeft;
+  const y =
+    position === "nw" || position === "ne" ? offsetTop - deltaY : offsetTop;
+
+  element.style.width = `${w}px`;
+  element.style.height = `${h}px`;
+
+  element.style.transform = `translate(${x}px, ${y}px)`;
+};

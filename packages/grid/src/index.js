@@ -16,7 +16,7 @@ const layout = {
   john: {
     x: 2,
     y: 2,
-    height: 1,
+    height: 2,
     width: 2
   }
 };
@@ -40,6 +40,7 @@ const layout = {
 // Implement updating the grid in respect to drag/resize
 //
 // Have stacking and free movement at the same time
+// do not use offsetTop and offsetLeft IN CONTAINER since it give offset to the parent node and not the root
 
 const Resize = forwardRef(function Resize({ position }, ref) {
   const positions = {
