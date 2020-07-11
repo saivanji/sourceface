@@ -1,4 +1,4 @@
-import React, { cloneElement, useState, useRef } from "react";
+import React, { cloneElement, useState, useRef, useCallback } from "react";
 import Lines from "./Lines";
 import Placeholder from "./Placeholder";
 import * as utils from "./utils";
@@ -6,7 +6,14 @@ import * as utils from "./utils";
 export default function Grid({ children, rowHeight, rows, cols, layout }) {
   const [customizingId, setCustomizingId] = useState(null);
   const containerRef = useRef();
+  // what is offsetWidth?
   const containerWidth = containerRef.current?.offsetWidth;
+
+  const calcMinPixelWidth = useCallback(
+    () => utils.calcPixelX(1, cols, containerRef.current.offsetWidth),
+    [containerRef, cols]
+  );
+  const minPixelHeight = utils.calcPixelY(1, rowHeight);
 
   return (
     <div ref={containerRef} style={{ position: "relative", height: 500 }}>
@@ -26,6 +33,8 @@ export default function Grid({ children, rowHeight, rows, cols, layout }) {
             {cloneElement(item, {
               style,
               containerRef,
+              calcMinWidth: calcMinPixelWidth,
+              minHeight: minPixelHeight,
               onCustomizeStart: () => setCustomizingId(id),
               onCustomizeEnd: () => setCustomizingId(null)
             })}
@@ -51,15 +60,9 @@ const calcSize = (containerWidth, cols, rowHeight, width, height) => {
   const pixelWidth =
     containerWidth && utils.calcPixelX(width, cols, containerWidth);
 
-  const minPixelWidth =
-    containerWidth && utils.calcPixelX(1, cols, containerWidth);
-  const minPixelHeight = utils.calcPixelY(1, rowHeight);
-
   return {
     width: pixelWidth || utils.calcPercentageX(width, cols),
-    height: pixelHeight,
-    minWidth: minPixelWidth || utils.calcPercentageX(1, cols),
-    minHeight: minPixelHeight
+    height: pixelHeight
   };
 };
 

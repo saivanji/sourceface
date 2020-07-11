@@ -6,6 +6,8 @@ export default ({
   swRef,
   neRef,
   seRef,
+  calcMinWidth,
+  minHeight,
   onResizeStart,
   onResizeEnd
 }) => {
@@ -15,16 +17,17 @@ export default ({
     const sw = swRef.current;
     const ne = neRef.current;
     const se = seRef.current;
+    const minWidth = calcMinWidth();
 
-    // dimensions are wrecked on customize end
-    // limit height and width
+    const args = [element, minWidth, minHeight, onResizeStart, onResizeEnd];
+
     // can not resize multiple times without refreshing the page
 
     const cleanup = [
-      nw && resize(nw, element, "nw", onResizeStart, onResizeEnd),
-      sw && resize(sw, element, "sw", onResizeStart, onResizeEnd),
-      ne && resize(ne, element, "ne", onResizeStart, onResizeEnd),
-      se && resize(se, element, "se", onResizeStart, onResizeEnd)
+      nw && listen("nw", nw, ...args),
+      sw && listen("sw", sw, ...args),
+      ne && listen("ne", ne, ...args),
+      se && listen("se", se, ...args)
     ];
 
     return () => {
@@ -35,12 +38,22 @@ export default ({
   }, []);
 };
 
-const resize = (node, element, position, onResizeStart, onResizeEnd) => {
+const listen = (
+  position,
+  node,
+  element,
+  minWidth,
+  minHeight,
+  onResizeStart,
+  onResizeEnd
+) => {
   node.onmousedown = e => {
     const payload = {
       element,
       startX: e.clientX,
       startY: e.clientY,
+      minWidth,
+      minHeight,
       width: element.offsetWidth,
       height: element.offsetHeight,
       offsetLeft: element.offsetLeft,
@@ -65,28 +78,40 @@ const resize = (node, element, position, onResizeStart, onResizeEnd) => {
   };
 };
 
-const limit = (a, b) => (a > b ? b : a);
-
 const draw = (
   e,
   position,
-  { startX, startY, width, height, offsetLeft, offsetTop, element }
+  {
+    startX,
+    startY,
+    width,
+    height,
+    minWidth,
+    minHeight,
+    offsetLeft,
+    offsetTop,
+    element
+  }
 ) => {
   const deltaX = e.clientX - startX;
   const deltaY = startY - e.clientY;
+  const isNorth = position === "nw" || position === "ne";
+  const isWest = position === "nw" || position === "sw";
 
-  const w =
-    position === "nw" || position === "sw" ? width - deltaX : width + deltaX;
-  const h =
-    position === "nw" || position === "ne" ? height + deltaY : height - deltaY;
+  const w = isWest ? width - deltaX : width + deltaX;
+  const h = isNorth ? height + deltaY : height - deltaY;
 
-  const x =
-    position === "nw" || position === "sw" ? offsetLeft + deltaX : offsetLeft;
-  const y =
-    position === "nw" || position === "ne" ? offsetTop - deltaY : offsetTop;
+  const x = isWest ? limit(offsetLeft + deltaX, w, minWidth) : offsetLeft;
+  const y = isNorth ? limit(offsetTop - deltaY, h, minHeight) : offsetTop;
 
-  element.style.width = `${w}px`;
-  element.style.height = `${h}px`;
+  element.style.width = `${biggest(w, minWidth)}px`;
+  element.style.height = `${biggest(h, minHeight)}px`;
 
   element.style.transform = `translate(${x}px, ${y}px)`;
 };
+
+const biggest = (a, b) => (a < b ? b : a);
+const smallest = (a, b) => (a < b ? a : b);
+
+const limit = (value, size, minSize) =>
+  smallest(value, value + (size - minSize));

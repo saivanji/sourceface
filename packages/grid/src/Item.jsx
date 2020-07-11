@@ -5,6 +5,8 @@ import useResizable from "./useResizable";
 export default function Item({
   style,
   containerRef,
+  calcMinWidth,
+  minHeight,
   children,
   onCustomizeStart,
   onCustomizeEnd
@@ -33,6 +35,8 @@ export default function Item({
     swRef,
     neRef,
     seRef,
+    calcMinWidth,
+    minHeight,
     onResizeStart: onCustomizeStart,
     onResizeEnd: onCustomizeEnd
   });
