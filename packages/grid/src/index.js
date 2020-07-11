@@ -26,9 +26,10 @@ const layout = {
 // https://github.com/STRML/react-grid-layout
 
 // Definition:
-// Drag preview - either original dimmed appearance, static placeholder image or colored bg (persisting dimensions) or generic card with static size. Most likely will have static size card with type of module
+// Drag preview - either original dimmed appearance, static placeholder image or colored bg (persisting dimensions) or generic card with static size. Most likely will have static size card with type of module, icon and it's slug
 // When drag preview reaches more than half of a cell - move it there. What if drag preview is smaller than a cell, should we move when reaching half of a preview size?
 // When dragging keep original dimensions of a dragging element in a placeholder regardless how drag preview will look like
+// When resizing either display a square as preview or display original element in real time
 
 // TODO:
 // Implement resizable

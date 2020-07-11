@@ -26,14 +26,20 @@ ReactDOM.render(
 // Modules grid
 //  - Should we replicate size of a draggable source or use a simple line instead?
 //  - Implement nesting
+//  - Be able to drag module with holding a button instead of drag handle
 // Improve / Change editor UI? start with a feature approach
 // Pages
 // Performance optimizations
 // Editor design(keep in mind mobile first approach)
 //  - Permissions will be defined in editor for every command(because they're related to the commands)?
 //    - Creating groups will be near users but assigning command to a group will be in command "permissions" tab
+//  - In top right are probably display spinner icon indicating that something is saving
+//  - Have multiple selections of modules?
+//
+// Modules
+// - add slug to modules. (after that modules can be created instantly with optimistic updates)
 //
 // Modules state
-// - 2 way binding vs 1 way binding, what's better?
+// - 2 way binding vs 1 way binding, what's better? probably 2 way
 //
 //
