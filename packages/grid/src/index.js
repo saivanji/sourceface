@@ -32,7 +32,7 @@ const layout = {
 // When resizing either display a square as preview or display original element in real time
 
 // TODO:
-// Implement resizable
+// Do not allow to drag/resize element outside of a grid
 //
 // Implement moving the element over the grid(that was implemented before)
 // - Consider source boundaries while drag
