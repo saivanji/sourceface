@@ -5,7 +5,7 @@ import useResizable from "./useResizable";
 export default function Item({
   style,
   containerRef,
-  calcMinWidth,
+  minWidth,
   minHeight,
   children,
   onCustomizeStart,
@@ -29,13 +29,12 @@ export default function Item({
     onDragEnd: onCustomizeEnd
   });
   useResizable({
-    containerRef,
     elementRef,
     nwRef,
     swRef,
     neRef,
     seRef,
-    calcMinWidth,
+    minWidth,
     minHeight,
     onResizeStart: onCustomizeStart,
     onResizeEnd: onCustomizeEnd

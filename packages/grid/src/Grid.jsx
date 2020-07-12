@@ -1,18 +1,26 @@
-import React, { cloneElement, useState, useRef, useCallback } from "react";
+import React, {
+  cloneElement,
+  useEffect,
+  useState,
+  useRef,
+  useCallback
+} from "react";
 import Lines from "./Lines";
 import Placeholder from "./Placeholder";
 import * as utils from "./utils";
 
 export default function Grid({ children, rowHeight, rows, cols, layout }) {
   const [customizingId, setCustomizingId] = useState(null);
+  const [containerWidth, setContainerWidth] = useState(null);
   const containerRef = useRef();
-  // what is offsetWidth?
-  const containerWidth = containerRef.current?.offsetWidth;
 
-  const calcMinPixelWidth = useCallback(
-    () => utils.calcPixelX(1, cols, containerRef.current.offsetWidth),
-    [containerRef, cols]
-  );
+  useEffect(() => {
+    // what is offsetWidth?
+    setContainerWidth(containerRef.current?.offsetWidth);
+  }, [containerRef]);
+
+  const minPixelWidth =
+    containerWidth && utils.calcPixelX(1, cols, containerWidth);
   const minPixelHeight = utils.calcPixelY(1, rowHeight);
 
   return (
@@ -33,7 +41,7 @@ export default function Grid({ children, rowHeight, rows, cols, layout }) {
             {cloneElement(item, {
               style,
               containerRef,
-              calcMinWidth: calcMinPixelWidth,
+              minWidth: minPixelWidth,
               minHeight: minPixelHeight,
               onCustomizeStart: () => setCustomizingId(id),
               onCustomizeEnd: () => setCustomizingId(null)

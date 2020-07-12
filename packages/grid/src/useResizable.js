@@ -6,7 +6,7 @@ export default ({
   swRef,
   neRef,
   seRef,
-  calcMinWidth,
+  minWidth,
   minHeight,
   onResizeStart,
   onResizeEnd
@@ -17,11 +17,8 @@ export default ({
     const sw = swRef.current;
     const ne = neRef.current;
     const se = seRef.current;
-    const minWidth = calcMinWidth();
 
     const args = [element, minWidth, minHeight, onResizeStart, onResizeEnd];
-
-    // can not resize multiple times without refreshing the page
 
     const cleanup = [
       nw && listen("nw", nw, ...args),
@@ -35,7 +32,7 @@ export default ({
         fn && fn();
       }
     };
-  }, []);
+  }, [minWidth]);
 };
 
 const listen = (
@@ -48,6 +45,10 @@ const listen = (
   onResizeEnd
 ) => {
   node.onmousedown = e => {
+    const { m41: translateX, m42: translateY } = new window.DOMMatrix(
+      window.getComputedStyle(element).transform
+    );
+
     const payload = {
       element,
       startX: e.clientX,
@@ -56,8 +57,8 @@ const listen = (
       minHeight,
       width: element.offsetWidth,
       height: element.offsetHeight,
-      offsetLeft: element.offsetLeft,
-      offsetTop: element.offsetTop
+      translateX,
+      translateY
     };
 
     const move = e => draw(e, position, payload);
@@ -88,8 +89,8 @@ const draw = (
     height,
     minWidth,
     minHeight,
-    offsetLeft,
-    offsetTop,
+    translateX,
+    translateY,
     element
   }
 ) => {
@@ -101,8 +102,8 @@ const draw = (
   const w = isWest ? width - deltaX : width + deltaX;
   const h = isNorth ? height + deltaY : height - deltaY;
 
-  const x = isWest ? limit(offsetLeft + deltaX, w, minWidth) : offsetLeft;
-  const y = isNorth ? limit(offsetTop - deltaY, h, minHeight) : offsetTop;
+  const x = isWest ? limit(translateX + deltaX, w, minWidth) : translateX;
+  const y = isNorth ? limit(translateY - deltaY, h, minHeight) : translateY;
 
   element.style.width = `${biggest(w, minWidth)}px`;
   element.style.height = `${biggest(h, minHeight)}px`;
