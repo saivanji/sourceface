@@ -1,7 +1,15 @@
 import { useEffect } from "react";
 import { getTransform } from "./dom";
+import { range } from "./utils";
 
-export default ({ handleRef, elementRef, onDragStart, onDragEnd }) => {
+export default ({
+  elementRef,
+  handleRef,
+  horizontalBoundary,
+  verticalBoundary,
+  onDragStart,
+  onDragEnd
+}) => {
   useEffect(() => {
     const handle = handleRef.current;
     const element = elementRef.current;
@@ -14,13 +22,15 @@ export default ({ handleRef, elementRef, onDragStart, onDragEnd }) => {
 
         const startX = e.clientX;
         const startY = e.clientY;
+        const width = element.offsetWidth;
+        const height = element.offsetHeight;
         const { translateX, translateY } = getTransform(element);
 
         const move = e => {
           const deltaX = e.clientX - startX;
           const deltaY = startY - e.clientY;
-          const x = translateX + deltaX;
-          const y = translateY - deltaY;
+          const x = range(translateX + deltaX, 0, horizontalBoundary - width);
+          const y = range(translateY - deltaY, 0, verticalBoundary - height);
 
           element.style.transform = `translate(${x}px, ${y}px)`;
         };
@@ -41,5 +51,5 @@ export default ({ handleRef, elementRef, onDragStart, onDragEnd }) => {
     return () => {
       handle.onmousedown = null;
     };
-  }, []);
+  }, [horizontalBoundary]);
 };

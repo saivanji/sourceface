@@ -6,6 +6,8 @@ export default function Item({
   style,
   minWidth,
   minHeight,
+  horizontalBoundary,
+  verticalBoundary,
   children,
   onCustomizeStart,
   onCustomizeEnd
@@ -22,6 +24,8 @@ export default function Item({
   useDraggable({
     elementRef,
     handleRef: !isCustom ? elementRef : handleRef,
+    horizontalBoundary,
+    verticalBoundary,
     onDragStart: onCustomizeStart,
     onDragEnd: onCustomizeEnd
   });

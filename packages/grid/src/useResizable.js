@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { getTransform } from "./dom";
+import { biggest, smallest } from "./utils";
 
 export default ({
   elementRef,
@@ -109,9 +110,6 @@ const draw = (
 
   element.style.transform = `translate(${x}px, ${y}px)`;
 };
-
-const biggest = (a, b) => (a < b ? b : a);
-const smallest = (a, b) => (a < b ? a : b);
 
 const limit = (value, size, minSize) =>
   smallest(value, value + (size - minSize));

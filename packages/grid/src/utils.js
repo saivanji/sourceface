@@ -12,3 +12,9 @@ export const calcPixelX = (x, columns, containerWidth) =>
   containerWidth * (x / columns);
 
 export const calcPixelY = (y, rowHeight) => y * rowHeight;
+
+export const biggest = (a, b) => (a < b ? b : a);
+
+export const smallest = (a, b) => (a < b ? a : b);
+
+export const range = (value, min, max) => smallest(biggest(value, min), max);

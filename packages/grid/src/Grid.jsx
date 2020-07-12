@@ -22,9 +22,13 @@ export default function Grid({ children, rowHeight, rows, cols, layout }) {
   const minPixelWidth =
     containerWidth && utils.calcPixelX(1, cols, containerWidth);
   const minPixelHeight = utils.calcPixelY(1, rowHeight);
+  const containerHeight = minPixelHeight * rows;
 
   return (
-    <div ref={containerRef} style={{ position: "relative", height: 500 }}>
+    <div
+      ref={containerRef}
+      style={{ position: "relative", height: containerHeight }}
+    >
       {React.Children.map(children, (item, i) => {
         const id = item.key;
         const isCustomizing = customizingId === id;
@@ -42,6 +46,8 @@ export default function Grid({ children, rowHeight, rows, cols, layout }) {
               style,
               minWidth: minPixelWidth,
               minHeight: minPixelHeight,
+              horizontalBoundary: containerWidth,
+              verticalBoundary: containerHeight,
               onCustomizeStart: () => setCustomizingId(id),
               onCustomizeEnd: () => setCustomizingId(null)
             })}

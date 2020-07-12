@@ -32,7 +32,7 @@ const layout = {
 // When resizing either display a square as preview or display original element in real time
 
 // TODO:
-// Do not allow to drag/resize element outside of a grid
+// Do not allow to resize element outside of a grid
 //
 // Implement moving the element over the grid(that was implemented before)
 // - Consider source boundaries while drag
@@ -40,6 +40,7 @@ const layout = {
 //
 // Implement updating the grid in respect to drag/resize
 //
+// Fix position when scrolling and dragging/resizing at the same time
 // Have stacking and free movement at the same time
 
 const Resize = forwardRef(function Resize({ position }, ref) {
