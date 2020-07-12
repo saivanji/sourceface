@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { getTransform } from "./dom";
-import { biggest, smallest } from "./utils";
+import { range } from "./utils";
 
 export default ({
   elementRef,
@@ -8,6 +8,8 @@ export default ({
   swRef,
   neRef,
   seRef,
+  horizontalBoundary,
+  verticalBoundary,
   minWidth,
   minHeight,
   onResizeStart,
@@ -20,7 +22,15 @@ export default ({
     const ne = neRef.current;
     const se = seRef.current;
 
-    const args = [element, minWidth, minHeight, onResizeStart, onResizeEnd];
+    const args = [
+      element,
+      minWidth,
+      minHeight,
+      horizontalBoundary,
+      verticalBoundary,
+      onResizeStart,
+      onResizeEnd
+    ];
 
     const cleanup = [
       nw && listen("nw", nw, ...args),
@@ -43,6 +53,8 @@ const listen = (
   element,
   minWidth,
   minHeight,
+  horizontalBoundary,
+  verticalBoundary,
   onResizeStart,
   onResizeEnd
 ) => {
@@ -50,18 +62,19 @@ const listen = (
     const { translateX, translateY } = getTransform(element);
 
     const payload = {
-      element,
       startX: e.clientX,
       startY: e.clientY,
       minWidth,
       minHeight,
-      width: element.offsetWidth,
-      height: element.offsetHeight,
-      translateX,
-      translateY
+      horizontalBoundary,
+      verticalBoundary,
+      initialWidth: element.offsetWidth,
+      initialHeight: element.offsetHeight,
+      initialX: translateX,
+      initialY: translateY
     };
 
-    const move = e => draw(e, position, payload);
+    const move = e => render(element, calculate(e, position, payload));
 
     const cleanup = e => {
       document.removeEventListener("mouseup", cleanup);
@@ -79,19 +92,20 @@ const listen = (
   };
 };
 
-const draw = (
+const calculate = (
   e,
   position,
   {
     startX,
     startY,
-    width,
-    height,
+    initialWidth,
+    initialHeight,
     minWidth,
     minHeight,
-    translateX,
-    translateY,
-    element
+    horizontalBoundary,
+    verticalBoundary,
+    initialX,
+    initialY
   }
 ) => {
   const deltaX = e.clientX - startX;
@@ -99,17 +113,44 @@ const draw = (
   const isNorth = position === "nw" || position === "ne";
   const isWest = position === "nw" || position === "sw";
 
-  const w = isWest ? width - deltaX : width + deltaX;
-  const h = isNorth ? height + deltaY : height - deltaY;
+  const [w, x] = change(
+    isWest,
+    deltaX,
+    initialX,
+    initialWidth,
+    minWidth,
+    horizontalBoundary
+  );
+  const [h, y] = change(
+    isNorth,
+    -deltaY,
+    initialY,
+    initialHeight,
+    minHeight,
+    verticalBoundary
+  );
 
-  const x = isWest ? limit(translateX + deltaX, w, minWidth) : translateX;
-  const y = isNorth ? limit(translateY - deltaY, h, minHeight) : translateY;
+  return [w, h, x, y];
+};
 
-  element.style.width = `${biggest(w, minWidth)}px`;
-  element.style.height = `${biggest(h, minHeight)}px`;
+const change = (cond, delta, initialOffset, initialSize, minSize, boundary) => {
+  if (cond) {
+    return [
+      range(initialSize - delta, minSize, initialSize + initialOffset),
+      range(initialOffset + delta, 0, initialOffset + initialSize - minSize)
+    ];
+  }
+
+  return [
+    range(initialSize + delta, minSize, boundary - initialOffset),
+    initialOffset
+  ];
+};
+
+const render = (element, [w, h, x, y]) => {
+  element.style.width = `${w}px`;
+  // biggest(h, minHeight)
+  element.style.height = `${h}px`;
 
   element.style.transform = `translate(${x}px, ${y}px)`;
 };
-
-const limit = (value, size, minSize) =>
-  smallest(value, value + (size - minSize));

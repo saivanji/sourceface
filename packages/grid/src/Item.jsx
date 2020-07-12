@@ -35,6 +35,8 @@ export default function Item({
     swRef,
     neRef,
     seRef,
+    horizontalBoundary,
+    verticalBoundary,
     minWidth,
     minHeight,
     onResizeStart: onCustomizeStart,
