@@ -24,7 +24,6 @@ export default function Item({
     containerRef,
     elementRef,
     handleRef: !isCustom ? elementRef : handleRef,
-    style,
     onDragStart: onCustomizeStart,
     onDragEnd: onCustomizeEnd
   });

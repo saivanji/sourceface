@@ -4,7 +4,6 @@ export default ({
   containerRef,
   handleRef,
   elementRef,
-  style,
   onDragStart,
   onDragEnd
 }) => {
@@ -36,8 +35,6 @@ export default ({
         const cleanup = () => {
           document.removeEventListener("mouseup", cleanup);
           document.removeEventListener("mousemove", move);
-          // why it's needed?
-          element.style.transform = style.transform;
           handle.style.cursor = "";
           onDragEnd();
         };
