@@ -59,11 +59,13 @@ const listen = (
   onResizeEnd
 ) => {
   node.onmousedown = e => {
-    const { translateX, translateY } = getTransform(element);
-    const startX = e.clientX;
-    const startY = e.clientY;
+    const { translateX: initialX, translateY: initialY } = getTransform(
+      element
+    );
     const initialWidth = element.offsetWidth;
     const initialHeight = element.offsetHeight;
+    const startX = e.clientX;
+    const startY = e.clientY;
 
     const move = e => {
       const deltaX = e.clientX - startX;
@@ -74,7 +76,7 @@ const listen = (
       const [w, x] = change(
         isWest,
         deltaX,
-        translateX,
+        initialX,
         initialWidth,
         minWidth,
         horizontalBoundary
@@ -82,7 +84,7 @@ const listen = (
       const [h, y] = change(
         isNorth,
         deltaY,
-        translateY,
+        initialY,
         initialHeight,
         minHeight,
         verticalBoundary
