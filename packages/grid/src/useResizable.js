@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { getTransform } from "./dom";
+import { getTransform, drag } from "./dom";
 import { range } from "./utils";
 
 export default ({
@@ -61,16 +61,32 @@ const listen = (
   onResizeEnd,
   onResize
 ) => {
-  node.onmousedown = e => {
-    const { translateX: initialX, translateY: initialY } = getTransform(
-      element
-    );
-    const initialWidth = element.offsetWidth;
-    const initialHeight = element.offsetHeight;
-    const startX = e.clientX;
-    const startY = e.clientY;
+  return drag(
+    node,
+    e => {
+      const { translateX: initialX, translateY: initialY } = getTransform(
+        element
+      );
 
-    const move = e => {
+      // TODO: instead of getting offsets and sizes from html node, get them as arguments of hook from parent component
+      const initial = {
+        initialX,
+        initialY,
+        initialWidth: element.offsetWidth,
+        initialHeight: element.offsetHeight,
+        startX: e.clientX,
+        startY: e.clientY
+      };
+
+      onResizeStart();
+
+      return initial;
+    },
+    onResizeEnd,
+    (
+      e,
+      { initialX, initialY, initialWidth, initialHeight, startX, startY }
+    ) => {
       const deltaX = e.clientX - startX;
       const deltaY = e.clientY - startY;
       const isNorth = position === "nw" || position === "ne";
@@ -95,26 +111,11 @@ const listen = (
 
       element.style.width = `${w}px`;
       element.style.height = `${h}px`;
-
       element.style.transform = `translate(${x}px, ${y}px)`;
 
       onResize(w, h, x, y);
-    };
-
-    const cleanup = e => {
-      document.removeEventListener("mouseup", cleanup);
-      document.removeEventListener("mousemove", move);
-      onResizeEnd(e);
-    };
-
-    onResizeStart(e);
-    document.addEventListener("mousemove", move);
-    document.addEventListener("mouseup", cleanup);
-  };
-
-  return () => {
-    node.onmousedown = null;
-  };
+    }
+  );
 };
 
 const change = (cond, delta, initialOffset, initialSize, minSize, boundary) => {
