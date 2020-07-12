@@ -10,7 +10,8 @@ export default function Item({
   verticalBoundary,
   children,
   onCustomizeStart,
-  onCustomizeEnd
+  onCustomizeEnd,
+  onCustomize
 }) {
   const elementRef = useRef();
   const handleRef = useRef();
@@ -27,7 +28,8 @@ export default function Item({
     horizontalBoundary,
     verticalBoundary,
     onDragStart: onCustomizeStart,
-    onDragEnd: onCustomizeEnd
+    onDragEnd: onCustomizeEnd,
+    onDrag: onCustomize
   });
   useResizable({
     elementRef,
@@ -40,7 +42,8 @@ export default function Item({
     minWidth,
     minHeight,
     onResizeStart: onCustomizeStart,
-    onResizeEnd: onCustomizeEnd
+    onResizeEnd: onCustomizeEnd,
+    onResize: onCustomize
   });
 
   return (

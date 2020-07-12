@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useState } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import Grid from "./Grid";
@@ -11,15 +11,6 @@ const items = [
     color: "darkCyan"
   }
 ];
-
-const layout = {
-  john: {
-    x: 2,
-    y: 2,
-    height: 2,
-    width: 2
-  }
-};
 
 // Examples:
 // https://dnd-grid.duton.lu/
@@ -64,89 +55,65 @@ const Resize = forwardRef(function Resize({ position }, ref) {
   );
 });
 
-ReactDOM.render(
-  <Grid rowHeight={80} rows={10} cols={14} layout={layout}>
-    {items.map(item => (
-      <Item key={item.id}>
-        {({ handleRef, resizable }) => (
-          <div
-            style={{
-              position: "relative",
-              width: "100%",
-              height: "100%",
-              backgroundColor: item.color,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center"
-            }}
-          >
-            <Resize ref={resizable.nwRef} position="nw" />
-            <Resize ref={resizable.swRef} position="sw" />
-            <Resize ref={resizable.neRef} position="ne" />
-            <Resize ref={resizable.seRef} position="se" />
+const App = () => {
+  const [layout, setLayout] = useState({
+    john: {
+      x: 2,
+      y: 2,
+      height: 2,
+      width: 2
+    }
+  });
+
+  return (
+    <Grid
+      rowHeight={80}
+      rows={10}
+      cols={14}
+      layout={layout}
+      onChange={(id, item) => setLayout({ ...layout, [id]: item })}
+    >
+      {items.map(item => (
+        <Item key={item.id}>
+          {({ handleRef, resizable }) => (
             <div
               style={{
-                position: "absolute",
-                top: -20,
-                left: -20
+                position: "relative",
+                width: "100%",
+                height: "100%",
+                backgroundColor: item.color,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
               }}
-              ref={handleRef}
             >
-              Handle
+              <Resize ref={resizable.nwRef} position="nw" />
+              <Resize ref={resizable.swRef} position="sw" />
+              <Resize ref={resizable.neRef} position="ne" />
+              <Resize ref={resizable.seRef} position="se" />
+              <div
+                style={{
+                  position: "absolute",
+                  top: -20,
+                  left: -20
+                }}
+                ref={handleRef}
+              >
+                Handle
+              </div>
+              <span
+                style={{
+                  fontSize: "2rem"
+                }}
+              >
+                {item.text}
+              </span>
             </div>
-            <span
-              style={{
-                fontSize: "2rem"
-              }}
-            >
-              {item.text}
-            </span>
-          </div>
-        )}
-      </Item>
-    ))}
-  </Grid>,
-  document.getElementById("root")
-);
+          )}
+        </Item>
+      ))}
+    </Grid>
+  );
+};
 
-// <>
-//   <Draggable>
-//     <div>Element</div>
-//   </Draggable>
-//   <Draggable>
-//     {({ ref }) => (
-//       <div>
-//         <span ref={ref}>Handle</span>Element
-//       </div>
-//     )}
-//   </Draggable>
-//   <Resizable>
-//     {({ tlRef, trRef, blRef, brRef }) => (
-//       <div>
-//         <span ref={tlRef}>tl</span>
-//         <span ref={trRef}>tr</span>
-//         Element
-//         <span ref={blRef}>bl</span>
-//         <span ref={brRef}>br</span>
-//       </div>
-//     )}
-//   </Resizable>
-// </>;
-//
-//
-// <>
-//   <Item>
-//     <div>Element</div>
-//   </Item>
-//   <Item>
-//     {({ draggable, resizable }) => (
-//       <div ref={draggable.element}>
-//         <span ref={resizable.tl}>tl</span>
-//         <span ref={resizable.tr}>tr</span>
-//         <span ref={draggable.handle}>Handle</span>Element
-//         <span ref={resizable.bl}>bl</span>
-//         <span ref={resizable.br}>br</span>
-//       </div>
-//     )}
-//   </Item>
-// </>;
+ReactDOM.render(<App />, document.getElementById("root"));

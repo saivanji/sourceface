@@ -13,7 +13,8 @@ export default ({
   minWidth,
   minHeight,
   onResizeStart,
-  onResizeEnd
+  onResizeEnd,
+  onResize
 }) => {
   useEffect(() => {
     const element = elementRef.current;
@@ -29,7 +30,8 @@ export default ({
       horizontalBoundary,
       verticalBoundary,
       onResizeStart,
-      onResizeEnd
+      onResizeEnd,
+      onResize
     ];
 
     const cleanup = [
@@ -56,7 +58,8 @@ const listen = (
   horizontalBoundary,
   verticalBoundary,
   onResizeStart,
-  onResizeEnd
+  onResizeEnd,
+  onResize
 ) => {
   node.onmousedown = e => {
     const { translateX: initialX, translateY: initialY } = getTransform(
@@ -94,6 +97,8 @@ const listen = (
       element.style.height = `${h}px`;
 
       element.style.transform = `translate(${x}px, ${y}px)`;
+
+      onResize(w, h, x, y);
     };
 
     const cleanup = e => {

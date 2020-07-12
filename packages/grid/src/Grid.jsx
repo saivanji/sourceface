@@ -1,17 +1,19 @@
-import React, {
-  cloneElement,
-  useEffect,
-  useState,
-  useRef,
-  useCallback
-} from "react";
+import React, { cloneElement, useEffect, useState, useRef } from "react";
 import Lines from "./Lines";
 import Placeholder from "./Placeholder";
 import * as utils from "./utils";
 
-export default function Grid({ children, rowHeight, rows, cols, layout }) {
-  const [customizingId, setCustomizingId] = useState(null);
+export default function Grid({
+  children,
+  rowHeight,
+  rows,
+  cols,
+  layout,
+  onChange
+}) {
+  const [isCustomizing, setCustomizing] = useState(false);
   const [containerWidth, setContainerWidth] = useState(null);
+  const customizable = useRef(null);
   const containerRef = useRef();
 
   useEffect(() => {
@@ -31,7 +33,7 @@ export default function Grid({ children, rowHeight, rows, cols, layout }) {
     >
       {React.Children.map(children, (item, i) => {
         const id = item.key;
-        const isCustomizing = customizingId === id;
+        const isCustomizing = customizable.current?.id === id;
 
         const { x, y, width, height } = layout[id];
 
@@ -43,19 +45,51 @@ export default function Grid({ children, rowHeight, rows, cols, layout }) {
         return (
           <>
             {cloneElement(item, {
-              style,
+              style: !isCustomizing ? style : {},
               minWidth: minPixelWidth,
               minHeight: minPixelHeight,
               horizontalBoundary: containerWidth,
               verticalBoundary: containerHeight,
-              onCustomizeStart: () => setCustomizingId(id),
-              onCustomizeEnd: () => setCustomizingId(null)
+              onCustomizeStart: () => {
+                customizable.current = { id, ...layout[id] };
+                setCustomizing(true);
+              },
+              onCustomizeEnd: () => {
+                setCustomizing(false);
+                customizable.current = null;
+              },
+              onCustomize: (pixelWidth, pixelHeight, pixelX, pixelY) => {
+                const initial = customizable.current;
+                const width = Math.round(pixelWidth / minPixelWidth);
+                const height = Math.round(pixelHeight / minPixelHeight);
+                const x = Math.round(pixelX / minPixelWidth);
+                const y = Math.round(pixelY / minPixelHeight);
+
+                if (
+                  width === initial.width &&
+                  height === initial.height &&
+                  x === initial.x &&
+                  y === initial.y
+                )
+                  return;
+
+                const updated = {
+                  width,
+                  height,
+                  x,
+                  y
+                };
+
+                Object.assign(customizable.current, updated);
+
+                onChange(initial.id, updated);
+              }
             })}
             {isCustomizing && <Placeholder style={style} />}
           </>
         );
       })}
-      {customizingId && containerWidth && (
+      {isCustomizing && containerWidth && (
         <Lines
           style={{ position: "absolute", top: 0, left: 0 }}
           rows={rows}

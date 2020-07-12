@@ -8,7 +8,8 @@ export default ({
   horizontalBoundary,
   verticalBoundary,
   onDragStart,
-  onDragEnd
+  onDragEnd,
+  onDrag
 }) => {
   useEffect(() => {
     const handle = handleRef.current;
@@ -33,6 +34,8 @@ export default ({
           const y = range(translateY - deltaY, 0, verticalBoundary - height);
 
           element.style.transform = `translate(${x}px, ${y}px)`;
+
+          onDrag(width, height, x, y);
         };
 
         const cleanup = () => {
