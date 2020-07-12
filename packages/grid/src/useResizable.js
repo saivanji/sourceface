@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { getTransform } from "./dom";
 
 export default ({
   elementRef,
@@ -45,9 +46,7 @@ const listen = (
   onResizeEnd
 ) => {
   node.onmousedown = e => {
-    const { m41: translateX, m42: translateY } = new window.DOMMatrix(
-      window.getComputedStyle(element).transform
-    );
+    const { translateX, translateY } = getTransform(element);
 
     const payload = {
       element,

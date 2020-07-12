@@ -4,7 +4,6 @@ import useResizable from "./useResizable";
 
 export default function Item({
   style,
-  containerRef,
   minWidth,
   minHeight,
   children,
@@ -21,7 +20,6 @@ export default function Item({
   const isCustom = typeof children === "function";
 
   useDraggable({
-    containerRef,
     elementRef,
     handleRef: !isCustom ? elementRef : handleRef,
     onDragStart: onCustomizeStart,

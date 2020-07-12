@@ -40,7 +40,6 @@ export default function Grid({ children, rowHeight, rows, cols, layout }) {
           <>
             {cloneElement(item, {
               style,
-              containerRef,
               minWidth: minPixelWidth,
               minHeight: minPixelHeight,
               onCustomizeStart: () => setCustomizingId(id),
