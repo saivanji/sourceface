@@ -3,6 +3,7 @@ import React, {
   useEffect,
   useState,
   useMemo,
+  useContext,
   cloneElement,
   forwardRef
 } from "react";
@@ -11,39 +12,30 @@ import Preview from "./Preview";
 import Angle from "./Angle";
 import useDraggable from "./useDraggable";
 import useResizable from "./useResizable";
+import { itemContext } from "./context";
 
-export default function Item({
-  initialLoad,
-  x,
-  y,
-  width,
-  height,
-  minWidth,
-  minHeight,
-  horizontalBoundary,
-  verticalBoundary,
-  children,
-  customization,
-  onCustomizeStart,
-  onCustomizeEnd,
-  onCustomize,
-  components: {
-    DragHandle,
-    DragPreview = Preview,
-    DragPlaceholder = Placeholder,
-    ResizeHandle = Angle,
-    ResizePreview = Preview,
-    ResizePlaceholder = Placeholder
-  } = {}
-}) {
+export default function Item({ children, initialLoad, customization }) {
   const dragPreviewRef = useRef();
   const resizePreviewRef = useRef();
+  const {
+    x,
+    y,
+    width,
+    height,
+    components: {
+      DragPlaceholder = Placeholder,
+      DragPreview = Preview,
+      DragHandle,
+      ResizePlaceholder = Placeholder,
+      ResizePreview = Preview
+    }
+  } = useContext(itemContext);
 
   const style = initialLoad
     ? { width, height, left: x, top: y }
     : positionToStyle({ x, y, width, height });
 
-  // TODO: move to Customizing component and have [] as deps
+  // TODO: move to Motion component and have [] as deps
   const initialPosition = useMemo(
     () => ({
       x,
@@ -56,22 +48,13 @@ export default function Item({
   const initialStyle = positionToStyle(initialPosition);
 
   return !customization ? (
-    <Static
+    <Awaiting
       style={style}
-      minWidth={minWidth}
-      minHeight={minHeight}
-      horizontalBoundary={horizontalBoundary}
-      verticalBoundary={verticalBoundary}
       dragPreviewRef={dragPreviewRef}
       resizePreviewRef={resizePreviewRef}
-      onCustomizeStart={onCustomizeStart}
-      onCustomizeEnd={onCustomizeEnd}
-      onCustomize={onCustomize}
-      DragHandle={DragHandle}
-      ResizeHandle={ResizeHandle}
     >
       {children}
-    </Static>
+    </Awaiting>
   ) : customization === "drag" ? (
     <>
       <DragPlaceholder style={style} />
@@ -92,24 +75,12 @@ export default function Item({
   );
 }
 
-// TODO: Static and Customizing in a separate files?
+// TODO: Awaiting and Motion in a separate files
+const Awaiting = ({ children, style, dragPreviewRef, resizePreviewRef }) => {
+  const {
+    components: { DragHandle, ResizeHandle = Angle }
+  } = useContext(itemContext);
 
-// TODO: use context so it can be used even in hooks?
-const Static = ({
-  children,
-  style,
-  minWidth,
-  minHeight,
-  horizontalBoundary,
-  verticalBoundary,
-  dragPreviewRef,
-  resizePreviewRef,
-  onCustomizeStart,
-  onCustomizeEnd,
-  onCustomize,
-  DragHandle,
-  ResizeHandle
-}) => {
   const dragHandleRef = useRef();
 
   const nwRef = useRef();
@@ -119,26 +90,14 @@ const Static = ({
 
   useDraggable({
     previewRef: dragPreviewRef,
-    handleRef: dragHandleRef,
-    horizontalBoundary,
-    verticalBoundary,
-    onDragStart: e => onCustomizeStart("drag", e),
-    onDragEnd: onCustomizeEnd,
-    onDrag: onCustomize
+    handleRef: dragHandleRef
   });
   useResizable({
     previewRef: resizePreviewRef,
     nwRef,
     swRef,
     neRef,
-    seRef,
-    horizontalBoundary,
-    verticalBoundary,
-    minWidth,
-    minHeight,
-    onResizeStart: e => onCustomizeStart("resize", e),
-    onResizeEnd: onCustomizeEnd,
-    onResize: onCustomize
+    seRef
   });
 
   return (

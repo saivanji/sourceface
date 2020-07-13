@@ -1,21 +1,19 @@
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import { getTransform, drag } from "./dom";
 import { range } from "./utils";
+import { itemContext } from "./context";
 
-export default ({
-  previewRef,
-  nwRef,
-  swRef,
-  neRef,
-  seRef,
-  horizontalBoundary,
-  verticalBoundary,
-  minWidth,
-  minHeight,
-  onResizeStart,
-  onResizeEnd,
-  onResize
-}) => {
+export default ({ previewRef, nwRef, swRef, neRef, seRef }) => {
+  const {
+    horizontalBoundary,
+    verticalBoundary,
+    minWidth,
+    minHeight,
+    onCustomizeStart,
+    onCustomizeEnd,
+    onCustomize
+  } = useContext(itemContext);
+
   useEffect(() => {
     const nw = nwRef.current;
     const sw = swRef.current;
@@ -28,9 +26,9 @@ export default ({
       minHeight,
       horizontalBoundary,
       verticalBoundary,
-      onResizeStart,
-      onResizeEnd,
-      onResize
+      e => onCustomizeStart("resize", e),
+      onCustomizeEnd,
+      onCustomize
     ];
 
     const cleanup = [

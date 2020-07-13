@@ -8,6 +8,11 @@ const items = [
     id: "john",
     text: "John",
     color: "darkCyan"
+  },
+  {
+    id: "mike",
+    text: "Mike",
+    color: "sandybrown"
   }
 ];
 
@@ -60,6 +65,13 @@ const App = () => {
   const [layout, setLayout] = useState({
     john: {
       x: 2,
+      y: 2,
+      height: 2,
+      width: 2,
+      isDraggable: true
+    },
+    mike: {
+      x: 6,
       y: 2,
       height: 2,
       width: 2,

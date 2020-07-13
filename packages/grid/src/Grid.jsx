@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import Lines from "./Lines";
 import Item from "./Item";
 import * as utils from "./utils";
+import { itemContext } from "./context";
 
 export default function Grid({
   children,
@@ -48,65 +49,70 @@ export default function Grid({
         const pixelY = utils.calcPixelY(y, rowHeight);
 
         return (
-          <Item
-            key={id}
-            initialLoad={!containerWidth}
-            x={pixelX}
-            y={pixelY}
-            width={pixelWidth}
-            height={pixelHeight}
-            minWidth={minPixelWidth}
-            minHeight={minPixelHeight}
-            horizontalBoundary={containerWidth}
-            verticalBoundary={containerHeight}
-            customization={isCustomizing && customization}
-            components={components}
-            onCustomizeStart={type => {
-              customizable.current = { id, ...layout[id] };
-              setCustomization(type);
-            }}
-            onCustomizeEnd={() => {
-              setCustomization(null);
-              customizable.current = null;
-            }}
-            onCustomize={({
-              w: pixelWidth,
-              h: pixelHeight,
+          <itemContext.Provider
+            value={{
               x: pixelX,
-              y: pixelY
-            }) => {
-              const initial = customizable.current;
-              const width = pixelWidth
-                ? Math.round(pixelWidth / minPixelWidth)
-                : initial.width;
-              const height = pixelHeight
-                ? Math.round(pixelHeight / minPixelHeight)
-                : initial.height;
-              const x = Math.round(pixelX / minPixelWidth);
-              const y = Math.round(pixelY / minPixelHeight);
+              y: pixelY,
+              width: pixelWidth,
+              height: pixelHeight,
+              minWidth: minPixelWidth,
+              minHeight: minPixelHeight,
+              horizontalBoundary: containerWidth,
+              verticalBoundary: containerHeight,
+              components,
+              onCustomizeStart: type => {
+                customizable.current = { id, ...layout[id] };
+                setCustomization(type);
+              },
+              onCustomizeEnd: () => {
+                setCustomization(null);
+                customizable.current = null;
+              },
+              onCustomize: ({
+                w: pixelWidth,
+                h: pixelHeight,
+                x: pixelX,
+                y: pixelY
+              }) => {
+                const initial = customizable.current;
+                const width = pixelWidth
+                  ? Math.round(pixelWidth / minPixelWidth)
+                  : initial.width;
+                const height = pixelHeight
+                  ? Math.round(pixelHeight / minPixelHeight)
+                  : initial.height;
+                const x = Math.round(pixelX / minPixelWidth);
+                const y = Math.round(pixelY / minPixelHeight);
 
-              if (
-                width === initial.width &&
-                height === initial.height &&
-                x === initial.x &&
-                y === initial.y
-              )
-                return;
+                if (
+                  width === initial.width &&
+                  height === initial.height &&
+                  x === initial.x &&
+                  y === initial.y
+                )
+                  return;
 
-              const updated = {
-                width,
-                height,
-                x,
-                y
-              };
+                const updated = {
+                  width,
+                  height,
+                  x,
+                  y
+                };
 
-              Object.assign(customizable.current, updated);
+                Object.assign(customizable.current, updated);
 
-              onChange(initial.id, updated);
+                onChange(initial.id, updated);
+              }
             }}
           >
-            {item}
-          </Item>
+            <Item
+              key={id}
+              initialLoad={!containerWidth}
+              customization={isCustomizing && customization}
+            >
+              {item}
+            </Item>
+          </itemContext.Provider>
         );
       })}
       {!!customization && containerWidth && (

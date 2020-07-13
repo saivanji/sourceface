@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
 
-export default forwardRef(function Resize({ position }, ref) {
+export default forwardRef(function Angle({ position }, ref) {
   const positions = {
     nw: ["top", "left"],
     sw: ["bottom", "left"],

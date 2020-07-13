@@ -1,16 +1,17 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { range } from "./utils";
 import { drag, getTransform } from "./dom";
+import { itemContext } from "./context";
 
-export default ({
-  previewRef,
-  handleRef,
-  horizontalBoundary,
-  verticalBoundary,
-  onDragStart,
-  onDragEnd,
-  onDrag
-}) => {
+export default ({ previewRef, handleRef }) => {
+  const {
+    horizontalBoundary,
+    verticalBoundary,
+    onCustomizeStart,
+    onCustomizeEnd,
+    onCustomize
+  } = useContext(itemContext);
+
   useEffect(() => {
     const handle = handleRef.current;
     let payload;
@@ -19,7 +20,7 @@ export default ({
       handle,
       e => {
         handle.style.cursor = "grabbing";
-        onDragStart();
+        onCustomizeStart("drag", e);
 
         return {
           startX: e.clientX,
@@ -28,7 +29,7 @@ export default ({
       },
       () => {
         handle.style.cursor = "";
-        onDragEnd();
+        onCustomizeEnd();
       },
       (e, { startX, startY }) => {
         const preview = previewRef.current;
@@ -50,7 +51,7 @@ export default ({
 
         preview.style.transform = `translate(${x}px, ${y}px)`;
 
-        onDrag({ x, y });
+        onCustomize({ x, y });
       }
     );
   }, [horizontalBoundary, handleRef, previewRef]);
