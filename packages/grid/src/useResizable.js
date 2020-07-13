@@ -3,7 +3,7 @@ import { getTransform, drag } from "./dom";
 import { range } from "./utils";
 
 export default ({
-  elementRef,
+  previewRef,
   nwRef,
   swRef,
   neRef,
@@ -17,14 +17,14 @@ export default ({
   onResize
 }) => {
   useEffect(() => {
-    const element = elementRef.current;
+    const preview = previewRef.current;
     const nw = nwRef.current;
     const sw = swRef.current;
     const ne = neRef.current;
     const se = seRef.current;
 
     const args = [
-      element,
+      preview,
       minWidth,
       minHeight,
       horizontalBoundary,
@@ -46,13 +46,13 @@ export default ({
         fn && fn();
       }
     };
-  }, [minWidth]);
+  }, [minWidth, previewRef]);
 };
 
 const listen = (
   position,
   node,
-  element,
+  preview,
   minWidth,
   minHeight,
   horizontalBoundary,
@@ -65,15 +65,15 @@ const listen = (
     node,
     e => {
       const { translateX: initialX, translateY: initialY } = getTransform(
-        element
+        preview
       );
 
       // TODO: instead of getting offsets and sizes from html node, get them as arguments of hook from parent component
       const initial = {
         initialX,
         initialY,
-        initialWidth: element.offsetWidth,
-        initialHeight: element.offsetHeight,
+        initialWidth: preview.offsetWidth,
+        initialHeight: preview.offsetHeight,
         startX: e.clientX,
         startY: e.clientY
       };
@@ -109,9 +109,9 @@ const listen = (
         verticalBoundary
       );
 
-      element.style.width = `${w}px`;
-      element.style.height = `${h}px`;
-      element.style.transform = `translate(${x}px, ${y}px)`;
+      preview.style.width = `${w}px`;
+      preview.style.height = `${h}px`;
+      preview.style.transform = `translate(${x}px, ${y}px)`;
 
       onResize(w, h, x, y);
     }

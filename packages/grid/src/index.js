@@ -23,10 +23,14 @@ const items = [
 // When resizing either display a square as preview or display original element in real time
 
 // TODO:
+// Interface of customizing appearance should be with component props
+// - Conditions for rendering of previews, placeholders will be defined inside of Item
+// - Item will be used internally
 // Implement custom drag preview
 // Fix customize flickering
 // Implement custom placeholder
 // Expand item style on drag end
+// Make items resizable by default
 //
 // Implement moving the element over the grid(that was implemented before)
 // - Consider source boundaries while drag
@@ -36,6 +40,8 @@ const items = [
 //
 // Fix position when scrolling and dragging/resizing at the same time
 // Have stacking and free movement at the same time
+
+// Consider rewriting in a declarative way?
 
 const Resize = forwardRef(function Resize({ position }, ref) {
   const positions = {
@@ -76,7 +82,15 @@ const App = () => {
       cols={14}
       layout={layout}
       onChange={(id, item) => setLayout({ ...layout, [id]: item })}
+      custom={{
+        DragHandle: "",
+        DragPreview: "",
+        Placeholder: "",
+        ResizePreview: "",
+        ResizeNW: ""
+      }}
     >
+      // Probably Item is not needed and custom html could be passed here
       {items.map(item => (
         <Item key={item.id}>
           {({ draggable, resizable }) => (

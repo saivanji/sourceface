@@ -48,5 +48,5 @@ export default ({
         onDrag(width, height, x, y);
       }
     );
-  }, [horizontalBoundary]);
+  }, [horizontalBoundary, previewRef, handleRef]);
 };

@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+import Placeholder from "./Placeholder";
 import useDraggable from "./useDraggable";
 import useResizable from "./useResizable";
 
@@ -9,32 +10,25 @@ export default function Item({
   horizontalBoundary,
   verticalBoundary,
   children,
+  customization,
   onCustomizeStart,
   onCustomizeEnd,
   onCustomize
 }) {
-  const elementRef = useRef();
   const draggable = {
     handleRef: useRef(),
     previewRef: useRef()
   };
   const resizable = {
+    previewRef: useRef(),
     nwRef: useRef(),
     swRef: useRef(),
     neRef: useRef(),
     seRef: useRef()
   };
 
-  const isCustom = typeof children === "function";
-  const draggableRefs = isCustom
-    ? draggable
-    : {
-        handleRef: elementRef,
-        previewRef: elementRef
-      };
-
   useDraggable({
-    ...draggableRefs,
+    ...draggable,
     horizontalBoundary,
     verticalBoundary,
     onDragStart: e => onCustomizeStart("drag", e),
@@ -43,7 +37,6 @@ export default function Item({
   });
   useResizable({
     ...resizable,
-    elementRef,
     horizontalBoundary,
     verticalBoundary,
     minWidth,
@@ -53,24 +46,40 @@ export default function Item({
     onResize: onCustomize
   });
 
-  // probably render placeholder here
   return (
-    <div
-      ref={elementRef}
-      style={{
-        position: "absolute",
-        userSelect: "none",
-        zIndex: 2,
-        ...style
-      }}
-    >
-      {!isCustom
-        ? children
-        : children({
-            customization: "type",
-            draggable,
-            resizable
-          })}
-    </div>
+    <>
+      <div
+        ref={node => {
+          draggable.handleRef.current = draggable.handleRef.current || node;
+        }}
+        style={{
+          position: "absolute",
+          userSelect: "none",
+          zIndex: 2,
+          ...style
+        }}
+      >
+        {typeof children !== "function"
+          ? children
+          : children({
+              customization,
+              draggable,
+              resizable
+            })}
+      </div>
+      {customization && (
+        <>
+          <div
+            ref={node => {
+              resizable.previewRef.current =
+                resizable.previewRef.current || node;
+              draggable.previewRef.current =
+                draggable.previewRef.current || node;
+            }}
+          />
+          <Placeholder style={style} />
+        </>
+      )}
+    </>
   );
 }
