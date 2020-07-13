@@ -28,7 +28,10 @@ export default function Item({
   components: {
     DragHandle,
     DragPreview = Preview,
-    DragPlaceholder = Placeholder
+    DragPlaceholder = Placeholder,
+    ResizeHandle,
+    ResizePreview = Preview,
+    ResizePlaceholder = Placeholder
   } = {}
 }) {
   const draggable = {
@@ -57,16 +60,16 @@ export default function Item({
     onDragEnd: onCustomizeEnd,
     onDrag: onCustomize
   });
-  // useResizable({
-  //   ...resizable,
-  //   horizontalBoundary,
-  //   verticalBoundary,
-  //   minWidth,
-  //   minHeight,
-  //   onResizeStart: e => onCustomizeStart("resize", e),
-  //   onResizeEnd: onCustomizeEnd,
-  //   onResize: onCustomize
-  // });
+  useResizable({
+    ...resizable,
+    horizontalBoundary,
+    verticalBoundary,
+    minWidth,
+    minHeight,
+    onResizeStart: e => onCustomizeStart("resize", e),
+    onResizeEnd: onCustomizeEnd,
+    onResize: onCustomize
+  });
 
   const style = initialLoad
     ? { width, height, left: x, top: y }
@@ -85,17 +88,32 @@ export default function Item({
       {DragHandle && (
         <DragHandle ref={draggable.handleRef} isDragging={false} />
       )}
+      {ResizeHandle && (
+        <>
+          <ResizeHandle ref={resizable.nwRef} position="nw" />
+          <ResizeHandle ref={resizable.swRef} position="sw" />
+          <ResizeHandle ref={resizable.neRef} position="ne" />
+          <ResizeHandle ref={resizable.seRef} position="se" />
+        </>
+      )}
       {children}
     </div>
+  ) : customization === "drag" ? (
+    <>
+      <DragPlaceholder style={style} />
+      <PreviewProvider position={position}>
+        <DragPreview ref={draggable.previewRef}>
+          {DragHandle && <DragHandle isDragging />}
+          {children}
+        </DragPreview>
+      </PreviewProvider>
+    </>
   ) : (
-    customization === "drag" && (
+    customization === "resize" && (
       <>
-        <DragPlaceholder style={style} />
+        <ResizePlaceholder style={style} />
         <PreviewProvider position={position}>
-          <DragPreview ref={draggable.previewRef}>
-            {DragHandle && <DragHandle isDragging />}
-            {children}
-          </DragPreview>
+          <ResizePreview ref={resizable.previewRef}>{children}</ResizePreview>
         </PreviewProvider>
       </>
     )

@@ -70,8 +70,8 @@ export default function Grid({
               customizable.current = null;
             }}
             onCustomize={({
-              width: pixelWidth,
-              height: pixelHeight,
+              w: pixelWidth,
+              h: pixelHeight,
               x: pixelX,
               y: pixelY
             }) => {

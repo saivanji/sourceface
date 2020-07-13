@@ -57,6 +57,7 @@ const ResizeHandle = forwardRef(function Resize({ position }, ref) {
       style={{
         position: "absolute",
         cursor: `${position}-resize`,
+        zIndex: 3,
         width: 20,
         height: 20,
         ...positions[position].reduce((acc, key) => ({ ...acc, [key]: 0 }), {})
@@ -97,19 +98,10 @@ const App = () => {
       cols={14}
       layout={layout}
       onChange={(id, item) => setLayout({ ...layout, [id]: item })}
-      _custom={{
-        DragHandle: "",
-        DragPreview: "",
-        DragPlaceholder: "",
-        ResizeHandle: "",
-        ResizePreview: "",
-        ResizePlaceholder: ""
+      components={{
+        DragHandle,
+        ResizeHandle
       }}
-      components={
-        {
-          // DragHandle
-        }
-      }
     >
       {items.map(item => (
         <div

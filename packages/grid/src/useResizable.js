@@ -17,14 +17,13 @@ export default ({
   onResize
 }) => {
   useEffect(() => {
-    const preview = previewRef.current;
     const nw = nwRef.current;
     const sw = swRef.current;
     const ne = neRef.current;
     const se = seRef.current;
 
     const args = [
-      preview,
+      previewRef,
       minWidth,
       minHeight,
       horizontalBoundary,
@@ -52,7 +51,7 @@ export default ({
 const listen = (
   position,
   node,
-  preview,
+  previewRef,
   minWidth,
   minHeight,
   horizontalBoundary,
@@ -61,36 +60,41 @@ const listen = (
   onResizeEnd,
   onResize
 ) => {
+  let payload;
+
   return drag(
     node,
     e => {
-      const { translateX: initialX, translateY: initialY } = getTransform(
-        preview
-      );
+      onResizeStart();
 
-      // TODO: instead of getting offsets and sizes from html node, get them as arguments of hook from parent component
-      const initial = {
-        initialX,
-        initialY,
-        initialWidth: preview.offsetWidth,
-        initialHeight: preview.offsetHeight,
+      return {
         startX: e.clientX,
         startY: e.clientY
       };
-
-      onResizeStart();
-
-      return initial;
     },
     onResizeEnd,
-    (
-      e,
-      { initialX, initialY, initialWidth, initialHeight, startX, startY }
-    ) => {
+    (e, { startX, startY }) => {
+      const preview = previewRef.current;
+      if (!preview) return;
+
+      if (!payload) {
+        const { translateX: initialX, translateY: initialY } = getTransform(
+          preview
+        );
+
+        payload = {
+          initialX,
+          initialY,
+          initialWidth: preview.offsetWidth,
+          initialHeight: preview.offsetHeight
+        };
+      }
+
       const deltaX = e.clientX - startX;
       const deltaY = e.clientY - startY;
       const isNorth = position === "nw" || position === "ne";
       const isWest = position === "nw" || position === "sw";
+      const { initialX, initialY, initialWidth, initialHeight } = payload;
 
       const [w, x] = change(
         isWest,
@@ -113,7 +117,7 @@ const listen = (
       preview.style.height = `${h}px`;
       preview.style.transform = `translate(${x}px, ${y}px)`;
 
-      onResize(w, h, x, y);
+      onResize({ w, h, x, y });
     }
   );
 };
