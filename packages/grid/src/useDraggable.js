@@ -1,7 +1,6 @@
 import { useEffect } from "react";
-import { getTransform } from "./dom";
 import { range } from "./utils";
-import { drag } from "./dom";
+import { drag, getTransform } from "./dom";
 
 export default ({
   previewRef,
@@ -14,39 +13,45 @@ export default ({
 }) => {
   useEffect(() => {
     const handle = handleRef.current;
-    const preview = previewRef.current;
+    let payload;
 
     return drag(
       handle,
       e => {
         handle.style.cursor = "grabbing";
-
-        const initial = {
-          startX: e.clientX,
-          startY: e.clientY,
-          width: preview.offsetWidth,
-          height: preview.offsetHeight,
-          ...getTransform(preview)
-        };
-
         onDragStart();
 
-        return initial;
+        return {
+          startX: e.clientX,
+          startY: e.clientY
+        };
       },
       () => {
         handle.style.cursor = "";
         onDragEnd();
       },
-      (e, { startX, startY, width, height, translateX, translateY }) => {
+      (e, { startX, startY }) => {
+        const preview = previewRef.current;
+        if (!preview) return;
+
+        if (!payload) {
+          payload = {
+            width: preview.offsetWidth,
+            height: preview.offsetHeight,
+            ...getTransform(preview)
+          };
+        }
+
+        const { translateX, translateY, width, height } = payload;
         const deltaX = e.clientX - startX;
-        const deltaY = startY - e.clientY;
+        const deltaY = e.clientY - startY;
         const x = range(translateX + deltaX, 0, horizontalBoundary - width);
-        const y = range(translateY - deltaY, 0, verticalBoundary - height);
+        const y = range(translateY + deltaY, 0, verticalBoundary - height);
 
         preview.style.transform = `translate(${x}px, ${y}px)`;
 
-        onDrag(width, height, x, y);
+        onDrag({ x, y });
       }
     );
-  }, [horizontalBoundary, previewRef, handleRef]);
+  }, [horizontalBoundary, handleRef, previewRef]);
 };

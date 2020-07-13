@@ -1,5 +1,6 @@
-import React, { cloneElement, useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Lines from "./Lines";
+import Item from "./Item";
 import * as utils from "./utils";
 
 export default function Grid({
@@ -8,7 +9,8 @@ export default function Grid({
   rows,
   cols,
   layout,
-  onChange
+  onChange,
+  components
 }) {
   const [customization, setCustomization] = useState();
   const [containerWidth, setContainerWidth] = useState(null);
@@ -36,53 +38,76 @@ export default function Grid({
 
         const { x, y, width, height } = layout[id];
 
-        const size = calcSize(containerWidth, cols, rowHeight, width, height);
-        const position = calcPosition(containerWidth, cols, rowHeight, x, y);
+        const pixelWidth = containerWidth
+          ? utils.calcPixelX(width, cols, containerWidth)
+          : utils.calcPercentageX(width, cols);
+        const pixelHeight = utils.calcPixelY(height, rowHeight);
+        const pixelX = containerWidth
+          ? utils.calcPixelX(x, cols, containerWidth)
+          : utils.calcPercentageX(x, cols);
+        const pixelY = utils.calcPixelY(y, rowHeight);
 
-        const style = { ...size, ...position };
+        return (
+          <Item
+            key={id}
+            initialLoad={!containerWidth}
+            x={pixelX}
+            y={pixelY}
+            width={pixelWidth}
+            height={pixelHeight}
+            minWidth={minPixelWidth}
+            minHeight={minPixelHeight}
+            horizontalBoundary={containerWidth}
+            verticalBoundary={containerHeight}
+            customization={isCustomizing && customization}
+            components={components}
+            onCustomizeStart={type => {
+              customizable.current = { id, ...layout[id] };
+              setCustomization(type);
+            }}
+            onCustomizeEnd={() => {
+              setCustomization(null);
+              customizable.current = null;
+            }}
+            onCustomize={({
+              width: pixelWidth,
+              height: pixelHeight,
+              x: pixelX,
+              y: pixelY
+            }) => {
+              const initial = customizable.current;
+              const width = pixelWidth
+                ? Math.round(pixelWidth / minPixelWidth)
+                : initial.width;
+              const height = pixelHeight
+                ? Math.round(pixelHeight / minPixelHeight)
+                : initial.height;
+              const x = Math.round(pixelX / minPixelWidth);
+              const y = Math.round(pixelY / minPixelHeight);
 
-        return cloneElement(item, {
-          style,
-          minWidth: minPixelWidth,
-          minHeight: minPixelHeight,
-          horizontalBoundary: containerWidth,
-          verticalBoundary: containerHeight,
-          customization: isCustomizing && customization,
-          onCustomizeStart: type => {
-            customizable.current = { id, ...layout[id] };
-            setCustomization(type);
-          },
-          onCustomizeEnd: () => {
-            setCustomization(null);
-            customizable.current = null;
-          },
-          onCustomize: (pixelWidth, pixelHeight, pixelX, pixelY) => {
-            const initial = customizable.current;
-            const width = Math.round(pixelWidth / minPixelWidth);
-            const height = Math.round(pixelHeight / minPixelHeight);
-            const x = Math.round(pixelX / minPixelWidth);
-            const y = Math.round(pixelY / minPixelHeight);
+              if (
+                width === initial.width &&
+                height === initial.height &&
+                x === initial.x &&
+                y === initial.y
+              )
+                return;
 
-            if (
-              width === initial.width &&
-              height === initial.height &&
-              x === initial.x &&
-              y === initial.y
-            )
-              return;
+              const updated = {
+                width,
+                height,
+                x,
+                y
+              };
 
-            const updated = {
-              width,
-              height,
-              x,
-              y
-            };
+              Object.assign(customizable.current, updated);
 
-            Object.assign(customizable.current, updated);
-
-            onChange(initial.id, updated);
-          }
-        });
+              onChange(initial.id, updated);
+            }}
+          >
+            {item}
+          </Item>
+        );
       })}
       {!!customization && containerWidth && (
         <Lines
@@ -96,28 +121,3 @@ export default function Grid({
     </div>
   );
 }
-
-const calcSize = (containerWidth, cols, rowHeight, width, height) => {
-  const pixelHeight = utils.calcPixelY(height, rowHeight);
-  const pixelWidth =
-    containerWidth && utils.calcPixelX(width, cols, containerWidth);
-
-  return {
-    width: pixelWidth || utils.calcPercentageX(width, cols),
-    height: pixelHeight
-  };
-};
-
-const calcPosition = (containerWidth, cols, rowHeight, x, y) => {
-  const pixelX = containerWidth && utils.calcPixelX(x, cols, containerWidth);
-  const pixelY = utils.calcPixelY(y, rowHeight);
-
-  return !pixelX
-    ? {
-        left: utils.calcPercentageX(x, cols),
-        top: pixelY
-      }
-    : {
-        transform: `translate(${pixelX}px, ${pixelY}px)`
-      };
-};

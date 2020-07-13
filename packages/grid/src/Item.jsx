@@ -1,10 +1,21 @@
-import React, { useRef } from "react";
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  cloneElement,
+  forwardRef
+} from "react";
 import Placeholder from "./Placeholder";
+import Preview from "./Preview";
 import useDraggable from "./useDraggable";
 import useResizable from "./useResizable";
 
 export default function Item({
-  style,
+  initialLoad,
+  x,
+  y,
+  width,
+  height,
   minWidth,
   minHeight,
   horizontalBoundary,
@@ -13,7 +24,12 @@ export default function Item({
   customization,
   onCustomizeStart,
   onCustomizeEnd,
-  onCustomize
+  onCustomize,
+  components: {
+    DragHandle,
+    DragPreview = Preview,
+    DragPlaceholder = Placeholder
+  } = {}
 }) {
   const draggable = {
     handleRef: useRef(),
@@ -26,6 +42,12 @@ export default function Item({
     neRef: useRef(),
     seRef: useRef()
   };
+  const position = {
+    x,
+    y,
+    width,
+    height
+  };
 
   useDraggable({
     ...draggable,
@@ -35,84 +57,65 @@ export default function Item({
     onDragEnd: onCustomizeEnd,
     onDrag: onCustomize
   });
-  useResizable({
-    ...resizable,
-    horizontalBoundary,
-    verticalBoundary,
-    minWidth,
-    minHeight,
-    onResizeStart: e => onCustomizeStart("resize", e),
-    onResizeEnd: onCustomizeEnd,
-    onResize: onCustomize
-  });
+  // useResizable({
+  //   ...resizable,
+  //   horizontalBoundary,
+  //   verticalBoundary,
+  //   minWidth,
+  //   minHeight,
+  //   onResizeStart: e => onCustomizeStart("resize", e),
+  //   onResizeEnd: onCustomizeEnd,
+  //   onResize: onCustomize
+  // });
 
-  //   return !customization ? (
-  //     <div
-  //       ref={node => {
-  //         draggable.handleRef.current = draggable.handleRef.current || node;
-  //       }}
-  //       style={{
-  //         position: "absolute",
-  //         userSelect: "none",
-  //         zIndex: 2,
-  //         ...style
-  //       }}
-  //     >
-  //       {typeof children !== "function"
-  //         ? children
-  //         : children({
-  //             customization,
-  //             draggable,
-  //             resizable
-  //           })}
-  //     </div>
-  //   ) : customization === "drag" ? (
-  //     <>
-  //       <DragPreview />
-  //       <DragPlaceholder />
-  //     </>
-  //   ) : (
-  //     <>
-  //       <ResizePreview />
-  //       <ResizePlaceholder />
-  //       <ResizeNW />
-  //     </>
-  //   );
+  const style = initialLoad
+    ? { width, height, left: x, top: y }
+    : positionToStyle(position);
 
-  return (
-    <>
-      <div
-        ref={node => {
-          draggable.handleRef.current = draggable.handleRef.current || node;
-        }}
-        style={{
-          position: "absolute",
-          userSelect: "none",
-          zIndex: 2,
-          ...style
-        }}
-      >
-        {typeof children !== "function"
-          ? children
-          : children({
-              customization,
-              draggable,
-              resizable
-            })}
-      </div>
-      {customization && (
-        <>
-          <div
-            ref={node => {
-              resizable.previewRef.current =
-                resizable.previewRef.current || node;
-              draggable.previewRef.current =
-                draggable.previewRef.current || node;
-            }}
-          />
-          <Placeholder style={style} />
-        </>
+  return !customization ? (
+    <div
+      ref={!DragHandle ? draggable.handleRef : undefined}
+      style={{
+        position: "absolute",
+        userSelect: "none",
+        zIndex: 2,
+        ...style
+      }}
+    >
+      {DragHandle && (
+        <DragHandle ref={draggable.handleRef} isDragging={false} />
       )}
-    </>
+      {children}
+    </div>
+  ) : (
+    customization === "drag" && (
+      <>
+        <DragPlaceholder style={style} />
+        <PreviewProvider position={position}>
+          <DragPreview ref={draggable.previewRef}>
+            {DragHandle && <DragHandle isDragging />}
+            {children}
+          </DragPreview>
+        </PreviewProvider>
+      </>
+    )
   );
 }
+
+const PreviewProvider = ({ position, children }) => {
+  const data = useRef(null);
+  const initialPosition = data.current || position;
+  const style = positionToStyle(initialPosition);
+
+  useEffect(() => {
+    data.current = position;
+  }, []);
+
+  return cloneElement(children, { style, position: initialPosition });
+};
+
+const positionToStyle = position => ({
+  width: position.width,
+  height: position.height,
+  transform: `translate(${position.x}px, ${position.y}px)`
+});
