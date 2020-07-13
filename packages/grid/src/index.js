@@ -28,15 +28,12 @@ const items = [
 // When resizing either display a square as preview or display original element in real time
 
 // TODO:
-// Improve imperative code in drag and resize
 // How custom sized drag preview behaves?
 //
 // Implement updating the grid in respect to drag/resize
 //
 // Fix position when scrolling and dragging/resizing at the same time
 // Have stacking and free movement at the same time
-
-// Consider rewriting in a declarative way?
 
 const DragHandle = forwardRef(({ isDragging }, ref) => {
   return (
@@ -53,23 +50,25 @@ const DragHandle = forwardRef(({ isDragging }, ref) => {
   );
 });
 
+const data = {
+  john: {
+    x: 2,
+    y: 2,
+    height: 2,
+    width: 2,
+    isDraggable: true
+  },
+  mike: {
+    x: 6,
+    y: 2,
+    height: 2,
+    width: 2,
+    isDraggable: true
+  }
+};
+
 const App = () => {
-  const [layout, setLayout] = useState({
-    john: {
-      x: 2,
-      y: 2,
-      height: 2,
-      width: 2,
-      isDraggable: true
-    },
-    mike: {
-      x: 6,
-      y: 2,
-      height: 2,
-      width: 2,
-      isDraggable: true
-    }
-  });
+  const [layout, setLayout] = useState(data);
 
   return (
     <Grid
@@ -77,7 +76,7 @@ const App = () => {
       rows={10}
       cols={14}
       layout={layout}
-      onChange={(id, item) => setLayout({ ...layout, [id]: item })}
+      onChange={layout => setLayout(layout)}
       components={{
         DragHandle
       }}

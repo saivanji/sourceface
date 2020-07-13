@@ -54,5 +54,13 @@ export default ({ previewRef, handleRef }) => {
         onMotion({ x, y });
       }
     );
-  }, [horizontalLimit, handleRef, previewRef]);
+  }, [
+    handleRef,
+    previewRef,
+    horizontalLimit,
+    verticalLimit,
+    onMotionStart,
+    onMotionEnd,
+    onMotion
+  ]);
 };

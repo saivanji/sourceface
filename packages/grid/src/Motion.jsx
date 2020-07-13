@@ -47,7 +47,7 @@ export default ({
   ) : (
     type === "resize" && (
       <>
-        <ResizePlaceholder style={style} style={style} />
+        <ResizePlaceholder style={style} />
         <ResizePreview style={initialStyle} ref={resizePreviewRef}>
           {children}
         </ResizePreview>

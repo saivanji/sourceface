@@ -43,7 +43,20 @@ export default ({ previewRef, nwRef, swRef, neRef, seRef }) => {
         fn && fn();
       }
     };
-  }, [minWidth, previewRef]);
+  }, [
+    previewRef,
+    nwRef,
+    swRef,
+    neRef,
+    seRef,
+    horizontalLimit,
+    verticalLimit,
+    minWidth,
+    minHeight,
+    onMotionStart,
+    onMotionEnd,
+    onMotion
+  ]);
 };
 
 const listen = (

@@ -11,7 +11,7 @@ export default function Grid({
   cols,
   layout,
   onChange,
-  components
+  components = {}
 }) {
   const [motion, setMotion] = useState();
   const [containerWidth, setContainerWidth] = useState(null);
@@ -50,6 +50,7 @@ export default function Grid({
 
         return (
           <itemContext.Provider
+            key={id}
             value={{
               x: pixelX,
               y: pixelY,
@@ -99,14 +100,16 @@ export default function Grid({
                   y
                 };
 
-                Object.assign(motioning.current, updated);
+                motioning.current.width = width;
+                motioning.current.height = height;
+                motioning.current.x = x;
+                motioning.current.y = y;
 
-                onChange(initial.id, updated);
+                onChange({ ...layout, [id]: updated });
               }
             }}
           >
             <Item
-              key={id}
               initialLoad={!containerWidth}
               motion={isCustomizing && motion}
             >
