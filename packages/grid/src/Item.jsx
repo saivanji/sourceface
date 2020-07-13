@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import Placeholder from "./Placeholder";
 import Preview from "./Preview";
-import DefaultResizeHandle from "./ResizeHandle";
+import Angle from "./Angle";
 import useDraggable from "./useDraggable";
 import useResizable from "./useResizable";
 
@@ -31,7 +31,7 @@ export default function Item({
     DragHandle,
     DragPreview = Preview,
     DragPlaceholder = Placeholder,
-    ResizeHandle = DefaultResizeHandle,
+    ResizeHandle = Angle,
     ResizePreview = Preview,
     ResizePlaceholder = Placeholder
   } = {}
