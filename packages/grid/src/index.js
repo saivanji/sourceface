@@ -48,7 +48,7 @@ const DragHandle = forwardRef(({ isDragging }, ref) => {
       style={{
         position: "absolute",
         top: -20,
-        left: -20
+        left: 0
       }}
     >
       Handle
@@ -62,7 +62,8 @@ const App = () => {
       x: 2,
       y: 2,
       height: 2,
-      width: 2
+      width: 2,
+      isDraggable: true
     }
   });
 
