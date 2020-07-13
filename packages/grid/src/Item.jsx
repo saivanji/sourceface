@@ -2,11 +2,13 @@ import React, {
   useRef,
   useEffect,
   useState,
+  useMemo,
   cloneElement,
   forwardRef
 } from "react";
 import Placeholder from "./Placeholder";
 import Preview from "./Preview";
+import DefaultResizeHandle from "./ResizeHandle";
 import useDraggable from "./useDraggable";
 import useResizable from "./useResizable";
 
@@ -29,31 +31,95 @@ export default function Item({
     DragHandle,
     DragPreview = Preview,
     DragPlaceholder = Placeholder,
-    ResizeHandle,
+    ResizeHandle = DefaultResizeHandle,
     ResizePreview = Preview,
     ResizePlaceholder = Placeholder
   } = {}
 }) {
-  const draggable = {
-    handleRef: useRef(),
-    previewRef: useRef()
-  };
-  const resizable = {
-    previewRef: useRef(),
-    nwRef: useRef(),
-    swRef: useRef(),
-    neRef: useRef(),
-    seRef: useRef()
-  };
-  const position = {
-    x,
-    y,
-    width,
-    height
-  };
+  const dragPreviewRef = useRef();
+  const resizePreviewRef = useRef();
+
+  const style = initialLoad
+    ? { width, height, left: x, top: y }
+    : positionToStyle({ x, y, width, height });
+
+  // TODO: move to Customizing component and have [] as deps
+  const initialPosition = useMemo(
+    () => ({
+      x,
+      y,
+      width,
+      height
+    }),
+    [customization]
+  );
+  const initialStyle = positionToStyle(initialPosition);
+
+  return !customization ? (
+    <Static
+      style={style}
+      minWidth={minWidth}
+      minHeight={minHeight}
+      horizontalBoundary={horizontalBoundary}
+      verticalBoundary={verticalBoundary}
+      dragPreviewRef={dragPreviewRef}
+      resizePreviewRef={resizePreviewRef}
+      onCustomizeStart={onCustomizeStart}
+      onCustomizeEnd={onCustomizeEnd}
+      onCustomize={onCustomize}
+      DragHandle={DragHandle}
+      ResizeHandle={ResizeHandle}
+    >
+      {children}
+    </Static>
+  ) : customization === "drag" ? (
+    <>
+      <DragPlaceholder style={style} />
+      <DragPreview style={initialStyle} ref={dragPreviewRef}>
+        {DragHandle && <DragHandle isDragging />}
+        {children}
+      </DragPreview>
+    </>
+  ) : (
+    customization === "resize" && (
+      <>
+        <ResizePlaceholder style={style} style={style} />
+        <ResizePreview style={initialStyle} ref={resizePreviewRef}>
+          {children}
+        </ResizePreview>
+      </>
+    )
+  );
+}
+
+// TODO: Static and Customizing in a separate files?
+
+// TODO: use context so it can be used even in hooks?
+const Static = ({
+  children,
+  style,
+  minWidth,
+  minHeight,
+  horizontalBoundary,
+  verticalBoundary,
+  dragPreviewRef,
+  resizePreviewRef,
+  onCustomizeStart,
+  onCustomizeEnd,
+  onCustomize,
+  DragHandle,
+  ResizeHandle
+}) => {
+  const dragHandleRef = useRef();
+
+  const nwRef = useRef();
+  const swRef = useRef();
+  const neRef = useRef();
+  const seRef = useRef();
 
   useDraggable({
-    ...draggable,
+    previewRef: dragPreviewRef,
+    handleRef: dragHandleRef,
     horizontalBoundary,
     verticalBoundary,
     onDragStart: e => onCustomizeStart("drag", e),
@@ -61,7 +127,11 @@ export default function Item({
     onDrag: onCustomize
   });
   useResizable({
-    ...resizable,
+    previewRef: resizePreviewRef,
+    nwRef,
+    swRef,
+    neRef,
+    seRef,
     horizontalBoundary,
     verticalBoundary,
     minWidth,
@@ -71,13 +141,9 @@ export default function Item({
     onResize: onCustomize
   });
 
-  const style = initialLoad
-    ? { width, height, left: x, top: y }
-    : positionToStyle(position);
-
-  return !customization ? (
+  return (
     <div
-      ref={!DragHandle ? draggable.handleRef : undefined}
+      ref={!DragHandle ? dragHandleRef : undefined}
       style={{
         position: "absolute",
         userSelect: "none",
@@ -85,51 +151,18 @@ export default function Item({
         ...style
       }}
     >
-      {DragHandle && (
-        <DragHandle ref={draggable.handleRef} isDragging={false} />
-      )}
+      {DragHandle && <DragHandle ref={dragHandleRef} isDragging={false} />}
       {ResizeHandle && (
         <>
-          <ResizeHandle ref={resizable.nwRef} position="nw" />
-          <ResizeHandle ref={resizable.swRef} position="sw" />
-          <ResizeHandle ref={resizable.neRef} position="ne" />
-          <ResizeHandle ref={resizable.seRef} position="se" />
+          <ResizeHandle ref={nwRef} position="nw" />
+          <ResizeHandle ref={swRef} position="sw" />
+          <ResizeHandle ref={neRef} position="ne" />
+          <ResizeHandle ref={seRef} position="se" />
         </>
       )}
       {children}
     </div>
-  ) : customization === "drag" ? (
-    <>
-      <DragPlaceholder style={style} />
-      <PreviewProvider position={position}>
-        <DragPreview ref={draggable.previewRef}>
-          {DragHandle && <DragHandle isDragging />}
-          {children}
-        </DragPreview>
-      </PreviewProvider>
-    </>
-  ) : (
-    customization === "resize" && (
-      <>
-        <ResizePlaceholder style={style} />
-        <PreviewProvider position={position}>
-          <ResizePreview ref={resizable.previewRef}>{children}</ResizePreview>
-        </PreviewProvider>
-      </>
-    )
   );
-}
-
-const PreviewProvider = ({ position, children }) => {
-  const data = useRef(null);
-  const initialPosition = data.current || position;
-  const style = positionToStyle(initialPosition);
-
-  useEffect(() => {
-    data.current = position;
-  }, []);
-
-  return cloneElement(children, { style, position: initialPosition });
 };
 
 const positionToStyle = position => ({

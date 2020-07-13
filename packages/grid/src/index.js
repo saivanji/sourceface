@@ -23,9 +23,12 @@ const items = [
 // When resizing either display a square as preview or display original element in real time
 
 // TODO:
+// Provide from grid with context
+// Create Customizing component
+// Think of moving Static / Customizing components to a separate files
 // Improve imperative code in drag and resize
-// Fix dragging / resizing 2nd time
 // Make items resizable by default
+// How custom sized drag preview behaves?
 //
 // Implement moving the element over the grid(that was implemented before)
 // - Consider source boundaries while drag
@@ -37,29 +40,6 @@ const items = [
 // Have stacking and free movement at the same time
 
 // Consider rewriting in a declarative way?
-
-const ResizeHandle = forwardRef(function Resize({ position }, ref) {
-  const positions = {
-    nw: ["top", "left"],
-    sw: ["bottom", "left"],
-    ne: ["top", "right"],
-    se: ["bottom", "right"]
-  };
-
-  return (
-    <div
-      ref={ref}
-      style={{
-        position: "absolute",
-        cursor: `${position}-resize`,
-        zIndex: 3,
-        width: 20,
-        height: 20,
-        ...positions[position].reduce((acc, key) => ({ ...acc, [key]: 0 }), {})
-      }}
-    />
-  );
-});
 
 const DragHandle = forwardRef(({ isDragging }, ref) => {
   return (
@@ -94,8 +74,7 @@ const App = () => {
       layout={layout}
       onChange={(id, item) => setLayout({ ...layout, [id]: item })}
       components={{
-        DragHandle,
-        ResizeHandle
+        DragHandle
       }}
     >
       {items.map(item => (
