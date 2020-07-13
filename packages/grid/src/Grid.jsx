@@ -13,9 +13,9 @@ export default function Grid({
   onChange,
   components
 }) {
-  const [customization, setCustomization] = useState();
+  const [motion, setMotion] = useState();
   const [containerWidth, setContainerWidth] = useState(null);
-  const customizable = useRef(null);
+  const motioning = useRef(null);
   const containerRef = useRef();
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export default function Grid({
     >
       {React.Children.map(children, (item, i) => {
         const id = item.key;
-        const isCustomizing = customizable.current?.id === id;
+        const isCustomizing = motioning.current?.id === id;
 
         const { x, y, width, height } = layout[id];
 
@@ -57,24 +57,24 @@ export default function Grid({
               height: pixelHeight,
               minWidth: minPixelWidth,
               minHeight: minPixelHeight,
-              horizontalBoundary: containerWidth,
-              verticalBoundary: containerHeight,
+              horizontalLimit: containerWidth,
+              verticalLimit: containerHeight,
               components,
-              onCustomizeStart: type => {
-                customizable.current = { id, ...layout[id] };
-                setCustomization(type);
+              onMotionStart: type => {
+                motioning.current = { id, ...layout[id] };
+                setMotion(type);
               },
-              onCustomizeEnd: () => {
-                setCustomization(null);
-                customizable.current = null;
+              onMotionEnd: () => {
+                setMotion(null);
+                motioning.current = null;
               },
-              onCustomize: ({
+              onMotion: ({
                 w: pixelWidth,
                 h: pixelHeight,
                 x: pixelX,
                 y: pixelY
               }) => {
-                const initial = customizable.current;
+                const initial = motioning.current;
                 const width = pixelWidth
                   ? Math.round(pixelWidth / minPixelWidth)
                   : initial.width;
@@ -99,7 +99,7 @@ export default function Grid({
                   y
                 };
 
-                Object.assign(customizable.current, updated);
+                Object.assign(motioning.current, updated);
 
                 onChange(initial.id, updated);
               }
@@ -108,14 +108,14 @@ export default function Grid({
             <Item
               key={id}
               initialLoad={!containerWidth}
-              customization={isCustomizing && customization}
+              motion={isCustomizing && motion}
             >
               {item}
             </Item>
           </itemContext.Provider>
         );
       })}
-      {!!customization && containerWidth && (
+      {!!motion && containerWidth && (
         <Lines
           style={{ position: "absolute", top: 0, left: 0 }}
           rows={rows}

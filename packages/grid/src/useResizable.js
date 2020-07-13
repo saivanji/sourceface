@@ -5,13 +5,13 @@ import { itemContext } from "./context";
 
 export default ({ previewRef, nwRef, swRef, neRef, seRef }) => {
   const {
-    horizontalBoundary,
-    verticalBoundary,
+    horizontalLimit,
+    verticalLimit,
     minWidth,
     minHeight,
-    onCustomizeStart,
-    onCustomizeEnd,
-    onCustomize
+    onMotionStart,
+    onMotionEnd,
+    onMotion
   } = useContext(itemContext);
 
   useEffect(() => {
@@ -24,11 +24,11 @@ export default ({ previewRef, nwRef, swRef, neRef, seRef }) => {
       previewRef,
       minWidth,
       minHeight,
-      horizontalBoundary,
-      verticalBoundary,
-      e => onCustomizeStart("resize", e),
-      onCustomizeEnd,
-      onCustomize
+      horizontalLimit,
+      verticalLimit,
+      e => onMotionStart("resize", e),
+      onMotionEnd,
+      onMotion
     ];
 
     const cleanup = [
@@ -52,8 +52,8 @@ const listen = (
   previewRef,
   minWidth,
   minHeight,
-  horizontalBoundary,
-  verticalBoundary,
+  horizontalLimit,
+  verticalLimit,
   onResizeStart,
   onResizeEnd,
   onResize
@@ -100,7 +100,7 @@ const listen = (
         initialX,
         initialWidth,
         minWidth,
-        horizontalBoundary
+        horizontalLimit
       );
       const [h, y] = change(
         isNorth,
@@ -108,7 +108,7 @@ const listen = (
         initialY,
         initialHeight,
         minHeight,
-        verticalBoundary
+        verticalLimit
       );
 
       preview.style.width = `${w}px`;
@@ -120,7 +120,7 @@ const listen = (
   );
 };
 
-const change = (cond, delta, initialOffset, initialSize, minSize, boundary) => {
+const change = (cond, delta, initialOffset, initialSize, minSize, limit) => {
   if (cond) {
     return [
       range(initialSize - delta, minSize, initialSize + initialOffset),
@@ -129,7 +129,7 @@ const change = (cond, delta, initialOffset, initialSize, minSize, boundary) => {
   }
 
   return [
-    range(initialSize + delta, minSize, boundary - initialOffset),
+    range(initialSize + delta, minSize, limit - initialOffset),
     initialOffset
   ];
 };

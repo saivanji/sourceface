@@ -28,16 +28,8 @@ const items = [
 // When resizing either display a square as preview or display original element in real time
 
 // TODO:
-// Provide from grid with context
-// Create Customizing component
-// Think of moving Static / Customizing components to a separate files
 // Improve imperative code in drag and resize
-// Make items resizable by default
 // How custom sized drag preview behaves?
-//
-// Implement moving the element over the grid(that was implemented before)
-// - Consider source boundaries while drag
-// - Move element only when half area was hovered
 //
 // Implement updating the grid in respect to drag/resize
 //

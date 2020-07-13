@@ -5,11 +5,11 @@ import { itemContext } from "./context";
 
 export default ({ previewRef, handleRef }) => {
   const {
-    horizontalBoundary,
-    verticalBoundary,
-    onCustomizeStart,
-    onCustomizeEnd,
-    onCustomize
+    horizontalLimit,
+    verticalLimit,
+    onMotionStart,
+    onMotionEnd,
+    onMotion
   } = useContext(itemContext);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export default ({ previewRef, handleRef }) => {
       handle,
       e => {
         handle.style.cursor = "grabbing";
-        onCustomizeStart("drag", e);
+        onMotionStart("drag", e);
 
         return {
           startX: e.clientX,
@@ -29,7 +29,7 @@ export default ({ previewRef, handleRef }) => {
       },
       () => {
         handle.style.cursor = "";
-        onCustomizeEnd();
+        onMotionEnd();
       },
       (e, { startX, startY }) => {
         const preview = previewRef.current;
@@ -46,13 +46,13 @@ export default ({ previewRef, handleRef }) => {
         const { translateX, translateY, width, height } = payload;
         const deltaX = e.clientX - startX;
         const deltaY = e.clientY - startY;
-        const x = range(translateX + deltaX, 0, horizontalBoundary - width);
-        const y = range(translateY + deltaY, 0, verticalBoundary - height);
+        const x = range(translateX + deltaX, 0, horizontalLimit - width);
+        const y = range(translateY + deltaY, 0, verticalLimit - height);
 
         preview.style.transform = `translate(${x}px, ${y}px)`;
 
-        onCustomize({ x, y });
+        onMotion({ x, y });
       }
     );
-  }, [horizontalBoundary, handleRef, previewRef]);
+  }, [horizontalLimit, handleRef, previewRef]);
 };

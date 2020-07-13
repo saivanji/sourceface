@@ -30,3 +30,9 @@ export const drag = (node, onDragStart, onDragEnd, onDrag) => {
     node.onmousedown = null;
   };
 };
+
+export const boundsToStyle = bounds => ({
+  width: bounds.width,
+  height: bounds.height,
+  transform: `translate(${bounds.x}px, ${bounds.y}px)`
+});
