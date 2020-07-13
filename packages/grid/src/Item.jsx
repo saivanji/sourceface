@@ -46,6 +46,39 @@ export default function Item({
     onResize: onCustomize
   });
 
+  //   return !customization ? (
+  //     <div
+  //       ref={node => {
+  //         draggable.handleRef.current = draggable.handleRef.current || node;
+  //       }}
+  //       style={{
+  //         position: "absolute",
+  //         userSelect: "none",
+  //         zIndex: 2,
+  //         ...style
+  //       }}
+  //     >
+  //       {typeof children !== "function"
+  //         ? children
+  //         : children({
+  //             customization,
+  //             draggable,
+  //             resizable
+  //           })}
+  //     </div>
+  //   ) : customization === "drag" ? (
+  //     <>
+  //       <DragPreview />
+  //       <DragPlaceholder />
+  //     </>
+  //   ) : (
+  //     <>
+  //       <ResizePreview />
+  //       <ResizePlaceholder />
+  //       <ResizeNW />
+  //     </>
+  //   );
+
   return (
     <>
       <div

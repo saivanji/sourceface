@@ -85,8 +85,9 @@ const App = () => {
       custom={{
         DragHandle: "",
         DragPreview: "",
-        Placeholder: "",
+        DragPlaceholder: "",
         ResizePreview: "",
+        ResizePlaceholder: "",
         ResizeNW: ""
       }}
     >
