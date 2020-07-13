@@ -4,7 +4,7 @@ import { range } from "./utils";
 import { drag } from "./dom";
 
 export default ({
-  elementRef,
+  previewRef,
   handleRef,
   horizontalBoundary,
   verticalBoundary,
@@ -14,7 +14,7 @@ export default ({
 }) => {
   useEffect(() => {
     const handle = handleRef.current;
-    const element = elementRef.current;
+    const preview = previewRef.current;
 
     return drag(
       handle,
@@ -24,9 +24,9 @@ export default ({
         const initial = {
           startX: e.clientX,
           startY: e.clientY,
-          width: element.offsetWidth,
-          height: element.offsetHeight,
-          ...getTransform(element)
+          width: preview.offsetWidth,
+          height: preview.offsetHeight,
+          ...getTransform(preview)
         };
 
         onDragStart();
@@ -43,7 +43,7 @@ export default ({
         const x = range(translateX + deltaX, 0, horizontalBoundary - width);
         const y = range(translateY - deltaY, 0, verticalBoundary - height);
 
-        element.style.transform = `translate(${x}px, ${y}px)`;
+        preview.style.transform = `translate(${x}px, ${y}px)`;
 
         onDrag(width, height, x, y);
       }

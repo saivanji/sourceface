@@ -23,6 +23,10 @@ const items = [
 // When resizing either display a square as preview or display original element in real time
 
 // TODO:
+// Implement custom drag preview
+// Fix customize flickering
+// Implement custom placeholder
+// Expand item style on drag end
 //
 // Implement moving the element over the grid(that was implemented before)
 // - Consider source boundaries while drag
@@ -75,7 +79,7 @@ const App = () => {
     >
       {items.map(item => (
         <Item key={item.id}>
-          {({ handleRef, resizable }) => (
+          {({ draggable, resizable }) => (
             <div
               style={{
                 position: "relative",
@@ -97,7 +101,7 @@ const App = () => {
                   top: -20,
                   left: -20
                 }}
-                ref={handleRef}
+                ref={draggable.handleRef}
               >
                 Handle
               </div>

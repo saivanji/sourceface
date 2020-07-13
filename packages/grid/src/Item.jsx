@@ -14,38 +14,46 @@ export default function Item({
   onCustomize
 }) {
   const elementRef = useRef();
-  const handleRef = useRef();
-  const nwRef = useRef();
-  const swRef = useRef();
-  const neRef = useRef();
-  const seRef = useRef();
+  const draggable = {
+    handleRef: useRef(),
+    previewRef: useRef()
+  };
+  const resizable = {
+    nwRef: useRef(),
+    swRef: useRef(),
+    neRef: useRef(),
+    seRef: useRef()
+  };
 
   const isCustom = typeof children === "function";
+  const draggableRefs = isCustom
+    ? draggable
+    : {
+        handleRef: elementRef,
+        previewRef: elementRef
+      };
 
   useDraggable({
-    elementRef,
-    handleRef: !isCustom ? elementRef : handleRef,
+    ...draggableRefs,
     horizontalBoundary,
     verticalBoundary,
-    onDragStart: onCustomizeStart,
+    onDragStart: e => onCustomizeStart("drag", e),
     onDragEnd: onCustomizeEnd,
     onDrag: onCustomize
   });
   useResizable({
+    ...resizable,
     elementRef,
-    nwRef,
-    swRef,
-    neRef,
-    seRef,
     horizontalBoundary,
     verticalBoundary,
     minWidth,
     minHeight,
-    onResizeStart: onCustomizeStart,
+    onResizeStart: e => onCustomizeStart("resize", e),
     onResizeEnd: onCustomizeEnd,
     onResize: onCustomize
   });
 
+  // probably render placeholder here
   return (
     <div
       ref={elementRef}
@@ -59,13 +67,9 @@ export default function Item({
       {!isCustom
         ? children
         : children({
-            handleRef,
-            resizable: {
-              nwRef,
-              swRef,
-              neRef,
-              seRef
-            }
+            customization: "type",
+            draggable,
+            resizable
           })}
     </div>
   );
