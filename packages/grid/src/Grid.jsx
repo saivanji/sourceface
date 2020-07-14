@@ -34,6 +34,32 @@ export default function Grid({
     [cols, rows, containerWidth, rowHeight]
   );
 
+  const onMotionStart = useCallback(
+    (id, type) => {
+      motioning.current = { id, ...layout[id] };
+      setMotion(type);
+    },
+    [motioning, layout, setMotion]
+  );
+
+  const onMotionEnd = useCallback(() => {
+    setMotion(null);
+    motioning.current = null;
+  }, [motioning]);
+
+  const onMotion = useCallback(
+    bounds => {
+      const initial = motioning.current;
+      const units = utils.toUnits(bounds, info, initial);
+
+      if (utils.unitsEqual(units, initial)) return;
+
+      Object.assign(motioning.current, units);
+      onChange({ ...layout, [initial.id]: units });
+    },
+    [motioning, layout, info, onChange]
+  );
+
   return (
     <div
       ref={containerRef}
@@ -48,11 +74,12 @@ export default function Grid({
             key={id}
             id={id}
             motioning={motioning}
-            layout={layout}
+            units={layout[id]}
             info={info}
             components={components}
-            onChange={onChange}
-            onMotionToggle={setMotion}
+            onMotionStart={onMotionStart}
+            onMotionEnd={onMotionEnd}
+            onMotion={onMotion}
           >
             <Item motion={inMotion && motion}>{item}</Item>
           </ItemProvider>
@@ -75,43 +102,18 @@ const ItemProvider = ({
   children,
   id,
   motioning,
-  layout,
+  units,
   info,
   components,
-  onChange,
-  onMotionToggle
+  onMotionStart,
+  onMotionEnd,
+  onMotion
 }) => {
-  const bounds = useMemo(() => utils.toBounds(layout[id], info), [
-    layout,
-    info,
-    id
+  const bounds = useMemo(() => utils.toBounds(units, info), [units, info]);
+  const startMotion = useCallback(type => onMotionStart(id, type), [
+    id,
+    onMotionStart
   ]);
-
-  const onMotionStart = useCallback(
-    type => {
-      motioning.current = { id, ...layout[id] };
-      onMotionToggle(type);
-    },
-    [motioning, layout, id, onMotionToggle]
-  );
-
-  const onMotionEnd = useCallback(() => {
-    onMotionToggle(null);
-    motioning.current = null;
-  }, [motioning, onMotionToggle]);
-
-  const onMotion = useCallback(
-    bounds => {
-      const initial = motioning.current;
-      const units = utils.toUnits(bounds, info, initial);
-
-      if (utils.unitsEqual(units, initial)) return;
-
-      Object.assign(motioning.current, units);
-      onChange({ ...layout, [initial.id]: units });
-    },
-    [motioning, layout, info, onChange]
-  );
 
   return (
     <itemContext.Provider
@@ -119,7 +121,7 @@ const ItemProvider = ({
         components,
         bounds,
         info,
-        onMotionStart,
+        onMotionStart: startMotion,
         onMotionEnd,
         onMotion
       }}
