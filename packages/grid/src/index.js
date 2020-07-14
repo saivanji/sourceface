@@ -76,7 +76,7 @@ const App = () => {
       rows={10}
       cols={14}
       layout={layout}
-      onChange={layout => setLayout(layout)}
+      onChange={setLayout}
       components={{
         DragHandle
       }}
