@@ -112,25 +112,23 @@ const countCollision = (source, target) => {
 };
 
 export const reorder = (id, item, layout) => {
-  return { ...layout, [id]: item };
+  const update = (element, collision) => ({
+    x: element.x + collision.x,
+    y: element.y + collision.y
+  });
 
-  // const update = (element, collision) => ({
-  //   x: element.x + collision.x,
-  //   y: element.y + collision.y
-  // });
+  return Object.keys(layout).reduce((acc, key) => {
+    const collision = countCollision(item, layout[key]);
 
-  // return Object.keys(layout).reduce((acc, key) => {
-  //   const collision = countCollision(item, layout[key]);
-
-  //   return {
-  //     ...acc,
-  //     [key]:
-  //       key === id
-  //         ? item
-  //         : {
-  //             ...item,
-  //             ...update(layout[key], collision)
-  //           }
-  //   };
-  // }, {});
+    return {
+      ...acc,
+      [key]:
+        key === id
+          ? item
+          : {
+              ...item,
+              ...update(layout[key], collision)
+            }
+    };
+  }, {});
 };

@@ -36,7 +36,7 @@ export default function Grid({
 
   const onMotionStart = useCallback(
     (id, type) => {
-      motioning.current = { id, ...layout[id] };
+      motioning.current = { id, layout };
       setMotion(type);
     },
     [motioning, layout, setMotion]
@@ -49,15 +49,19 @@ export default function Grid({
 
   const onMotion = useCallback(
     bounds => {
-      const initial = motioning.current;
+      const { id, layout } = motioning.current;
+
+      const initial = layout[id];
       const units = utils.toUnits(bounds, info);
 
       if (utils.unitsEqual(units, initial)) return;
 
-      Object.assign(motioning.current, units);
-      onChange({ ...layout, [initial.id]: units });
+      const reordered = utils.reorder(id, units, layout);
+      motioning.current.layout = reordered;
+
+      onChange(reordered);
     },
-    [motioning, layout, info, onChange]
+    [motioning, info, onChange]
   );
 
   return (
@@ -73,7 +77,6 @@ export default function Grid({
           <ItemProvider
             key={id}
             id={id}
-            motioning={motioning}
             units={layout[id]}
             info={info}
             components={components}
