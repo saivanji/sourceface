@@ -1,22 +1,18 @@
 import { useContext, useEffect } from "react";
-import { range } from "./utils";
-import { drag, getTransform } from "./dom";
+import { listenDrag, getTransform } from "./dom";
+import { drag } from "./utils";
 import { itemContext } from "./context";
 
 export default ({ previewRef, handleRef }) => {
-  const {
-    horizontalLimit,
-    verticalLimit,
-    onMotionStart,
-    onMotionEnd,
-    onMotion
-  } = useContext(itemContext);
+  const { info, onMotionStart, onMotionEnd, onMotion } = useContext(
+    itemContext
+  );
 
   useEffect(() => {
     const handle = handleRef.current;
-    let payload;
+    let bounds;
 
-    return drag(
+    return listenDrag(
       handle,
       e => {
         handle.style.cursor = "grabbing";
@@ -35,32 +31,22 @@ export default ({ previewRef, handleRef }) => {
         const preview = previewRef.current;
         if (!preview) return;
 
-        if (!payload) {
-          payload = {
+        if (!bounds) {
+          bounds = {
             width: preview.offsetWidth,
             height: preview.offsetHeight,
             ...getTransform(preview)
           };
         }
 
-        const { translateX, translateY, width, height } = payload;
         const deltaX = e.clientX - startX;
         const deltaY = e.clientY - startY;
-        const x = range(translateX + deltaX, 0, horizontalLimit - width);
-        const y = range(translateY + deltaY, 0, verticalLimit - height);
+        const { left, top } = drag(deltaX, deltaY, bounds, info);
 
-        preview.style.transform = `translate(${x}px, ${y}px)`;
+        preview.style.transform = `translate(${left}px, ${top}px)`;
 
-        onMotion({ x, y });
+        onMotion({ left, top });
       }
     );
-  }, [
-    handleRef,
-    previewRef,
-    horizontalLimit,
-    verticalLimit,
-    onMotionStart,
-    onMotionEnd,
-    onMotion
-  ]);
+  }, [handleRef, previewRef, info, onMotionStart, onMotionEnd, onMotion]);
 };

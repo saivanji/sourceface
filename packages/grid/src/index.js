@@ -54,15 +54,15 @@ const data = {
   john: {
     x: 2,
     y: 2,
-    height: 2,
-    width: 2,
+    w: 2,
+    h: 2,
     isDraggable: true
   },
   mike: {
     x: 6,
     y: 2,
-    height: 2,
-    width: 2,
+    w: 2,
+    h: 2,
     isDraggable: true
   }
 };

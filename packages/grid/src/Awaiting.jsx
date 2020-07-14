@@ -1,7 +1,7 @@
 import React, { useRef, useContext } from "react";
-import Angle from "./Angle";
 import useDraggable from "./useDraggable";
 import useResizable from "./useResizable";
+import Angle from "./Angle";
 import { itemContext } from "./context";
 
 export default ({ children, style, dragPreviewRef, resizePreviewRef }) => {

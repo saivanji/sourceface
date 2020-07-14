@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  useCallback
+} from "react";
 import Lines from "./Lines";
 import Item from "./Item";
 import * as utils from "./utils";
@@ -23,99 +29,33 @@ export default function Grid({
     setContainerWidth(containerRef.current?.offsetWidth);
   }, [containerRef]);
 
-  const minPixelWidth =
-    containerWidth && utils.calcPixelX(1, cols, containerWidth);
-  const minPixelHeight = utils.calcPixelY(1, rowHeight);
-  const containerHeight = minPixelHeight * rows;
+  const info = useMemo(
+    () => utils.toInfo(cols, rows, containerWidth, rowHeight),
+    [cols, rows, containerWidth, rowHeight]
+  );
 
   return (
     <div
       ref={containerRef}
-      style={{ position: "relative", height: containerHeight }}
+      style={{ position: "relative", height: info.containerHeight }}
     >
       {React.Children.map(children, (item, i) => {
         const id = item.key;
-        const isCustomizing = motioning.current?.id === id;
-
-        const { x, y, width, height } = layout[id];
-
-        const pixelWidth = containerWidth
-          ? utils.calcPixelX(width, cols, containerWidth)
-          : utils.calcPercentageX(width, cols);
-        const pixelHeight = utils.calcPixelY(height, rowHeight);
-        const pixelX = containerWidth
-          ? utils.calcPixelX(x, cols, containerWidth)
-          : utils.calcPercentageX(x, cols);
-        const pixelY = utils.calcPixelY(y, rowHeight);
+        const inMotion = motioning.current?.id === id;
 
         return (
-          <itemContext.Provider
+          <ItemProvider
             key={id}
-            value={{
-              x: pixelX,
-              y: pixelY,
-              width: pixelWidth,
-              height: pixelHeight,
-              minWidth: minPixelWidth,
-              minHeight: minPixelHeight,
-              horizontalLimit: containerWidth,
-              verticalLimit: containerHeight,
-              components,
-              onMotionStart: type => {
-                motioning.current = { id, ...layout[id] };
-                setMotion(type);
-              },
-              onMotionEnd: () => {
-                setMotion(null);
-                motioning.current = null;
-              },
-              onMotion: ({
-                w: pixelWidth,
-                h: pixelHeight,
-                x: pixelX,
-                y: pixelY
-              }) => {
-                const initial = motioning.current;
-                const width = pixelWidth
-                  ? Math.round(pixelWidth / minPixelWidth)
-                  : initial.width;
-                const height = pixelHeight
-                  ? Math.round(pixelHeight / minPixelHeight)
-                  : initial.height;
-                const x = Math.round(pixelX / minPixelWidth);
-                const y = Math.round(pixelY / minPixelHeight);
-
-                if (
-                  width === initial.width &&
-                  height === initial.height &&
-                  x === initial.x &&
-                  y === initial.y
-                )
-                  return;
-
-                const updated = {
-                  width,
-                  height,
-                  x,
-                  y
-                };
-
-                motioning.current.width = width;
-                motioning.current.height = height;
-                motioning.current.x = x;
-                motioning.current.y = y;
-
-                onChange({ ...layout, [id]: updated });
-              }
-            }}
+            id={id}
+            motioning={motioning}
+            layout={layout}
+            info={info}
+            components={components}
+            onChange={onChange}
+            onMotionToggle={setMotion}
           >
-            <Item
-              initialLoad={!containerWidth}
-              motion={isCustomizing && motion}
-            >
-              {item}
-            </Item>
-          </itemContext.Provider>
+            <Item motion={inMotion && motion}>{item}</Item>
+          </ItemProvider>
         );
       })}
       {!!motion && containerWidth && (
@@ -130,3 +70,61 @@ export default function Grid({
     </div>
   );
 }
+
+const ItemProvider = ({
+  children,
+  id,
+  motioning,
+  layout,
+  info,
+  components,
+  onChange,
+  onMotionToggle
+}) => {
+  const bounds = useMemo(() => utils.toBounds(layout[id], info), [
+    layout,
+    info,
+    id
+  ]);
+
+  const onMotionStart = useCallback(
+    type => {
+      motioning.current = { id, ...layout[id] };
+      onMotionToggle(type);
+    },
+    [motioning, layout, id, onMotionToggle]
+  );
+
+  const onMotionEnd = useCallback(() => {
+    onMotionToggle(null);
+    motioning.current = null;
+  }, [motioning, onMotionToggle]);
+
+  const onMotion = useCallback(
+    bounds => {
+      const initial = motioning.current;
+      const units = utils.toUnits(bounds, info, initial);
+
+      if (utils.unitsEqual(units, initial)) return;
+
+      Object.assign(motioning.current, units);
+      onChange({ ...layout, [initial.id]: units });
+    },
+    [motioning, layout, info, onChange]
+  );
+
+  return (
+    <itemContext.Provider
+      value={{
+        components,
+        bounds,
+        info,
+        onMotionStart,
+        onMotionEnd,
+        onMotion
+      }}
+    >
+      {children}
+    </itemContext.Provider>
+  );
+};

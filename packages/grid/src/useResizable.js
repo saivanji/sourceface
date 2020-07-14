@@ -1,18 +1,12 @@
 import { useEffect, useContext } from "react";
-import { getTransform, drag } from "./dom";
-import { range } from "./utils";
+import { getTransform, listenDrag } from "./dom";
 import { itemContext } from "./context";
+import * as utils from "./utils";
 
 export default ({ previewRef, nwRef, swRef, neRef, seRef }) => {
-  const {
-    horizontalLimit,
-    verticalLimit,
-    minWidth,
-    minHeight,
-    onMotionStart,
-    onMotionEnd,
-    onMotion
-  } = useContext(itemContext);
+  const { info, onMotionStart, onMotionEnd, onMotion } = useContext(
+    itemContext
+  );
 
   useEffect(() => {
     const nw = nwRef.current;
@@ -22,10 +16,7 @@ export default ({ previewRef, nwRef, swRef, neRef, seRef }) => {
 
     const args = [
       previewRef,
-      minWidth,
-      minHeight,
-      horizontalLimit,
-      verticalLimit,
+      info,
       e => onMotionStart("resize", e),
       onMotionEnd,
       onMotion
@@ -49,10 +40,7 @@ export default ({ previewRef, nwRef, swRef, neRef, seRef }) => {
     swRef,
     neRef,
     seRef,
-    horizontalLimit,
-    verticalLimit,
-    minWidth,
-    minHeight,
+    info,
     onMotionStart,
     onMotionEnd,
     onMotion
@@ -63,17 +51,14 @@ const listen = (
   position,
   node,
   previewRef,
-  minWidth,
-  minHeight,
-  horizontalLimit,
-  verticalLimit,
+  info,
   onResizeStart,
   onResizeEnd,
   onResize
 ) => {
-  let payload;
+  let bounds;
 
-  return drag(
+  return listenDrag(
     node,
     e => {
       onResizeStart();
@@ -88,16 +73,11 @@ const listen = (
       const preview = previewRef.current;
       if (!preview) return;
 
-      if (!payload) {
-        const { translateX: initialX, translateY: initialY } = getTransform(
-          preview
-        );
-
-        payload = {
-          initialX,
-          initialY,
-          initialWidth: preview.offsetWidth,
-          initialHeight: preview.offsetHeight
+      if (!bounds) {
+        bounds = {
+          width: preview.offsetWidth,
+          height: preview.offsetHeight,
+          ...getTransform(preview)
         };
       }
 
@@ -105,44 +85,30 @@ const listen = (
       const deltaY = e.clientY - startY;
       const isNorth = position === "nw" || position === "ne";
       const isWest = position === "nw" || position === "sw";
-      const { initialX, initialY, initialWidth, initialHeight } = payload;
+      const { minWidth, minHeight, containerWidth, containerHeight } = info;
 
-      const [w, x] = change(
+      const [width, left] = utils.resize(
         isWest,
         deltaX,
-        initialX,
-        initialWidth,
+        bounds.left,
+        bounds.width,
         minWidth,
-        horizontalLimit
+        containerWidth
       );
-      const [h, y] = change(
+      const [height, top] = utils.resize(
         isNorth,
         deltaY,
-        initialY,
-        initialHeight,
+        bounds.top,
+        bounds.height,
         minHeight,
-        verticalLimit
+        containerHeight
       );
 
-      preview.style.width = `${w}px`;
-      preview.style.height = `${h}px`;
-      preview.style.transform = `translate(${x}px, ${y}px)`;
+      preview.style.width = `${width}px`;
+      preview.style.height = `${height}px`;
+      preview.style.transform = `translate(${left}px, ${top}px)`;
 
-      onResize({ w, h, x, y });
+      onResize({ width, height, left, top });
     }
   );
-};
-
-const change = (cond, delta, initialOffset, initialSize, minSize, limit) => {
-  if (cond) {
-    return [
-      range(initialSize - delta, minSize, initialSize + initialOffset),
-      range(initialOffset + delta, 0, initialOffset + initialSize - minSize)
-    ];
-  }
-
-  return [
-    range(initialSize + delta, minSize, limit - initialOffset),
-    initialOffset
-  ];
 };

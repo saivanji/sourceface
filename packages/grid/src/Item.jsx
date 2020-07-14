@@ -4,14 +4,12 @@ import Motion from "./Motion";
 import { itemContext } from "./context";
 import { boundsToStyle } from "./dom";
 
-export default function Item({ children, initialLoad, motion }) {
+export default function Item({ children, motion }) {
   const dragPreviewRef = useRef();
   const resizePreviewRef = useRef();
-  const { x, y, width, height } = useContext(itemContext);
+  const { bounds, info } = useContext(itemContext);
 
-  const style = initialLoad
-    ? { width, height, left: x, top: y }
-    : boundsToStyle({ x, y, width, height });
+  const style = !info.containerWidth ? bounds : boundsToStyle(bounds);
 
   return !motion ? (
     <Awaiting

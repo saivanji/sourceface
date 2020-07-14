@@ -12,10 +12,7 @@ export default ({
   type
 }) => {
   const {
-    x,
-    y,
-    width,
-    height,
+    bounds,
     components: {
       DragPlaceholder = Placeholder,
       DragPreview = Preview,
@@ -25,15 +22,7 @@ export default ({
     }
   } = useContext(itemContext);
 
-  const initialBounds = useMemo(
-    () => ({
-      x,
-      y,
-      width,
-      height
-    }),
-    []
-  );
+  const initialBounds = useMemo(() => bounds, []);
   const initialStyle = boundsToStyle(initialBounds);
 
   return type === "drag" ? (

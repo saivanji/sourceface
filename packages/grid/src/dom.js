@@ -1,12 +1,12 @@
 export const getTransform = node => {
-  const { m41: translateX, m42: translateY } = new window.DOMMatrix(
+  const { m41: left, m42: top } = new window.DOMMatrix(
     window.getComputedStyle(node).transform
   );
 
-  return { translateX, translateY };
+  return { left, top };
 };
 
-export const drag = (node, onDragStart, onDragEnd, onDrag) => {
+export const listenDrag = (node, onDragStart, onDragEnd, onDrag) => {
   node.onmousedown = e => {
     if (e.which !== 1) return;
 
@@ -31,8 +31,8 @@ export const drag = (node, onDragStart, onDragEnd, onDrag) => {
   };
 };
 
-export const boundsToStyle = bounds => ({
-  width: bounds.width,
-  height: bounds.height,
-  transform: `translate(${bounds.x}px, ${bounds.y}px)`
+export const boundsToStyle = ({ width, height, left, top }) => ({
+  width,
+  height,
+  transform: `translate(${left}px, ${top}px)`
 });
