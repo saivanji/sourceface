@@ -50,7 +50,7 @@ export default function Grid({
   const onMotion = useCallback(
     bounds => {
       const initial = motioning.current;
-      const units = utils.toUnits(bounds, info, initial);
+      const units = utils.toUnits(bounds, info);
 
       if (utils.unitsEqual(units, initial)) return;
 

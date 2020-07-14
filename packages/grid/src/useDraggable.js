@@ -41,11 +41,12 @@ export default ({ previewRef, handleRef }) => {
 
         const deltaX = e.clientX - startX;
         const deltaY = e.clientY - startY;
-        const { left, top } = drag(deltaX, deltaY, bounds, info);
+        const { left, top } = drag(deltaX, deltaY, bounds);
+        const { width, height } = bounds;
 
         preview.style.transform = `translate(${left}px, ${top}px)`;
 
-        onMotion({ left, top });
+        onMotion({ width, height, left, top });
       }
     );
   }, [handleRef, previewRef, info, onMotionStart, onMotionEnd, onMotion]);

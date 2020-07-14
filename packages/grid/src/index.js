@@ -28,7 +28,8 @@ const items = [
 // When resizing either display a square as preview or display original element in real time
 
 // TODO:
-// How custom sized drag preview behaves?
+// How custom sized drag preview behaves? Learn about overall dnd experience
+// Consider creating dnd lib(what if we have 2 boards and can move items accross them?)
 //
 // Implement updating the grid in respect to drag/resize
 //

@@ -54,13 +54,12 @@ export const toBounds = (
 
 export const toUnits = (
   { left, top, width, height },
-  { minWidth, minHeight },
-  defaultTo
+  { minWidth, minHeight, containerWidth, containerHeight }
 ) => {
-  const w = width ? Math.round(width / minWidth) : defaultTo.w;
-  const h = height ? Math.round(height / minHeight) : defaultTo.h;
-  const x = Math.round(left / minWidth);
-  const y = Math.round(top / minHeight);
+  const w = Math.round(width / minWidth);
+  const h = Math.round(height / minHeight);
+  const x = Math.round(range(left, 0, containerWidth - width) / minWidth);
+  const y = Math.round(range(top, 0, containerHeight - height) / minHeight);
 
   return { x, y, w, h };
 };
@@ -92,14 +91,9 @@ export const resize = (
   ];
 };
 
-export const drag = (
-  deltaX,
-  deltaY,
-  { left, top, width, height },
-  { containerWidth, containerHeight }
-) => {
+export const drag = (deltaX, deltaY, { left, top }) => {
   return {
-    left: range(left + deltaX, 0, containerWidth - width),
-    top: range(top + deltaY, 0, containerHeight - height)
+    left: left + deltaX,
+    top: top + deltaY
   };
 };
