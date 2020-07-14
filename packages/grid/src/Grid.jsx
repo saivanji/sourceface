@@ -101,7 +101,6 @@ export default function Grid({
 const ItemProvider = ({
   children,
   id,
-  motioning,
   units,
   info,
   components,
