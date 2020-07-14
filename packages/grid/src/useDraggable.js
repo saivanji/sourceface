@@ -15,7 +15,7 @@ export default ({ previewRef, handleRef }) => {
     return listenDrag(
       handle,
       e => {
-        document.body.style.overflow = "hidden";
+        document.body.style["overflow-x"] = "hidden";
         handle.style.cursor = "grabbing";
         onMotionStart("drag", e);
 
@@ -25,7 +25,7 @@ export default ({ previewRef, handleRef }) => {
         };
       },
       () => {
-        document.body.style.overflow = "";
+        document.body.style["overflow-x"] = "";
         handle.style.cursor = "";
         onMotionEnd();
       },
