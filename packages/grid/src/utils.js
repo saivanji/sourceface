@@ -98,37 +98,34 @@ export const drag = (deltaX, deltaY, { left, top }) => {
   };
 };
 
-const countCollision = (source, target) => {
-  const differenceX = target.x + target.w - (source.x + source.w);
-  const differenceY = target.y + target.h - (source.y + source.h);
-
-  const x = differenceX !== 1 && differenceX !== -1 ? 0 : differenceX;
-  const y = differenceY !== 1 && differenceY !== -1 ? 0 : differenceY;
-
-  return {
-    x,
-    y
-  };
-};
+const hasCollision = (source, target) =>
+  source.x + source.w > target.x &&
+  target.x + target.w > source.x &&
+  source.y + source.h > target.y &&
+  target.y + target.h > source.y;
 
 export const reorder = (id, item, layout) => {
-  const update = (element, collision) => ({
-    x: element.x + collision.x,
-    y: element.y + collision.y
-  });
+  console.log(hasCollision(item, layout.mike));
 
-  return Object.keys(layout).reduce((acc, key) => {
-    const collision = countCollision(item, layout[key]);
+  return { ...layout, [id]: item };
 
-    return {
-      ...acc,
-      [key]:
-        key === id
-          ? item
-          : {
-              ...item,
-              ...update(layout[key], collision)
-            }
-    };
-  }, {});
+  // const update = (element, collision) => ({
+  //   x: element.x + collision.x,
+  //   y: element.y + collision.y
+  // });
+
+  // return Object.keys(layout).reduce((acc, key) => {
+  //   const collision = countCollision(item, layout[key]);
+
+  //   return {
+  //     ...acc,
+  //     [key]:
+  //       key === id
+  //         ? item
+  //         : {
+  //             ...layout[key],
+  //             ...update(layout[key], collision)
+  //           }
+  //   };
+  // }, {});
 };

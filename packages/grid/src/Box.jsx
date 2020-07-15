@@ -4,7 +4,7 @@ import Motion from "./Motion";
 import { itemContext } from "./context";
 import { boundsToStyle } from "./dom";
 
-export default function Item({ children, motion }) {
+export default function Box({ children, motion }) {
   const dragPreviewRef = useRef();
   const resizePreviewRef = useRef();
   const { bounds, info } = useContext(itemContext);

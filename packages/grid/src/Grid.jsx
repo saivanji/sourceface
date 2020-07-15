@@ -6,7 +6,7 @@ import React, {
   useCallback
 } from "react";
 import Lines from "./Lines";
-import Item from "./Item";
+import Box from "./Box";
 import * as utils from "./utils";
 import { itemContext } from "./context";
 
@@ -74,7 +74,7 @@ export default function Grid({
         const inMotion = motioning.current?.id === id;
 
         return (
-          <ItemProvider
+          <Provider
             key={id}
             id={id}
             units={layout[id]}
@@ -84,8 +84,8 @@ export default function Grid({
             onMotionEnd={onMotionEnd}
             onMotion={onMotion}
           >
-            <Item motion={inMotion && motion}>{item}</Item>
-          </ItemProvider>
+            <Box motion={inMotion && motion}>{item}</Box>
+          </Provider>
         );
       })}
       {!!motion && containerWidth && (
@@ -101,7 +101,7 @@ export default function Grid({
   );
 }
 
-const ItemProvider = ({
+const Provider = ({
   children,
   id,
   units,

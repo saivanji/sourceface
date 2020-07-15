@@ -27,6 +27,10 @@ const items = [
 // When dragging keep original dimensions of a dragging element in a placeholder regardless how drag preview will look like
 // When resizing either display a square as preview or display original element in real time
 
+// Drag of existing element - original
+// Drag from toolbox - ?
+// Resize - original
+
 // TODO:
 // How custom sized drag preview behaves? Learn about overall dnd experience
 // Consider creating dnd lib(what if we have 2 boards and can move items accross them?)
