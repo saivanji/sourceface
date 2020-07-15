@@ -5,6 +5,11 @@ import Grid from "./Grid";
 
 const items = [
   {
+    id: "bob",
+    text: "Bob",
+    color: "indianred"
+  },
+  {
     id: "john",
     text: "John",
     color: "darkCyan"
@@ -13,6 +18,21 @@ const items = [
     id: "mike",
     text: "Mike",
     color: "sandybrown"
+  },
+  {
+    id: "kyle",
+    text: "Kyle",
+    color: "chocolate"
+  },
+  {
+    id: "ray",
+    text: "Ray",
+    color: "purple"
+  },
+  {
+    id: "tom",
+    text: "Tom",
+    color: "crimson"
   }
 ];
 
@@ -35,10 +55,10 @@ const items = [
 // How custom sized drag preview behaves? Learn about overall dnd experience
 // Consider creating dnd lib(what if we have 2 boards and can move items accross them?)
 //
-// Implement updating the grid in respect to drag/resize
+// Fix the gap when when moving 2nd item to the 1st position in a 3 items stack
+// Keep in mind direction of a collision(north, south, east and west)
 //
 // Fix position when scrolling and dragging/resizing at the same time
-// Have stacking and free movement at the same time
 
 const DragHandle = forwardRef(({ isDragging }, ref) => {
   return (
@@ -56,19 +76,46 @@ const DragHandle = forwardRef(({ isDragging }, ref) => {
 });
 
 const data = {
+  bob: {
+    x: 1,
+    y: 1,
+    w: 1,
+    h: 1,
+    isDraggable: true
+  },
   john: {
-    x: 2,
-    y: 2,
+    x: 4,
+    y: 1,
     w: 2,
-    h: 2,
+    h: 3,
     isDraggable: true
   },
   mike: {
     x: 6,
     y: 2,
     w: 2,
+    h: 4,
+    isDraggable: true
+  },
+  kyle: {
+    x: 3,
+    y: 6,
+    w: 5,
+    h: 1,
+    isDraggable: true
+  },
+  ray: {
+    x: 5,
+    y: 7,
+    w: 3,
     h: 2,
     isDraggable: true
+  },
+  tom: {
+    x: 10,
+    y: 4,
+    w: 3,
+    h: 2
   }
 };
 

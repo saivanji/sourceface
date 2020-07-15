@@ -34,6 +34,7 @@ export default ({ children, style, dragPreviewRef, resizePreviewRef }) => {
       style={{
         position: "absolute",
         userSelect: "none",
+        transition: "all cubic-bezier(0.2, 0, 0, 1) .2s",
         zIndex: 2,
         ...style
       }}

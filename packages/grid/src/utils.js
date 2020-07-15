@@ -98,34 +98,45 @@ export const drag = (deltaX, deltaY, { left, top }) => {
   };
 };
 
-const hasCollision = (source, target) =>
+const collides = (source, target) =>
   source.x + source.w > target.x &&
   target.x + target.w > source.x &&
   source.y + source.h > target.y &&
   target.y + target.h > source.y;
 
-export const reorder = (id, item, layout) => {
-  console.log(hasCollision(item, layout.mike));
+const collisionHeight = (source, target) => source.y + source.h - target.y;
 
-  return { ...layout, [id]: item };
+export const put = (id, anchor, layout) => {
+  const keys = Object.keys(layout);
 
-  // const update = (element, collision) => ({
-  //   x: element.x + collision.x,
-  //   y: element.y + collision.y
-  // });
+  const offset = keys.reduce((acc, key) => {
+    const target = layout[key];
+    if (key === id || !collides(anchor, target)) return acc;
 
-  // return Object.keys(layout).reduce((acc, key) => {
-  //   const collision = hasCollision(item, layout[key]);
+    const height = collisionHeight(anchor, target);
+    return acc > height ? acc : height;
+  }, 0);
 
-  //   return {
-  //     ...acc,
-  //     [key]:
-  //       key === id
-  //         ? item
-  //         : {
-  //             ...layout[key],
-  //             ...update(layout[key], collision)
-  //           }
-  //   };
-  // }, {});
+  if (!offset) return { ...layout, [id]: anchor };
+
+  return keys.reduce((acc, key) => {
+    if (key === id) {
+      return { ...acc, [key]: anchor };
+    }
+
+    const target = layout[key];
+
+    if (!collides(anchor, target)) {
+      return acc;
+    }
+
+    return put(
+      key,
+      {
+        ...target,
+        y: target.y + offset
+      },
+      acc
+    );
+  }, layout);
 };
