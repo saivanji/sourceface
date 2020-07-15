@@ -115,7 +115,7 @@ export const reorder = (id, item, layout) => {
   // });
 
   // return Object.keys(layout).reduce((acc, key) => {
-  //   const collision = countCollision(item, layout[key]);
+  //   const collision = hasCollision(item, layout[key]);
 
   //   return {
   //     ...acc,
