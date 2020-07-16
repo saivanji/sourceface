@@ -14,7 +14,7 @@ const avatars = [
   "https://i.pravatar.cc/150?img=5"
 ];
 
-// Fix z-index issue
+// TODO: Fix z-index issue
 const Drag = () => {
   const triggerRef = useRef();
   const previewRef = useRef();
@@ -86,6 +86,7 @@ const Avatar = ({ src }) => {
       return { src };
     },
     onEnd: () => {
+      console.log("drag end");
       setDragging(false);
     }
   });

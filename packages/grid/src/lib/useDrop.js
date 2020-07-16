@@ -8,6 +8,9 @@ export default (targetRef, types, callbacks = {}) => {
   useEffect(() => {
     const target = targetRef.current;
 
+    // TODO: how to make sure drop event fires always before drag end?
+    // it might happen that drop event will fire last which will cause the loss of that event. Because we delete drag type on drag end.
+    // Does browser fires mouse up for childs earlier than for the document?
     const listener = callback => () => {
       if (types.includes(state.type())) {
         callback && callback();
