@@ -14,21 +14,21 @@ export default (targetRef, types, callbacks = {}) => {
       }
     };
 
-    const move = listener(onHover);
+    const hover = listener(onHover);
     const enter = listener(onEnter);
     const leave = listener(onLeave);
-    const up = listener(onDrop);
+    const drop = listener(onDrop);
 
-    target.addEventListener("mousemove", move);
+    target.addEventListener("mousemove", hover);
     target.addEventListener("mouseenter", enter);
     target.addEventListener("mouseleave", leave);
-    target.addEventListener("mouseup", up);
+    target.addEventListener("mouseup", drop);
 
     return () => {
-      target.removeEventListener("mousemove", move);
+      target.removeEventListener("mousemove", hover);
       target.removeEventListener("mouseenter", enter);
       target.removeEventListener("mouseleave", leave);
-      target.removeEventListener("mouseup", up);
+      target.removeEventListener("mouseup", drop);
     };
   }, [targetRef, state, types, onEnter, onLeave, onHover, onDrop]);
 };

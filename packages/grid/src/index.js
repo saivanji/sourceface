@@ -206,7 +206,7 @@ const items = [
 // - Interrupt dragging by pushing ESC key
 // - multiple types support
 // - Dragging multiple items at the same time
-// - useDrop will accept array of types?
+// - useDrop will accept array of types
 //
 // Fix the gap when when moving 2nd item to the 1st position in a 3 items stack
 // Keep in mind direction of a collision(north, south, east and west)
