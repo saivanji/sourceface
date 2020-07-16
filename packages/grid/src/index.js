@@ -54,12 +54,14 @@ const items = [
 // TODO:
 // How custom sized drag preview behaves? Learn about overall dnd experience
 // Consider creating dnd lib(what if we have 2 boards and can move items accross them?)
+// - Have ability in grid lib to move items to a surface from a toolbox
 //
 // Fix the gap when when moving 2nd item to the 1st position in a 3 items stack
 // Keep in mind direction of a collision(north, south, east and west)
 // Search around grid collision algorithm
 //
 // Fix position when scrolling and dragging/resizing at the same time
+// When resize collision is exactly half of an element - offset is calculated wrong
 
 const DragHandle = forwardRef(({ isDragging }, ref) => {
   return (
