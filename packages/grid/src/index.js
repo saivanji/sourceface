@@ -4,15 +4,23 @@ import "./index.css";
 import Grid from "./Grid";
 
 import { useRef } from "react";
-import { useDrag, useDrop } from "./lib";
+import { Provider, useDrag, useDrop } from "./lib";
 
+const avatars = [
+  "https://i.pravatar.cc/150?img=1",
+  "https://i.pravatar.cc/150?img=2",
+  "https://i.pravatar.cc/150?img=3",
+  "https://i.pravatar.cc/150?img=4",
+  "https://i.pravatar.cc/150?img=5"
+];
+
+// Fix z-index issue
 const Drag = () => {
   const triggerRef = useRef();
   const previewRef = useRef();
 
   const [isDragging, setDragging] = useState(false);
 
-  // TODO: how to keep state of dragging declaratively?
   useDrag(triggerRef, previewRef, "box", {
     onStart: () => {
       setDragging(true);
@@ -23,7 +31,10 @@ const Drag = () => {
   });
 
   return (
-    <div ref={previewRef}>
+    <div
+      ref={previewRef}
+      style={{ transform: !isDragging ? "none" : "rotate(-5deg)" }}
+    >
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a accumsan
       mauris, et laoreet purus. Vestibulum ante ipsum primis in faucibus orci
       luctus et ultrices posuere cubilia curae; Nullam finibus, massa eget
@@ -36,12 +47,81 @@ const Drag = () => {
   );
 };
 
+// <div style={{ position: "relative" }}>
+//   <div style={{ opacity: isDragging ? 0.3 : 1 }}>
+//     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a
+//     accumsan mauris, et laoreet purus. Vestibulum ante ipsum primis in
+//     faucibus orci luctus et ultrices posuere cubilia curae; Nullam finibus,
+//     massa eget elementum accumsan, elit leo tincidunt quam, sed tincidunt
+//     ante augue et tortor. Pellentesque ut lectus sed nunc facilisis pretium
+//     vel sed arcu. Vivamus erat risus, consequat eget neque et, placerat
+//     placerat felis. Donec eget hendrerit elit, ultricies pretium libero. Sed
+//     non erat ex.
+//     <div ref={triggerRef}>Drag me</div>
+//   </div>
+//   {isDragging && (
+//     <div style={{ top: 0, left: 0, position: "absolute" }} ref={previewRef}>
+//       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a
+//       accumsan mauris, et laoreet purus. Vestibulum ante ipsum primis in
+//       faucibus orci luctus et ultrices posuere cubilia curae; Nullam
+//       finibus, massa eget elementum accumsan, elit leo tincidunt quam, sed
+//       tincidunt ante augue et tortor. Pellentesque ut lectus sed nunc
+//       facilisis pretium vel sed arcu. Vivamus erat risus, consequat eget
+//       neque et, placerat placerat felis. Donec eget hendrerit elit,
+//       ultricies pretium libero. Sed non erat ex.
+//       <div>Drag me</div>
+//     </div>
+//   )}
+// </div>
+
+const Avatar = ({ src }) => {
+  const ref = useRef();
+
+  const [isDragging, setDragging] = useState(false);
+
+  useDrag(ref, "avatar", {
+    onStart: () => {
+      setDragging(true);
+
+      return { src };
+    },
+    onEnd: () => {
+      setDragging(false);
+    }
+  });
+
+  return (
+    <img
+      style={{ transform: !isDragging ? "none" : "rotate(-5deg)", margin: 5 }}
+      draggable={false}
+      alt="avatar"
+      ref={ref}
+      src={src}
+    />
+  );
+};
+
 const Drop = () => {
+  const [isOver, setOver] = useState();
+  const [items, setItems] = useState([]);
   const targetRef = useRef();
 
-  useDrop(targetRef, ["box"], {
-    onMove: () => {
-      console.log("test");
+  useDrop(targetRef, ["box", "avatar"], {
+    onDrop: ({ src }) => {
+      setOver(false);
+      setItems([...items, src]);
+      console.log("drop", src);
+    },
+    onHover: () => {
+      console.log("hover");
+    },
+    onEnter: () => {
+      setOver(true);
+      console.log("enter");
+    },
+    onLeave: () => {
+      setOver(false);
+      console.log("leave");
     }
   });
 
@@ -52,13 +132,17 @@ const Drop = () => {
         border: "1px dashed gray",
         display: "flex",
         alignItems: "center",
+        flexWrap: "wrap",
         justifyContent: "center",
+        backgroundColor: !isOver ? "transparent" : "aquamarine",
         marginTop: 30,
         padding: 10,
-        height: 200
+        minHeight: 200
       }}
     >
-      Drop here
+      {!items.length
+        ? "Drop here"
+        : items.map((src, i) => <img key={i} alt="avatar" src={src} />)}
     </div>
   );
 };
@@ -231,9 +315,13 @@ const App = () => {
 };
 
 ReactDOM.render(
-  <>
-    <Drag />
+  <Provider>
+    <div style={{ display: "flex", flexWrap: "wrap" }}>
+      {avatars.map((src, i) => (
+        <Avatar key={i} src={src} />
+      ))}
+    </div>
     <Drop />
-  </>,
+  </Provider>,
   document.getElementById("root")
 );

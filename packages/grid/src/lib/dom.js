@@ -1,8 +1,6 @@
 import { fromString, translate, compose, toCSS } from "transformation-matrix";
 
-export const getTransform = node => {
-  const { transform } = window.getComputedStyle(node);
-
+export const toMatrix = transform => {
   return transform !== "none" ? fromString(transform) : translate(0, 0);
 };
 
@@ -23,4 +21,9 @@ export const setStyles = (node, data) => {
   for (let name of Object.keys(data)) {
     node.style[name] = data[name];
   }
+};
+
+export const lower = (node, position) => {
+  node.style.position = position === "static" ? "relative" : position;
+  node.style["z-index"] = -9999;
 };

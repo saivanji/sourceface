@@ -1,30 +1,31 @@
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
+import { context } from "./state";
 import * as dom from "./dom";
 
 export default (triggerRef, ...args) => {
-  const [previewRef, type, { onStart, onMove, onEnd } = {}] =
+  const [previewRef, type, callbacks = {}] =
     typeof args[0] !== "string" ? args : [triggerRef, ...args];
 
+  const state = useContext(context);
+  const { onStart, onMove, onEnd } = state.provide(callbacks);
+
   useEffect(() => {
-    const trigger = triggerRef.current;
-
-    if (!trigger) return;
-
-    trigger.onmousedown = e => {
+    const mousedown = e => {
       if (e.which !== 1) return;
 
       let preview;
-      let state = { dragged: false };
+      let container = { dragged: false };
 
       const mousemove = e => {
-        if (!state.dragged) {
-          state.dragged = true;
-          state.startX = e.clientX;
-          state.startY = e.clientY;
-          state.triggerStyles = dom.getStyles(trigger, ["user-select"]);
+        if (!container.dragged) {
+          container.dragged = true;
+          container.startX = e.clientX;
+          container.startY = e.clientY;
+          container.bodyStyles = dom.getStyles(trigger, ["user-select"]);
 
-          trigger.style["user-select"] = "none";
+          document.body.style["user-select"] = "none";
 
+          state.dragStart(type);
           onStart && onStart();
 
           return;
@@ -34,16 +35,24 @@ export default (triggerRef, ...args) => {
 
         if (!preview) return;
 
-        if (!state.previewStyles && !state.matrix) {
-          state.previewStyles = dom.getStyles(preview, ["transform"]);
-          state.matrix = dom.getTransform(preview);
+        if (!container.previewStyles && !container.matrix) {
+          const { transform, position } = window.getComputedStyle(preview);
+
+          container.matrix = dom.toMatrix(transform);
+          container.previewStyles = dom.getStyles(preview, [
+            "transform",
+            "position",
+            "z-index"
+          ]);
+
+          dom.lower(preview, position);
         }
 
-        const deltaX = e.clientX - state.startX;
-        const deltaY = e.clientY - state.startY;
+        const deltaX = e.clientX - container.startX;
+        const deltaY = e.clientY - container.startY;
 
         preview.style.transform = dom.addTranslate(
-          state.matrix,
+          container.matrix,
           deltaX,
           deltaY
         );
@@ -55,9 +64,11 @@ export default (triggerRef, ...args) => {
         document.removeEventListener("mousemove", mousemove);
         document.removeEventListener("mouseup", mouseup);
 
-        if (state.dragged) {
-          dom.setStyles(trigger, state.triggerStyles);
-          dom.setStyles(preview, state.previewStyles);
+        if (container.dragged) {
+          dom.setStyles(document.body, container.bodyStyles);
+          dom.setStyles(preview, container.previewStyles);
+
+          state.dragEnd();
           onEnd && onEnd();
         }
       };
@@ -66,8 +77,14 @@ export default (triggerRef, ...args) => {
       document.addEventListener("mouseup", mouseup);
     };
 
+    const trigger = triggerRef.current;
+
+    if (!trigger) return;
+
+    trigger.addEventListener("mousedown", mousedown);
+
     return () => {
-      trigger.onmousedown = null;
+      trigger.removeEventListener("mousedown", mousedown);
     };
-  }, [triggerRef, previewRef, onStart, onMove, onEnd]);
+  }, [triggerRef, previewRef, state, type, onStart, onMove, onEnd]);
 };
