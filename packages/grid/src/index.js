@@ -57,6 +57,7 @@ const items = [
 //
 // Fix the gap when when moving 2nd item to the 1st position in a 3 items stack
 // Keep in mind direction of a collision(north, south, east and west)
+// Search around grid collision algorithm
 //
 // Fix position when scrolling and dragging/resizing at the same time
 
