@@ -3,6 +3,66 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import Grid from "./Grid";
 
+import { useRef } from "react";
+import { useDrag, useDrop } from "./lib";
+
+const Drag = () => {
+  const triggerRef = useRef();
+  const previewRef = useRef();
+
+  const [isDragging, setDragging] = useState(false);
+
+  // TODO: how to keep state of dragging declaratively?
+  useDrag(triggerRef, previewRef, "box", {
+    onStart: () => {
+      setDragging(true);
+    },
+    onEnd: () => {
+      setDragging(false);
+    }
+  });
+
+  return (
+    <div ref={previewRef}>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a accumsan
+      mauris, et laoreet purus. Vestibulum ante ipsum primis in faucibus orci
+      luctus et ultrices posuere cubilia curae; Nullam finibus, massa eget
+      elementum accumsan, elit leo tincidunt quam, sed tincidunt ante augue et
+      tortor. Pellentesque ut lectus sed nunc facilisis pretium vel sed arcu.
+      Vivamus erat risus, consequat eget neque et, placerat placerat felis.
+      Donec eget hendrerit elit, ultricies pretium libero. Sed non erat ex.
+      <div ref={triggerRef}>Drag me</div>
+    </div>
+  );
+};
+
+const Drop = () => {
+  const targetRef = useRef();
+
+  useDrop(targetRef, ["box"], {
+    onMove: () => {
+      console.log("test");
+    }
+  });
+
+  return (
+    <div
+      ref={targetRef}
+      style={{
+        border: "1px dashed gray",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: 30,
+        padding: 10,
+        height: 200
+      }}
+    >
+      Drop here
+    </div>
+  );
+};
+
 const items = [
   {
     id: "bob",
@@ -53,10 +113,16 @@ const items = [
 
 // TODO:
 // How custom sized drag preview behaves? Learn about overall dnd experience
+// Rename "drag" motion type to "move"
 // Consider creating dnd lib(what if we have 2 boards and can move items accross them? Toolbox case)
 // - Have ability in grid lib to move items to a surface from a toolbox. Toolbox is essentially another grid with only one column.
 //   - On leave and on enter callbacks in a grid?
 // - Under the hood, grid will have the same type of item in dnd lib so it will make possible to implement drag across multiple grids
+// - Try to abstract imperative code as much as possible in the lib
+// - Interrupt dragging by pushing ESC key
+// - multiple types support
+// - Dragging multiple items at the same time
+// - useDrop will accept array of types?
 //
 // Fix the gap when when moving 2nd item to the 1st position in a 3 items stack
 // Keep in mind direction of a collision(north, south, east and west)
@@ -164,4 +230,10 @@ const App = () => {
   );
 };
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(
+  <>
+    <Drag />
+    <Drop />
+  </>,
+  document.getElementById("root")
+);
