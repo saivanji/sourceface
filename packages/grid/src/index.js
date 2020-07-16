@@ -53,8 +53,10 @@ const items = [
 
 // TODO:
 // How custom sized drag preview behaves? Learn about overall dnd experience
-// Consider creating dnd lib(what if we have 2 boards and can move items accross them?)
-// - Have ability in grid lib to move items to a surface from a toolbox
+// Consider creating dnd lib(what if we have 2 boards and can move items accross them? Toolbox case)
+// - Have ability in grid lib to move items to a surface from a toolbox. Toolbox is essentially another grid with only one column.
+//   - On leave and on enter callbacks in a grid?
+// - Under the hood, grid will have the same type of item in dnd lib so it will make possible to implement drag across multiple grids
 //
 // Fix the gap when when moving 2nd item to the 1st position in a 3 items stack
 // Keep in mind direction of a collision(north, south, east and west)
