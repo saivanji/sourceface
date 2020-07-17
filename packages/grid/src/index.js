@@ -217,7 +217,7 @@ const items = [
 // When resize collision is exactly half of an element - offset is calculated wrong
 //
 // On grid change - app send debounced save grid request?
-// On drop from a toolbox sorting is disabled, user can only put the item on the available space
+// On drop from a toolbox sorting is disabled, user can only put the item on the available space. With a + placeholder?
 // Grid will have other callbacks(onFinish etc) than onChange?
 
 const DragHandle = forwardRef(({ isDragging }, ref) => {

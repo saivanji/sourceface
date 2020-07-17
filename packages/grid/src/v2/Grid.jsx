@@ -14,6 +14,7 @@ export default function Grid({ cols, rows, rowHeight, layout, children }) {
     setContainerWidth(containerRef.current.offsetWidth);
   }, []);
 
+  // drop target is only needed for adding items to the grid from the outside
   return (
     <Provider>
       <div
@@ -40,6 +41,7 @@ const BoxProvider = ({ coords, info, children }) => {
   const ref = useRef();
   const style = useMemo(() => utils.toBoxCSS(coords, info), [coords, info]);
 
+  // use 3 callbacks
   useDrag(ref, TYPE);
 
   return (
