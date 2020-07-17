@@ -17,21 +17,21 @@ export default (targetRef, types, callbacks = {}) => {
       }
     };
 
-    const hover = listener(onHover);
-    const enter = listener(onEnter);
-    const leave = listener(onLeave);
-    const drop = listener(onDrop);
+    const mousemove = listener(onHover);
+    const mouseenter = listener(onEnter);
+    const mouseleave = listener(onLeave);
+    const mouseup = listener(onDrop);
 
-    target.addEventListener("mousemove", hover);
-    target.addEventListener("mouseenter", enter);
-    target.addEventListener("mouseleave", leave);
-    target.addEventListener("mouseup", drop);
+    target.addEventListener("mousemove", mousemove);
+    target.addEventListener("mouseenter", mouseenter);
+    target.addEventListener("mouseleave", mouseleave);
+    target.addEventListener("mouseup", mouseup);
 
     return () => {
-      target.removeEventListener("mousemove", hover);
-      target.removeEventListener("mouseenter", enter);
-      target.removeEventListener("mouseleave", leave);
-      target.removeEventListener("mouseup", drop);
+      target.removeEventListener("mousemove", mousemove);
+      target.removeEventListener("mouseenter", mouseenter);
+      target.removeEventListener("mouseleave", mouseleave);
+      target.removeEventListener("mouseup", mouseup);
     };
   }, [targetRef, state, types, onEnter, onLeave, onHover, onDrop]);
 };

@@ -16,7 +16,7 @@ export default (triggerRef, ...args) => {
       let preview;
       let container = { dragged: false };
 
-      const move = e => {
+      const mousemove = e => {
         if (!container.dragged) {
           container.dragged = true;
           container.startX = e.clientX;
@@ -59,9 +59,9 @@ export default (triggerRef, ...args) => {
         onMove && onMove();
       };
 
-      const end = () => {
-        document.removeEventListener("mousemove", move);
-        document.removeEventListener("mouseup", end);
+      const mouseup = () => {
+        document.removeEventListener("mousemove", mousemove);
+        document.removeEventListener("mouseup", mouseup);
 
         if (container.dragged) {
           dom.setStyles(document.body, container.bodyStyles);
@@ -72,8 +72,8 @@ export default (triggerRef, ...args) => {
         }
       };
 
-      document.addEventListener("mousemove", move);
-      document.addEventListener("mouseup", end);
+      document.addEventListener("mousemove", mousemove);
+      document.addEventListener("mouseup", mouseup);
     };
 
     const trigger = triggerRef.current;
