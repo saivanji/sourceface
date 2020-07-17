@@ -1,7 +1,8 @@
 import React, { forwardRef, useState } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import Grid from "./Grid";
+// import Grid from "./Grid";
+import Grid from "./v2";
 
 import { useRef } from "react";
 import { Provider, useDrag, useDrop } from "./lib";
@@ -199,7 +200,7 @@ const items = [
 // How custom sized drag preview behaves? Learn about overall dnd experience
 // Rename "drag" motion type to "move"
 // Consider creating dnd lib(what if we have 2 boards and can move items accross them? Toolbox case)
-// - Have ability in grid lib to move items to a surface from a toolbox. Toolbox is essentially another grid with only one column.
+// - Have ability in grid lib to move items to a surface from a toolbox. Toolbox is essentially another grid with only one column?
 //   - On leave and on enter callbacks in a grid?
 // - Under the hood, grid will have the same type of item in dnd lib so it will make possible to implement drag across multiple grids
 // - Try to abstract imperative code as much as possible in the lib
@@ -292,7 +293,6 @@ const App = () => {
         <div
           key={item.id}
           style={{
-            position: "relative",
             width: "100%",
             height: "100%",
             backgroundColor: item.color,
@@ -314,14 +314,16 @@ const App = () => {
   );
 };
 
-ReactDOM.render(
-  <Provider>
-    <div style={{ display: "flex", flexWrap: "wrap" }}>
-      {avatars.map((src, i) => (
-        <Avatar key={i} src={src} />
-      ))}
-    </div>
-    <Drop />
-  </Provider>,
-  document.getElementById("root")
-);
+ReactDOM.render(<App />, document.getElementById("root"));
+
+// ReactDOM.render(
+//   <Provider>
+//     <div style={{ display: "flex", flexWrap: "wrap" }}>
+//       {avatars.map((src, i) => (
+//         <Avatar key={i} src={src} />
+//       ))}
+//     </div>
+//     <Drop />
+//   </Provider>,
+//   document.getElementById("root")
+// );
