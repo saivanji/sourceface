@@ -36,16 +36,15 @@ export default (triggerRef, ...args) => {
         if (!preview) return;
 
         if (!container.previewStyles && !container.matrix) {
-          const { transform, position } = window.getComputedStyle(preview);
+          const { transform } = window.getComputedStyle(preview);
 
           container.matrix = dom.toMatrix(transform);
           container.previewStyles = dom.getStyles(preview, [
             "transform",
-            "position",
-            "z-index"
+            "pointer-events"
           ]);
 
-          dom.lower(preview, position);
+          preview.style["pointer-events"] = "none";
         }
 
         const deltaX = e.clientX - container.startX;

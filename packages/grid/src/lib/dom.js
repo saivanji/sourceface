@@ -22,8 +22,3 @@ export const setStyles = (node, data) => {
     node.style[name] = data[name];
   }
 };
-
-export const lower = (node, position) => {
-  node.style.position = position === "static" ? "relative" : position;
-  node.style["z-index"] = -9999;
-};
