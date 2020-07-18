@@ -26,7 +26,7 @@ export default (triggerRef, ...args) => {
           document.body.style["user-select"] = "none";
 
           state.dragStart(type);
-          onStart && onStart();
+          onStart && onStart(e);
 
           return;
         }
@@ -56,7 +56,7 @@ export default (triggerRef, ...args) => {
           deltaY
         );
 
-        onMove && onMove();
+        onMove && onMove(e);
       };
 
       const mouseup = () => {
@@ -68,7 +68,7 @@ export default (triggerRef, ...args) => {
           dom.setStyles(preview, container.previewStyles);
 
           state.dragEnd();
-          onEnd && onEnd();
+          onEnd && onEnd(e);
         }
       };
 

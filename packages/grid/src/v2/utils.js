@@ -1,3 +1,9 @@
+export const biggest = (a, b) => (a < b ? b : a);
+
+export const smallest = (a, b) => (a < b ? a : b);
+
+export const range = (value, min, max) => smallest(biggest(value, min), max);
+
 export const calcLeft = (x, columns, containerWidth) =>
   containerWidth * (x / columns);
 
@@ -22,28 +28,100 @@ export const toInfo = (cols, rows, containerWidth, rowHeight) => {
   };
 };
 
-export const toBoxCSS = (
+export const toBoxCSS = ({ left, top, width, height }) => {
+  return {
+    width,
+    height,
+    transform: `translate(${left}px, ${top}px)`
+  };
+};
+
+export const toBounds = (
   { w, h, x, y },
   { cols, containerWidth, rowHeight }
 ) => {
+  const left = containerWidth
+    ? calcLeft(x, cols, containerWidth)
+    : calcPercentageX(x, cols);
   const top = calcTop(y, rowHeight);
+
+  const width = containerWidth
+    ? calcLeft(w, cols, containerWidth)
+    : calcPercentageX(w, cols);
   const height = calcTop(h, rowHeight);
 
-  if (!containerWidth) {
-    return {
-      left: calcPercentageX(x, cols),
-      width: calcPercentageX(w, cols),
-      top,
-      height
-    };
-  }
-
-  const left = calcLeft(x, cols, containerWidth);
-  const width = calcLeft(w, cols, containerWidth);
-
   return {
-    transform: `translate(${left}px, ${top}px)`,
+    left,
+    top,
     width,
     height
   };
+};
+
+export const coordsEqual = (left, right) =>
+  left.w === right.w &&
+  left.h === right.h &&
+  left.x === right.x &&
+  left.y === right.y;
+
+export const toCoords = (
+  { left, top, width, height },
+  { minWidth, minHeight, containerWidth, containerHeight }
+) => {
+  const w = Math.round(width / minWidth);
+  const h = Math.round(height / minHeight);
+  const x = Math.round(range(left, 0, containerWidth - width) / minWidth);
+  const y = Math.round(range(top, 0, containerHeight - height) / minHeight);
+
+  return { x, y, w, h };
+};
+
+export const drag = ({ left, top, width, height }, deltaX, deltaY) => ({
+  left: left + deltaX,
+  top: top + deltaY,
+  width,
+  height
+});
+
+const collides = (source, target) =>
+  source.x + source.w > target.x &&
+  target.x + target.w > source.x &&
+  source.y + source.h > target.y &&
+  target.y + target.h > source.y;
+
+const collisionHeight = (source, target) => source.y + source.h - target.y;
+
+export const put = (id, anchor, layout) => {
+  const keys = Object.keys(layout);
+
+  const offset = keys.reduce((acc, key) => {
+    const target = layout[key];
+    if (key === id || !collides(anchor, target)) return acc;
+
+    const height = collisionHeight(anchor, target);
+    return acc > height ? acc : height;
+  }, 0);
+
+  if (!offset) return { ...layout, [id]: anchor };
+
+  return keys.reduce((acc, key) => {
+    if (key === id) {
+      return { ...acc, [key]: anchor };
+    }
+
+    const target = layout[key];
+
+    if (!collides(anchor, target)) {
+      return acc;
+    }
+
+    return put(
+      key,
+      {
+        ...target,
+        y: target.y + offset
+      },
+      acc
+    );
+  }, layout);
 };
