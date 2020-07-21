@@ -72,7 +72,7 @@ export default (type, callbacks = {}) => {
     return () => {
       trigger.removeEventListener("mousedown", mousedown);
     };
-  }, []);
+  }, [type, dragStart, dragEnd, onStart, onMove, onEnd]);
 
   return [ref, state];
 };

@@ -23,6 +23,8 @@ export default (types, callbacks = {}) => {
           case onLeave:
             setState(state => ({ ...state, isOver: false }));
             break;
+          default:
+            break;
         }
 
         callback && callback(e);

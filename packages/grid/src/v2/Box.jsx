@@ -4,8 +4,7 @@ export default forwardRef(
   (
     {
       style,
-      previewX,
-      previewY,
+      previewStyle,
       children,
       isChanging,
       components: {
@@ -26,9 +25,7 @@ export default forwardRef(
     return isChanging ? (
       <>
         <DragPlaceholder style={style} />
-        <DragPreview x={previewX} y={previewY}>
-          {content}
-        </DragPreview>
+        <DragPreview style={previewStyle}>{content}</DragPreview>
       </>
     ) : (
       <Static ref={!DragHandle ? ref : void 0} style={style}>
@@ -52,13 +49,11 @@ const Static = forwardRef(({ children, style }, ref) => (
   </div>
 ));
 
-const Preview = ({ children, x, y }) => (
+const Preview = ({ children, style, x, y }) => (
   <div
     style={{
-      position: "absolute",
-      transform: `translate(${x}px, ${y}px)`,
-      width: "119.714px",
-      height: 240
+      ...style,
+      position: "absolute"
     }}
   >
     {children}

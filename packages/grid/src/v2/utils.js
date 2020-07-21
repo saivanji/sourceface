@@ -36,6 +36,13 @@ export const toBoxCSS = ({ left, top, width, height }) => {
   };
 };
 
+export const toPercentageCSS = ({ w, h, x, y }, { cols, rowHeight }) => ({
+  left: calcPercentageX(x, cols),
+  top: calcTop(y, rowHeight),
+  width: calcPercentageX(w, cols),
+  height: calcTop(h, rowHeight)
+});
+
 export const toBounds = (
   { w, h, x, y },
   { cols, containerWidth, rowHeight }

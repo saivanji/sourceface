@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback
+} from "react";
 import { Provider, useDrag } from "../lib";
 import { useApply } from "./hooks";
 import Lines from "./Lines";
@@ -34,6 +40,17 @@ export default function Grid({
       >
         {isChanging && <Lines info={info} />}
         {React.Children.map(children, element => {
+          if (!containerWidth) {
+            return (
+              <Box
+                style={utils.toPercentageCSS(layout[element.key], info)}
+                components={components}
+              >
+                {element}
+              </Box>
+            );
+          }
+
           return (
             <BoxProvider
               key={element.key}
@@ -66,7 +83,6 @@ const BoxProvider = ({
 }) => {
   const coords = layout[id];
 
-  const dragPreviewRef = useRef();
   const bounds = useApply(utils.toBounds, [coords, info]);
   const style = useApply(utils.toBoxCSS, [bounds]);
 
@@ -103,12 +119,19 @@ const BoxProvider = ({
     onEnd: onChangeEnd
   });
 
+  const initialBounds = useMemo(() => {
+    // TODO: how to run only once on drag start?
+    console.log(bounds);
+    return bounds;
+  }, [isDragging]);
+  // TODO: rename to drag preview style?
+  const previewStyle = useApply(utils.drag, [initialBounds, deltaX, deltaY]);
+
   return (
     <Box
       ref={ref}
       style={style}
-      previewX={deltaX}
-      previewY={deltaY}
+      previewStyle={previewStyle}
       isChanging={isDragging}
       components={components}
     >
