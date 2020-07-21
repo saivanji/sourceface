@@ -16,24 +16,16 @@ const avatars = [
 ];
 
 const Drag = () => {
-  const triggerRef = useRef();
-  const previewRef = useRef();
-
-  const [isDragging, setDragging] = useState(false);
-
-  useDrag(triggerRef, previewRef, "box", {
-    onStart: () => {
-      setDragging(true);
-    },
-    onEnd: () => {
-      setDragging(false);
-    }
+  const [ref, { isDragging, deltaX, deltaY }] = useDrag("box", {
+    onStart: () => {},
+    onEnd: () => {}
   });
 
   return (
     <div
-      ref={previewRef}
-      style={{ transform: !isDragging ? "none" : "rotate(-5deg)" }}
+      style={{
+        transform: `translate(${deltaX}px, ${deltaY}px)`
+      }}
     >
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a accumsan
       mauris, et laoreet purus. Vestibulum ante ipsum primis in faucibus orci
@@ -42,7 +34,7 @@ const Drag = () => {
       tortor. Pellentesque ut lectus sed nunc facilisis pretium vel sed arcu.
       Vivamus erat risus, consequat eget neque et, placerat placerat felis.
       Donec eget hendrerit elit, ultricies pretium libero. Sed non erat ex.
-      <div ref={triggerRef}>Drag me</div>
+      <div ref={ref}>Drag me</div>
     </div>
   );
 };
@@ -75,25 +67,27 @@ const Drag = () => {
 // </div>
 
 const Avatar = ({ src }) => {
-  const ref = useRef();
-
-  const [isDragging, setDragging] = useState(false);
-
-  useDrag(ref, "avatar", {
+  const [ref, { isDragging, deltaX, deltaY }] = useDrag("avatar", {
     onStart: () => {
-      setDragging(true);
+      // setDragging(true);
 
       return { src };
     },
     onEnd: () => {
       console.log("drag end");
-      setDragging(false);
+      // setDragging(false);
     }
   });
 
   return (
     <img
-      style={{ transform: !isDragging ? "none" : "rotate(-5deg)", margin: 5 }}
+      style={{
+        transform: !isDragging
+          ? "none"
+          : `rotate(-5deg) translate(${deltaX}px, ${deltaY}px)`,
+        pointerEvents: isDragging && "none",
+        margin: 5
+      }}
       draggable={false}
       alt="avatar"
       ref={ref}
@@ -103,13 +97,10 @@ const Avatar = ({ src }) => {
 };
 
 const Drop = () => {
-  const [isOver, setOver] = useState();
   const [items, setItems] = useState([]);
-  const targetRef = useRef();
 
-  useDrop(targetRef, ["box", "avatar"], {
+  const [ref, { isOver }] = useDrop(["box", "avatar"], {
     onDrop: ({ src }) => {
-      setOver(false);
       setItems([...items, src]);
       console.log("drop", src);
     },
@@ -117,18 +108,16 @@ const Drop = () => {
       console.log("hover");
     },
     onEnter: () => {
-      setOver(true);
       console.log("enter");
     },
     onLeave: () => {
-      setOver(false);
       console.log("leave");
     }
   });
 
   return (
     <div
-      ref={targetRef}
+      ref={ref}
       style={{
         border: "1px dashed gray",
         display: "flex",
@@ -318,16 +307,23 @@ const App = () => {
   );
 };
 
-ReactDOM.render(<App />, document.getElementById("root"));
+// ReactDOM.render(<App />, document.getElementById("root"));
+
+ReactDOM.render(
+  <Provider>
+    <div style={{ display: "flex", flexWrap: "wrap" }}>
+      {avatars.map((src, i) => (
+        <Avatar key={i} src={src} />
+      ))}
+    </div>
+    <Drop />
+  </Provider>,
+  document.getElementById("root")
+);
 
 // ReactDOM.render(
 //   <Provider>
-//     <div style={{ display: "flex", flexWrap: "wrap" }}>
-//       {avatars.map((src, i) => (
-//         <Avatar key={i} src={src} />
-//       ))}
-//     </div>
-//     <Drop />
+//     <Drag />
 //   </Provider>,
 //   document.getElementById("root")
 // );

@@ -1,60 +1,50 @@
-import { useEffect, useContext } from "react";
+import { useRef, useEffect, useState, useContext } from "react";
 import { context } from "./state";
 import * as dom from "./dom";
 
-export default (triggerRef, ...args) => {
-  const [previewRef, type, callbacks = {}] =
-    typeof args[0] !== "string" ? args : [triggerRef, ...args];
+export default (type, callbacks = {}) => {
+  const ref = useRef();
+  const [state, setState] = useState(initialState);
+  const { provide, dragStart, dragEnd } = useContext(context);
 
-  const state = useContext(context);
-  const { onStart, onMove, onEnd } = state.provide(callbacks);
+  const { onStart, onMove, onEnd } = provide(callbacks);
 
   useEffect(() => {
+    const trigger = ref.current;
+
     const mousedown = e => {
+      let local = {};
+
       if (e.which !== 1) return;
 
-      let preview;
-      let container = { dragged: false };
-
       const mousemove = e => {
-        if (!container.dragged) {
-          container.dragged = true;
-          container.startX = e.clientX;
-          container.startY = e.clientY;
-          container.bodyStyles = dom.getStyles(trigger, ["user-select"]);
+        if (!local.dragged) {
+          local.dragged = true;
+          local.startX = e.clientX;
+          local.startY = e.clientY;
+          local.bodyStyles = dom.getStyles(trigger, ["user-select"]);
 
           document.body.style["user-select"] = "none";
 
-          state.dragStart(type);
+          setState(state => ({
+            ...state,
+            isDragging: true
+          }));
+
+          dragStart(type);
           onStart && onStart();
 
           return;
         }
 
-        preview = previewRef.current;
+        const deltaX = e.clientX - local.startX;
+        const deltaY = e.clientY - local.startY;
 
-        if (!preview) return;
-
-        if (!container.previewStyles && !container.matrix) {
-          const { transform } = window.getComputedStyle(preview);
-
-          container.matrix = dom.toMatrix(transform);
-          container.previewStyles = dom.getStyles(preview, [
-            "transform",
-            "pointer-events"
-          ]);
-
-          preview.style["pointer-events"] = "none";
-        }
-
-        const deltaX = e.clientX - container.startX;
-        const deltaY = e.clientY - container.startY;
-
-        preview.style.transform = dom.addTranslate(
-          container.matrix,
+        setState(state => ({
+          ...state,
           deltaX,
           deltaY
-        );
+        }));
 
         onMove && onMove({ deltaX, deltaY });
       };
@@ -63,11 +53,12 @@ export default (triggerRef, ...args) => {
         document.removeEventListener("mousemove", mousemove);
         document.removeEventListener("mouseup", mouseup);
 
-        if (container.dragged) {
-          dom.setStyles(document.body, container.bodyStyles);
-          dom.setStyles(preview, container.previewStyles);
+        if (local.dragged) {
+          dom.setStyles(document.body, local.bodyStyles);
 
-          state.dragEnd();
+          setState(initialState);
+
+          dragEnd();
           onEnd && onEnd();
         }
       };
@@ -76,14 +67,18 @@ export default (triggerRef, ...args) => {
       document.addEventListener("mouseup", mouseup);
     };
 
-    const trigger = triggerRef.current;
-
-    if (!trigger) return;
-
     trigger.addEventListener("mousedown", mousedown);
 
     return () => {
       trigger.removeEventListener("mousedown", mousedown);
     };
-  }, [triggerRef, previewRef, state, type, onStart, onMove, onEnd]);
+  }, []);
+
+  return [ref, state];
+};
+
+const initialState = {
+  isDragging: false,
+  deltaX: 0,
+  deltaY: 0
 };
