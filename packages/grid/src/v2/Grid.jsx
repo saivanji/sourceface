@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Provider } from "../lib";
+import { Provider, useDrag } from "../lib";
 import { useApply } from "./hooks";
 import Lines from "./Lines";
-import Active from "./Active";
-import Awaiting from "./Awaiting";
+import Box from "./Box";
 import * as utils from "./utils";
 
 export default function Grid({
@@ -16,11 +15,11 @@ export default function Grid({
   components = {}
 }) {
   const [containerWidth, setContainerWidth] = useState();
-  const [change, setChange] = useState(false);
+  const [isChanging, setChanging] = useState(false);
   const containerRef = useRef();
   const info = useApply(utils.toInfo, [cols, rows, containerWidth, rowHeight]);
-  const onChangeStart = useCallback(id => setChange({ id }), []);
-  const onChangeEnd = useCallback(() => setChange(null), []);
+  const onChangeStart = useCallback(id => setChanging(true), []);
+  const onChangeEnd = useCallback(() => setChanging(false), []);
 
   useEffect(() => {
     setContainerWidth(containerRef.current.offsetWidth);
@@ -33,7 +32,7 @@ export default function Grid({
         ref={containerRef}
         style={{ position: "relative", height: info.containerHeight }}
       >
-        {!!change && <Lines info={info} />}
+        {isChanging && <Lines info={info} />}
         {React.Children.map(children, element => {
           return (
             <BoxProvider
@@ -41,7 +40,6 @@ export default function Grid({
               id={element.key}
               layout={layout}
               info={info}
-              change={change}
               onChange={onChange}
               onChangeStart={onChangeStart}
               onChangeEnd={onChangeEnd}
@@ -61,7 +59,6 @@ const BoxProvider = ({
   layout,
   info,
   children,
-  change,
   components,
   onChange,
   onChangeStart,
@@ -71,6 +68,7 @@ const BoxProvider = ({
 
   const dragPreviewRef = useRef();
   const bounds = useApply(utils.toBounds, [coords, info]);
+  const style = useApply(utils.toBoxCSS, [bounds]);
 
   const onChangeStartHandler = useCallback(
     payload => {
@@ -99,25 +97,22 @@ const BoxProvider = ({
     [id, info, onChange]
   );
 
-  return change?.id === id ? (
-    <Active
-      dragPreviewRef={dragPreviewRef}
-      changeType={change.type}
-      bounds={bounds}
+  const [ref, { isDragging, deltaX, deltaY }] = useDrag("box", {
+    onMove: onChangeHandler,
+    onStart: onChangeStartHandler,
+    onEnd: onChangeEnd
+  });
+
+  return (
+    <Box
+      ref={ref}
+      style={style}
+      previewX={deltaX}
+      previewY={deltaY}
+      isChanging={isDragging}
       components={components}
     >
       {children}
-    </Active>
-  ) : (
-    <Awaiting
-      bounds={bounds}
-      dragPreviewRef={dragPreviewRef}
-      onChange={onChangeHandler}
-      onChangeStart={onChangeStartHandler}
-      onChangeEnd={onChangeEnd}
-      components={components}
-    >
-      {children}
-    </Awaiting>
+    </Box>
   );
 };

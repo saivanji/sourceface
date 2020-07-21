@@ -307,19 +307,19 @@ const App = () => {
   );
 };
 
-// ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById("root"));
 
-ReactDOM.render(
-  <Provider>
-    <div style={{ display: "flex", flexWrap: "wrap" }}>
-      {avatars.map((src, i) => (
-        <Avatar key={i} src={src} />
-      ))}
-    </div>
-    <Drop />
-  </Provider>,
-  document.getElementById("root")
-);
+// ReactDOM.render(
+//   <Provider>
+//     <div style={{ display: "flex", flexWrap: "wrap" }}>
+//       {avatars.map((src, i) => (
+//         <Avatar key={i} src={src} />
+//       ))}
+//     </div>
+//     <Drop />
+//   </Provider>,
+//   document.getElementById("root")
+// );
 
 // ReactDOM.render(
 //   <Provider>
