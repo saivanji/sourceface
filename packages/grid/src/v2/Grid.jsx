@@ -73,22 +73,18 @@ const BoxProvider = ({
   const bounds = useApply(utils.toBounds, [coords, info]);
 
   const onChangeStartHandler = useCallback(
-    (payload, event) => {
+    payload => {
       onChangeStart(id);
       return {
         initialLayout: layout,
         initialBounds: bounds,
-        coords,
-        startX: event.clientX,
-        startY: event.clientY
+        coords
       };
     },
     [id, layout, coords, bounds, onChangeStart]
   );
   const onChangeHandler = useCallback(
-    ({ initialLayout, initialBounds, coords, startX, startY }, event) => {
-      const deltaX = event.clientX - startX;
-      const deltaY = event.clientY - startY;
+    ({ initialLayout, initialBounds, coords }, { deltaX, deltaY }) => {
       const nextBounds = utils.drag(initialBounds, deltaX, deltaY);
       const nextCoords = utils.toCoords(nextBounds, info);
 
