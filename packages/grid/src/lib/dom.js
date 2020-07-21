@@ -1,12 +1,3 @@
-import { fromString, translate, compose, toCSS } from "transformation-matrix";
-
-export const toMatrix = transform => {
-  return transform !== "none" ? fromString(transform) : translate(0, 0);
-};
-
-export const addTranslate = (matrix, x, y) =>
-  toCSS(compose(matrix, translate(x, y)));
-
 export const getStyles = (node, names) => {
   let result = {};
 
