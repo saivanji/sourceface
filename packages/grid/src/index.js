@@ -32,6 +32,8 @@ import { Provider, useDrag, useDrop } from "./dnd";
 // - Dragging multiple items at the same time
 // - useDrop will accept array of types
 //
+// Sometimes getting an error - "Cannot destructure property 'left' of 'undefined' as it is undefined" in a "drag" function
+//
 // Fix the gap when when moving 2nd item to the 1st position in a 3 items stack
 // Keep in mind direction of a collision(north, south, east and west)
 // Search around grid collision algorithm
