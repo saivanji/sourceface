@@ -1,6 +1,6 @@
 import React, { forwardRef, useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-import Grid from "./lib";
+import Grill from "./react-grill";
 
 import { useRef } from "react";
 import { Provider, useDrag, useDrop } from "./dnd";
@@ -141,7 +141,7 @@ const App = () => {
   const [layout, setLayout] = useState(data);
 
   return (
-    <Grid
+    <Grill
       rowHeight={80}
       rows={10}
       cols={14}
@@ -172,7 +172,7 @@ const App = () => {
           </span>
         </div>
       ))}
-    </Grid>
+    </Grill>
   );
 };
 
