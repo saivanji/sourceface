@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Provider, useDrag } from "../dnd";
+import { Provider, useDrag } from "../react-shiftable";
 import { useApply } from "./hooks";
 import Lines from "./Lines";
 import Box from "./Box";
