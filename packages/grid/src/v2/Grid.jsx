@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useMemo,
-  useCallback
-} from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Provider, useDrag } from "../lib";
 import { useApply } from "./hooks";
 import Lines from "./Lines";
@@ -21,11 +15,18 @@ export default function Grid({
   components = {}
 }) {
   const [containerWidth, setContainerWidth] = useState();
-  const [isChanging, setChanging] = useState(false);
+  const [change, setChange] = useState(null);
   const containerRef = useRef();
   const info = useApply(utils.toInfo, [cols, rows, containerWidth, rowHeight]);
-  const onChangeStart = useCallback(id => setChanging(true), []);
-  const onChangeEnd = useCallback(() => setChanging(false), []);
+  const onChangeStart = useCallback(
+    (id, type, layout, anchor) => setChange({ id, type, layout, anchor }),
+    []
+  );
+  const onChangeWrap = useCallback(
+    coords => onChange(utils.put(change.id, coords, change.layout)),
+    [change, onChange]
+  );
+  const onChangeEnd = useCallback(() => setChange(null), []);
 
   useEffect(() => {
     setContainerWidth(containerRef.current.offsetWidth);
@@ -38,7 +39,7 @@ export default function Grid({
         ref={containerRef}
         style={{ position: "relative", height: info.containerHeight }}
       >
-        {isChanging && <Lines info={info} />}
+        {change && <Lines info={info} />}
         {React.Children.map(children, element => {
           if (!containerWidth) {
             return (
@@ -57,7 +58,8 @@ export default function Grid({
               id={element.key}
               layout={layout}
               info={info}
-              onChange={onChange}
+              change={change}
+              onChange={onChangeWrap}
               onChangeStart={onChangeStart}
               onChangeEnd={onChangeEnd}
               components={components}
@@ -72,70 +74,79 @@ export default function Grid({
 }
 
 const BoxProvider = ({
+  children,
   id,
   layout,
   info,
-  children,
+  change,
   components,
   onChange,
   onChangeStart,
   onChangeEnd
 }) => {
-  const coords = layout[id];
+  const style = useApply(utils.toBoxCSS, utils.toBounds, [layout[id], info]);
+  const isDragging = change?.type === "drag" && change?.id === id;
 
-  const bounds = useApply(utils.toBounds, [coords, info]);
-  const style = useApply(utils.toBoxCSS, [bounds]);
-
-  const onChangeStartHandler = useCallback(
-    payload => {
-      onChangeStart(id);
-      return {
-        initialLayout: layout,
-        initialBounds: bounds,
-        coords
-      };
-    },
-    [id, layout, coords, bounds, onChangeStart]
-  );
-  const onChangeHandler = useCallback(
-    ({ initialLayout, initialBounds, coords }, { deltaX, deltaY }) => {
-      const nextBounds = utils.drag(initialBounds, deltaX, deltaY);
-      const nextCoords = utils.toCoords(nextBounds, info);
-
-      if (utils.coordsEqual(coords, nextCoords)) return;
-
-      onChange(utils.put(id, nextCoords, initialLayout));
-
-      return {
-        coords: nextCoords
-      };
-    },
-    [id, info, onChange]
-  );
-
-  const [ref, { isDragging, deltaX, deltaY }] = useDrag("box", {
-    onMove: onChangeHandler,
-    onStart: onChangeStartHandler,
+  const [dragRef, dragPreviewStyle] = useDraggable(id, layout, change, info, {
+    onMove: onChange,
+    onStart: onChangeStart,
     onEnd: onChangeEnd
   });
 
-  const initialBounds = useMemo(() => {
-    // TODO: how to run only once on drag start?
-    console.log(bounds);
-    return bounds;
-  }, [isDragging]);
-  // TODO: rename to drag preview style?
-  const previewStyle = useApply(utils.drag, [initialBounds, deltaX, deltaY]);
-
   return (
     <Box
-      ref={ref}
+      dragRef={dragRef}
       style={style}
-      previewStyle={previewStyle}
-      isChanging={isDragging}
+      previewStyle={dragPreviewStyle}
+      isDragging={isDragging}
       components={components}
     >
       {children}
     </Box>
   );
 };
+
+const useDraggable = (id, layout, change, info, { onMove, onStart, onEnd }) => {
+  const coords = layout[id];
+  const bounds = useApply(utils.toBounds, [coords, info]);
+  const [previewStyle, setPreviewStyle] = useState(null);
+
+  const onStartWrap = useCallback(() => {
+    onStart(id, "drag", layout, bounds);
+    return {
+      coords
+    };
+  }, [id, layout, bounds, coords, onStart]);
+
+  const onMoveWrap = useCallback(
+    ({ coords: prevCoords }, { deltaX, deltaY }) => {
+      // TODO: fix
+      if (!change) return;
+
+      const bounds = utils.drag(change.anchor, deltaX, deltaY);
+      const coords = utils.toCoords(bounds, info);
+      setPreviewStyle(utils.toBoxCSS(bounds));
+
+      if (utils.coordsEqual(prevCoords, coords)) return;
+
+      onMove(coords);
+
+      return {
+        coords
+      };
+    },
+    [change, info, onMove]
+  );
+
+  const ref = useDrag("box", {
+    onMove: onMoveWrap,
+    onStart: onStartWrap,
+    onEnd
+  });
+
+  return [ref, previewStyle];
+};
+
+// const useResizable = () => {
+//   return [nwRef, swRef, neRef, seRef, previewStyle];
+// };

@@ -1,10 +1,9 @@
-import { useState, useRef, useEffect, useContext } from "react";
+import { useRef, useEffect, useContext } from "react";
 import { context } from "./state";
 
 export default (types, callbacks = {}) => {
   const ref = useRef();
   const { provide, type } = useContext(context);
-  const [state, setState] = useState(initialState);
   const { onEnter, onLeave, onHover, onDrop } = provide(callbacks);
 
   useEffect(() => {
@@ -15,18 +14,6 @@ export default (types, callbacks = {}) => {
     // Does browser fires mouse up for childs earlier than for the document?
     const listener = callback => e => {
       if (types.includes(type())) {
-        switch (callback) {
-          case onEnter:
-            setState(state => ({ ...state, isOver: true }));
-            break;
-          case onDrop:
-          case onLeave:
-            setState(state => ({ ...state, isOver: false }));
-            break;
-          default:
-            break;
-        }
-
         callback && callback(e);
       }
     };
@@ -49,7 +36,5 @@ export default (types, callbacks = {}) => {
     };
   }, [ref, type, types, onEnter, onLeave, onHover, onDrop]);
 
-  return [ref, state];
+  return ref;
 };
-
-const initialState = { isOver: false };

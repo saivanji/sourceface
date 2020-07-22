@@ -1,39 +1,56 @@
 import React, { forwardRef } from "react";
 
-export default forwardRef(
-  (
-    {
-      style,
-      previewStyle,
-      children,
-      isChanging,
-      components: {
-        DragHandle,
-        DragPlaceholder = Placeholder,
-        DragPreview = Preview
-      }
-    },
-    ref
-  ) => {
-    const content = (
-      <>
-        {DragHandle && <DragHandle ref={ref} isDragging={isChanging} />}
-        {children}
-      </>
-    );
-
-    return isChanging ? (
-      <>
-        <DragPlaceholder style={style} />
-        <DragPreview style={previewStyle}>{content}</DragPreview>
-      </>
-    ) : (
-      <Static ref={!DragHandle ? ref : void 0} style={style}>
-        {content}
-      </Static>
-    );
+export default ({
+  dragRef,
+  nwRef,
+  swRef,
+  neRef,
+  seRef,
+  style,
+  previewStyle,
+  children,
+  isDragging,
+  isResizing,
+  components: {
+    DragHandle,
+    DragPlaceholder = Placeholder,
+    DragPreview = Preview,
+    ResizeHandle = Angle,
+    ResizePlaceholder = Placeholder,
+    ResizePreview = Preview
   }
-);
+}) => {
+  const content = (
+    <>
+      {DragHandle && <DragHandle ref={dragRef} isDragging={isDragging} />}
+      {ResizeHandle && (
+        <>
+          <ResizeHandle ref={nwRef} isResizing={isResizing} position="nw" />
+          <ResizeHandle ref={swRef} isResizing={isResizing} position="sw" />
+          <ResizeHandle ref={neRef} isResizing={isResizing} position="ne" />
+          <ResizeHandle ref={seRef} isResizing={isResizing} position="se" />
+        </>
+      )}
+      {children}
+    </>
+  );
+
+  return isDragging ? (
+    <>
+      <DragPlaceholder style={style} />
+      <DragPreview style={previewStyle}>{content}</DragPreview>
+    </>
+  ) : isResizing ? (
+    <>
+      <ResizePlaceholder style={style} />
+      <ResizePreview style={previewStyle}>{content}</ResizePreview>
+    </>
+  ) : (
+    <Static ref={!DragHandle ? dragRef : void 0} style={style}>
+      {content}
+    </Static>
+  );
+};
 
 const Static = forwardRef(({ children, style }, ref) => (
   <div
@@ -41,7 +58,6 @@ const Static = forwardRef(({ children, style }, ref) => (
     style={{
       ...style,
       position: "absolute",
-      userSelect: "none",
       transition: "all cubic-bezier(0.2, 0, 0, 1) .2s"
     }}
   >
@@ -49,7 +65,7 @@ const Static = forwardRef(({ children, style }, ref) => (
   </div>
 ));
 
-const Preview = ({ children, style, x, y }) => (
+const Preview = ({ children, style }) => (
   <div
     style={{
       ...style,
@@ -72,3 +88,26 @@ const Placeholder = ({ style }) => {
     />
   );
 };
+
+const Angle = forwardRef(({ position }, ref) => {
+  const positions = {
+    nw: ["top", "left"],
+    sw: ["bottom", "left"],
+    ne: ["top", "right"],
+    se: ["bottom", "right"]
+  };
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        position: "absolute",
+        cursor: `${position}-resize`,
+        zIndex: 3,
+        width: 20,
+        height: 20,
+        ...positions[position].reduce((acc, key) => ({ ...acc, [key]: 0 }), {})
+      }}
+    />
+  );
+});

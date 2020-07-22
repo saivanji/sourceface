@@ -1,4 +1,4 @@
-import React, { forwardRef, useState } from "react";
+import React, { forwardRef, useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 // import Grid from "./Grid";
@@ -16,17 +16,22 @@ const avatars = [
 ];
 
 const Drag = () => {
-  const [ref, { isDragging, deltaX, deltaY }] = useDrag("box", {
-    onStart: () => {},
-    onEnd: () => {}
+  const [counter, setCounter] = useState(0);
+
+  useEffect(() => {
+    setInterval(() => {
+      setCounter(counter => counter + 1);
+    }, 1000);
+  }, []);
+
+  const ref = useDrag("box", {
+    onMove: (state, payload) => {
+      console.log(counter);
+    }
   });
 
   return (
-    <div
-      style={{
-        transform: `translate(${deltaX}px, ${deltaY}px)`
-      }}
-    >
+    <div>
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a accumsan
       mauris, et laoreet purus. Vestibulum ante ipsum primis in faucibus orci
       luctus et ultrices posuere cubilia curae; Nullam finibus, massa eget
@@ -67,7 +72,7 @@ const Drag = () => {
 // </div>
 
 const Avatar = ({ src }) => {
-  const [ref, { isDragging, deltaX, deltaY }] = useDrag("avatar", {
+  const ref = useDrag("avatar", {
     onStart: () => {
       // setDragging(true);
 
@@ -82,10 +87,8 @@ const Avatar = ({ src }) => {
   return (
     <img
       style={{
-        transform: !isDragging
-          ? "none"
-          : `rotate(-5deg) translate(${deltaX}px, ${deltaY}px)`,
-        pointerEvents: isDragging && "none",
+        transform: true ? "none" : `rotate(-5deg)`,
+        pointerEvents: false && "none",
         margin: 5
       }}
       draggable={false}
@@ -99,7 +102,7 @@ const Avatar = ({ src }) => {
 const Drop = () => {
   const [items, setItems] = useState([]);
 
-  const [ref, { isOver }] = useDrop(["box", "avatar"], {
+  const ref = useDrop(["box", "avatar"], {
     onDrop: ({ src }) => {
       setItems([...items, src]);
       console.log("drop", src);
@@ -124,7 +127,7 @@ const Drop = () => {
         alignItems: "center",
         flexWrap: "wrap",
         justifyContent: "center",
-        backgroundColor: !isOver ? "transparent" : "aquamarine",
+        backgroundColor: true ? "transparent" : "aquamarine",
         marginTop: 30,
         padding: 10,
         minHeight: 200
