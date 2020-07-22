@@ -1,177 +1,9 @@
 import React, { forwardRef, useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
-// import Grid from "./Grid";
-import Grid from "./v2";
+import Grid from "./lib";
 
 import { useRef } from "react";
-import { Provider, useDrag, useDrop } from "./lib";
-
-const avatars = [
-  "https://i.pravatar.cc/150?img=1",
-  "https://i.pravatar.cc/150?img=2",
-  "https://i.pravatar.cc/150?img=3",
-  "https://i.pravatar.cc/150?img=4",
-  "https://i.pravatar.cc/150?img=5"
-];
-
-const Drag = () => {
-  const [counter, setCounter] = useState(0);
-
-  useEffect(() => {
-    setInterval(() => {
-      setCounter(counter => counter + 1);
-    }, 1000);
-  }, []);
-
-  const ref = useDrag("box", {
-    onMove: (state, payload) => {
-      console.log(counter);
-    }
-  });
-
-  return (
-    <div>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a accumsan
-      mauris, et laoreet purus. Vestibulum ante ipsum primis in faucibus orci
-      luctus et ultrices posuere cubilia curae; Nullam finibus, massa eget
-      elementum accumsan, elit leo tincidunt quam, sed tincidunt ante augue et
-      tortor. Pellentesque ut lectus sed nunc facilisis pretium vel sed arcu.
-      Vivamus erat risus, consequat eget neque et, placerat placerat felis.
-      Donec eget hendrerit elit, ultricies pretium libero. Sed non erat ex.
-      <div ref={ref}>Drag me</div>
-    </div>
-  );
-};
-
-// <div style={{ position: "relative" }}>
-//   <div style={{ opacity: isDragging ? 0.3 : 1 }}>
-//     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a
-//     accumsan mauris, et laoreet purus. Vestibulum ante ipsum primis in
-//     faucibus orci luctus et ultrices posuere cubilia curae; Nullam finibus,
-//     massa eget elementum accumsan, elit leo tincidunt quam, sed tincidunt
-//     ante augue et tortor. Pellentesque ut lectus sed nunc facilisis pretium
-//     vel sed arcu. Vivamus erat risus, consequat eget neque et, placerat
-//     placerat felis. Donec eget hendrerit elit, ultricies pretium libero. Sed
-//     non erat ex.
-//     <div ref={triggerRef}>Drag me</div>
-//   </div>
-//   {isDragging && (
-//     <div style={{ top: 0, left: 0, position: "absolute" }} ref={previewRef}>
-//       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a
-//       accumsan mauris, et laoreet purus. Vestibulum ante ipsum primis in
-//       faucibus orci luctus et ultrices posuere cubilia curae; Nullam
-//       finibus, massa eget elementum accumsan, elit leo tincidunt quam, sed
-//       tincidunt ante augue et tortor. Pellentesque ut lectus sed nunc
-//       facilisis pretium vel sed arcu. Vivamus erat risus, consequat eget
-//       neque et, placerat placerat felis. Donec eget hendrerit elit,
-//       ultricies pretium libero. Sed non erat ex.
-//       <div>Drag me</div>
-//     </div>
-//   )}
-// </div>
-
-const Avatar = ({ src }) => {
-  const ref = useDrag("avatar", {
-    onStart: () => {
-      // setDragging(true);
-
-      return { src };
-    },
-    onEnd: () => {
-      console.log("drag end");
-      // setDragging(false);
-    }
-  });
-
-  return (
-    <img
-      style={{
-        transform: true ? "none" : `rotate(-5deg)`,
-        pointerEvents: false && "none",
-        margin: 5
-      }}
-      draggable={false}
-      alt="avatar"
-      ref={ref}
-      src={src}
-    />
-  );
-};
-
-const Drop = () => {
-  const [items, setItems] = useState([]);
-
-  const ref = useDrop(["box", "avatar"], {
-    onDrop: ({ src }) => {
-      setItems([...items, src]);
-      console.log("drop", src);
-    },
-    onHover: () => {
-      console.log("hover");
-    },
-    onEnter: () => {
-      console.log("enter");
-    },
-    onLeave: () => {
-      console.log("leave");
-    }
-  });
-
-  return (
-    <div
-      ref={ref}
-      style={{
-        border: "1px dashed gray",
-        display: "flex",
-        alignItems: "center",
-        flexWrap: "wrap",
-        justifyContent: "center",
-        backgroundColor: true ? "transparent" : "aquamarine",
-        marginTop: 30,
-        padding: 10,
-        minHeight: 200
-      }}
-    >
-      {!items.length
-        ? "Drop here"
-        : items.map((src, i) => <img key={i} alt="avatar" src={src} />)}
-    </div>
-  );
-};
-
-const items = [
-  {
-    id: "bob",
-    text: "Bob",
-    color: "indianred"
-  },
-  {
-    id: "john",
-    text: "John",
-    color: "darkCyan"
-  },
-  {
-    id: "mike",
-    text: "Mike",
-    color: "sandybrown"
-  },
-  {
-    id: "kyle",
-    text: "Kyle",
-    color: "chocolate"
-  },
-  {
-    id: "ray",
-    text: "Ray",
-    color: "purple"
-  },
-  {
-    id: "tom",
-    text: "Tom",
-    color: "crimson"
-  }
-];
+import { Provider, useDrag, useDrop } from "./dnd";
 
 // Examples:
 // https://dnd-grid.duton.lu/
@@ -190,7 +22,6 @@ const items = [
 
 // TODO:
 // How custom sized drag preview behaves? Learn about overall dnd experience
-// Rename "drag" motion type to "move"
 // Consider creating dnd lib(what if we have 2 boards and can move items accross them? Toolbox case)
 // - Have ability in grid lib to move items to a surface from a toolbox. Toolbox is essentially another grid with only one column?
 //   - On leave and on enter callbacks in a grid?
@@ -226,6 +57,39 @@ const DragHandle = forwardRef(({ isDragging }, ref) => {
     </div>
   );
 });
+
+const items = [
+  {
+    id: "bob",
+    text: "Bob",
+    color: "indianred"
+  },
+  {
+    id: "john",
+    text: "John",
+    color: "darkCyan"
+  },
+  {
+    id: "mike",
+    text: "Mike",
+    color: "sandybrown"
+  },
+  {
+    id: "kyle",
+    text: "Kyle",
+    color: "chocolate"
+  },
+  {
+    id: "ray",
+    text: "Ray",
+    color: "purple"
+  },
+  {
+    id: "tom",
+    text: "Tom",
+    color: "crimson"
+  }
+];
 
 const data = {
   bob: {
@@ -311,22 +175,3 @@ const App = () => {
 };
 
 ReactDOM.render(<App />, document.getElementById("root"));
-
-// ReactDOM.render(
-//   <Provider>
-//     <div style={{ display: "flex", flexWrap: "wrap" }}>
-//       {avatars.map((src, i) => (
-//         <Avatar key={i} src={src} />
-//       ))}
-//     </div>
-//     <Drop />
-//   </Provider>,
-//   document.getElementById("root")
-// );
-
-// ReactDOM.render(
-//   <Provider>
-//     <Drag />
-//   </Provider>,
-//   document.getElementById("root")
-// );
