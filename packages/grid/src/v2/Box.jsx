@@ -7,7 +7,8 @@ export default ({
   neRef,
   seRef,
   style,
-  previewStyle,
+  dragPreviewStyle,
+  resizePreviewStyle,
   children,
   isDragging,
   isResizing,
@@ -38,12 +39,12 @@ export default ({
   return isDragging ? (
     <>
       <DragPlaceholder style={style} />
-      <DragPreview style={previewStyle}>{content}</DragPreview>
+      <DragPreview style={dragPreviewStyle}>{content}</DragPreview>
     </>
   ) : isResizing ? (
     <>
       <ResizePlaceholder style={style} />
-      <ResizePreview style={previewStyle}>{content}</ResizePreview>
+      <ResizePreview style={resizePreviewStyle}>{content}</ResizePreview>
     </>
   ) : (
     <Static ref={!DragHandle ? dragRef : void 0} style={style}>

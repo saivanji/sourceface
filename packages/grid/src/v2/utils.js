@@ -83,12 +83,63 @@ export const toCoords = (
   return { x, y, w, h };
 };
 
-export const drag = ({ left, top, width, height }, deltaX, deltaY) => ({
+export const drag = (deltaX, deltaY, { left, top, width, height }) => ({
   left: left + deltaX,
   top: top + deltaY,
   width,
   height
 });
+
+export const resizeSide = (
+  isNorthWest,
+  delta,
+  initialOffset,
+  initialSize,
+  minSize,
+  limit
+) => {
+  if (isNorthWest) {
+    return [
+      range(initialSize - delta, minSize, initialSize + initialOffset),
+      range(initialOffset + delta, 0, initialOffset + initialSize - minSize)
+    ];
+  }
+
+  return [
+    range(initialSize + delta, minSize, limit - initialOffset),
+    initialOffset
+  ];
+};
+
+export const resize = (
+  angle,
+  deltaX,
+  deltaY,
+  { left, top, width, height },
+  { minWidth, minHeight, containerWidth, containerHeight }
+) => {
+  const isNorth = angle === "nw" || angle === "ne";
+  const isWest = angle === "nw" || angle === "sw";
+
+  const [nextWidth, nextLeft] = resizeSide(
+    isWest,
+    deltaX,
+    left,
+    width,
+    minWidth,
+    containerWidth
+  );
+  const [nextHeight, nextTop] = resizeSide(
+    isNorth,
+    deltaY,
+    top,
+    height,
+    minHeight,
+    containerHeight
+  );
+
+  return { left: nextLeft, top: nextTop, width: nextWidth, height: nextHeight };
+};
 
 const collides = (source, target) =>
   source.x + source.w > target.x &&
