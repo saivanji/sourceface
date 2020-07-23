@@ -84,7 +84,10 @@ export default () => {
         ? "Page is loading..."
         : Parent.renderChildren(
             <context.Provider value={result.data}>
-              <Grid isEditable={isEditing}>
+              <Grid
+                positions={toPositions(result.data.modules)}
+                isEditable={isEditing}
+              >
                 {result.data.modules.map(module => (
                   <Module
                     key={module.id}
@@ -113,3 +116,9 @@ const modulesMap = keys(modules).reduce((acc, key) => {
     [Module.type]: Module,
   }
 }, {})
+
+const toPositions = modules =>
+  modules.reduce(
+    (acc, module) => ({ ...acc, [module.id]: module.position }),
+    {}
+  )

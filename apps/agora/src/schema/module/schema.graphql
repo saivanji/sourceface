@@ -7,7 +7,15 @@ type Module {
   id: Int!
   createdAt: DateTime!
   type: ModuleType
+  position: ModulePosition!
   config: JSONObject!
+}
+
+type ModulePosition {
+  x: Int!
+  y: Int!
+  w: Int!
+  h: Int!
 }
 
 extend type Mutation {

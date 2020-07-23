@@ -4,11 +4,13 @@ export const up = () =>
       CREATE TYPE module AS ENUM ('text', 'table')
     `)
     // TODO: add pageId
+    // id is a unique string across pageId
     await t.none(`
       CREATE TABLE modules(
         id serial NOT NULL,
         created_at timestamp NOT NULL DEFAULT NOW(),
         type module NOT NULL,
+        position json NOT NULL,
         config json NOT NULL
       )
     `)

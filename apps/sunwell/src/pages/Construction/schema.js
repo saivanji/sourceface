@@ -4,6 +4,12 @@ export const root = `
       id
       type
       config
+      position {
+        x
+        y
+        w
+        h
+      }
     }
     commands {
       id
