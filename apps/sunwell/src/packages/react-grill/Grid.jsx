@@ -5,6 +5,7 @@ import * as utils from "./utils"
 import Lines from "./Lines"
 import Box from "./Box"
 
+// onChange might be called only on drop(rename to onDrop). use local state for intermediate state?
 export default function Grid({
   cols = 10,
   rows = 10,
