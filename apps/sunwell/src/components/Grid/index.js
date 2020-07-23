@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import Grill from "react-grill"
+import Grill from "packages/react-grill"
 // import styles from "./index.scss"
 
 // will keep grid information as a column in modules table
