@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef } from "react"
 
 export default ({
   dragRef,
@@ -18,8 +18,8 @@ export default ({
     DragPreview = Preview,
     ResizeHandle = Angle,
     ResizePlaceholder = Placeholder,
-    ResizePreview = Preview
-  }
+    ResizePreview = Preview,
+  },
 }) => {
   const content = (
     <>
@@ -34,7 +34,7 @@ export default ({
       )}
       {children}
     </>
-  );
+  )
 
   return isDragging ? (
     <>
@@ -50,8 +50,8 @@ export default ({
     <Static ref={!DragHandle ? dragRef : void 0} style={style}>
       {content}
     </Static>
-  );
-};
+  )
+}
 
 const Static = forwardRef(({ children, style }, ref) => (
   <div
@@ -59,23 +59,23 @@ const Static = forwardRef(({ children, style }, ref) => (
     style={{
       ...style,
       position: "absolute",
-      transition: "all cubic-bezier(0.2, 0, 0, 1) .2s"
+      transition: "all cubic-bezier(0.2, 0, 0, 1) .2s",
     }}
   >
     {children}
   </div>
-));
+))
 
 const Preview = ({ children, style }) => (
   <div
     style={{
       ...style,
-      position: "absolute"
+      position: "absolute",
     }}
   >
     {children}
   </div>
-);
+)
 
 const Placeholder = ({ style }) => {
   return (
@@ -84,19 +84,19 @@ const Placeholder = ({ style }) => {
         ...style,
         backgroundColor: "lightGray",
         position: "absolute",
-        transition: "all cubic-bezier(0.2, 0, 0, 1) .2s"
+        transition: "all cubic-bezier(0.2, 0, 0, 1) .2s",
       }}
     />
-  );
-};
+  )
+}
 
 const Angle = forwardRef(({ position }, ref) => {
   const positions = {
     nw: ["top", "left"],
     sw: ["bottom", "left"],
     ne: ["top", "right"],
-    se: ["bottom", "right"]
-  };
+    se: ["bottom", "right"],
+  }
 
   return (
     <div
@@ -107,8 +107,8 @@ const Angle = forwardRef(({ position }, ref) => {
         zIndex: 3,
         width: 20,
         height: 20,
-        ...positions[position].reduce((acc, key) => ({ ...acc, [key]: 0 }), {})
+        ...positions[position].reduce((acc, key) => ({ ...acc, [key]: 0 }), {}),
       }}
     />
-  );
-});
+  )
+})

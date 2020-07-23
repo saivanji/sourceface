@@ -6,9 +6,11 @@ import Lines from "./Lines"
 import Box from "./Box"
 
 export default function Grid({
-  cols,
-  rows,
-  rowHeight,
+  cols = 10,
+  rows = 10,
+  rowHeight = 20,
+  isDraggable = true,
+  isResizable = true,
   layout,
   children,
   onChange,
@@ -33,7 +35,7 @@ export default function Grid({
       >
         {change && <Lines info={info} />}
         {React.Children.map(children, element => {
-          if (!containerWidth) {
+          if (!containerWidth || (!isDraggable && !isResizable)) {
             return (
               <Box
                 style={utils.toPercentageCSS(layout[element.key], info)}
@@ -117,13 +119,13 @@ const BoxProvider = ({
 }
 
 const useDraggable = (id, layout, info, { onMove, onStart, onEnd }) => {
-  const coords = layout[id]
-  const bounds = useApply(utils.toBounds, [coords, info])
+  const unit = layout[id]
+  const bounds = useApply(utils.toBounds, [unit, info])
   const [previewStyle, setPreviewStyle] = useState(utils.toBoxCSS(bounds))
 
   const onStartWrap = useCallback(
-    start("drag", id, layout, coords, bounds, onStart),
-    [id, layout, coords, bounds, onStart]
+    start("drag", id, layout, unit, bounds, onStart),
+    [id, layout, unit, bounds, onStart]
   )
 
   const onMoveWrap = useCallback(
@@ -141,13 +143,13 @@ const useDraggable = (id, layout, info, { onMove, onStart, onEnd }) => {
 }
 
 const useResizable = (id, layout, info, { onMove, onStart, onEnd }) => {
-  const coords = layout[id]
-  const bounds = useApply(utils.toBounds, [coords, info])
+  const unit = layout[id]
+  const bounds = useApply(utils.toBounds, [unit, info])
   const [previewStyle, setPreviewStyle] = useState(utils.toBoxCSS(bounds))
 
   const onStartWrap = useCallback(
-    start("resize", id, layout, coords, bounds, onStart),
-    [id, layout, coords, bounds, onStart]
+    start("resize", id, layout, unit, bounds, onStart),
+    [id, layout, unit, bounds, onStart]
   )
 
   const onNwMoveWrap = useResizeMove("nw", id, info, onMove, setPreviewStyle)

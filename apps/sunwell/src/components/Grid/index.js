@@ -7,42 +7,39 @@ import Grill from "packages/react-grill"
 const data = {
   1: {
     x: 1,
-    y: 1,
+    y: 12,
     w: 1,
     h: 1,
-    isDraggable: true,
   },
   2: {
     x: 4,
-    y: 1,
+    y: 12,
     w: 2,
     h: 3,
-    isDraggable: true,
   },
   3: {
     x: 6,
-    y: 2,
+    y: 12,
     w: 2,
     h: 4,
-    isDraggable: true,
   },
   4: {
-    x: 3,
-    y: 6,
-    w: 5,
-    h: 1,
-    isDraggable: true,
+    x: 0,
+    y: 0,
+    w: 9,
+    h: 11,
   },
 }
 
 export default function Grid({ isEditable, children }) {
   const [layout, setLayout] = useState(data)
-  // Temp props:
   return (
     <Grill
-      rows={10}
+      rows={50}
       cols={10}
       rowHeight={80}
+      isDraggable={isEditable}
+      isResizable={isEditable}
       layout={layout}
       onChange={setLayout}
     >
