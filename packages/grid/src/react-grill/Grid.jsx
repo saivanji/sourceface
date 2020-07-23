@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Provider, useDrag } from "../react-shiftable";
+import { ShiftedProvider, useDrag } from "../react-shifted";
 import { useApply } from "./hooks";
 import Lines from "./Lines";
 import Box from "./Box";
@@ -27,7 +27,7 @@ export default function Grid({
 
   // drop target is only needed for adding items to the grid from the outside
   return (
-    <Provider>
+    <ShiftedProvider>
       <div
         ref={containerRef}
         style={{ position: "relative", height: info.containerHeight }}
@@ -62,7 +62,7 @@ export default function Grid({
           );
         })}
       </div>
-    </Provider>
+    </ShiftedProvider>
   );
 }
 

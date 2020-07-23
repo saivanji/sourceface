@@ -1,7 +1,7 @@
 import React, { useRef, forwardRef, useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import Grill from "./react-grill";
-import { Provider, useDrag, useDrop } from "./react-shiftable";
+import { useDrag, useDrop } from "./react-shifted";
 
 // Examples:
 // https://dnd-grid.duton.lu/
