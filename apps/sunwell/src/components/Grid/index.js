@@ -1,33 +1,52 @@
-import React from "react"
-// import GridLayout from "react-grid-layout"
+import React, { useState } from "react"
+import Grill from "react-grill"
 // import styles from "./index.scss"
 
 // will keep grid information as a column in modules table
 
-export default function Grid({ isEditable, items, renderItem }) {
-  return items.map((item, i) => (
-    <div key={i} style={{ display: "inline-flex" }}>
-      {renderItem(item)}
-    </div>
-  ))
+const data = {
+  1: {
+    x: 1,
+    y: 1,
+    w: 1,
+    h: 1,
+    isDraggable: true,
+  },
+  2: {
+    x: 4,
+    y: 1,
+    w: 2,
+    h: 3,
+    isDraggable: true,
+  },
+  3: {
+    x: 6,
+    y: 2,
+    w: 2,
+    h: 4,
+    isDraggable: true,
+  },
+  4: {
+    x: 3,
+    y: 6,
+    w: 5,
+    h: 1,
+    isDraggable: true,
+  },
 }
 
-// export default function Grid({ isEditable, items, renderItem }) {
-//   return (
-//     <GridLayout
-//       className={styles.root}
-//       isDraggable={isEditable}
-//       isResizable={isEditable}
-//       containerPadding={[0, 0]}
-//       cols={12}
-//       rowHeight={30}
-//       width={1152}
-//     >
-//       {items.map(item => (
-//         <div key={item.id} data-grid={{ i: 0, x: 0, y: 0, w: 2, h: 2 }}>
-//           {renderItem(item)}
-//         </div>
-//       ))}
-//     </GridLayout>
-//   )
-// }
+export default function Grid({ isEditable, children }) {
+  const [layout, setLayout] = useState(data)
+  // Temp props:
+  return (
+    <Grill
+      rows={10}
+      cols={10}
+      rowHeight={80}
+      layout={layout}
+      onChange={setLayout}
+    >
+      {children}
+    </Grill>
+  )
+}

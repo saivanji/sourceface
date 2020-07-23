@@ -1,7 +1,6 @@
 import { createClient, dedupExchange, fetchExchange } from "urql"
 import { cacheExchange } from "@urql/exchange-graphcache"
 // import { populateExchange } from "@urql/exchange-populate"
-import { keys } from "ramda"
 
 const endpoint = "http://localhost:5001/graphql"
 

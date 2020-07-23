@@ -23,6 +23,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-grid-layout": "^0.18.3",
+    "react-grill": "^0.0.3",
     "react-responsive": "^8.0.3",
     "urql": "^1.9.8",
     "yup": "^0.29.1"

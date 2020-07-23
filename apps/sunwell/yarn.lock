@@ -7492,6 +7492,13 @@ react-grid-layout@^0.18.3:
     react-draggable "^4.0.0"
     react-resizable "^1.9.0"
 
+react-grill@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/react-grill/-/react-grill-0.0.3.tgz#3d1f2e36bef32c05cac9f4db83143fef6b333501"
+  integrity sha512-da+6DFfYscL3rIcLiNQqY+V2FPSYcCXL+avO6/8SRPtdaaAc7OfLGq2SNqyJlMdjR+28IhGgKNK47mIYUMPtPg==
+  dependencies:
+    react-shifted "^0.0.3"
+
 react-is@^16.7.0, react-is@^16.8.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
@@ -7514,6 +7521,11 @@ react-responsive@^8.0.3:
     matchmediaquery "^0.3.0"
     prop-types "^15.6.1"
     shallow-equal "^1.1.0"
+
+react-shifted@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/react-shifted/-/react-shifted-0.0.3.tgz#41eef41fef892b1f52d87faeb7da6a69347b3498"
+  integrity sha512-weHdlO0NYcJPnbhJ9KtALXG+Z86bJ/71ekTI3wU3LBd1oK4w6FdMLBHpEnujNoJNB4VB/tPOTYlItjyfFEWXWA==
 
 react@^16.13.1:
   version "16.13.1"

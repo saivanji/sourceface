@@ -84,10 +84,8 @@ export default () => {
         ? "Page is loading..."
         : Parent.renderChildren(
             <context.Provider value={result.data}>
-              <Grid
-                isEditable={isEditing}
-                items={result.data.modules}
-                renderItem={module => (
+              <Grid isEditable={isEditing}>
+                {result.data.modules.map(module => (
                   <Module
                     key={module.id}
                     isEditable={isEditing}
@@ -97,8 +95,8 @@ export default () => {
                     component={modulesMap[module.type]}
                     onClick={onModuleClick}
                   />
-                )}
-              ></Grid>
+                ))}
+              </Grid>
             </context.Provider>
           )}
     </>
