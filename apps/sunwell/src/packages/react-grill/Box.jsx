@@ -6,6 +6,8 @@ export default ({
   swRef,
   neRef,
   seRef,
+  isDraggable,
+  isResizable,
   style,
   dragPreviewStyle,
   resizePreviewStyle,
@@ -23,8 +25,10 @@ export default ({
 }) => {
   const content = (
     <>
-      {DragHandle && <DragHandle ref={dragRef} isDragging={isDragging} />}
-      {ResizeHandle && (
+      {isDraggable && DragHandle && (
+        <DragHandle ref={dragRef} isDragging={isDragging} />
+      )}
+      {isResizable && ResizeHandle && (
         <>
           <ResizeHandle ref={nwRef} isResizing={isResizing} position="nw" />
           <ResizeHandle ref={swRef} isResizing={isResizing} position="sw" />
@@ -47,7 +51,7 @@ export default ({
       <ResizePreview style={resizePreviewStyle}>{content}</ResizePreview>
     </>
   ) : (
-    <Static ref={!DragHandle ? dragRef : void 0} style={style}>
+    <Static ref={isDraggable && !DragHandle ? dragRef : void 0} style={style}>
       {content}
     </Static>
   )

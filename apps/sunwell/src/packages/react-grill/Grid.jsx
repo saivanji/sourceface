@@ -49,6 +49,8 @@ export default function Grid({
           return (
             <BoxProvider
               key={element.key}
+              isDraggable={isDraggable}
+              isResizable={isResizable}
               id={element.key}
               layout={layout}
               info={info}
@@ -69,6 +71,8 @@ export default function Grid({
 
 const BoxProvider = ({
   children,
+  isDraggable,
+  isResizable,
   id,
   layout,
   info,
@@ -106,6 +110,8 @@ const BoxProvider = ({
       neRef={neRef}
       seRef={seRef}
       dragRef={dragRef}
+      isDraggable={isDraggable}
+      isResizable={isResizable}
       style={style}
       dragPreviewStyle={dragPreviewStyle}
       resizePreviewStyle={resizePreviewStyle}
