@@ -1,4 +1,5 @@
 import { createClient, dedupExchange, fetchExchange } from "urql"
+import { mergeRight } from "ramda"
 import { cacheExchange } from "@urql/exchange-graphcache"
 // import { populateExchange } from "@urql/exchange-populate"
 
@@ -28,11 +29,26 @@ export default createClient({
             },
           }
         },
+        updateModulesPositions: ({ positions }, cache) => {
+          // TODO: might need to get all fields of the module dynamically
+          const query = "query { modules { id, position { w, h, x, y } } }"
+          const { modules } = cache.readQuery({ query })
+
+          return modules.map(module => {
+            const { x, y, w, h } = positions.find(item => item.id === module.id)
+
+            return {
+              ...module,
+              position: { __typename: "ModulePosition", x, y, w, h },
+            }
+          })
+        },
       },
       updates: {
         Mutation: {
           addModule: (result, args, cache) => {
-            cache.updateQuery({ query: "query { modules { id } }" }, data => {
+            const query = "query { modules { id } }"
+            cache.updateQuery({ query }, data => {
               return {
                 ...data,
                 modules: [...data.modules, result.addModule],
