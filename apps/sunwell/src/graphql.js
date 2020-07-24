@@ -11,6 +11,9 @@ export default createClient({
     // TODO: will be available since graphql schema will be pushed as a separate package so we can import
     // populateExchange({}),
     cacheExchange({
+      keys: {
+        ModulePosition: () => null,
+      },
       optimistic: {
         updateModule: ({ moduleId, key, value }, cache) => {
           const __typename = "Module"

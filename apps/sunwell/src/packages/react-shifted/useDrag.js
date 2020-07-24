@@ -2,14 +2,14 @@ import { useRef, useEffect, useContext } from "react"
 import { context } from "./state"
 import * as dom from "./dom"
 
-export default (type, callbacks = {}) => {
+export default (type, { onStart, onMove, onEnd }) => {
   const ref = useRef()
   const localRef = useRef({})
   const { provide, dragStart, dragEnd } = useContext(context)
 
-  const { onStart, onMove, onEnd } = provide(callbacks)
-
   useEffect(() => {
+    const lifecycle = provide({ onStart, onMove, onEnd })
+
     const trigger = ref.current
     const local = localRef.current
 
@@ -23,7 +23,7 @@ export default (type, callbacks = {}) => {
         document.body.style["user-select"] = "none"
 
         dragStart(type)
-        onStart && onStart()
+        lifecycle.onStart()
 
         return
       }
@@ -31,7 +31,7 @@ export default (type, callbacks = {}) => {
       const deltaX = e.clientX - local.startX
       const deltaY = e.clientY - local.startY
 
-      onMove && onMove({ deltaX, deltaY })
+      lifecycle.onMove({ deltaX, deltaY })
     }
 
     const mouseup = () => {
@@ -41,9 +41,9 @@ export default (type, callbacks = {}) => {
       if (local.dragged) {
         dom.setStyles(document.body, local.bodyStyles)
 
-        dragEnd()
-        onEnd && onEnd()
         localRef.current = {}
+        dragEnd()
+        lifecycle.onEnd()
       }
     }
 

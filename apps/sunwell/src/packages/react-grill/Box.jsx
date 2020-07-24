@@ -25,10 +25,20 @@ export default ({
 }) => {
   const content = (
     <>
-      {isDraggable && DragHandle && (
-        <DragHandle ref={dragRef} isDragging={isDragging} />
+      {isDraggable ? (
+        !DragHandle ? (
+          <DragBox ref={dragRef}>{children}</DragBox>
+        ) : (
+          <>
+            <DragHandle ref={dragRef} isDragging={isDragging} />
+            {children}
+          </>
+        )
+      ) : (
+        children
       )}
-      {isResizable && ResizeHandle && (
+
+      {isResizable && (
         <>
           <ResizeHandle ref={nwRef} isResizing={isResizing} position="nw" />
           <ResizeHandle ref={swRef} isResizing={isResizing} position="sw" />
@@ -36,7 +46,6 @@ export default ({
           <ResizeHandle ref={seRef} isResizing={isResizing} position="se" />
         </>
       )}
-      {children}
     </>
   )
 
@@ -51,15 +60,27 @@ export default ({
       <ResizePreview style={resizePreviewStyle}>{content}</ResizePreview>
     </>
   ) : (
-    <Static ref={isDraggable && !DragHandle ? dragRef : void 0} style={style}>
-      {content}
-    </Static>
+    <Static style={style}>{content}</Static>
   )
 }
 
-const Static = forwardRef(({ children, style }, ref) => (
+const DragBox = forwardRef(({ children }, ref) => (
   <div
     ref={ref}
+    style={{
+      position: "absolute",
+      left: 0,
+      top: 0,
+      width: "100%",
+      height: "100%",
+    }}
+  >
+    {children}
+  </div>
+))
+
+const Static = ({ children, style }) => (
+  <div
     style={{
       ...style,
       position: "absolute",
@@ -68,7 +89,7 @@ const Static = forwardRef(({ children, style }, ref) => (
   >
     {children}
   </div>
-))
+)
 
 const Preview = ({ children, style }) => (
   <div
