@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from "react"
 import { ShiftedProvider, useDrag } from "../react-shifted"
-import { useApply } from "./hooks"
+import { useApply, useLifecycle } from "./hooks"
 import * as utils from "./utils"
 import Lines from "./Lines"
 import Box from "./Box"
 
-// onChange might be called only on drop(rename to onDrop). use local state for intermediate state?
 export default function Grid({
+  className,
   cols = 10,
   rows = 10,
   rowHeight = 20,
@@ -15,14 +15,26 @@ export default function Grid({
   layout,
   children,
   onChange,
+  onDragStart,
+  onDrag,
+  onDragEnd,
+  onResizeStart,
+  onResize,
+  onResizeEnd,
   components = {},
 }) {
   const [containerWidth, setContainerWidth] = useState()
   const [change, setChange] = useState(null)
   const containerRef = useRef()
   const info = useApply(utils.toInfo, [cols, rows, containerWidth, rowHeight])
-  const onChangeStart = useCallback((id, type) => setChange({ id, type }), [])
-  const onChangeEnd = useCallback(() => setChange(null), [])
+
+  const start = type => id => setChange({ id, type })
+  const end = () => setChange(null)
+
+  const onDragStartWrap = useLifecycle(onDragStart, start("drag"), [])
+  const onDragEndWrap = useLifecycle(onDragEnd, end, [])
+  const onResizeStartWrap = useLifecycle(onDragStart, start("resize"), [])
+  const onResizeEndWrap = useLifecycle(onResizeEnd, end, [])
 
   useEffect(() => {
     setContainerWidth(containerRef.current.offsetWidth)
@@ -33,6 +45,7 @@ export default function Grid({
       <div
         ref={containerRef}
         style={{ position: "relative", height: info.containerHeight }}
+        className={className}
       >
         {change && <Lines info={info} />}
         {React.Children.map(children, element => {
@@ -57,8 +70,12 @@ export default function Grid({
               info={info}
               change={change}
               onChange={onChange}
-              onChangeStart={onChangeStart}
-              onChangeEnd={onChangeEnd}
+              onDragStart={onDragStartWrap}
+              onDrag={onDrag}
+              onDragEnd={onDragEndWrap}
+              onResizeStart={onResizeStartWrap}
+              onResize={onResize}
+              onResizeEnd={onResizeEndWrap}
               components={components}
             >
               {element}
@@ -80,17 +97,22 @@ const BoxProvider = ({
   change,
   components,
   onChange,
-  onChangeStart,
-  onChangeEnd,
+  onDragStart,
+  onDrag,
+  onDragEnd,
+  onResizeStart,
+  onResize,
+  onResizeEnd,
 }) => {
   const style = useApply(utils.toBoxCSS, utils.toBounds, [layout[id], info])
   const isDragging = change?.type === "drag" && change?.id === id
   const isResizing = change?.type === "resize" && change?.id === id
 
   const [dragRef, dragPreviewStyle] = useDraggable(id, layout, info, {
-    onMove: onChange,
-    onStart: onChangeStart,
-    onEnd: onChangeEnd,
+    onStart: onDragStart,
+    onMove: onDrag,
+    onEnd: onDragEnd,
+    onChange,
   })
 
   const [nwRef, swRef, neRef, seRef, resizePreviewStyle] = useResizable(
@@ -98,9 +120,10 @@ const BoxProvider = ({
     layout,
     info,
     {
-      onMove: onChange,
-      onStart: onChangeStart,
-      onEnd: onChangeEnd,
+      onStart: onResizeStart,
+      onMove: onResize,
+      onEnd: onResizeEnd,
+      onChange,
     }
   )
 
@@ -125,18 +148,26 @@ const BoxProvider = ({
   )
 }
 
-const useDraggable = (id, layout, info, { onMove, onStart, onEnd }) => {
+const useDraggable = (
+  id,
+  layout,
+  info,
+  { onStart, onMove, onEnd, onChange }
+) => {
   const unit = layout[id]
   const bounds = useApply(utils.toBounds, [unit, info])
   const [previewStyle, setPreviewStyle] = useState(utils.toBoxCSS(bounds))
 
-  const onStartWrap = useCallback(
-    start("drag", id, layout, unit, bounds, onStart),
-    [id, layout, unit, bounds, onStart]
-  )
+  const onStartWrap = useCallback(start(id, layout, unit, bounds, onStart), [
+    id,
+    layout,
+    unit,
+    bounds,
+    onStart,
+  ])
 
   const onMoveWrap = useCallback(
-    move(utils.drag, id, info, onMove, setPreviewStyle),
+    move(utils.drag, id, info, onMove, onChange, setPreviewStyle),
     [id, info, onMove]
   )
 
@@ -149,20 +180,56 @@ const useDraggable = (id, layout, info, { onMove, onStart, onEnd }) => {
   return [ref, previewStyle]
 }
 
-const useResizable = (id, layout, info, { onMove, onStart, onEnd }) => {
+const useResizable = (
+  id,
+  layout,
+  info,
+  { onStart, onMove, onEnd, onChange }
+) => {
   const unit = layout[id]
   const bounds = useApply(utils.toBounds, [unit, info])
   const [previewStyle, setPreviewStyle] = useState(utils.toBoxCSS(bounds))
 
-  const onStartWrap = useCallback(
-    start("resize", id, layout, unit, bounds, onStart),
-    [id, layout, unit, bounds, onStart]
-  )
+  const onStartWrap = useCallback(start(id, layout, unit, bounds, onStart), [
+    id,
+    layout,
+    unit,
+    bounds,
+    onStart,
+  ])
 
-  const onNwMoveWrap = useResizeMove("nw", id, info, onMove, setPreviewStyle)
-  const onSwMoveWrap = useResizeMove("sw", id, info, onMove, setPreviewStyle)
-  const onNeMoveWrap = useResizeMove("ne", id, info, onMove, setPreviewStyle)
-  const onSeMoveWrap = useResizeMove("se", id, info, onMove, setPreviewStyle)
+  const onNwMoveWrap = useResizeMove(
+    "nw",
+    id,
+    info,
+    onMove,
+    onChange,
+    setPreviewStyle
+  )
+  const onSwMoveWrap = useResizeMove(
+    "sw",
+    id,
+    info,
+    onMove,
+    onChange,
+    setPreviewStyle
+  )
+  const onNeMoveWrap = useResizeMove(
+    "ne",
+    id,
+    info,
+    onMove,
+    onChange,
+    setPreviewStyle
+  )
+  const onSeMoveWrap = useResizeMove(
+    "se",
+    id,
+    info,
+    onMove,
+    onChange,
+    setPreviewStyle
+  )
 
   const nwRef = useDrag("angle", {
     onMove: onNwMoveWrap,
@@ -191,20 +258,21 @@ const useResizable = (id, layout, info, { onMove, onStart, onEnd }) => {
   return [nwRef, swRef, neRef, seRef, previewStyle]
 }
 
-const useResizeMove = (angle, id, info, onMove, setPreviewStyle) =>
+const useResizeMove = (angle, id, info, onMove, onChange, setPreviewStyle) =>
   useCallback(
     move(
       (...args) => utils.resize(angle, ...args),
       id,
       info,
       onMove,
+      onChange,
       setPreviewStyle
     ),
-    [id, info, onMove]
+    [id, info, onMove, onChange]
   )
 
-const start = (type, id, layout, coords, bounds, onStart) => () => {
-  onStart(id, type)
+const start = (id, layout, coords, bounds, onStart) => () => {
+  onStart(id)
   return {
     coords,
     initial: layout,
@@ -212,17 +280,19 @@ const start = (type, id, layout, coords, bounds, onStart) => () => {
   }
 }
 
-const move = (fn, id, info, onMove, setPreviewStyle) => (
+const move = (fn, id, info, onMove, onChange, setPreviewStyle) => (
   { coords: prevCoords, initial, anchor },
   { deltaX, deltaY }
 ) => {
+  onMove && onMove()
+
   const nextBounds = fn(deltaX, deltaY, anchor, info)
   const nextCoords = utils.toCoords(nextBounds, info)
   setPreviewStyle(utils.toBoxCSS(nextBounds))
 
   if (utils.coordsEqual(prevCoords, nextCoords)) return
 
-  onMove(utils.put(id, nextCoords, initial))
+  onChange && onChange(utils.put(id, nextCoords, initial))
 
   return {
     coords: nextCoords,

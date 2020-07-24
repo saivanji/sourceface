@@ -15,6 +15,7 @@ export default ({
   isDragging,
   isResizing,
   components: {
+    Item = Static,
     DragHandle,
     DragPlaceholder = Placeholder,
     DragPreview = Preview,
@@ -60,7 +61,7 @@ export default ({
       <ResizePreview style={resizePreviewStyle}>{content}</ResizePreview>
     </>
   ) : (
-    <Static style={style}>{content}</Static>
+    <Item style={style}>{content}</Item>
   )
 }
 
