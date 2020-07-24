@@ -18,9 +18,18 @@ type ModulePosition {
   h: Int!
 }
 
+input ModulePositionInput {
+  id: Int!
+  x: Int!
+  y: Int!
+  w: Int!
+  h: Int!
+}
+
 extend type Mutation {
-  updateModule(moduleId: Int!, key: String!, value: JSON!): Module!
   addModule(type: ModuleType!, config: JSONObject!): Module!
+  updateModule(moduleId: Int!, key: String!, value: JSON!): Module!
+  updateModulesPositions(positions: [ModulePositionInput!]!): [Module!]!
 }
 
 extend type Query {

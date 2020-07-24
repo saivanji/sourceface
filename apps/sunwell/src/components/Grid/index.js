@@ -1,10 +1,14 @@
-import React, { useState, useCallback } from "react"
+import React, { useEffect, useState, useCallback } from "react"
 import Grill from "packages/react-grill"
 // import styles from "./index.scss"
 
-export default function Grid({ isEditable, children, positions }) {
-  const [layout, setLayout] = useState(positions)
-  const onSave = useCallback(() => console.log(layout), [layout])
+export default function Grid({ isEditable, children, positions, onChange }) {
+  const [layout, setLayout] = useState(null)
+  const onChangeWrap = useCallback(() => onChange(layout), [layout, onChange])
+
+  useEffect(() => {
+    setLayout(positions)
+  }, [positions])
 
   return (
     <Grill
@@ -13,10 +17,10 @@ export default function Grid({ isEditable, children, positions }) {
       rowHeight={80}
       isDraggable={isEditable}
       isResizable={isEditable}
-      layout={layout}
+      layout={layout || positions}
       onChange={setLayout}
-      onDragEnd={onSave}
-      onResizeEnd={onSave}
+      onDragEnd={onChangeWrap}
+      onResizeEnd={onChangeWrap}
     >
       {children}
     </Grill>

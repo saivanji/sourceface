@@ -6,6 +6,7 @@ const endpoint = "http://localhost:5001/graphql"
 
 export default createClient({
   url: endpoint,
+  maskTypename: true,
   exchanges: [
     dedupExchange,
     // TODO: will be available since graphql schema will be pushed as a separate package so we can import

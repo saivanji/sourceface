@@ -30,6 +30,7 @@ ReactDOM.render(
 // Improve / Change editor UI? start with a feature approach
 // Pages
 // Performance optimizations
+// Investigate race conditions with optimistic updates and debouncing. Additinally in the context of mutations
 // Editor design(keep in mind mobile first approach)
 //  - Permissions will be defined in editor for every command(because they're related to the commands)?
 //    - Creating groups will be near users but assigning command to a group will be in command "permissions" tab
@@ -43,3 +44,6 @@ ReactDOM.render(
 // - 2 way binding vs 1 way binding, what's better? probably 2 way
 //
 //
+// Current:
+// - Implement dropping modules on a grid
+// - Improve ux of modules editing

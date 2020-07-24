@@ -7,15 +7,15 @@ import React, {
   useMemo,
   useCallback,
 } from "react"
+import { values } from "ramda"
 import { useQuery, useMutation } from "urql"
-import { keys, values } from "ramda"
-import camelCase from "camelcase"
 import { useBooleanState } from "hooks/index"
 import { Frame, Editor, Module, Grid } from "components/index"
 import * as modules from "packages/modules"
 import * as expression from "./expression"
 import * as schema from "./schema"
 import Configuration from "./Configuration"
+import { createModulesMap, toPositions, reversePositions } from "./utils"
 
 /* <div className={styles.panel}> */
 /*   <span className={styles.title}>Orders</span> */
@@ -26,6 +26,8 @@ const path = [
   { title: "Administration", link: "#" },
   { title: "Users", link: "#" },
 ]
+
+const modulesMap = createModulesMap(modules)
 
 export const context = createContext({})
 // TODO: think about real use case
@@ -84,41 +86,44 @@ export default () => {
         ? "Page is loading..."
         : Parent.renderChildren(
             <context.Provider value={result.data}>
-              <Grid
-                positions={toPositions(result.data.modules)}
-                isEditable={isEditing}
-              >
-                {result.data.modules.map(module => (
-                  <Module
-                    key={module.id}
-                    isEditable={isEditing}
-                    isSelected={isEditing && selectedModuleId === module.id}
-                    data={module}
-                    expression={expression}
-                    component={modulesMap[module.type]}
-                    onClick={onModuleClick}
-                  />
-                ))}
-              </Grid>
+              <Content
+                modules={result.data.modules}
+                isEditing={isEditing}
+                selectedModuleId={selectedModuleId}
+                onModuleClick={onModuleClick}
+              />
             </context.Provider>
           )}
     </>
   )
 }
 
-const modulesMap = keys(modules).reduce((acc, key) => {
-  const Module = modules[key]
-
-  Module.type = camelCase(key)
-
-  return {
-    ...acc,
-    [Module.type]: Module,
-  }
-}, {})
-
-const toPositions = modules =>
-  modules.reduce(
-    (acc, module) => ({ ...acc, [module.id]: module.position }),
-    {}
+function Content({ modules, isEditing, selectedModuleId, onModuleClick }) {
+  const [, updateModulesPositions] = useMutation(schema.updateModulesPositions)
+  const positions = useMemo(() => toPositions(modules), [modules])
+  const onUpdateModulesPositions = useCallback(
+    positions =>
+      updateModulesPositions({ positions: reversePositions(positions) }),
+    []
   )
+
+  return (
+    <Grid
+      positions={positions}
+      isEditable={isEditing}
+      onChange={onUpdateModulesPositions}
+    >
+      {modules.map(module => (
+        <Module
+          key={module.id}
+          isEditable={isEditing}
+          isSelected={isEditing && selectedModuleId === module.id}
+          data={module}
+          expression={expression}
+          component={modulesMap[module.type]}
+          onClick={onModuleClick}
+        />
+      ))}
+    </Grid>
+  )
+}

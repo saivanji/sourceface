@@ -17,6 +17,16 @@ export const root = `
   }
 `
 
+export const addModule = `
+  mutation ($type: ModuleType!, $config: JSONObject!) {
+    addModule(type: $type, config: $config) {
+      id
+      type
+      config
+    }
+  }
+`
+
 export const updateModule = `
   mutation ($moduleId: Int!, $key: String!, $value: JSON!) {
     updateModule(moduleId: $moduleId, key: $key, value: $value) {
@@ -26,12 +36,16 @@ export const updateModule = `
   }
 `
 
-export const addModule = `
-  mutation ($type: ModuleType!, $config: JSONObject!) {
-    addModule(type: $type, config: $config) {
+export const updateModulesPositions = `
+  mutation ($positions: [ModulePositionInput!]!) {
+    updateModulesPositions(positions: $positions) {
       id
-      type
-      config
+      position {
+        x
+        y
+        w
+        h
+      }
     }
   }
 `

@@ -4,6 +4,8 @@ export const create = async (type, config, pg) =>
   await pg.one(sql.create, [type, config])
 export const updateConfig = async (moduleId, config, pg) =>
   await pg.one(sql.updateConfig, [moduleId, config])
+export const updatePosition = async (moduleId, position, pg) =>
+  await pg.one(sql.updatePosition, [moduleId, position])
 
 const sql = {
   all: `
@@ -19,6 +21,10 @@ const sql = {
   `,
   updateConfig: `
     UPDATE modules SET config = $2 WHERE id = $1
+    RETURNING *
+  `,
+  updatePosition: `
+    UPDATE modules SET position = $2 WHERE id = $1
     RETURNING *
   `,
 }
