@@ -47,5 +47,9 @@ Editor.renderRoot = element => {
 }
 
 Editor.renderChildren = element => {
-  return <div className={styles.body}>{element}</div>
+  return (
+    <div className={styles.body}>
+      <div className={styles.content}>{element}</div>
+    </div>
+  )
 }

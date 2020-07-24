@@ -33,6 +33,9 @@
 .body {
   grid-area: body;
   overflow-y: auto;
+}
+
+.content {
   margin: 0 auto;
   width: 100%;
   max-width: $size-6xl;
