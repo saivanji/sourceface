@@ -16,6 +16,7 @@ export default ({
   isResizing,
   components: {
     Item = Static,
+    DragBox = Box,
     DragHandle,
     DragPlaceholder = Placeholder,
     DragPreview = Preview,
@@ -28,7 +29,9 @@ export default ({
     <>
       {isDraggable ? (
         !DragHandle ? (
-          <DragBox ref={dragRef}>{children}</DragBox>
+          <DragBox ref={dragRef} isDragging={isDragging}>
+            {children}
+          </DragBox>
         ) : (
           <>
             <DragHandle ref={dragRef} isDragging={isDragging} />
@@ -65,7 +68,7 @@ export default ({
   )
 }
 
-const DragBox = forwardRef(({ children }, ref) => (
+const Box = forwardRef(({ children }, ref) => (
   <div
     ref={ref}
     style={{
