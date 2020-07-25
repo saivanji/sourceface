@@ -19,6 +19,11 @@ const Component = () => {
         dropStartY: clientY,
       }
     },
+    onLeave: ({ id }) => {
+      return {
+        // onItemLeave: () => onItemLeave(id)
+      }
+    },
     onHover: ({ dropStartY }, { clientY, startY }) => {
       const dropDeltaY = clientY - (dropStartY || startY)
 
