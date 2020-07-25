@@ -20,15 +20,22 @@ export const Provider = ({ children }) => {
           for (let key of Object.keys(callbacks)) {
             const fn = callbacks[key]
 
-            result[key] = (...args) => {
-              if (!fn) return
+            result[key] = internal => {
+              {
+                const prev = ref.current.internal
+                ref.current.internal = Object.assign({}, prev, internal)
+              }
 
-              const prev = ref.current.payload
-              ref.current.payload = Object.assign(
-                {},
-                prev,
-                callbacks[key](prev, ...args)
-              )
+              {
+                if (!fn) return
+
+                const prev = ref.current.external
+                ref.current.external = Object.assign(
+                  {},
+                  prev,
+                  fn(prev, ref.current.internal)
+                )
+              }
             }
           }
 

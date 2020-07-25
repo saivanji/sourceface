@@ -23,7 +23,7 @@ export default (type, { onStart, onMove, onEnd }) => {
         document.body.style["user-select"] = "none"
 
         dragStart(type)
-        lifecycle.onStart()
+        lifecycle.onStart({ startX: local.startX, startY: local.startY })
 
         return
       }
@@ -31,7 +31,14 @@ export default (type, { onStart, onMove, onEnd }) => {
       const deltaX = e.clientX - local.startX
       const deltaY = e.clientY - local.startY
 
-      lifecycle.onMove({ deltaX, deltaY })
+      lifecycle.onMove({
+        clientX: e.clientX,
+        clientY: e.clientY,
+        startX: local.startX,
+        startY: local.startY,
+        deltaX,
+        deltaY,
+      })
     }
 
     const mouseup = () => {
