@@ -23,22 +23,12 @@ export default (type, { onStart, onMove, onEnd }) => {
         document.body.style["user-select"] = "none"
 
         dragStart(type)
-        lifecycle.onStart({ startX: local.startX, startY: local.startY })
+        lifecycle.onStart(createAction(e, local))
 
         return
       }
 
-      const deltaX = e.clientX - local.startX
-      const deltaY = e.clientY - local.startY
-
-      lifecycle.onMove({
-        clientX: e.clientX,
-        clientY: e.clientY,
-        startX: local.startX,
-        startY: local.startY,
-        deltaX,
-        deltaY,
-      })
+      lifecycle.onMove(createAction(e, local))
     }
 
     const mouseup = () => {
@@ -77,3 +67,12 @@ export default (type, { onStart, onMove, onEnd }) => {
 
   return ref
 }
+
+const createAction = ({ clientX, clientY }, { startX, startY }) => ({
+  clientX,
+  clientY,
+  startX,
+  startY,
+  deltaX: clientX - startX,
+  deltaY: clientY - startY,
+})

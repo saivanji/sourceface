@@ -27,21 +27,12 @@ const Component = () => {
     onHover: ({ dropStartY }, { clientY, startY }) => {
       const dropDeltaY = clientY - (dropStartY || startY)
 
-      console.log(dropDeltaY)
+      console.log(clientY, dropStartY, startY, dropDeltaY)
     },
   })
 
   return (
     <ShiftedProvider>
-      <div
-        ref={dragRef}
-        style={{
-          transform: deltaX && deltaY && `translate(${deltaX}px, ${deltaY}px)`,
-          pointerEvents: deltaX && deltaY && "none",
-        }}
-      >
-        Drag me
-      </div>
       <div
         ref={dropRef}
         style={{
@@ -53,6 +44,16 @@ const Component = () => {
         }}
       >
         Drop here
+        <div
+          ref={dragRef}
+          style={{
+            transform:
+              deltaX && deltaY && `translate(${deltaX}px, ${deltaY}px)`,
+            pointerEvents: deltaX && deltaY && "none",
+          }}
+        >
+          Drag me
+        </div>
       </div>
     </ShiftedProvider>
   )

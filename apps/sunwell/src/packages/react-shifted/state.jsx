@@ -33,7 +33,7 @@ export const Provider = ({ children }) => {
                 ref.current.external = Object.assign(
                   {},
                   prev,
-                  fn(prev, ref.current.internal)
+                  fn(prev || {}, ref.current.internal)
                 )
               }
             }
