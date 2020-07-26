@@ -3,7 +3,7 @@ import React, { createContext, useRef } from "react"
 export const context = createContext({})
 
 export const Provider = ({ children }) => {
-  const ref = useRef({})
+  const ref = useRef({ transfer: {} })
 
   return (
     <context.Provider
@@ -12,7 +12,7 @@ export const Provider = ({ children }) => {
           ref.current.type = type
         },
         dragEnd: () => {
-          ref.current = {}
+          ref.current = { transfer: {} }
         },
         provide: callbacks => {
           let result = {}
@@ -29,11 +29,11 @@ export const Provider = ({ children }) => {
               {
                 if (!fn) return
 
-                const prev = ref.current.external
-                ref.current.external = Object.assign(
+                const prev = ref.current.transfer
+                ref.current.transfer = Object.assign(
                   {},
                   prev,
-                  fn(prev || {}, ref.current.internal)
+                  fn(prev, ref.current.internal)
                 )
               }
             }

@@ -1,17 +1,28 @@
 import React, { forwardRef, useState } from "react"
 import Grill from "../"
 
-const DragHandle = forwardRef((props, ref) => {
+const DragHandle = forwardRef(({ children }, ref) => {
   return (
     <div
-      ref={ref}
       style={{
         position: "absolute",
-        top: -20,
         left: 0,
+        top: 0,
+        width: "100%",
+        height: "100%",
       }}
     >
-      Handle
+      <div
+        ref={ref}
+        style={{
+          position: "absolute",
+          top: -20,
+          left: 0,
+        }}
+      >
+        Handle
+      </div>
+      {children}
     </div>
   )
 })
@@ -104,7 +115,7 @@ const First = () => {
       layout={layout}
       onChange={setLayout}
       components={{
-        DragHandle,
+        DragTrigger: DragHandle,
       }}
     >
       {items.map(item => (
@@ -143,7 +154,7 @@ const Second = () => {
       layout={layout}
       onChange={setLayout}
       components={{
-        DragHandle,
+        DragTrigger: DragHandle,
       }}
     >
       {items.map(item => (

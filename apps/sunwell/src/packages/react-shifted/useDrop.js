@@ -5,7 +5,7 @@ import { context } from "./state"
 export default (types, callbacks = {}) => {
   const ref = useRef()
   const { provide, type } = useContext(context)
-  const { onEnter, onLeave, onHover, onDrop } = provide(callbacks)
+  const { onEnter, onLeave, onOver, onDrop } = provide(callbacks)
 
   useEffect(() => {
     const target = ref.current
@@ -19,7 +19,7 @@ export default (types, callbacks = {}) => {
       }
     }
 
-    const mousemove = listener(onHover)
+    const mousemove = listener(onOver)
     const mouseenter = listener(onEnter)
     const mouseleave = listener(onLeave)
     const mouseup = listener(onDrop)
@@ -35,7 +35,7 @@ export default (types, callbacks = {}) => {
       target.removeEventListener("mouseleave", mouseleave)
       target.removeEventListener("mouseup", mouseup)
     }
-  }, [ref, type, types, onEnter, onLeave, onHover, onDrop])
+  }, [ref, type, types, onEnter, onLeave, onOver, onDrop])
 
   return ref
 }

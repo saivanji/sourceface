@@ -9,8 +9,7 @@ export default ({
   isDraggable,
   isResizable,
   style,
-  dragPreviewStyle,
-  resizePreviewStyle,
+  previewStyle,
   children,
   isDragging,
   isResizing,
@@ -56,12 +55,12 @@ export default ({
   return isDragging ? (
     <>
       <DragPlaceholder style={style} />
-      <DragPreview style={dragPreviewStyle}>{content}</DragPreview>
+      <DragPreview style={previewStyle}>{content}</DragPreview>
     </>
   ) : isResizing ? (
     <>
       <ResizePlaceholder style={style} />
-      <ResizePreview style={resizePreviewStyle}>{content}</ResizePreview>
+      <ResizePreview style={previewStyle}>{content}</ResizePreview>
     </>
   ) : (
     <Item style={style}>{content}</Item>

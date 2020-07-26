@@ -11,7 +11,7 @@ import ShiftedExample from "./packages/react-shifted/examples"
 
 ReactDOM.render(
   <ClientProvider value={client}>
-    <ShiftedExample />
+    <GrillExample />
   </ClientProvider>,
   document.getElementById("root")
 )
