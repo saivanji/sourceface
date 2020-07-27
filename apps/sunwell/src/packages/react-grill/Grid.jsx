@@ -3,7 +3,7 @@ import { ShiftedProvider, useDrag, useDrop } from "../react-shifted"
 import { useApply, useLifecycle } from "./hooks"
 import * as utils from "./utils"
 import Lines from "./Lines"
-import { Awaiting, Motion } from "./components"
+import Item from "./Item"
 
 export default props => (
   <ShiftedProvider>
@@ -69,12 +69,12 @@ function Grid({
 
         if (!containerWidth || (!isDraggable && !isResizable)) {
           return (
-            <Awaiting
+            <Item
               style={utils.toPercentageCSS(layout[id], info)}
               components={components}
             >
               {element}
-            </Awaiting>
+            </Item>
           )
         }
 
@@ -117,6 +117,8 @@ const ItemProvider = ({
   // onResizeStart,
   // onResizeEnd,
 }) => {
+  const isDragging = motion?.id === id && motion?.type === "drag"
+  const isResizing = motion?.id === id && motion?.type === "resize"
   const style = useApply(utils.toBoxCSS, utils.toBounds, [layout[id], info])
 
   const dragRef = useDraggable(id, layout, info, {
@@ -135,36 +137,18 @@ const ItemProvider = ({
   //     }
   //   )
 
-  if (motion?.id === id) {
-    const isDragging = motion.type === "drag"
-    const isResizing = motion.type === "resize"
-
-    return (
-      <Motion
-        style={style}
-        isDraggable={isDraggable}
-        isResizable={isResizable}
-        isDragging={isDragging}
-        isResizing={isResizing}
-        components={components}
-      >
-        {children}
-      </Motion>
-    )
-  }
-
   return (
-    <Awaiting
+    <Item
       dragRef={dragRef}
       style={style}
       isDraggable={isDraggable}
       isResizable={isResizable}
-      isDragging={false}
-      isResizing={false}
+      isDragging={isDragging}
+      isResizing={isResizing}
       components={components}
     >
       {children}
-    </Awaiting>
+    </Item>
   )
 }
 

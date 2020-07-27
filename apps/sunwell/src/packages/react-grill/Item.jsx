@@ -1,58 +1,29 @@
 import React, { forwardRef } from "react"
 
-export function Awaiting({ style, ...props }) {
-  const {
-    components: { Item = Floating },
-  } = props
-
-  return (
-    <Item style={style}>
-      <Triggers {...props} />
-    </Item>
-  )
-}
-
-export function Motion({ style, previewStyle, ...props }) {
-  const {
-    isDragging,
-    isResizing,
-    components: {
-      DragPlaceholder = Brick,
-      DragPreview = Free,
-      ResizePlaceholder = Brick,
-      ResizePreview = Free,
-    },
-  } = props
-
-  const content = <Triggers {...props} />
-
-  return isDragging ? (
-    <>
-      <DragPlaceholder style={style} />
-      <DragPreview style={previewStyle}>{content}</DragPreview>
-    </>
-  ) : isResizing ? (
-    <>
-      <ResizePlaceholder style={style} />
-      <ResizePreview style={previewStyle}>{content}</ResizePreview>
-    </>
-  ) : null
-}
-
-function Triggers({
+export default ({
   dragRef,
   nwRef,
   swRef,
   neRef,
   seRef,
+  children,
+  style,
+  previewStyle,
   isDraggable,
   isResizable,
   isDragging,
   isResizing,
-  children,
-  components: { DragTrigger = Layer, ResizeTrigger = Angle },
-}) {
-  return (
+  components: {
+    Item = Floating,
+    DragTrigger = Layer,
+    DragPlaceholder = Brick,
+    DragPreview = Free,
+    ResizeTrigger = Angle,
+    ResizePlaceholder = Brick,
+    ResizePreview = Free,
+  },
+}) => {
+  const content = (
     <>
       {isDraggable ? (
         <DragTrigger ref={dragRef} isDragging={isDragging}>
@@ -70,6 +41,20 @@ function Triggers({
         </>
       )}
     </>
+  )
+
+  return isDragging ? (
+    <>
+      <DragPlaceholder style={style} />
+      <DragPreview style={previewStyle}>{content}</DragPreview>
+    </>
+  ) : isResizing ? (
+    <>
+      <ResizePlaceholder style={style} />
+      <ResizePreview style={previewStyle}>{content}</ResizePreview>
+    </>
+  ) : (
+    <Item style={style}>{content}</Item>
   )
 }
 
