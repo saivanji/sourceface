@@ -3,69 +3,67 @@ import { context } from "./state"
 import * as dom from "./dom"
 
 export default (type, { onStart, onMove, onEnd }) => {
-  const ref = useRef()
-  const localRef = useRef({})
+  const trigger = useRef()
+  const local = useRef()
   const { provide, dragStart, dragEnd } = useContext(context)
 
   useEffect(() => {
     const lifecycle = provide({ onStart, onMove, onEnd })
 
-    const trigger = ref.current
-    const local = localRef.current
-
     const mousemove = e => {
-      if (!local.dragged) {
-        local.dragged = true
-        local.startX = e.clientX
-        local.startY = e.clientY
-        local.bodyStyles = dom.getStyles(trigger, ["user-select"])
+      if (!local.current) {
+        local.current = {
+          startX: e.clientX,
+          startY: e.clientY,
+          bodyStyles: dom.getStyles(document.body, ["user-select"]),
+        }
 
         document.body.style["user-select"] = "none"
 
         dragStart(type)
-        lifecycle.onStart(createAction(e, local))
+        lifecycle.onStart(createAction(e, local.current))
 
         return
       }
 
-      lifecycle.onMove(createAction(e, local))
+      lifecycle.onMove(createAction(e, local.current))
     }
 
     const mouseup = () => {
       document.removeEventListener("mousemove", mousemove)
       document.removeEventListener("mouseup", mouseup)
 
-      if (local.dragged) {
-        dom.setStyles(document.body, local.bodyStyles)
+      if (local.current) {
+        dom.setStyles(document.body, local.current.bodyStyles)
 
-        localRef.current = {}
+        local.current = undefined
         dragEnd()
         lifecycle.onEnd()
       }
     }
 
     const mousedown = e => {
-      if (e.which !== 1) return
+      if (e.target !== trigger.current || e.which !== 1) return
 
       document.addEventListener("mousemove", mousemove)
       document.addEventListener("mouseup", mouseup)
     }
 
-    if (!local.dragged) {
-      trigger?.addEventListener("mousedown", mousedown)
+    if (!local.current) {
+      document.addEventListener("mousedown", mousedown)
     } else {
       document.addEventListener("mousemove", mousemove)
       document.addEventListener("mouseup", mouseup)
     }
 
     return () => {
-      trigger?.removeEventListener("mousedown", mousedown)
+      document.removeEventListener("mousedown", mousedown)
       document.removeEventListener("mousemove", mousemove)
       document.removeEventListener("mouseup", mouseup)
     }
-  }, [type, dragStart, dragEnd, onStart, onMove, onEnd])
+  }, [trigger, type, dragStart, dragEnd, onStart, onMove, onEnd])
 
-  return ref
+  return trigger
 }
 
 const createAction = ({ clientX, clientY }, { startX, startY }) => ({
