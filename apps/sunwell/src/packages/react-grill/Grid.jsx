@@ -11,7 +11,7 @@ export default props => (
   </ShiftedProvider>
 )
 
-// TODO: use context for passing parent props down
+// TODO: use config context for passing parent props down
 function Grid({
   className,
   cols = 10,
@@ -97,6 +97,7 @@ function Grid({
   )
 }
 
+// TODO: item is not motionable when changing position(useEffect is not ran)
 const ItemProvider = props => {
   const {
     children,
@@ -146,9 +147,12 @@ const useMotion = () => {
     (id, type, previewStyle) => setMotion({ id, type, previewStyle }),
     []
   )
-  // TODO: will keep previewBounds instead of previewStyle
   const onMotion = useCallback(
-    previewStyle => setMotion(motion => ({ ...motion, previewStyle })),
+    bounds =>
+      setMotion(motion => ({
+        ...motion,
+        previewStyle: utils.toPreviewStyle(bounds),
+      })),
     []
   )
   const onMotionEnd = useCallback(() => setMotion(null), [])
@@ -208,7 +212,7 @@ const useResizable = (
 
   const onResizeWrap = useLifecycle(
     onResize,
-    change((...args) => utils.resize(angle, ...args), info, onChange),
+    change((...args) => utils.resize(angle, ...args), info, onChange, onMotion),
     [info, onChange]
   )
 
@@ -224,9 +228,8 @@ const useResizable = (
 const start = (type, id, layout, info, onStart) => () => {
   const unit = layout[id]
   const bounds = utils.toBounds(unit, info)
-  const previewStyle = utils.toPreviewStyle(bounds)
 
-  onStart(id, type, previewStyle)
+  onStart(id, type, bounds)
 
   return {
     id,
@@ -239,8 +242,7 @@ const start = (type, id, layout, info, onStart) => () => {
 
 const move = (fn, info, onMove) => ({ anchor }, { deltaX, deltaY }) => {
   const nextBounds = fn(deltaX, deltaY, anchor, info)
-  // TODO: remove utils.toPreviewStyle
-  onMove(utils.toPreviewStyle(nextBounds))
+  onMove(nextBounds)
 }
 
 const over = (info, onChange) => ({ type, ...transfer }, event) => {
@@ -249,13 +251,14 @@ const over = (info, onChange) => ({ type, ...transfer }, event) => {
     return change(utils.drag, info, onChange)(transfer, event)
 }
 
-// TODO: onMove callback to pass bounds
-const change = (fn, info, onChange) => (
+const change = (fn, info, onChange, onTick) => (
   { id, coords: prevCoords, initial, anchor },
   { deltaX, deltaY }
 ) => {
   const nextBounds = fn(deltaX, deltaY, anchor, info)
   const nextCoords = utils.toCoords(nextBounds, info)
+
+  onTick && onTick(nextBounds)
 
   if (utils.coordsEqual(prevCoords, nextCoords)) return
 
