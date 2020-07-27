@@ -34,13 +34,12 @@ function Grid({
   const [motion, setMotion] = useState(null)
   const info = useApply(utils.toInfo, [cols, rows, containerWidth, rowHeight])
 
-  const onDragOverWrap = useLifecycle(
-    onDragOver,
-    over(utils.drag, info, onChange),
-    [info, onChange]
-  )
+  const onDragOverWrap = useLifecycle(onDragOver, over(info, onChange), [
+    info,
+    onChange,
+  ])
 
-  const containerRef = useDrop(["box"], {
+  const containerRef = useDrop(["box", "angle"], {
     onOver: onDragOverWrap,
   })
 
@@ -61,7 +60,11 @@ function Grid({
   ])
   const onDragEndWrap = useLifecycle(onDragEnd, onMotionEnd, [])
 
-  const onResizeStartWrap = useLifecycle(onResizeStart, onMotionStart, [])
+  const onResizeStartWrap = useLifecycle(
+    onResizeStart,
+    id => start("resize", id, layout, info, onMotionStart)(),
+    [layout, info, onMotionStart]
+  )
   const onResizeEndWrap = useLifecycle(onResizeEnd, onMotionEnd, [])
 
   useEffect(() => {
@@ -125,8 +128,8 @@ const ItemProvider = ({
   onDragStart,
   onDrag,
   onDragEnd,
-  // onResizeStart,
-  // onResizeEnd,
+  onResizeStart,
+  onResizeEnd,
 }) => {
   const isDragging = motion?.id === id && motion?.type === "drag"
   const isResizing = motion?.id === id && motion?.type === "resize"
@@ -138,6 +141,16 @@ const ItemProvider = ({
     onStart: onDragStartWrap,
     onMove: onDrag,
     onEnd: onDragEnd,
+  })
+
+  const onResizeStartWrap = useCallback(() => onResizeStart(id), [
+    id,
+    onResizeStart,
+  ])
+
+  const nwRef = useDrag("angle", {
+    onStart: onResizeStartWrap,
+    onEnd: onResizeEnd,
   })
 
   //   const [nwRef, swRef, neRef, seRef, resizePreviewStyle] = useResizable(
@@ -153,6 +166,7 @@ const ItemProvider = ({
   return (
     <Item
       dragRef={dragRef}
+      nwRef={nwRef}
       style={style}
       previewStyle={motion?.previewStyle}
       isDraggable={isDraggable}
@@ -208,11 +222,6 @@ const ItemProvider = ({
 //   //   setPreviewStyle
 //   // )
 
-//   const nwRef = useDrag("angle", {
-//     onStart: onStartWrap,
-//     onEnd,
-//   })
-
 //   const swRef = useDrag("angle", {
 //     onStart: onStartWrap,
 //     onEnd,
@@ -265,11 +274,14 @@ const move = (fn, info, onMove) => ({ anchor }, { deltaX, deltaY }) => {
   onMove(toPreviewStyle(nextBounds))
 }
 
-const over = (fn, info, onChange) => (
-  { id, coords: prevCoords, initial, anchor },
+const over = (info, onChange) => (
+  { id, type, coords: prevCoords, initial, anchor },
   { deltaX, deltaY }
 ) => {
-  const nextBounds = fn(deltaX, deltaY, anchor, info)
+  // there will be only drag on over, since resize should happen only within current drop target
+  if (type !== "drag") return
+
+  const nextBounds = utils.drag(deltaX, deltaY, anchor, info)
   const nextCoords = utils.toCoords(nextBounds, info)
 
   if (utils.coordsEqual(prevCoords, nextCoords)) return
