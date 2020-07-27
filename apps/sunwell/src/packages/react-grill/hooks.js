@@ -14,7 +14,7 @@ export const useLifecycle = (lifecycleFn, fn, deps) => {
   return useCallback(
     (...args) => {
       lifecycleFn && lifecycleFn()
-      fn(...args)
+      return fn(...args)
     },
     lifecycleFn ? [...deps, lifecycleFn] : deps
   )

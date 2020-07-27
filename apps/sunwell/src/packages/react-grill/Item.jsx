@@ -63,6 +63,7 @@ const Free = ({ children, style }) => (
     style={{
       ...style,
       position: "absolute",
+      zIndex: 2,
     }}
   >
     {children}
@@ -123,7 +124,7 @@ const Angle = forwardRef(({ position }, ref) => {
       style={{
         position: "absolute",
         cursor: `${position}-resize`,
-        zIndex: 3,
+        zIndex: 1,
         width: 20,
         height: 20,
         ...positions[position].reduce((acc, key) => ({ ...acc, [key]: 0 }), {}),

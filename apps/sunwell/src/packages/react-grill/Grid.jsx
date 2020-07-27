@@ -34,20 +34,32 @@ function Grid({
   const [motion, setMotion] = useState(null)
   const info = useApply(utils.toInfo, [cols, rows, containerWidth, rowHeight])
 
+  const onDragOverWrap = useLifecycle(
+    onDragOver,
+    over(utils.drag, info, onChange),
+    [info, onChange]
+  )
+
+  // TODO: onOver is being called even when item is hovered on another grid or outside of a grid
   const containerRef = useDrop(["box"], {
-    onOver: () => {
-      // TODO: should not print null at first call
-      // console.log(motion)
-    },
+    onOver: onDragOverWrap,
   })
 
-  const onMotionStart = (id, type) => setMotion({ id, type })
+  const onMotionStart = (id, type, previewStyle) =>
+    setMotion({ id, type, previewStyle })
   const onMotion = previewStyle =>
     setMotion(motion => ({ ...motion, previewStyle }))
   const onMotionEnd = () => setMotion(null)
 
-  const onDragStartWrap = useLifecycle(onDragStart, onMotionStart, [])
-  const onDragWrap = useLifecycle(onDrag, onMotion, [])
+  const onDragStartWrap = useLifecycle(
+    onDragStart,
+    id => start("drag", id, layout, info, onMotionStart)(),
+    [layout, info, onMotionStart]
+  )
+  const onDragWrap = useLifecycle(onDrag, move(utils.drag, info, onMotion), [
+    info,
+    onMotion,
+  ])
   const onDragEndWrap = useLifecycle(onDragEnd, onMotionEnd, [])
 
   const onResizeStartWrap = useLifecycle(onResizeStart, onMotionStart, [])
@@ -121,8 +133,10 @@ const ItemProvider = ({
   const isResizing = motion?.id === id && motion?.type === "resize"
   const style = useApply(utils.toBoxCSS, utils.toBounds, [layout[id], info])
 
-  const dragRef = useDraggable(id, layout, info, {
-    onStart: onDragStart,
+  const onDragStartWrap = useCallback(() => onDragStart(id), [id, onDragStart])
+
+  const dragRef = useDrag("box", {
+    onStart: onDragStartWrap,
     onMove: onDrag,
     onEnd: onDragEnd,
   })
@@ -141,6 +155,7 @@ const ItemProvider = ({
     <Item
       dragRef={dragRef}
       style={style}
+      previewStyle={motion?.previewStyle}
       isDraggable={isDraggable}
       isResizable={isResizable}
       isDragging={isDragging}
@@ -150,28 +165,6 @@ const ItemProvider = ({
       {children}
     </Item>
   )
-}
-
-// TODO: drag is triggered only first time
-const useDraggable = (id, layout, info, { onStart, onMove, onEnd }) => {
-  const unit = layout[id]
-  // TODO: calculate bounds in start function?
-  const bounds = useApply(utils.toBounds, [unit, info])
-
-  const onStartWrap = useCallback(
-    start("drag", id, layout, unit, bounds, onStart),
-    [id, layout, unit, bounds, onStart]
-  )
-
-  const onMoveWrap = useCallback(move(utils.drag, info, onMove), [info, onMove])
-
-  const ref = useDrag("box", {
-    onStart: onStartWrap,
-    onMove: onMoveWrap,
-    onEnd,
-  })
-
-  return ref
 }
 
 // const useResizable = (id, layout, info, { onStart, onEnd }) => {
@@ -252,12 +245,17 @@ const useDraggable = (id, layout, info, { onStart, onMove, onEnd }) => {
 //     [id, info, onMove, onChange]
 //   )
 
-const start = (type, id, layout, coords, bounds, onStart) => () => {
-  onStart(id, type)
+const start = (type, id, layout, info, onStart) => () => {
+  const unit = layout[id]
+  const bounds = utils.toBounds(unit, info)
+  const previewStyle = utils.toBoxCSS(bounds)
+
+  onStart(id, type, previewStyle)
+
   return {
     id,
     type,
-    coords,
+    coords: unit,
     initial: layout,
     anchor: bounds,
   }
@@ -265,20 +263,15 @@ const start = (type, id, layout, coords, bounds, onStart) => () => {
 
 const move = (fn, info, onMove) => ({ anchor }, { deltaX, deltaY }) => {
   const nextBounds = fn(deltaX, deltaY, anchor, info)
-  const nextCoords = utils.toCoords(nextBounds, info)
   onMove(utils.toBoxCSS(nextBounds))
 }
 
-// TODO: have 2 functions. move and over
-const over = (fn, id, info, onMove, onChange, setPreviewStyle) => (
-  { coords: prevCoords, initial, anchor },
+const over = (fn, info, onChange) => (
+  { id, coords: prevCoords, initial, anchor },
   { deltaX, deltaY }
 ) => {
-  onMove && onMove()
-
   const nextBounds = fn(deltaX, deltaY, anchor, info)
   const nextCoords = utils.toCoords(nextBounds, info)
-  setPreviewStyle(utils.toBoxCSS(nextBounds))
 
   if (utils.coordsEqual(prevCoords, nextCoords)) return
 
