@@ -37,6 +37,11 @@ export const toBoxCSS = ({ left, top, width, height }) => {
   }
 }
 
+export const toPreviewStyle = bounds => ({
+  ...toBoxCSS(bounds),
+  pointerEvents: "none",
+})
+
 export const toPercentageCSS = ({ w, h, x, y }, { cols, rowHeight }) => ({
   left: calcPercentageX(x, cols),
   top: calcTop(y, rowHeight),
