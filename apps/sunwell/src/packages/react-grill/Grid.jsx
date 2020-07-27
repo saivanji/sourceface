@@ -42,7 +42,10 @@ function Grid({
 
   // TODO: onOver is being called even when item is hovered on another grid or outside of a grid
   const containerRef = useDrop(["box"], {
-    onOver: onDragOverWrap,
+    // onOver: onDragOverWrap,
+    onOver: () => {
+      console.log("over")
+    },
   })
 
   const onMotionStart = (id, type, previewStyle) =>

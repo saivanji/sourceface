@@ -185,9 +185,6 @@ const Second = () => {
 export default () => {
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
-      <div style={{ flex: 1, borderRight: "1px solid #aaa" }}>
-        <First />
-      </div>
       <div style={{ flex: 1 }}>
         <Second />
       </div>
