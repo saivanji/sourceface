@@ -49,17 +49,18 @@ export default (type, { onStart, onMove, onEnd }) => {
       document.addEventListener("mouseup", mouseup)
     }
 
-    if (!local.current) {
-      document.addEventListener("mousedown", mousedown)
-    } else {
+    document.addEventListener("mousedown", mousedown)
+    if (local.current) {
       document.addEventListener("mousemove", mousemove)
       document.addEventListener("mouseup", mouseup)
     }
 
     return () => {
       document.removeEventListener("mousedown", mousedown)
-      document.removeEventListener("mousemove", mousemove)
-      document.removeEventListener("mouseup", mouseup)
+      if (local.current) {
+        document.removeEventListener("mousemove", mousemove)
+        document.removeEventListener("mouseup", mouseup)
+      }
     }
   }, [trigger, type, dragStart, dragEnd, onStart, onMove, onEnd])
 

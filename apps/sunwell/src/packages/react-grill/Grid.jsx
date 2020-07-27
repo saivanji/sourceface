@@ -97,7 +97,6 @@ function Grid({
   )
 }
 
-// TODO: item is not motionable when changing position(useEffect is not ran)
 const ItemProvider = props => {
   const {
     children,
