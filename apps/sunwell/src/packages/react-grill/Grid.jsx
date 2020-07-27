@@ -171,6 +171,7 @@ const ItemProvider = ({
 // TODO: drag is triggered only first time
 const useDraggable = (id, layout, info, { onStart, onMove, onEnd }) => {
   const unit = layout[id]
+  // TODO: calculate bounds in start function?
   const bounds = useApply(utils.toBounds, [unit, info])
 
   const onStartWrap = useCallback(
@@ -178,7 +179,7 @@ const useDraggable = (id, layout, info, { onStart, onMove, onEnd }) => {
     [id, layout, unit, bounds, onStart]
   )
 
-  const onMoveWrap = useCallback(move(utils.drag, info, onMove), [])
+  const onMoveWrap = useCallback(move(utils.drag, info, onMove), [info, onMove])
 
   const ref = useDrag("box", {
     onStart: onStartWrap,
