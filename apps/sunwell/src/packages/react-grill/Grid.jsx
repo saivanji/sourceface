@@ -65,6 +65,8 @@ function Grid({
     id => start("resize", id, layout, info, onMotionStart)(),
     [layout, info, onMotionStart]
   )
+  // use "resize" function here
+  // const onResizeWrap = useLifecycle()
   const onResizeEndWrap = useLifecycle(onResizeEnd, onMotionEnd, [])
 
   useEffect(() => {
@@ -153,7 +155,7 @@ const ItemProvider = ({
     onEnd: onResizeEnd,
   })
 
-  //   const [nwRef, swRef, neRef, seRef, resizePreviewStyle] = useResizable(
+  //   const [nwRef, swRef, neRef, seRef] = useResizable(
   //     id,
   //     layout,
   //     info,
@@ -185,8 +187,8 @@ const ItemProvider = ({
 //   const bounds = useApply(utils.toBounds, [unit, info])
 
 //   const onStartWrap = useCallback(
-//     start("resize", id, layout, unit, bounds, onStart),
-//     [id, layout, unit, bounds, onStart]
+//     () => onStart(id),
+//     [id, onStart]
 //   )
 
 //   // const onNwMoveWrap = useResizeMove(
@@ -195,7 +197,6 @@ const ItemProvider = ({
 //   //   info,
 //   //   onMove,
 //   //   onChange,
-//   //   setPreviewStyle
 //   // )
 //   // const onSwMoveWrap = useResizeMove(
 //   //   "sw",
@@ -203,7 +204,6 @@ const ItemProvider = ({
 //   //   info,
 //   //   onMove,
 //   //   onChange,
-//   //   setPreviewStyle
 //   // )
 //   // const onNeMoveWrap = useResizeMove(
 //   //   "ne",
@@ -211,7 +211,6 @@ const ItemProvider = ({
 //   //   info,
 //   //   onMove,
 //   //   onChange,
-//   //   setPreviewStyle
 //   // )
 //   // const onSeMoveWrap = useResizeMove(
 //   //   "se",
@@ -219,8 +218,12 @@ const ItemProvider = ({
 //   //   info,
 //   //   onMove,
 //   //   onChange,
-//   //   setPreviewStyle
 //   // )
+
+//   const nwRef = useDrag("angle", {
+//     onStart: onStartWrap,
+//     onEnd,
+//   })
 
 //   const swRef = useDrag("angle", {
 //     onStart: onStartWrap,
@@ -240,7 +243,7 @@ const ItemProvider = ({
 //   return [nwRef, swRef, neRef, seRef]
 // }
 
-// const useResizeMove = (angle, id, info, onMove, onChange, setPreviewStyle) =>
+// const useResizeMove = (angle, id, info, onMove, onChange) =>
 //   useCallback(
 //     move(
 //       (...args) => utils.resize(angle, ...args),
@@ -248,7 +251,6 @@ const ItemProvider = ({
 //       info,
 //       onMove,
 //       onChange,
-//       setPreviewStyle
 //     ),
 //     [id, info, onMove, onChange]
 //   )
