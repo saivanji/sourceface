@@ -1,3 +1,11 @@
+// Requirements:
+// 1. Reorder items
+// 2. Resize items
+// 3. Put on a nested item grid
+// 4. Put item on a grid outside of a grid
+// 5. Put item on a grid from another grid
+// 6. Look realistic and closer to the real world
+
 import React, { useContext, useState, useEffect, useCallback } from "react"
 import { ShiftedProvider, useDrag, useDrop } from "../react-shifted"
 import { useApply, useLifecycle } from "./hooks"
