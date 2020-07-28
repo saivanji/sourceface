@@ -53,15 +53,15 @@ function Grid({
     over(initialLayout, info, onMotionAlter),
     [initialLayout, info, onMotionAlter]
   )
-  const onDragEnterWrap = useLifecycle(onDragEnter, enter(info), [info])
+  const onDragEnterWrap = useLifecycle(
+    onDragEnter,
+    enter(layout, info, onMotionStart),
+    [layout, info, onMotionStart]
+  )
 
   const containerRef = useDrop(["box", "angle"], {
     onOver: onDragOverWrap,
-    onEnter: onDragEnterWrap,
-    // TODO: could leave replace end?
-    onLeave: () => {
-      console.log("leave")
-    },
+    // onEnter: onDragEnterWrap,
   })
 
   useEffect(() => {
@@ -274,7 +274,7 @@ const start = (type, id, layout, info, onStart) => () => {
   return {
     id,
     type,
-    data,
+    data: layout[id].data,
     anchor: bounds,
     coords,
   }
@@ -282,8 +282,13 @@ const start = (type, id, layout, info, onStart) => () => {
 
 // TODO: change deltas, anchor and coords
 // TODO: could enter replace "start"?
-const enter = info => ({ anchor }, { clientX, clientY }) => {
-  console.log("enter")
+const enter = (layout, info, onStart) => (
+  { id, type, data, anchor },
+  { clientX, clientY }
+) => {
+  if (anchor) {
+  }
+
   const nextAnchor = {
     ...anchor,
     left: clientX,

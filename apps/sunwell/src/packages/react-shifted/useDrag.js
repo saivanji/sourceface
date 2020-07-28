@@ -45,6 +45,9 @@ export default (type, { onStart, onMove, onEnd }) => {
     const mousedown = e => {
       if (e.target !== trigger.current || e.which !== 1) return
 
+      // TODO: check
+      // trigger.current.style["pointer-events"] = "none"
+
       document.addEventListener("mousemove", mousemove)
       document.addEventListener("mouseup", mouseup)
     }
