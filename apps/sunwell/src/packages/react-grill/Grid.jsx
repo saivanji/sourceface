@@ -11,7 +11,6 @@ export default props => (
   </ShiftedProvider>
 )
 
-// TODO: use config context for passing parent props down
 function Grid({
   className,
   cols = 10,
