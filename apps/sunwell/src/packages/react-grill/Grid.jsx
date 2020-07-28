@@ -12,7 +12,6 @@ export default props => {
 
   return !isWrapped ? <ShiftedProvider>{grid}</ShiftedProvider> : grid
 }
-// return onItemLeave function for removing the item from the grid
 
 // TODO: pass raw function to useLifecycle. useCallback could be enhanced with higher order functions
 
@@ -30,6 +29,7 @@ function Grid({
   onDragStart,
   onDrag,
   onDragOver,
+  onDragEnter,
   onDragEnd,
   onResizeStart,
   onResize,
@@ -53,9 +53,12 @@ function Grid({
     over(initialLayout, info, onMotionAlter),
     [initialLayout, info, onMotionAlter]
   )
+  const onDragEnterWrap = useLifecycle(onDragEnter, enter(info), [info])
 
   const containerRef = useDrop(["box", "angle"], {
     onOver: onDragOverWrap,
+    onEnter: onDragEnterWrap,
+    // TODO: could leave replace end?
     onLeave: () => {
       console.log("leave")
     },
@@ -91,6 +94,7 @@ function Grid({
           <ItemProvider
             key={id}
             id={id}
+            initialLayout={initialLayout}
             layout={layout}
             info={info}
             motion={motion}
@@ -99,6 +103,7 @@ function Grid({
             components={components}
             onMotionStart={onMotionStart}
             onMotionTick={onMotionTick}
+            onMotionAlter={onMotionAlter}
             onMotionEnd={onMotionEnd}
             onDragStart={onDragStart}
             onDrag={onDrag}
@@ -176,6 +181,7 @@ const useMotion = (initialLayout, onChange) => {
     setMotion(motion => ({ ...motion, layout }))
   )
   const onEnd = useCallback(() => {
+    // TODO: most likely onChange will be called in a shifted callback
     onChange(motion.layout)
     setMotion(null)
   }, [motion, onChange])
@@ -274,7 +280,36 @@ const start = (type, id, layout, info, onStart) => () => {
   }
 }
 
-const move = (fn, info, onMove) => ({ anchor }, { deltaX, deltaY }) => {
+// TODO: change deltas, anchor and coords
+// TODO: could enter replace "start"?
+const enter = info => ({ anchor }, { clientX, clientY }) => {
+  console.log("enter")
+  const nextAnchor = {
+    ...anchor,
+    left: clientX,
+    top: clientY,
+  }
+  const nextCoords = utils.toCoords(nextAnchor, info)
+
+  // function will be used for both enter end motion start
+  // if transfer contains anchor - then it's enter and we set new anchor(old anchor + computed deltas), new coords and new startX/Y
+  // otherwise it's start and we pass id, type and the rest regular data for the motion start event
+
+  return {
+    startX: clientX,
+    startY: clientY,
+    anchor: nextAnchor,
+    coords: nextCoords,
+  }
+}
+
+const move = (fn, info, onMove) => (
+  { anchor, initialStartX, initialStartY },
+  { clientX, clientY, startX, startY }
+) => {
+  // TODO: will use startX/Y only from transfer
+  const deltaX = clientX - (initialStartX || startX)
+  const deltaY = clientY - (initialStartY || startY)
   const nextBounds = fn(deltaX, deltaY, anchor, info)
   onMove(nextBounds)
 }
@@ -289,7 +324,7 @@ const over = (initialLayout, info, onAlter) => (
 }
 
 const alter = (fn, initialLayout, info, onAlter, onTick) => (
-  { id, data, coords: prevCoords, anchor },
+  { id, data, anchor, coords: prevCoords },
   { deltaX, deltaY }
 ) => {
   const nextBounds = fn(deltaX, deltaY, anchor, info)

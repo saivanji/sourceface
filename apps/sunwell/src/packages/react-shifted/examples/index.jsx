@@ -14,7 +14,7 @@ const Component = () => {
   })
 
   const dropRef = useDrop(["element"], {
-    onEnter: (data, { clientY }) => {
+    onEnter: (transfer, { clientY }) => {
       return {
         dropStartY: clientY,
       }
