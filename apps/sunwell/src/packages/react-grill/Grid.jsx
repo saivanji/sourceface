@@ -36,7 +36,6 @@ function Grid({
   onResizeEnd,
   components = {},
 }) {
-  // TODO: put local layout in motion, call onChange only on mouseup
   const [containerWidth, setContainerWidth] = useState()
   const info = useApply(utils.toInfo, [cols, rows, containerWidth, rowHeight])
   const [
@@ -49,10 +48,11 @@ function Grid({
   const layout = motion?.layout || initialLayout
   const ids = useApply(Object.keys, [layout])
 
-  const onDragOverWrap = useLifecycle(onDragOver, over(info, onMotionAlter), [
-    info,
-    onMotionAlter,
-  ])
+  const onDragOverWrap = useLifecycle(
+    onDragOver,
+    over(initialLayout, info, onMotionAlter),
+    [initialLayout, info, onMotionAlter]
+  )
 
   const containerRef = useDrop(["box", "angle"], {
     onOver: onDragOverWrap,
@@ -175,7 +175,10 @@ const useMotion = (initialLayout, onChange) => {
   const onAlter = useCallback(layout =>
     setMotion(motion => ({ ...motion, layout }))
   )
-  const onEnd = useCallback(() => setMotion(null), [])
+  const onEnd = useCallback(() => {
+    onChange(motion.layout)
+    setMotion(null)
+  }, [motion, onChange])
 
   return [motion, onStart, onTick, onAlter, onEnd]
 }
@@ -201,7 +204,8 @@ const useDraggable = ({
     move(utils.drag, info, onMotionTick),
     [info, onMotionTick]
   )
-  const onDragEndWrap = useLifecycle(onDragEnd, onMotionEnd, [])
+  // TODO: fix
+  const onDragEndWrap = useLifecycle(onDragEnd, onMotionEnd, [onMotionEnd])
 
   return useDrag("box", {
     onStart: onDragStartWrap,
@@ -214,6 +218,7 @@ const useResizable = (
   angle,
   {
     id,
+    initialLayout,
     layout,
     info,
     onMotionStart,
@@ -235,6 +240,7 @@ const useResizable = (
     onResize,
     alter(
       (...args) => utils.resize(angle, ...args),
+      initialLayout,
       info,
       onMotionAlter,
       onMotionTick
@@ -242,7 +248,8 @@ const useResizable = (
     [info, onMotionAlter, onMotionTick]
   )
 
-  const onResizeEndWrap = useLifecycle(onResizeEnd, onMotionEnd, [])
+  // TODO: fix
+  const onResizeEndWrap = useLifecycle(onResizeEnd, onMotionEnd, [onMotionEnd])
 
   return useDrag("angle", {
     onStart: onResizeStartWrap,
@@ -262,7 +269,6 @@ const start = (type, id, layout, info, onStart) => () => {
     id,
     type,
     data,
-    initial: layout,
     anchor: bounds,
     coords,
   }
@@ -273,13 +279,17 @@ const move = (fn, info, onMove) => ({ anchor }, { deltaX, deltaY }) => {
   onMove(nextBounds)
 }
 
-const over = (info, onAlter) => ({ type, ...transfer }, event) => {
+const over = (initialLayout, info, onAlter) => (
+  { type, ...transfer },
+  event
+) => {
   // there will be only drag on over, since resize should happen only within current drop target
-  if (type === "drag") return alter(utils.drag, info, onAlter)(transfer, event)
+  if (type === "drag")
+    return alter(utils.drag, initialLayout, info, onAlter)(transfer, event)
 }
 
-const alter = (fn, info, onAlter, onTick) => (
-  { id, data, coords: prevCoords, initial, anchor },
+const alter = (fn, initialLayout, info, onAlter, onTick) => (
+  { id, data, coords: prevCoords, anchor },
   { deltaX, deltaY }
 ) => {
   const nextBounds = fn(deltaX, deltaY, anchor, info)
@@ -289,7 +299,7 @@ const alter = (fn, info, onAlter, onTick) => (
 
   if (utils.coordsEqual(prevCoords, nextCoords)) return
 
-  onAlter(utils.put(id, { ...nextCoords, data }, initial))
+  onAlter(utils.put(id, { ...nextCoords, data }, initialLayout))
 
   return {
     coords: nextCoords,
