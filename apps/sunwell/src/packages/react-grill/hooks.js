@@ -10,6 +10,7 @@ export const useApply = (...input) => {
   )
 }
 
+// TODO: pass deps as arguments of "fn", consider fn as higher order function
 export const useLifecycle = (lifecycleFn, fn, deps) => {
   return useCallback(
     (...args) => {

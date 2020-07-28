@@ -10,7 +10,11 @@ export default props => (
     <Grid {...props} />
   </ShiftedProvider>
 )
+// return onItemLeave function for removing the item from the grid
 
+// TODO: pass raw function to useLifecycle. useCallback could be enhanced with higher order functions
+
+// TODO: consider using context for passing parent props down
 function Grid({
   className,
   cols = 10,
@@ -20,6 +24,8 @@ function Grid({
   isResizable = true,
   layout,
   children,
+  onItemEnter,
+  onItemLeave,
   onChange,
   onDragStart,
   onDrag,
@@ -211,7 +217,7 @@ const useResizable = (
   const onResizeWrap = useLifecycle(
     onResize,
     change((...args) => utils.resize(angle, ...args), info, onChange, onMotion),
-    [info, onChange]
+    [info, onChange, onMotion]
   )
 
   const onResizeEndWrap = useLifecycle(onResizeEnd, onMotionEnd, [])
