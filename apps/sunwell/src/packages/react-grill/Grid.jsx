@@ -1,15 +1,17 @@
-import React, { useState, useEffect, useCallback } from "react"
+import React, { useContext, useState, useEffect, useCallback } from "react"
 import { ShiftedProvider, useDrag, useDrop } from "../react-shifted"
 import { useApply, useLifecycle } from "./hooks"
+import { context } from "./Provider"
 import * as utils from "./utils"
 import Lines from "./Lines"
 import Item from "./Item"
 
-export default props => (
-  <ShiftedProvider>
-    <Grid {...props} />
-  </ShiftedProvider>
-)
+export default props => {
+  const isWrapped = useContext(context)
+  const grid = <Grid {...props} />
+
+  return !isWrapped ? <ShiftedProvider>{grid}</ShiftedProvider> : grid
+}
 // return onItemLeave function for removing the item from the grid
 
 // TODO: pass raw function to useLifecycle. useCallback could be enhanced with higher order functions
@@ -22,10 +24,8 @@ function Grid({
   rowHeight = 20,
   isDraggable = true,
   isResizable = true,
-  layout,
-  children,
-  onItemEnter,
-  onItemLeave,
+  layout: initialLayout,
+  renderItem,
   onChange,
   onDragStart,
   onDrag,
@@ -36,17 +36,29 @@ function Grid({
   onResizeEnd,
   components = {},
 }) {
+  // TODO: put local layout in motion, call onChange only on mouseup
   const [containerWidth, setContainerWidth] = useState()
   const info = useApply(utils.toInfo, [cols, rows, containerWidth, rowHeight])
-  const [motion, onMotionStart, onMotion, onMotionEnd] = useMotion()
+  const [
+    motion,
+    onMotionStart,
+    onMotionTick,
+    onMotionAlter,
+    onMotionEnd,
+  ] = useMotion(initialLayout, onChange)
+  const layout = motion?.layout || initialLayout
+  const ids = useApply(Object.keys, [layout])
 
-  const onDragOverWrap = useLifecycle(onDragOver, over(info, onChange), [
+  const onDragOverWrap = useLifecycle(onDragOver, over(info, onMotionAlter), [
     info,
-    onChange,
+    onMotionAlter,
   ])
 
   const containerRef = useDrop(["box", "angle"], {
     onOver: onDragOverWrap,
+    onLeave: () => {
+      console.log("leave")
+    },
   })
 
   useEffect(() => {
@@ -60,12 +72,13 @@ function Grid({
       className={className}
     >
       {motion && <Lines info={info} />}
-      {React.Children.map(children, element => {
-        const id = element.key
+      {ids.map(id => {
+        const element = renderItem(layout[id].data)
 
         if (!containerWidth || (!isDraggable && !isResizable)) {
           return (
             <Item
+              key={id}
               style={utils.toPercentageCSS(layout[id], info)}
               components={components}
             >
@@ -76,6 +89,7 @@ function Grid({
 
         return (
           <ItemProvider
+            key={id}
             id={id}
             layout={layout}
             info={info}
@@ -83,9 +97,8 @@ function Grid({
             isDraggable={isDraggable}
             isResizable={isResizable}
             components={components}
-            onChange={onChange}
             onMotionStart={onMotionStart}
-            onMotion={onMotion}
+            onMotionTick={onMotionTick}
             onMotionEnd={onMotionEnd}
             onDragStart={onDragStart}
             onDrag={onDrag}
@@ -144,14 +157,14 @@ const ItemProvider = props => {
   )
 }
 
-const useMotion = () => {
+const useMotion = (initialLayout, onChange) => {
   const [motion, setMotion] = useState(null)
 
-  const onMotionStart = useCallback(
+  const onStart = useCallback(
     (id, type, previewStyle) => setMotion({ id, type, previewStyle }),
     []
   )
-  const onMotion = useCallback(
+  const onTick = useCallback(
     bounds =>
       setMotion(motion => ({
         ...motion,
@@ -159,9 +172,12 @@ const useMotion = () => {
       })),
     []
   )
-  const onMotionEnd = useCallback(() => setMotion(null), [])
+  const onAlter = useCallback(layout =>
+    setMotion(motion => ({ ...motion, layout }))
+  )
+  const onEnd = useCallback(() => setMotion(null), [])
 
-  return [motion, onMotionStart, onMotion, onMotionEnd]
+  return [motion, onStart, onTick, onAlter, onEnd]
 }
 
 const useDraggable = ({
@@ -169,7 +185,7 @@ const useDraggable = ({
   layout,
   info,
   onMotionStart,
-  onMotion,
+  onMotionTick,
   onMotionEnd,
   onDragStart,
   onDrag,
@@ -180,10 +196,11 @@ const useDraggable = ({
     start("drag", id, layout, info, onMotionStart),
     [id, layout, info, onMotionStart]
   )
-  const onDragWrap = useLifecycle(onDrag, move(utils.drag, info, onMotion), [
-    info,
-    onMotion,
-  ])
+  const onDragWrap = useLifecycle(
+    onDrag,
+    move(utils.drag, info, onMotionTick),
+    [info, onMotionTick]
+  )
   const onDragEndWrap = useLifecycle(onDragEnd, onMotionEnd, [])
 
   return useDrag("box", {
@@ -199,9 +216,9 @@ const useResizable = (
     id,
     layout,
     info,
-    onChange,
     onMotionStart,
-    onMotion,
+    onMotionTick,
+    onMotionAlter,
     onMotionEnd,
     onResizeStart,
     onResize,
@@ -216,8 +233,13 @@ const useResizable = (
 
   const onResizeWrap = useLifecycle(
     onResize,
-    change((...args) => utils.resize(angle, ...args), info, onChange, onMotion),
-    [info, onChange, onMotion]
+    alter(
+      (...args) => utils.resize(angle, ...args),
+      info,
+      onMotionAlter,
+      onMotionTick
+    ),
+    [info, onMotionAlter, onMotionTick]
   )
 
   const onResizeEndWrap = useLifecycle(onResizeEnd, onMotionEnd, [])
@@ -230,17 +252,19 @@ const useResizable = (
 }
 
 const start = (type, id, layout, info, onStart) => () => {
-  const unit = layout[id]
-  const bounds = utils.toBounds(unit, info)
+  const { x, y, w, h, data } = layout[id]
+  const coords = { x, y, w, h }
+  const bounds = utils.toBounds(coords, info)
 
   onStart(id, type, bounds)
 
   return {
     id,
     type,
-    coords: unit,
+    data,
     initial: layout,
     anchor: bounds,
+    coords,
   }
 }
 
@@ -249,14 +273,13 @@ const move = (fn, info, onMove) => ({ anchor }, { deltaX, deltaY }) => {
   onMove(nextBounds)
 }
 
-const over = (info, onChange) => ({ type, ...transfer }, event) => {
+const over = (info, onAlter) => ({ type, ...transfer }, event) => {
   // there will be only drag on over, since resize should happen only within current drop target
-  if (type === "drag")
-    return change(utils.drag, info, onChange)(transfer, event)
+  if (type === "drag") return alter(utils.drag, info, onAlter)(transfer, event)
 }
 
-const change = (fn, info, onChange, onTick) => (
-  { id, coords: prevCoords, initial, anchor },
+const alter = (fn, info, onAlter, onTick) => (
+  { id, data, coords: prevCoords, initial, anchor },
   { deltaX, deltaY }
 ) => {
   const nextBounds = fn(deltaX, deltaY, anchor, info)
@@ -266,7 +289,7 @@ const change = (fn, info, onChange, onTick) => (
 
   if (utils.coordsEqual(prevCoords, nextCoords)) return
 
-  onChange && onChange(utils.put(id, nextCoords, initial))
+  onAlter(utils.put(id, { ...nextCoords, data }, initial))
 
   return {
     coords: nextCoords,

@@ -1,5 +1,5 @@
 import React, { forwardRef, useState } from "react"
-import Grill from "../"
+import Grill, { GrillProvider } from "../"
 
 const DragHandle = forwardRef(({ children }, ref) => {
   return (
@@ -27,85 +27,74 @@ const DragHandle = forwardRef(({ children }, ref) => {
   )
 })
 
-const items = [
-  {
-    id: "bob",
-    text: "Bob",
-    color: "indianred",
-  },
-  {
-    id: "john",
-    text: "John",
-    color: "darkCyan",
-  },
-  {
-    id: "mike",
-    text: "Mike",
-    color: "sandybrown",
-  },
-  {
-    id: "kyle",
-    text: "Kyle",
-    color: "chocolate",
-  },
-  {
-    id: "ray",
-    text: "Ray",
-    color: "purple",
-  },
-  {
-    id: "tom",
-    text: "Tom",
-    color: "crimson",
-  },
-]
-
-const data = {
+const data1 = {
   bob: {
     x: 1,
     y: 1,
     w: 1,
     h: 1,
-    isDraggable: true,
+    data: {
+      text: "Bob",
+      color: "indianred",
+    },
   },
   john: {
     x: 4,
     y: 1,
     w: 2,
     h: 3,
-    isDraggable: true,
+    data: {
+      text: "John",
+      color: "darkCyan",
+    },
   },
   mike: {
     x: 6,
     y: 2,
     w: 2,
     h: 4,
-    isDraggable: true,
+    data: {
+      text: "Mike",
+      color: "sandybrown",
+    },
   },
+}
+
+const data2 = {
   kyle: {
     x: 3,
     y: 6,
     w: 5,
     h: 1,
-    isDraggable: true,
+    data: {
+      text: "Kyle",
+      color: "chocolate",
+    },
   },
   ray: {
     x: 5,
     y: 7,
     w: 3,
     h: 2,
-    isDraggable: true,
+    data: {
+      text: "Ray",
+      color: "purple",
+    },
   },
   tom: {
     x: 10,
     y: 4,
     w: 3,
     h: 2,
+    data: {
+      text: "Tom",
+      color: "crimson",
+    },
   },
 }
 
 const First = () => {
-  const [layout, setLayout] = useState(data)
+  const [layout, setLayout] = useState(data1)
 
   return (
     <Grill
@@ -117,14 +106,12 @@ const First = () => {
       components={{
         DragTrigger: DragHandle,
       }}
-    >
-      {items.map(item => (
+      renderItem={data => (
         <div
-          key={item.id}
           style={{
             width: "100%",
             height: "100%",
-            backgroundColor: item.color,
+            backgroundColor: data.color,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -135,16 +122,16 @@ const First = () => {
               fontSize: "2rem",
             }}
           >
-            {item.text}
+            {data.text}
           </span>
         </div>
-      ))}
-    </Grill>
+      )}
+    />
   )
 }
 
 const Second = () => {
-  const [layout, setLayout] = useState(data)
+  const [layout, setLayout] = useState(data2)
 
   return (
     <Grill
@@ -156,14 +143,12 @@ const Second = () => {
       components={{
         DragTrigger: DragHandle,
       }}
-    >
-      {items.map(item => (
+      renderItem={data => (
         <div
-          key={item.id}
           style={{
             width: "100%",
             height: "100%",
-            backgroundColor: item.color,
+            backgroundColor: data.color,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -174,23 +159,25 @@ const Second = () => {
               fontSize: "2rem",
             }}
           >
-            {item.text}
+            {data.text}
           </span>
         </div>
-      ))}
-    </Grill>
+      )}
+    />
   )
 }
 
 export default () => {
   return (
-    <div style={{ display: "flex", alignItems: "center" }}>
-      <div style={{ flex: 1, borderRight: "1px solid #aaa" }}>
-        <First />
+    <GrillProvider>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <div style={{ flex: 1, borderRight: "1px solid #aaa" }}>
+          <First />
+        </div>
+        <div style={{ flex: 1 }}>
+          <Second />
+        </div>
       </div>
-      <div style={{ flex: 1 }}>
-        <Second />
-      </div>
-    </div>
+    </GrillProvider>
   )
 }
