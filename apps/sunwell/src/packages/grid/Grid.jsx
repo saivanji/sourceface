@@ -4,6 +4,8 @@ import { useApply } from "./hooks"
 import * as utils from "./utils"
 import Item from "./Item"
 
+// TODO: render focus
+
 export default props => {
   const isWrapped = false
   const grid = <Grid {...props} />
@@ -18,6 +20,7 @@ function Grid({
   rowHeight = 20,
   isStatic,
   layout: initialLayout,
+  // TODO: should it be a component?
   renderItem,
   onChange,
   components = {},
@@ -117,3 +120,5 @@ const useDraggable = container => {
 
   return [ref, preview]
 }
+
+const useDroppable = () => {}
