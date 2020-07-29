@@ -1,5 +1,6 @@
-import React, { useState } from "react"
-import Grid from "../"
+import React, { forwardRef, useState, useCallback } from "react"
+import { useDrag } from "../../dnd"
+import Grid, { GridProvider } from "../"
 
 const data = {
   bob: {
@@ -68,59 +69,111 @@ const DragPreview = () => {
   return (
     <div
       style={{
+        transform: "translate(-80px, -15px)",
+        cursor: "grab",
+      }}
+    >
+      <Box>Preview</Box>
+    </div>
+  )
+}
+
+const Box = forwardRef(({ children, style }, ref) => {
+  return (
+    <div
+      ref={ref}
+      style={{
+        ...style,
         border: "1px solid #ddd",
         background: "#fff",
         borderRadius: 3,
         padding: 10,
         width: 200,
-        transform: "translate(-80px, -15px)",
-        cursor: "grab",
       }}
     >
-      Preview
+      {children || "Preview"}
     </div>
   )
-}
+})
 
-const Root = () => {
-  const [layout, setLayout] = useState(data)
+const Element = ({ children }) => {
+  const [preview, setPreview] = useState(null)
+
+  const onMove = useCallback((transfer, { deltaX, deltaY }) => {
+    setPreview({
+      x: deltaX,
+      y: deltaY,
+    })
+  }, [])
+
+  const onEnd = useCallback(() => setPreview(null), [])
+
+  const ref = useDrag("box", {
+    onMove,
+    onEnd,
+  })
 
   return (
-    <Grid
-      rowHeight={80}
-      rows={10}
-      cols={14}
-      layout={layout}
-      onChange={setLayout}
-      components={{ DragPreview }}
-      renderItem={data => (
-        <div
+    <div style={{ position: "relative" }}>
+      <Box style={{ opacity: preview ? 0 : 1 }} ref={ref}>
+        {children}
+      </Box>
+      {preview && (
+        <Box
           style={{
-            width: "100%",
-            height: "100%",
-            backgroundColor: data.color,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            transform: `translate(${preview.x}px, ${preview.y}px)`,
+            zIndex: 11111,
           }}
         >
-          <span
-            style={{
-              fontSize: "2rem",
-            }}
-          >
-            {data.text}
-          </span>
-        </div>
+          {children}
+        </Box>
       )}
-    />
+    </div>
   )
 }
 
 export default () => {
+  const [layout, setLayout] = useState(data)
+
   return (
-    <div style={{ margin: 100 }}>
-      <Root />
-    </div>
+    <GridProvider>
+      <div style={{ padding: 30 }}>
+        <Element>First</Element>
+      </div>
+      <br />
+      <div style={{ margin: 50 }}>
+        <Grid
+          rowHeight={80}
+          rows={10}
+          cols={14}
+          layout={layout}
+          onChange={setLayout}
+          components={{ DragPreview }}
+          renderItem={data => (
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                backgroundColor: data.color,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: "2rem",
+                }}
+              >
+                {data.text}
+              </span>
+            </div>
+          )}
+        />
+      </div>
+    </GridProvider>
   )
 }

@@ -1,4 +1,11 @@
-import React, { useRef, useState, useEffect, useCallback } from "react"
+import React, {
+  useRef,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react"
+import { context } from "./Provider"
 import { useDrag, DndProvider } from "../dnd"
 import { useApply } from "./hooks"
 import * as utils from "./utils"
@@ -7,7 +14,7 @@ import Item from "./Item"
 // TODO: render droppable focus for the "box" type
 
 export default props => {
-  const isWrapped = false
+  const isWrapped = useContext(context)
   const grid = <Grid {...props} />
 
   return !isWrapped ? <DndProvider>{grid}</DndProvider> : grid
