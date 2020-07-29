@@ -5,6 +5,7 @@ import * as dom from "./dom"
 export default (type, { onStart, onMove, onEnd }) => {
   const trigger = useRef()
   const local = useRef()
+  const connect = useRef()
   const { provide, dragStart, dragEnd } = useContext(context)
 
   useEffect(() => {
@@ -43,7 +44,7 @@ export default (type, { onStart, onMove, onEnd }) => {
     }
 
     const mousedown = e => {
-      if (e.target !== trigger.current || e.which !== 1) return
+      if (e.which !== 1) return
 
       // TODO: check
       // trigger.current.style["pointer-events"] = "none"
@@ -52,14 +53,17 @@ export default (type, { onStart, onMove, onEnd }) => {
       document.addEventListener("mouseup", mouseup)
     }
 
-    document.addEventListener("mousedown", mousedown)
-    if (local.current) {
-      document.addEventListener("mousemove", mousemove)
-      document.addEventListener("mouseup", mouseup)
+    connect.current = () => {
+      trigger.current?.addEventListener("mousedown", mousedown)
+      if (local.current) {
+        document.addEventListener("mousemove", mousemove)
+        document.addEventListener("mouseup", mouseup)
+      }
     }
+    connect.current()
 
     return () => {
-      document.removeEventListener("mousedown", mousedown)
+      trigger.current?.removeEventListener("mousedown", mousedown)
       if (local.current) {
         document.removeEventListener("mousemove", mousemove)
         document.removeEventListener("mouseup", mouseup)
@@ -67,7 +71,10 @@ export default (type, { onStart, onMove, onEnd }) => {
     }
   }, [trigger, type, dragStart, dragEnd, onStart, onMove, onEnd])
 
-  return trigger
+  return node => {
+    trigger.current = node
+    connect.current && connect.current()
+  }
 }
 
 const createAction = ({ clientX, clientY }, { startX, startY }) => ({

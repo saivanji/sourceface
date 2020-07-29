@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react"
-import Grill from "packages/react-grill"
+// import Grill from "packages/react-grill"
 // import styles from "./index.scss"
 
 export default function Grid({ isEditable, children, positions, onChange }) {
@@ -9,6 +9,8 @@ export default function Grid({ isEditable, children, positions, onChange }) {
   useEffect(() => {
     setLayout(positions)
   }, [positions])
+
+  return <div />
 
   return (
     <Grill

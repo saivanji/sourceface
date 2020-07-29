@@ -12,8 +12,9 @@ export default (types, callbacks = {}) => {
     // it might happen that drop event will fire last which will cause the loss of that event. Because we delete drag type on drag end.
     // Does browser fires mouse up for childs earlier than for the document?
     const listener = callback => e => {
-      if (types.includes(type())) {
-        callback && callback()
+      const t = type()
+      if (types.includes(t)) {
+        callback && callback({ type: t })
       }
     }
 

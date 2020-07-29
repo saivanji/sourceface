@@ -6,12 +6,13 @@ import ReactDOM from "react-dom"
 import { Provider as ClientProvider } from "urql"
 import * as pages from "./pages"
 import client from "./graphql"
-import GrillExample from "./packages/react-grill/examples"
-import ShiftedExample from "./packages/react-shifted/examples"
+import GridExample from "./packages/grid/examples"
+// import GrillExample from "./packages/react-grill/examples"
+// import ShiftedExample from "./packages/react-shifted/examples"
 
 ReactDOM.render(
   <ClientProvider value={client}>
-    <GrillExample />
+    <GridExample />
   </ClientProvider>,
   document.getElementById("root")
 )

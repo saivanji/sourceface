@@ -7,7 +7,7 @@
 // 6. Look realistic and closer to the real world
 
 import React, { useContext, useState, useEffect, useCallback } from "react"
-import { ShiftedProvider, useDrag, useDrop } from "../react-shifted"
+import { DndProvider, useDrag, useDrop } from "../dnd"
 import { useApply, useLifecycle } from "./hooks"
 import { context } from "./Provider"
 import * as utils from "./utils"
@@ -18,7 +18,7 @@ export default props => {
   const isWrapped = useContext(context)
   const grid = <Grid {...props} />
 
-  return !isWrapped ? <ShiftedProvider>{grid}</ShiftedProvider> : grid
+  return !isWrapped ? <DndProvider>{grid}</DndProvider> : grid
 }
 
 // TODO: pass raw function to useLifecycle. useCallback could be enhanced with higher order functions
