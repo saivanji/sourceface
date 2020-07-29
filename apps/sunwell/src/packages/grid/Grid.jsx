@@ -4,7 +4,7 @@ import { useApply } from "./hooks"
 import * as utils from "./utils"
 import Item from "./Item"
 
-// TODO: render focus
+// TODO: render droppable focus for the "box" type
 
 export default props => {
   const isWrapped = false
