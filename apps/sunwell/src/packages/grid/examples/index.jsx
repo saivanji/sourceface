@@ -125,6 +125,7 @@ const Element = ({ children }) => {
             top: 0,
             left: 0,
             transform: `translate(${preview.x}px, ${preview.y}px)`,
+            cursor: "grab",
             zIndex: 11111,
           }}
         >
