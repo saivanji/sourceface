@@ -9,7 +9,7 @@ import { context } from "./Provider"
 import { useDrag, useDrop, DndProvider } from "../dnd"
 import { useApply } from "./hooks"
 import * as utils from "./utils"
-import Item from "./Item"
+import { Item, Noop } from "./components"
 
 // TODO: render droppable focus for the "box" type
 
@@ -32,16 +32,23 @@ function Grid({
   onChange,
   components = {},
 }) {
+  const { DragPlaceholder = Noop } = components
+
+  const [dragPlaceholder, setDragPlaceholder] = useState(null)
   const [container, setContainer] = useState(null)
   const info = useApply(utils.toInfo, [cols, rows, container?.width, rowHeight])
   const layout = initialLayout
   const ids = useApply(Object.keys, [layout])
 
-  const containerRef = useDroppable()
+  const containerRef = useDroppable(container, info, {
+    onStep: setDragPlaceholder,
+  })
 
   useEffect(() => {
-    setContainer(containerRef.current.getBoundingClientRect())
+    setContainer(getOffset(containerRef.current))
   }, [])
+
+  console.log(dragPlaceholder)
 
   return (
     <div
@@ -70,28 +77,22 @@ function Grid({
             id={id}
             layout={layout}
             info={info}
-            container={container}
             components={components}
           >
             {element}
           </ItemProvider>
         )
       })}
+      {dragPlaceholder && <DragPlaceholder style={dragPlaceholder} />}
     </div>
   )
 }
 
-const ItemProvider = ({
-  children,
-  id,
-  layout,
-  info,
-  container,
-  components,
-}) => {
-  const style = useApply(utils.toBoxCSS, utils.toBounds, [layout[id], info])
+const ItemProvider = ({ children, id, layout, info, components }) => {
+  const item = useApply(utils.toItem, [id, layout])
+  const style = useApply(utils.toBoxCSS, utils.toBounds, [item, info])
 
-  const [dragRef, dragPreview] = useDraggable(container)
+  const [dragRef, dragPreview] = useDraggable(item)
 
   return (
     <Item
@@ -105,22 +106,24 @@ const ItemProvider = ({
   )
 }
 
-const useDraggable = container => {
+const useDraggable = item => {
   const [preview, setPreview] = useState(null)
 
-  const onMove = useCallback(
-    (transfer, { clientX, clientY }) => {
-      setPreview({
-        x: clientX - container.x,
-        y: clientY - container.y,
-      })
-    },
-    [container]
-  )
+  const onStart = useCallback(() => ({ id: item.id, w: item.w, h: item.h }), [
+    item,
+  ])
+
+  const onMove = useCallback((transfer, { clientX: x, clientY: y }) => {
+    setPreview({
+      x,
+      y,
+    })
+  }, [])
 
   const onEnd = useCallback(() => setPreview(null), [])
 
   const ref = useDrag("box", {
+    onStart,
     onMove,
     onEnd,
   })
@@ -128,14 +131,48 @@ const useDraggable = container => {
   return [ref, preview]
 }
 
-const useDroppable = () => {
+const useDroppable = (container, info, { onStep }) => {
   const onOver = useCallback(
-    (transfer, { clientX, clientY }) => console.log(clientX, clientY),
-    []
+    ({ w, h }, { pageX, pageY }) => {
+      if (!container) return
+
+      // TODO: implement drag specific functions for that case
+      const width = utils.calcLeft(w, info.cols, info.containerWidth)
+      const height = utils.calcTop(h, info.rowHeight)
+
+      const rawBounds = {
+        left: pageX - container.left,
+        top: pageY - container.top,
+        width,
+        height,
+      }
+      const round = v => Math.ceil(v) - 1
+
+      const coords = {
+        x: utils.calcX(rawBounds, info, round),
+        y: utils.calcY(rawBounds, info, round),
+        w,
+        h,
+      }
+
+      onStep(utils.toBoxCSS(utils.toBounds(coords, info)))
+    },
+    [container, info, onStep]
   )
-  const onEnter = useCallback(transfer => console.log("enter"), [])
+  const onEnter = useCallback(transfer => console.log("enter", transfer), [])
   const onLeave = useCallback(transfer => console.log("leave"), [])
 
   // angle type is not needed here, resize will be in a drag handler
   return useDrop(["box"], { onEnter, onOver, onLeave })
+}
+
+const getOffset = node => {
+  const { left, top, width, height } = node.getBoundingClientRect()
+
+  return {
+    width,
+    height,
+    left: left + window.scrollX,
+    top: top + window.scrollY,
+  }
 }

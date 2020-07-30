@@ -1,9 +1,16 @@
+export const biggest = (a, b) => (a < b ? b : a)
+export const smallest = (a, b) => (a < b ? a : b)
+
+export const range = (value, min, max) => smallest(biggest(value, min), max)
+
 export const calcLeft = (x, columns, containerWidth) =>
   containerWidth * (x / columns)
 
 export const calcTop = (y, rowHeight) => y * rowHeight
 
-export const calcPercentageX = (x, columns) => `${(x / columns) * 100}%`
+export const calcPercentageLeft = (x, columns) => `${(x / columns) * 100}%`
+
+export const toItem = (id, layout) => ({ id, ...layout[id] })
 
 export const toInfo = (cols, rows, containerWidth, rowHeight) => {
   // TODO: rename to boxWidth, boxHeight or similar
@@ -32,9 +39,9 @@ export const toBoxCSS = ({ left, top, width, height }) => {
 }
 
 export const toPercentageCSS = ({ w, h, x, y }, { cols, rowHeight }) => ({
-  left: calcPercentageX(x, cols),
+  left: calcPercentageLeft(x, cols),
   top: calcTop(y, rowHeight),
-  width: calcPercentageX(w, cols),
+  width: calcPercentageLeft(w, cols),
   height: calcTop(h, rowHeight),
 })
 
@@ -44,12 +51,12 @@ export const toBounds = (
 ) => {
   const left = containerWidth
     ? calcLeft(x, cols, containerWidth)
-    : calcPercentageX(x, cols)
+    : calcPercentageLeft(x, cols)
   const top = calcTop(y, rowHeight)
 
   const width = containerWidth
     ? calcLeft(w, cols, containerWidth)
-    : calcPercentageX(w, cols)
+    : calcPercentageLeft(w, cols)
   const height = calcTop(h, rowHeight)
 
   return {
@@ -59,3 +66,9 @@ export const toBounds = (
     height,
   }
 }
+
+export const calcX = ({ left, width }, { containerWidth, minWidth }, round) =>
+  round(range(left, 0, containerWidth - width) / minWidth)
+
+export const calcY = ({ top, height }, { containerHeight, minHeight }, round) =>
+  round(range(top, 0, containerHeight - height) / minHeight)

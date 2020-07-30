@@ -32,6 +32,7 @@ export default (type, { onStart, onMove, onEnd }) => {
 
     const mouseup = () => {
       trigger.current && (trigger.current.style["pointer-events"] = "")
+
       document.removeEventListener("mousemove", mousemove)
       document.removeEventListener("mouseup", mouseup)
 
@@ -78,11 +79,14 @@ export default (type, { onStart, onMove, onEnd }) => {
   }
 }
 
-const createAction = ({ clientX, clientY }, { startX, startY }) => ({
+const createAction = (
+  { clientX, clientY, pageX, pageY },
+  { startX, startY }
+) => ({
+  pageX,
+  pageY,
   clientX,
   clientY,
-  startX,
-  startY,
   deltaX: clientX - startX,
   deltaY: clientY - startY,
 })

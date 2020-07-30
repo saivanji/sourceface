@@ -78,6 +78,21 @@ const DragPreview = () => {
   )
 }
 
+const DragPlaceholder = ({ style }) => {
+  return (
+    <div
+      style={{
+        ...style,
+        position: "absolute",
+        top: 0,
+        left: 0,
+        backgroundColor: "skyblue",
+        transition: "all cubic-bezier(0.2, 0, 0, 1) .2s",
+      }}
+    ></div>
+  )
+}
+
 const Box = forwardRef(({ children, style }, ref) => {
   return (
     <div
@@ -99,16 +114,19 @@ const Box = forwardRef(({ children, style }, ref) => {
 const Element = ({ children }) => {
   const [preview, setPreview] = useState(null)
 
-  const onMove = useCallback((transfer, { deltaX, deltaY }) => {
+  const onStart = useCallback(() => ({ id: "test", w: 3, h: 4 }), [])
+
+  const onMove = useCallback((transfer, { clientX: x, clientY: y }) => {
     setPreview({
-      x: deltaX,
-      y: deltaY,
+      x,
+      y,
     })
   }, [])
 
   const onEnd = useCallback(() => setPreview(null), [])
 
   const ref = useDrag("box", {
+    onStart,
     onMove,
     onEnd,
   })
@@ -121,7 +139,7 @@ const Element = ({ children }) => {
       {preview && (
         <Box
           style={{
-            position: "absolute",
+            position: "fixed",
             top: 0,
             left: 0,
             transform: `translate(${preview.x}px, ${preview.y}px)`,
@@ -146,14 +164,14 @@ export default () => {
         <Element>First</Element>
       </div>
       <br />
-      <div style={{ margin: 50 }}>
+      <div style={{ margin: 50, border: "1px solid #bbb" }}>
         <Grid
           rowHeight={80}
-          rows={10}
+          rows={30}
           cols={14}
           layout={layout}
           onChange={setLayout}
-          components={{ DragPreview }}
+          components={{ DragPreview, DragPlaceholder }}
           renderItem={data => (
             <div
               style={{
