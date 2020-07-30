@@ -19,7 +19,10 @@ export default (types, { onEnter, onLeave, onOver, onDrop }) => {
       }
     }
 
-    const mouseup = listener(lifecycle.onDrop)
+    const mouseup = listener((...args) => {
+      local.current.isEntered = false
+      lifecycle.onDrop(...args)
+    })
     const mouseleave = listener((...args) => {
       local.current.isEntered = false
       lifecycle.onLeave(...args)

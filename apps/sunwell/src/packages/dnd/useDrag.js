@@ -31,7 +31,7 @@ export default (type, { onStart, onMove, onEnd }) => {
     }
 
     const mouseup = () => {
-      trigger.current.style["pointer-events"] = ""
+      trigger.current && (trigger.current.style["pointer-events"] = "")
       document.removeEventListener("mousemove", mousemove)
       document.removeEventListener("mouseup", mouseup)
 
