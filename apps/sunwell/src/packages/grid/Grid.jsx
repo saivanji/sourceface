@@ -83,7 +83,16 @@ function Grid({
           </ItemProvider>
         )
       })}
-      {dragPlaceholder && <DragPlaceholder style={dragPlaceholder} />}
+      {dragPlaceholder && (
+        <DragPlaceholder
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            ...dragPlaceholder,
+          }}
+        />
+      )}
     </div>
   )
 }

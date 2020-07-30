@@ -65,12 +65,14 @@ const data = {
   },
 }
 
-const DragPreview = () => {
+const DragPreview = ({ style }) => {
   return (
     <div
       style={{
-        transform: "translate(-80px, -15px)",
+        ...style,
         cursor: "grab",
+        marginLeft: -80,
+        marginTop: -15,
       }}
     >
       <Box>Preview</Box>
@@ -83,11 +85,10 @@ const DragPlaceholder = ({ style }) => {
     <div
       style={{
         ...style,
-        position: "absolute",
-        top: 0,
-        left: 0,
         backgroundColor: "skyblue",
+        border: "2px dashed blue",
         transition: "all cubic-bezier(0.2, 0, 0, 1) .2s",
+        borderRadius: 4,
       }}
     ></div>
   )

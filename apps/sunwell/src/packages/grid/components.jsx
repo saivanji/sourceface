@@ -9,7 +9,7 @@ export const Item = ({
   components: { DragPreview = Noop },
 }) => {
   return dragPreview ? (
-    <div
+    <DragPreview
       style={{
         position: "fixed",
         top: 0,
@@ -18,9 +18,7 @@ export const Item = ({
         zIndex: 1,
         transform: `translate(${dragPreview.x}px, ${dragPreview.y}px)`,
       }}
-    >
-      <DragPreview />
-    </div>
+    />
   ) : (
     <div
       ref={dragRef}
