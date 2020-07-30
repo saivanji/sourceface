@@ -1,5 +1,6 @@
 import React from "react"
 
+// TODO: when pointerEvents "none" is set, cursor is ignored
 export default ({
   children,
   style,
@@ -11,6 +12,7 @@ export default ({
     <div
       style={{
         position: "absolute",
+        pointerEvents: "none",
         transform: `translate(${dragPreview.x}px, ${dragPreview.y}px)`,
       }}
     >

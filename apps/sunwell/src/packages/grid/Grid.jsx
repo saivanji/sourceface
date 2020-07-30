@@ -6,7 +6,7 @@ import React, {
   useCallback,
 } from "react"
 import { context } from "./Provider"
-import { useDrag, DndProvider } from "../dnd"
+import { useDrag, useDrop, DndProvider } from "../dnd"
 import { useApply } from "./hooks"
 import * as utils from "./utils"
 import Item from "./Item"
@@ -37,7 +37,7 @@ function Grid({
   const layout = initialLayout
   const ids = useApply(Object.keys, [layout])
 
-  const containerRef = useRef()
+  const containerRef = useDroppable()
 
   useEffect(() => {
     setContainer(containerRef.current.getBoundingClientRect())
@@ -128,4 +128,14 @@ const useDraggable = container => {
   return [ref, preview]
 }
 
-const useDroppable = () => {}
+const useDroppable = () => {
+  const onOver = useCallback(
+    (transfer, { clientX, clientY }) => console.log(clientX, clientY),
+    []
+  )
+  const onEnter = useCallback(transfer => console.log("enter"), [])
+  const onLeave = useCallback(transfer => console.log("leave"), [])
+
+  // angle type is not needed here, resize will be in a drag handler
+  return useDrop(["box"], { onEnter, onOver, onLeave })
+}

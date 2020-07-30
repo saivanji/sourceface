@@ -91,7 +91,7 @@ const Box = forwardRef(({ children, style }, ref) => {
         width: 200,
       }}
     >
-      {children || "Preview"}
+      {children}
     </div>
   )
 })
@@ -127,6 +127,7 @@ const Element = ({ children }) => {
             transform: `translate(${preview.x}px, ${preview.y}px)`,
             cursor: "grab",
             zIndex: 11111,
+            pointerEvents: "none",
           }}
         >
           {children}

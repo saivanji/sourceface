@@ -2,10 +2,11 @@ import { useRef, useEffect, useContext } from "react"
 import { context } from "./state"
 // TODO: how to pass start, client and delta to drop callbacks?
 
-export default (types, callbacks = {}) => {
+export default (types, { onEnter, onLeave, onOver, onDrop }) => {
   const ref = useRef()
+  const local = useRef()
   const { provide, type } = useContext(context)
-  const { onEnter, onLeave, onOver, onDrop } = provide(callbacks)
+  const lifecycle = provide({ onEnter, onLeave, onOver, onDrop })
 
   useEffect(() => {
     // TODO: how to make sure drop event fires always before drag end?
@@ -18,19 +19,32 @@ export default (types, callbacks = {}) => {
       }
     }
 
-    const mousemove = listener(onOver)
-    const mouseenter = listener(onEnter)
-    const mouseleave = listener(onLeave)
-    const mouseup = listener(onDrop)
+    const mouseup = listener(lifecycle.onDrop)
+    const mouseleave = listener((...args) => {
+      local.current.isEntered = false
+      lifecycle.onLeave(...args)
+    })
+
+    const mousemove = listener((...args) => {
+      if (!local.current?.isEntered) {
+        local.current = {
+          isEntered: true,
+        }
+
+        lifecycle.onEnter(...args)
+
+        return
+      }
+
+      lifecycle.onOver(...args)
+    })
 
     ref.current.addEventListener("mousemove", mousemove)
-    ref.current.addEventListener("mouseenter", mouseenter)
     ref.current.addEventListener("mouseleave", mouseleave)
     ref.current.addEventListener("mouseup", mouseup)
 
     return () => {
       ref.current.removeEventListener("mousemove", mousemove)
-      ref.current.removeEventListener("mouseenter", mouseenter)
       ref.current.removeEventListener("mouseleave", mouseleave)
       ref.current.removeEventListener("mouseup", mouseup)
     }
