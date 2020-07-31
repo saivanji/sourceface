@@ -8,7 +8,7 @@ export default (
   layout,
   container,
   info,
-  { onLayoutEdit, onLayoutUpdate, onLayoutReset }
+  { onLayoutEdit, onLayoutUpdate, onLayoutReset, onChange }
 ) => {
   const [dropping, setDropping] = useState(null)
 
@@ -53,12 +53,53 @@ export default (
     setDropping(null)
   }, [onLayoutReset])
 
+  const onLeave = useCallback(
+    ({ id }, { type }) => {
+      onFinish()
+
+      return {
+        leaved: {
+          id,
+          onChange: () =>
+            onChange({ type: "leave", layout: utils.without(id, layout), id }),
+        },
+      }
+    },
+    [layout, onFinish, onChange]
+  )
+
+  const onDrop = useCallback(
+    ({ id, leaved }, { type }) => {
+      onFinish()
+
+      if (type === "outer") {
+        console.log({
+          type: "enter",
+          layout,
+          id,
+        })
+        return
+      }
+
+      const event = {
+        type: leaved ? "enter" : "update",
+        layout,
+        id,
+      }
+
+      leaved?.onChange()
+
+      console.log(event)
+    },
+    [layout, onFinish, onChange]
+  )
+
   // angle type is not needed here, resize will be in a drag handler
   const ref = useDrop(["inner", "outer"], {
-    onEnter,
     onOver,
-    onLeave: onFinish,
-    onDrop: onFinish,
+    onEnter,
+    onLeave,
+    onDrop,
   })
 
   return [ref, dropping]

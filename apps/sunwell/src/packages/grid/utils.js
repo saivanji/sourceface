@@ -74,6 +74,18 @@ export const drag = (deltaX, deltaY, { left, top, width, height }) => ({
   height,
 })
 
+export const without = (id, layout) => {
+  let result = {}
+
+  for (let key of Object.keys(layout)) {
+    if (key === id) return
+
+    result[key] = layout[key]
+  }
+
+  return result
+}
+
 const collides = (source, target) =>
   source.x + source.w > target.x &&
   target.x + target.w > source.x &&
