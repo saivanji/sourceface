@@ -66,3 +66,58 @@ export const toBounds = (
     height,
   }
 }
+
+export const drag = (deltaX, deltaY, { left, top, width, height }) => ({
+  left: left + deltaX,
+  top: top + deltaY,
+  width,
+  height,
+})
+
+const collides = (source, target) =>
+  source.x + source.w > target.x &&
+  target.x + target.w > source.x &&
+  source.y + source.h > target.y &&
+  target.y + target.h > source.y
+
+const collisionHeight = (source, target) => source.y + source.h - target.y
+
+export const put = (id, anchor, layout) => {
+  const keys = Object.keys({ ...layout, [id]: anchor })
+
+  const offset = keys.reduce((acc, key) => {
+    const target = layout[key]
+    if (key === id || !collides(anchor, target)) return acc
+
+    const height = collisionHeight(anchor, target)
+    return acc > height ? acc : height
+  }, 0)
+
+  if (!offset) return { ...layout, [id]: anchor }
+
+  return keys.reduce((acc, key) => {
+    if (key === id) {
+      return { ...acc, [key]: anchor }
+    }
+
+    const target = layout[key]
+
+    if (!collides(anchor, target)) {
+      return acc
+    }
+
+    return put(
+      key,
+      {
+        ...target,
+        y: target.y + offset,
+      },
+      acc
+    )
+  }, layout)
+}
+
+export const cursor = (pageX, pageY, container) => ({
+  left: pageX - container.left,
+  top: pageY - container.top,
+})

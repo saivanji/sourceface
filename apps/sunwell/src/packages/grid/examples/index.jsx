@@ -2,15 +2,48 @@ import React, { forwardRef, useState, useCallback } from "react"
 import { useDrag } from "../../dnd"
 import Grid, { GridProvider } from "../"
 
-const data = {
+const data1 = {
   bob: {
-    x: 4,
+    x: 1,
     y: 1,
-    w: 3,
-    h: 2,
+    w: 1,
+    h: 1,
     data: {
       text: "Bob",
       color: "indianred",
+    },
+  },
+  john: {
+    x: 4,
+    y: 1,
+    w: 2,
+    h: 3,
+    data: {
+      text: "John",
+      color: "darkCyan",
+    },
+  },
+}
+
+const data2 = {
+  mike: {
+    x: 6,
+    y: 2,
+    w: 2,
+    h: 4,
+    data: {
+      text: "Mike",
+      color: "sandybrown",
+    },
+  },
+  kyle: {
+    x: 3,
+    y: 6,
+    w: 5,
+    h: 1,
+    data: {
+      text: "Kyle",
+      color: "chocolate",
     },
   },
 }
@@ -78,22 +111,7 @@ const data = {
 //   },
 // }
 
-const DragPreview = ({ style }) => {
-  return (
-    <div
-      style={{
-        ...style,
-        cursor: "grab",
-        marginLeft: -80,
-        marginTop: -15,
-      }}
-    >
-      <Box>Preview</Box>
-    </div>
-  )
-}
-
-const DragPlaceholder = ({ style }) => {
+const OuterPlaceholder = ({ style }) => {
   return (
     <div
       style={{
@@ -107,7 +125,32 @@ const DragPlaceholder = ({ style }) => {
   )
 }
 
-const Box = forwardRef(({ children, style }, ref) => {
+const DragPlaceholder = ({ style }) => {
+  return (
+    <div
+      style={{
+        ...style,
+        backgroundColor: "lightGray",
+        transition: "all cubic-bezier(0.2, 0, 0, 1) .2s",
+        borderRadius: 4,
+      }}
+    ></div>
+  )
+}
+
+const Box = forwardRef(({ children, style }, ref) => (
+  <div
+    ref={ref}
+    style={{
+      ...style,
+      transition: "all cubic-bezier(0.2, 0, 0, 1) .2s",
+    }}
+  >
+    {children}
+  </div>
+))
+
+const Card = forwardRef(({ children, style }, ref) => {
   return (
     <div
       ref={ref}
@@ -125,10 +168,34 @@ const Box = forwardRef(({ children, style }, ref) => {
   )
 })
 
+const Content = ({ data }) => (
+  <div
+    style={{
+      width: "100%",
+      height: "100%",
+      backgroundColor: data.color,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    }}
+  >
+    <span
+      style={{
+        fontSize: "2rem",
+      }}
+    >
+      {data.text}
+    </span>
+  </div>
+)
+
 const Element = ({ children }) => {
   const [preview, setPreview] = useState(null)
 
-  const onStart = useCallback(() => ({ id: "test", w: 3, h: 4 }), [])
+  const onStart = useCallback(
+    () => ({ id: "test", coords: { w: 3, h: 4 } }),
+    []
+  )
 
   const onMove = useCallback((transfer, { clientX: x, clientY: y }) => {
     setPreview({
@@ -139,7 +206,7 @@ const Element = ({ children }) => {
 
   const onEnd = useCallback(() => setPreview(null), [])
 
-  const ref = useDrag("box", {
+  const ref = useDrag("outer", {
     onStart,
     onMove,
     onEnd,
@@ -147,11 +214,11 @@ const Element = ({ children }) => {
 
   return (
     <div style={{ position: "relative" }}>
-      <Box style={{ opacity: preview ? 0 : 1 }} ref={ref}>
+      <Card style={{ opacity: preview ? 0 : 1 }} ref={ref}>
         {children}
-      </Box>
+      </Card>
       {preview && (
-        <Box
+        <Card
           style={{
             position: "fixed",
             top: 0,
@@ -163,51 +230,39 @@ const Element = ({ children }) => {
           }}
         >
           {children}
-        </Box>
+        </Card>
       )}
     </div>
   )
 }
 
 export default () => {
-  const [layout, setLayout] = useState(data)
-
   return (
     <GridProvider>
       <div style={{ padding: 30 }}>
         <Element>First</Element>
       </div>
       <br />
-      <div style={{ margin: 50, border: "1px solid #bbb" }}>
-        <Grid
-          rowHeight={80}
-          rows={30}
-          cols={10}
-          layout={layout}
-          onChange={setLayout}
-          components={{ DragPreview, DragPlaceholder }}
-          renderItem={data => (
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                backgroundColor: data.color,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <span
-                style={{
-                  fontSize: "2rem",
-                }}
-              >
-                {data.text}
-              </span>
-            </div>
-          )}
-        />
+      <div style={{ display: "flex", margin: 50, border: "1px solid #bbb" }}>
+        <Area data={data1} style={{ borderRight: "1px solid #bbb" }} />
+        <Area data={data2} />
       </div>
     </GridProvider>
+  )
+}
+
+const Area = ({ data, style }) => {
+  const [layout, setLayout] = useState(data)
+
+  return (
+    <Grid
+      style={{ width: "50%", ...style }}
+      rowHeight={80}
+      rows={30}
+      cols={10}
+      layout={layout}
+      onChange={setLayout}
+      components={{ Content, Box, OuterPlaceholder, DragPlaceholder }}
+    />
   )
 }
