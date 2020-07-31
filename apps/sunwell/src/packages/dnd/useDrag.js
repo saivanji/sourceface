@@ -6,22 +6,23 @@ export default (type, { onStart, onMove, onEnd }) => {
   const trigger = useRef()
   const local = useRef()
   const connect = useRef()
-  const { provide, dragStart, dragEnd } = useContext(context)
+  const { provide, start, reset } = useContext(context)
+
+  useEffect(() => reset, [reset])
 
   useEffect(() => {
     const lifecycle = provide({ onStart, onMove, onEnd })
 
     const mousemove = e => {
+      e.preventDefault()
+
       if (!local.current) {
         local.current = {
           startX: e.clientX,
           startY: e.clientY,
-          bodyStyles: dom.getStyles(document.body, ["user-select"]),
         }
 
-        document.body.style["user-select"] = "none"
-
-        dragStart(type)
+        start(type)
         lifecycle.onStart(createAction(e, local.current))
 
         return
@@ -37,10 +38,8 @@ export default (type, { onStart, onMove, onEnd }) => {
       document.removeEventListener("mouseup", mouseup)
 
       if (local.current) {
-        dom.setStyles(document.body, local.current.bodyStyles)
-
         local.current = undefined
-        dragEnd()
+        reset()
         lifecycle.onEnd()
       }
     }
@@ -71,7 +70,7 @@ export default (type, { onStart, onMove, onEnd }) => {
         document.removeEventListener("mouseup", mouseup)
       }
     }
-  }, [trigger, type, dragStart, dragEnd, onStart, onMove, onEnd])
+  }, [trigger, type, start, reset, onStart, onMove, onEnd])
 
   return node => {
     trigger.current = node

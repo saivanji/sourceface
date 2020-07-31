@@ -8,10 +8,10 @@ export const Provider = ({ children }) => {
   return (
     <context.Provider
       value={{
-        dragStart: type => {
+        start: type => {
           ref.current.type = type
         },
-        dragEnd: () => {
+        reset: () => {
           ref.current = { transfer: {} }
         },
         provide: callbacks => {
