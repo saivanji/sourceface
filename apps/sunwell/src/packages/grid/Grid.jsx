@@ -145,6 +145,8 @@ const useDroppable = (container, info, { onStep }) => {
     ({ x, y, w, h }, { pageX, pageY }) => {
       if (!container) return
 
+      // depending on type will have different over behavior?
+
       // TODO: implement drag specific functions for that case
       const left = pageX - container.left
       const top = pageY - container.top
@@ -154,18 +156,10 @@ const useDroppable = (container, info, { onStep }) => {
       const pointX = round(left / info.minWidth)
       const pointY = round(top / info.minHeight)
 
-      // TODO: fix south east drag
-      const range = (v, min, max, offset, size) =>
-        v <= min
-          ? min
-          : v >= offset && v < offset + size
-          ? offset
-          : v >= max
-          ? max
-          : v
+      // const range = v => v <= 0 ? 0 : v >= x && v < x + w ? x : v >= info.cols - w ? info.cols - w : v
 
-      const nextX = range(pointX, 0, info.cols - w, x, w)
-      const nextY = range(pointY, 0, info.rows - h, y, h)
+      const nextX = utils.range(pointX, 0, info.cols - w)
+      const nextY = utils.range(pointY, 0, info.rows - h)
 
       console.log(nextX, nextY, x, y)
 
@@ -177,11 +171,6 @@ const useDroppable = (container, info, { onStep }) => {
       }
 
       onStep(utils.toBoxCSS(utils.toBounds(coords, info)))
-
-      return {
-        x: nextX,
-        y: nextY,
-      }
     },
     [container, info, onStep]
   )
@@ -189,7 +178,7 @@ const useDroppable = (container, info, { onStep }) => {
   const onLeave = useCallback(transfer => console.log("leave"), [])
 
   // angle type is not needed here, resize will be in a drag handler
-  return useDrop(["box"], { onEnter, onOver, onLeave })
+  return useDrop(["box", "card"], { onEnter, onOver, onLeave })
 }
 
 const getOffset = node => {
