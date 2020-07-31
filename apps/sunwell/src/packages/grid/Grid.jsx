@@ -10,6 +10,7 @@ import { useDrag, useDrop, DndProvider } from "../dnd"
 import { useApply } from "./hooks"
 import * as utils from "./utils"
 import { Item, Noop } from "./components"
+import Lines from "./Lines"
 
 // TODO: render droppable focus for the "box" type
 
@@ -56,6 +57,7 @@ function Grid({
       style={{ position: "relative", height: info.containerHeight }}
       className={className}
     >
+      {container && <Lines info={info} />}
       {ids.map(id => {
         const element = renderItem(layout[id].data)
 
@@ -118,9 +120,7 @@ const ItemProvider = ({ children, id, layout, info, components }) => {
 const useDraggable = item => {
   const [preview, setPreview] = useState(null)
 
-  const onStart = useCallback(() => ({ id: item.id, w: item.w, h: item.h }), [
-    item,
-  ])
+  const onStart = useCallback(() => item, [item])
 
   const onMove = useCallback((transfer, { clientX: x, clientY: y }) => {
     setPreview({
@@ -142,29 +142,46 @@ const useDraggable = item => {
 
 const useDroppable = (container, info, { onStep }) => {
   const onOver = useCallback(
-    ({ w, h }, { pageX, pageY }) => {
+    ({ x, y, w, h }, { pageX, pageY }) => {
       if (!container) return
 
       // TODO: implement drag specific functions for that case
-      const width = utils.calcLeft(w, info.cols, info.containerWidth)
-      const height = utils.calcTop(h, info.rowHeight)
+      const left = pageX - container.left
+      const top = pageY - container.top
 
-      const rawBounds = {
-        left: pageX - container.left,
-        top: pageY - container.top,
-        width,
-        height,
-      }
       const round = v => Math.ceil(v) - 1
 
+      const pointX = round(left / info.minWidth)
+      const pointY = round(top / info.minHeight)
+
+      // TODO: fix south east drag
+      const range = (v, min, max, offset, size) =>
+        v <= min
+          ? min
+          : v >= offset && v < offset + size
+          ? offset
+          : v >= max
+          ? max
+          : v
+
+      const nextX = range(pointX, 0, info.cols - w, x, w)
+      const nextY = range(pointY, 0, info.rows - h, y, h)
+
+      console.log(nextX, nextY, x, y)
+
       const coords = {
-        x: utils.calcX(rawBounds, info, round),
-        y: utils.calcY(rawBounds, info, round),
+        x: nextX,
+        y: nextY,
         w,
         h,
       }
 
       onStep(utils.toBoxCSS(utils.toBounds(coords, info)))
+
+      return {
+        x: nextX,
+        y: nextY,
+      }
     },
     [container, info, onStep]
   )

@@ -4,66 +4,79 @@ import Grid, { GridProvider } from "../"
 
 const data = {
   bob: {
-    x: 1,
+    x: 4,
     y: 1,
-    w: 1,
-    h: 1,
+    w: 3,
+    h: 2,
     data: {
       text: "Bob",
       color: "indianred",
     },
   },
-  john: {
-    x: 4,
-    y: 1,
-    w: 2,
-    h: 3,
-    data: {
-      text: "John",
-      color: "darkCyan",
-    },
-  },
-  mike: {
-    x: 6,
-    y: 2,
-    w: 2,
-    h: 4,
-    data: {
-      text: "Mike",
-      color: "sandybrown",
-    },
-  },
-  kyle: {
-    x: 3,
-    y: 6,
-    w: 5,
-    h: 1,
-    data: {
-      text: "Kyle",
-      color: "chocolate",
-    },
-  },
-  ray: {
-    x: 5,
-    y: 7,
-    w: 3,
-    h: 2,
-    data: {
-      text: "Ray",
-      color: "purple",
-    },
-  },
-  tom: {
-    x: 10,
-    y: 4,
-    w: 3,
-    h: 2,
-    data: {
-      text: "Tom",
-      color: "crimson",
-    },
-  },
 }
+
+// const data = {
+//   bob: {
+//     x: 1,
+//     y: 1,
+//     w: 1,
+//     h: 1,
+//     data: {
+//       text: "Bob",
+//       color: "indianred",
+//     },
+//   },
+//   john: {
+//     x: 4,
+//     y: 1,
+//     w: 2,
+//     h: 3,
+//     data: {
+//       text: "John",
+//       color: "darkCyan",
+//     },
+//   },
+//   mike: {
+//     x: 6,
+//     y: 2,
+//     w: 2,
+//     h: 4,
+//     data: {
+//       text: "Mike",
+//       color: "sandybrown",
+//     },
+//   },
+//   kyle: {
+//     x: 3,
+//     y: 6,
+//     w: 5,
+//     h: 1,
+//     data: {
+//       text: "Kyle",
+//       color: "chocolate",
+//     },
+//   },
+//   ray: {
+//     x: 5,
+//     y: 7,
+//     w: 3,
+//     h: 2,
+//     data: {
+//       text: "Ray",
+//       color: "purple",
+//     },
+//   },
+//   tom: {
+//     x: 10,
+//     y: 4,
+//     w: 3,
+//     h: 2,
+//     data: {
+//       text: "Tom",
+//       color: "crimson",
+//     },
+//   },
+// }
 
 const DragPreview = ({ style }) => {
   return (
@@ -169,7 +182,7 @@ export default () => {
         <Grid
           rowHeight={80}
           rows={30}
-          cols={14}
+          cols={10}
           layout={layout}
           onChange={setLayout}
           components={{ DragPreview, DragPlaceholder }}

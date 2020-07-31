@@ -66,9 +66,3 @@ export const toBounds = (
     height,
   }
 }
-
-export const calcX = ({ left, width }, { containerWidth, minWidth }, round) =>
-  round(range(left, 0, containerWidth - width) / minWidth)
-
-export const calcY = ({ top, height }, { containerHeight, minHeight }, round) =>
-  round(range(top, 0, containerHeight - height) / minHeight)
