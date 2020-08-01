@@ -80,7 +80,7 @@ export default (
         }
       }
     },
-    [layout, changeId, onFinish, onChange]
+    [layout, changeId, onFinish]
   )
 
   const onDrop = useCallback(
@@ -97,7 +97,7 @@ export default (
       }
 
       const event = {
-        type: leaved ? "enter" : "update",
+        type: leaved ? "enter" : "drag",
         layout,
         id,
       }
@@ -115,7 +115,6 @@ export default (
     [layout, change, onFinish, onChange]
   )
 
-  // angle type is not needed here, resize will be in a drag handler
   const ref = useDrop(["inner", "outer"], {
     onOver,
     onEnter,
@@ -152,5 +151,3 @@ const move = (
     unit: nextUnit,
   }
 }
-
-// const range = v => v <= 0 ? 0 : v >= x && v < x + w ? x : v >= info.cols - w ? info.cols - w : v

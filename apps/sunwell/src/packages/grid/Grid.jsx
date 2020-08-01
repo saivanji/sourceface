@@ -103,8 +103,8 @@ function Grid({
           <ItemProvider
             key={id}
             id={id}
-            layout={layout}
             initialLayout={initialLayout}
+            layout={layout}
             info={info}
             container={container}
             components={components}
@@ -112,6 +112,7 @@ function Grid({
             onLayoutEdit={onLayoutEdit}
             onLayoutUpdate={onLayoutUpdate}
             onLayoutReset={onLayoutReset}
+            onChange={onChange}
           >
             {content}
           </ItemProvider>
@@ -124,8 +125,8 @@ function Grid({
 const ItemProvider = ({
   children,
   id,
-  layout,
   initialLayout,
+  layout,
   info,
   components,
   container,
@@ -133,6 +134,7 @@ const ItemProvider = ({
   onLayoutEdit,
   onLayoutUpdate,
   onLayoutReset,
+  onChange,
 }) => {
   const style = useApply(utils.toBoxCSS, utils.toBounds, [layout[id], info])
 
@@ -140,11 +142,13 @@ const ItemProvider = ({
   const [nwRef, swRef, neRef, seRef, resizePreviewStyle] = useResizable(
     id,
     initialLayout,
+    layout,
     info,
     {
       onLayoutEdit,
       onLayoutUpdate,
       onLayoutReset,
+      onChange,
     }
   )
 

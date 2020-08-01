@@ -2,10 +2,10 @@ import { useCallback, useState } from "react"
 import { useDrag } from "../dnd"
 import * as utils from "./utils"
 
-export default (id, initialLayout, info, callbacks) => {
+export default (id, initialLayout, layout, info, callbacks) => {
   const [previewStyle, setPreviewStyle] = useState(null)
 
-  const args = [id, initialLayout, info, setPreviewStyle, callbacks]
+  const args = [id, initialLayout, layout, info, setPreviewStyle, callbacks]
 
   const nwRef = useResizableAngle("nw", ...args)
   const swRef = useResizableAngle("sw", ...args)
@@ -19,9 +19,10 @@ const useResizableAngle = (
   angle,
   id,
   initialLayout,
+  layout,
   info,
   setPreviewStyle,
-  { onLayoutEdit, onLayoutUpdate, onLayoutReset }
+  { onLayoutEdit, onLayoutUpdate, onLayoutReset, onChange }
 ) => {
   const unit = initialLayout[id]
 
@@ -55,7 +56,8 @@ const useResizableAngle = (
   const onEnd = useCallback(() => {
     onLayoutReset()
     setPreviewStyle(null)
-  }, [setPreviewStyle, onLayoutReset])
+    onChange({ type: "resize", layout, id })
+  }, [id, layout, setPreviewStyle, onLayoutReset, onChange])
 
   return useDrag("angle", { onStart, onMove, onEnd })
 }
