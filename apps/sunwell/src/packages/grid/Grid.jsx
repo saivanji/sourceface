@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useCallback,
 } from "react"
-import { context } from "./Provider"
+import { useWrapped, useRegister } from "./Provider"
 import { useDrop, DndProvider } from "../dnd"
 import { useApply } from "./hooks"
 import * as utils from "./utils"
@@ -15,13 +15,8 @@ import useDraggable from "./useDraggable"
 import useDroppable from "./useDroppable"
 import useLayout from "./useLayout"
 
-// There are two independent parts:
-// 1. Drag preview - need to figure out how to display drag preview across the boards
-// 2. Drop - positioning of the elements
-// Drop logic can be implemented independently from the drag
-
 export default props => {
-  const isWrapped = useContext(context)
+  const isWrapped = useWrapped()
   const grid = <Grid {...props} />
 
   return !isWrapped ? <DndProvider>{grid}</DndProvider> : grid
@@ -38,9 +33,9 @@ function Grid({
   onChange,
   components = {},
 }) {
+  const changeId = useRegister(onChange)
   const [container, setContainer] = useState(null)
   const info = useApply(utils.toInfo, [cols, rows, container?.width, rowHeight])
-
   const [
     layout,
     isEditingLayout,
@@ -49,11 +44,19 @@ function Grid({
     onLayoutReset,
   ] = useLayout(initialLayout)
 
-  const [containerRef, dropping] = useDroppable(layout, container, info, {
-    onLayoutEdit,
-    onLayoutUpdate,
-    onLayoutReset,
-  })
+  const [containerRef, dropping] = useDroppable(
+    initialLayout,
+    layout,
+    container,
+    info,
+    changeId,
+    {
+      onLayoutEdit,
+      onLayoutUpdate,
+      onLayoutReset,
+      onChange,
+    }
+  )
 
   useEffect(() => {
     setContainer(getOffset(containerRef.current))

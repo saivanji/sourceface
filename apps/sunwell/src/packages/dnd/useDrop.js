@@ -1,6 +1,5 @@
 import { useRef, useEffect, useContext } from "react"
 import { context } from "./state"
-// TODO: how to pass start, client and delta to drop callbacks?
 
 export default (types, { onEnter, onLeave, onOver, onDrop }) => {
   const ref = useRef()
@@ -9,9 +8,6 @@ export default (types, { onEnter, onLeave, onOver, onDrop }) => {
   const lifecycle = provide({ onEnter, onLeave, onOver, onDrop })
 
   useEffect(() => {
-    // TODO: how to make sure drop event fires always before drag end?
-    // it might happen that drop event will fire last which will cause the loss of that event. Because we delete drag type on drag end.
-    // Does browser fires mouse up for childs earlier than for the document?
     const listener = callback => e => {
       const t = type()
       if (types.includes(t)) {

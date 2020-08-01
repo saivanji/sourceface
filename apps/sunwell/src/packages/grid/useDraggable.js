@@ -24,13 +24,18 @@ export default (id, layout, info, container) => {
     [id, coords, bounds]
   )
 
-  const onMove = useCallback((transfer, { deltaX, deltaY }) => {
-    setPreviewStyle(
-      utils.toBoxCSS(
-        utils.drag(container.left + deltaX, container.top + deltaY, bounds)
-      )
-    )
-  }, [])
+  const onMove = useCallback(
+    ({ shiftX, shiftY }, { clientX, clientY }) => {
+      const nextBounds = {
+        ...bounds,
+        left: clientX - shiftX,
+        top: clientY - shiftY,
+      }
+
+      setPreviewStyle(utils.toBoxCSS(nextBounds))
+    },
+    [bounds]
+  )
 
   const onEnd = useCallback(() => setPreviewStyle(null), [])
 

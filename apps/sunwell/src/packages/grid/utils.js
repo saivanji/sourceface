@@ -78,7 +78,7 @@ export const without = (id, layout) => {
   let result = {}
 
   for (let key of Object.keys(layout)) {
-    if (key === id) return
+    if (key === id) continue
 
     result[key] = layout[key]
   }

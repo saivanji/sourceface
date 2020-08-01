@@ -1,16 +1,18 @@
-// TODO: move some generic code to utils
-
 import { useCallback, useState } from "react"
 import { useDrop } from "../dnd"
+import { useCall } from "./Provider"
 import * as utils from "./utils"
 
 export default (
+  initialLayout,
   layout,
   container,
   info,
+  changeId,
   { onLayoutEdit, onLayoutUpdate, onLayoutReset, onChange }
 ) => {
   const [dropping, setDropping] = useState(null)
+  const change = useCall()
 
   const onOver = useCallback(
     (transfer, { type, pageX, pageY }) => {
@@ -20,8 +22,15 @@ export default (
 
       if (type === "outer") {
         const round = v => Math.ceil(v) - 1
-
-        return move(transfer, left, top, layout, info, onLayoutUpdate, round)
+        return move(
+          transfer,
+          left,
+          top,
+          initialLayout,
+          info,
+          onLayoutUpdate,
+          round
+        )
       }
 
       if (type === "inner") {
@@ -30,22 +39,26 @@ export default (
           transfer,
           left - shiftX,
           top - shiftY,
-          layout,
+          initialLayout,
           info,
           onLayoutUpdate,
           Math.round
         )
       }
     },
-    [container, info, onLayoutUpdate]
+    [initialLayout, container, info, onLayoutUpdate]
   )
 
   const onEnter = useCallback(
-    ({ id }, { type }) => {
+    ({ id, leaved }, { type }) => {
       onLayoutEdit()
       setDropping({ id, type })
+
+      if (type === "inner" && leaved && layout[id]) {
+        return { leaved: undefined }
+      }
     },
-    [onLayoutEdit]
+    [layout, onLayoutEdit]
   )
 
   const onFinish = useCallback(() => {
@@ -57,15 +70,17 @@ export default (
     ({ id }, { type }) => {
       onFinish()
 
-      return {
-        leaved: {
-          id,
-          onChange: () =>
-            onChange({ type: "leave", layout: utils.without(id, layout), id }),
-        },
+      if (type === "inner") {
+        return {
+          leaved: {
+            id,
+            layout: utils.without(id, layout),
+            changeId,
+          },
+        }
       }
     },
-    [layout, onFinish, onChange]
+    [layout, changeId, onFinish, onChange]
   )
 
   const onDrop = useCallback(
@@ -73,7 +88,7 @@ export default (
       onFinish()
 
       if (type === "outer") {
-        console.log({
+        onChange({
           type: "enter",
           layout,
           id,
@@ -87,11 +102,17 @@ export default (
         id,
       }
 
-      leaved?.onChange()
+      if (leaved) {
+        change(leaved.changeId, {
+          type: "leave",
+          layout: leaved.layout,
+          id: leaved.id,
+        })
+      }
 
-      console.log(event)
+      onChange(event)
     },
-    [layout, onFinish, onChange]
+    [layout, change, onFinish, onChange]
   )
 
   // angle type is not needed here, resize will be in a drag handler
@@ -109,7 +130,7 @@ const move = (
   { id, coords },
   left,
   top,
-  layout,
+  initialLayout,
   info,
   onLayoutUpdate,
   round
@@ -128,7 +149,7 @@ const move = (
     y: nextY,
   }
 
-  onLayoutUpdate(utils.put(id, nextCoords, layout))
+  onLayoutUpdate(utils.put(id, nextCoords, initialLayout))
 
   return {
     coords: nextCoords,

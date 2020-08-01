@@ -193,7 +193,17 @@ const Element = ({ children }) => {
   const [preview, setPreview] = useState(null)
 
   const onStart = useCallback(
-    () => ({ id: "test", coords: { w: 3, h: 4 } }),
+    () => ({
+      id: "test",
+      coords: {
+        w: 3,
+        h: 4,
+        data: {
+          text: "Test",
+          color: "indianred",
+        },
+      },
+    }),
     []
   )
 
@@ -253,6 +263,7 @@ export default () => {
 
 const Area = ({ data, style }) => {
   const [layout, setLayout] = useState(data)
+  const onChange = useCallback(event => setLayout(event.layout), [])
 
   return (
     <Grid
@@ -261,7 +272,7 @@ const Area = ({ data, style }) => {
       rows={30}
       cols={10}
       layout={layout}
-      onChange={setLayout}
+      onChange={onChange}
       components={{ Content, Box, OuterPlaceholder, DragPlaceholder }}
     />
   )
