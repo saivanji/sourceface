@@ -50,15 +50,29 @@ export default (
   )
 
   const onEnter = useCallback(
-    ({ id, leaved }, { type }) => {
+    (transfer, { type, pageX, pageY }) => {
+      const { id, leaved, shiftX, shiftY } = transfer
+
       onLayoutEdit()
       setDropping({ id, type })
 
       if (type === "inner" && leaved && layout[id]) {
-        return { leaved: undefined }
+        const { left, top } = utils.cursor(pageX, pageY, container)
+
+        const result =
+          move(
+            transfer,
+            left - shiftX,
+            top - shiftY,
+            initialLayout,
+            info,
+            onLayoutUpdate,
+            Math.round
+          ) || {}
+        return { ...result, leaved: undefined }
       }
     },
-    [layout, onLayoutEdit]
+    [initialLayout, layout, info, onLayoutEdit, onLayoutUpdate]
   )
 
   const onFinish = useCallback(() => {
