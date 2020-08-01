@@ -13,6 +13,7 @@ import { Item, OuterItem, Content } from "./components"
 import Lines from "./Lines"
 import useDraggable from "./useDraggable"
 import useDroppable from "./useDroppable"
+import useResizable from "./useResizable"
 import useLayout from "./useLayout"
 
 export default props => {
@@ -103,10 +104,14 @@ function Grid({
             key={id}
             id={id}
             layout={layout}
+            initialLayout={initialLayout}
             info={info}
             container={container}
             components={components}
-            isDragging={dropping?.type === "inner" && dropping?.id === id}
+            isDraggedOver={dropping?.type === "inner" && dropping?.id === id}
+            onLayoutEdit={onLayoutEdit}
+            onLayoutUpdate={onLayoutUpdate}
+            onLayoutReset={onLayoutReset}
           >
             {content}
           </ItemProvider>
@@ -120,20 +125,39 @@ const ItemProvider = ({
   children,
   id,
   layout,
+  initialLayout,
   info,
   components,
   container,
-  isDragging,
+  isDraggedOver,
+  onLayoutEdit,
+  onLayoutUpdate,
+  onLayoutReset,
 }) => {
   const style = useApply(utils.toBoxCSS, utils.toBounds, [layout[id], info])
 
   const [dragRef, dragPreviewStyle] = useDraggable(id, layout, info, container)
+  const [nwRef, swRef, neRef, seRef, resizePreviewStyle] = useResizable(
+    id,
+    initialLayout,
+    info,
+    {
+      onLayoutEdit,
+      onLayoutUpdate,
+      onLayoutReset,
+    }
+  )
 
   return (
     <Item
       dragRef={dragRef}
+      nwRef={nwRef}
+      swRef={swRef}
+      neRef={neRef}
+      seRef={seRef}
+      isDraggedOver={isDraggedOver}
       dragPreviewStyle={dragPreviewStyle}
-      isDragging={isDragging}
+      resizePreviewStyle={resizePreviewStyle}
       style={style}
       components={components}
     >

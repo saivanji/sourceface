@@ -127,7 +127,7 @@ export default (
 }
 
 const move = (
-  { id, coords },
+  { id, unit },
   left,
   top,
   initialLayout,
@@ -135,24 +135,21 @@ const move = (
   onLayoutUpdate,
   round
 ) => {
-  const pointX = round(left / info.minWidth)
-  const pointY = round(top / info.minHeight)
+  const nextX = utils.calcX(left, unit.w, info, round)
+  const nextY = utils.calcY(top, unit.h, info, round)
 
-  const nextX = utils.range(pointX, 0, info.cols - coords.w)
-  const nextY = utils.range(pointY, 0, info.rows - coords.h)
-
-  if (coords.x === nextX && coords.y === nextY) return
-
-  const nextCoords = {
-    ...coords,
+  const nextUnit = {
+    ...unit,
     x: nextX,
     y: nextY,
   }
 
-  onLayoutUpdate(utils.put(id, nextCoords, initialLayout))
+  if (utils.coordsEqual(unit, nextUnit)) return
+
+  onLayoutUpdate(utils.put(id, nextUnit, initialLayout))
 
   return {
-    coords: nextCoords,
+    unit: nextUnit,
   }
 }
 

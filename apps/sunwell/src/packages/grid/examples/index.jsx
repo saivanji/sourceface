@@ -111,7 +111,7 @@ const data2 = {
 //   },
 // }
 
-const OuterPlaceholder = ({ style }) => {
+const OuterItem = ({ style }) => {
   return (
     <div
       style={{
@@ -125,7 +125,7 @@ const OuterPlaceholder = ({ style }) => {
   )
 }
 
-const DragPlaceholder = ({ style }) => {
+const Placeholder = ({ style }) => {
   return (
     <div
       style={{
@@ -195,7 +195,7 @@ const Element = ({ children }) => {
   const onStart = useCallback(
     () => ({
       id: "test",
-      coords: {
+      unit: {
         w: 3,
         h: 4,
         data: {
@@ -273,7 +273,13 @@ const Area = ({ data, style }) => {
       cols={10}
       layout={layout}
       onChange={onChange}
-      components={{ Content, Box, OuterPlaceholder, DragPlaceholder }}
+      components={{
+        Content,
+        Box,
+        OuterItem,
+        DragPlaceholder: Placeholder,
+        ResizePlaceholder: Placeholder,
+      }}
     />
   )
 }

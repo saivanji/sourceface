@@ -7,16 +7,25 @@ export const Item = ({
   children,
   style,
   dragRef,
+  nwRef,
+  swRef,
+  neRef,
+  seRef,
+  isDraggedOver,
   dragPreviewStyle,
-  isDragging,
+  resizePreviewStyle,
   components,
 }) => {
-  return isDragging || dragPreviewStyle ? (
+  return isDraggedOver || dragPreviewStyle ? (
     <>
-      {isDragging && (
-        <DragPlaceholder style={style} components={components}>
+      {isDraggedOver && (
+        <Placeholder
+          style={style}
+          components={components}
+          name="DragPlaceholder"
+        >
           {children}
-        </DragPlaceholder>
+        </Placeholder>
       )}
       {dragPreviewStyle && (
         <DragPreview style={dragPreviewStyle} components={components}>
@@ -24,9 +33,26 @@ export const Item = ({
         </DragPreview>
       )}
     </>
+  ) : resizePreviewStyle ? (
+    <>
+      <Placeholder
+        style={style}
+        components={components}
+        name="ResizePlaceholder"
+      >
+        {children}
+      </Placeholder>
+      <ResizePreview style={resizePreviewStyle} components={components}>
+        {children}
+      </ResizePreview>
+    </>
   ) : (
-    <Box ref={dragRef} style={style} components={components}>
-      {children}
+    <Box style={style} components={components}>
+      <ResizeTrigger ref={nwRef} angle="nw" components={components} />
+      <ResizeTrigger ref={swRef} angle="sw" components={components} />
+      <ResizeTrigger ref={neRef} angle="ne" components={components} />
+      <ResizeTrigger ref={seRef} angle="se" components={components} />
+      <Full ref={dragRef}>{children}</Full>
     </Box>
   )
 }
@@ -35,12 +61,11 @@ export const Content = ({ data, components: { Content = Noop } }) => {
   return <Content data={data} />
 }
 
-export const OuterItem = ({
-  style,
-  components: { OuterPlaceholder = Noop },
-}) => {
+export const OuterItem = ({ style, components }) => {
+  const Parent = components.OuterItem || Noop
+
   return (
-    <OuterPlaceholder
+    <Parent
       style={{
         ...style,
         position: "absolute",
@@ -51,12 +76,11 @@ export const OuterItem = ({
   )
 }
 
-const Box = forwardRef(({ children, style, components }, ref) => {
+const Box = ({ children, style, components }) => {
   const Parent = components.Box || "div"
 
   return (
     <Parent
-      ref={ref}
       style={{
         ...style,
         position: "absolute",
@@ -65,7 +89,7 @@ const Box = forwardRef(({ children, style, components }, ref) => {
       {children}
     </Parent>
   )
-})
+}
 
 const DragPreview = ({ children, style, components }) => {
   const Parent = components.DragPreview || "div"
@@ -86,8 +110,8 @@ const DragPreview = ({ children, style, components }) => {
   )
 }
 
-const DragPlaceholder = ({ children, style, components }) => {
-  const Parent = components.DragPlaceholder || Noop
+const Placeholder = ({ children, style, name, components }) => {
+  const Parent = components[name] || Noop
 
   return (
     <Parent
@@ -102,3 +126,66 @@ const DragPlaceholder = ({ children, style, components }) => {
     </Parent>
   )
 }
+
+const ResizePreview = ({ children, style, components }) => {
+  const Parent = components.ResizePreview || "div"
+
+  return (
+    <Parent
+      style={{
+        ...style,
+        position: "absolute",
+        top: 0,
+        left: 0,
+        zIndex: 1,
+      }}
+    >
+      {children}
+    </Parent>
+  )
+}
+
+const ResizeTrigger = forwardRef(({ angle, components }, ref) => {
+  const Parent = components.ResizeTrigger || Angle
+
+  return (
+    <Parent
+      ref={ref}
+      angle={angle}
+      style={{
+        position: "absolute",
+        zIndex: 1,
+      }}
+    />
+  )
+})
+
+const Angle = forwardRef(({ angle, style }, ref) => {
+  const angles = {
+    nw: ["top", "left"],
+    sw: ["bottom", "left"],
+    ne: ["top", "right"],
+    se: ["bottom", "right"],
+  }
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        ...style,
+        cursor: `${angle}-resize`,
+        width: 20,
+        height: 20,
+        ...angles[angle].reduce((acc, key) => ({ ...acc, [key]: 0 }), {}),
+      }}
+    />
+  )
+})
+
+const Full = forwardRef(({ children, style }, ref) => {
+  return (
+    <div style={{ ...style, width: "100%", height: "100%" }} ref={ref}>
+      {children}
+    </div>
+  )
+})

@@ -5,8 +5,8 @@ import * as utils from "./utils"
 
 export default (id, layout, info, container) => {
   const [previewStyle, setPreviewStyle] = useState(null)
-  const coords = layout[id]
-  const bounds = useApply(utils.toBounds, [coords, info])
+  const unit = layout[id]
+  const bounds = useApply(utils.toBounds, [unit, info])
 
   const onStart = useCallback(
     (transfer, { pageX, pageY }) => {
@@ -16,12 +16,12 @@ export default (id, layout, info, container) => {
 
       return {
         id,
-        coords,
+        unit,
         shiftX,
         shiftY,
       }
     },
-    [id, coords, bounds]
+    [id, unit, bounds]
   )
 
   const onMove = useCallback(

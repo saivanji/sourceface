@@ -67,12 +67,86 @@ export const toBounds = (
   }
 }
 
+export const calcX = (left, w, { minWidth, cols }, round) =>
+  range(round(left / minWidth), 0, cols - w)
+
+export const calcY = (top, h, { minHeight, rows }, round) =>
+  range(round(top / minHeight), 0, rows - h)
+
+export const coordsEqual = (left, right) =>
+  left.w === right.w &&
+  left.h === right.h &&
+  left.x === right.x &&
+  left.y === right.y
+
+export const toCoords = ({ left, top, width, height }, info) => {
+  const { minWidth, minHeight } = info
+
+  const w = Math.round(width / minWidth)
+  const h = Math.round(height / minHeight)
+  const x = calcX(left, w, info, Math.round)
+  const y = calcY(top, h, info, Math.round)
+
+  return { x, y, w, h }
+}
+
 export const drag = (deltaX, deltaY, { left, top, width, height }) => ({
   left: left + deltaX,
   top: top + deltaY,
   width,
   height,
 })
+
+export const resizeSide = (
+  isNorthWest,
+  delta,
+  initialOffset,
+  initialSize,
+  minSize,
+  limit
+) => {
+  if (isNorthWest) {
+    return [
+      range(initialSize - delta, minSize, initialSize + initialOffset),
+      range(initialOffset + delta, 0, initialOffset + initialSize - minSize),
+    ]
+  }
+
+  return [
+    range(initialSize + delta, minSize, limit - initialOffset),
+    initialOffset,
+  ]
+}
+
+export const resize = (
+  angle,
+  deltaX,
+  deltaY,
+  { left, top, width, height },
+  { minWidth, minHeight, containerWidth, containerHeight }
+) => {
+  const isNorth = angle === "nw" || angle === "ne"
+  const isWest = angle === "nw" || angle === "sw"
+
+  const [nextWidth, nextLeft] = resizeSide(
+    isWest,
+    deltaX,
+    left,
+    width,
+    minWidth,
+    containerWidth
+  )
+  const [nextHeight, nextTop] = resizeSide(
+    isNorth,
+    deltaY,
+    top,
+    height,
+    minHeight,
+    containerHeight
+  )
+
+  return { left: nextLeft, top: nextTop, width: nextWidth, height: nextHeight }
+}
 
 export const without = (id, layout) => {
   let result = {}
