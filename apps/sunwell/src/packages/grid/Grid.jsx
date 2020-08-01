@@ -16,7 +16,9 @@ import useDroppable from "./useDroppable"
 import useResizable from "./useResizable"
 import useLayout from "./useLayout"
 
-// TODO: When grid item is moved fast on drag start - it disappears
+// TODO: When grid item is moved fast on drag start to another grid - it's not adding to the destination grid (looks like when drag happens so fast "onOver" is not called and therefore item is not added)
+//
+// TODO: When grid item is moved fast outside - it disappears and initial grid keeps edited with initial item visible placeholder(no leave callback called, mouseup called earlier than mouseleave?)
 
 export default props => {
   const isWrapped = useWrapped()
