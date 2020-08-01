@@ -72,7 +72,7 @@ export default (
         return { ...result, leaved: undefined }
       }
     },
-    [initialLayout, layout, info, onLayoutEdit, onLayoutUpdate]
+    [initialLayout, layout, container, info, onLayoutEdit, onLayoutUpdate]
   )
 
   const onFinish = useCallback(() => {
