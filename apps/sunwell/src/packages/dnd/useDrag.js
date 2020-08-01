@@ -8,7 +8,7 @@ export default (type, { onStart, onMove, onEnd }) => {
   const connect = useRef()
   const { provide, start, reset } = useContext(context)
 
-  useEffect(() => reset, [reset])
+  useEffect(() => () => local.current && reset(), [local, reset])
 
   useEffect(() => {
     const lifecycle = provide({ onStart, onMove, onEnd })
@@ -70,7 +70,7 @@ export default (type, { onStart, onMove, onEnd }) => {
         document.removeEventListener("mouseup", mouseup)
       }
     }
-  }, [trigger, type, start, reset, onStart, onMove, onEnd])
+  }, [local, trigger, type, start, reset, onStart, onMove, onEnd])
 
   return node => {
     trigger.current = node

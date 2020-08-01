@@ -67,10 +67,10 @@ export default (
   }, [onLayoutReset])
 
   const onLeave = useCallback(
-    ({ id }, { type }) => {
+    ({ id, leaved }, { type }) => {
       onFinish()
 
-      if (type === "inner") {
+      if (type === "inner" && !leaved) {
         return {
           leaved: {
             id,

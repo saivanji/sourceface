@@ -48,6 +48,29 @@ const data2 = {
   },
 }
 
+const data3 = {
+  ray: {
+    x: 5,
+    y: 7,
+    w: 3,
+    h: 2,
+    data: {
+      text: "Ray",
+      color: "purple",
+    },
+  },
+  tom: {
+    x: 3,
+    y: 4,
+    w: 3,
+    h: 2,
+    data: {
+      text: "Tom",
+      color: "crimson",
+    },
+  },
+}
+
 // const data = {
 //   bob: {
 //     x: 1,
@@ -255,7 +278,8 @@ export default () => {
       <br />
       <div style={{ display: "flex", margin: 50, border: "1px solid #bbb" }}>
         <Area data={data1} style={{ borderRight: "1px solid #bbb" }} />
-        <Area data={data2} />
+        <Area data={data2} style={{ borderRight: "1px solid #bbb" }} />
+        <Area data={data3} />
       </div>
     </GridProvider>
   )
@@ -267,7 +291,7 @@ const Area = ({ data, style }) => {
 
   return (
     <Grid
-      style={{ width: "50%", ...style }}
+      style={{ width: "33.3%", ...style }}
       rowHeight={80}
       rows={30}
       cols={10}
