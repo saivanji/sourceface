@@ -191,27 +191,6 @@ const Card = forwardRef(({ children, style }, ref) => {
   )
 })
 
-const Content = ({ data }) => (
-  <div
-    style={{
-      width: "100%",
-      height: "100%",
-      backgroundColor: data.color,
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-    }}
-  >
-    <span
-      style={{
-        fontSize: "2rem",
-      }}
-    >
-      {data.text}
-    </span>
-  </div>
-)
-
 const Element = ({ children }) => {
   const [preview, setPreview] = useState(null)
 
@@ -296,9 +275,28 @@ const Area = ({ data, style }) => {
       rows={30}
       cols={10}
       layout={layout}
+      renderItem={data => (
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            backgroundColor: data.color,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <span
+            style={{
+              fontSize: "2rem",
+            }}
+          >
+            {data.text}
+          </span>
+        </div>
+      )}
       onChange={onChange}
       components={{
-        Content,
         Box,
         OuterItem,
         DragPlaceholder: Placeholder,

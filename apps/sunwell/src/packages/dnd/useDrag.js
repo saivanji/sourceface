@@ -32,7 +32,7 @@ export default (type, { onStart, onMove, onEnd }) => {
     }
 
     const mouseup = () => {
-      trigger.current && (trigger.current.style["pointer-events"] = "")
+      // trigger.current && (trigger.current.style["pointer-events"] = "")
 
       document.removeEventListener("mousemove", mousemove)
       document.removeEventListener("mouseup", mouseup)
@@ -48,7 +48,7 @@ export default (type, { onStart, onMove, onEnd }) => {
       if (e.which !== 1) return
 
       // do not triggering "onEnter" drop events in case trigger is onmounted on drag start
-      trigger.current.style["pointer-events"] = "none"
+      // trigger.current.style["pointer-events"] = "none"
 
       document.addEventListener("mousemove", mousemove)
       document.addEventListener("mouseup", mouseup)

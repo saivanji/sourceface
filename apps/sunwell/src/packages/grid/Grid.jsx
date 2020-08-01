@@ -9,12 +9,14 @@ import { useWrapped, useRegister } from "./Provider"
 import { useDrop, DndProvider } from "../dnd"
 import { useApply } from "./hooks"
 import * as utils from "./utils"
-import { Item, OuterItem, Content } from "./components"
+import { Item, OuterItem } from "./components"
 import Lines from "./Lines"
 import useDraggable from "./useDraggable"
 import useDroppable from "./useDroppable"
 import useResizable from "./useResizable"
 import useLayout from "./useLayout"
+
+// TODO: When grid item is moved fast on drag start - it disappears
 
 export default props => {
   const isWrapped = useWrapped()
@@ -31,6 +33,7 @@ function Grid({
   rowHeight = 20,
   isStatic,
   layout: initialLayout,
+  renderItem,
   onChange,
   components = {},
 }) {
@@ -83,14 +86,13 @@ function Grid({
           )
         }
 
-        const content = (
-          <Content data={layout[id].data} components={components} />
-        )
+        const content = renderItem(layout[id].data, id)
 
         if (!container?.width || isStatic) {
           return (
             <Item
               key={id}
+              isStatic
               style={utils.toPercentageCSS(layout[id], info)}
               components={components}
             >

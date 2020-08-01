@@ -7,8 +7,6 @@ import { Provider as ClientProvider } from "urql"
 import * as pages from "./pages"
 import client from "./graphql"
 import GridExample from "./packages/grid/examples"
-// import GrillExample from "./packages/react-grill/examples"
-// import ShiftedExample from "./packages/react-shifted/examples"
 
 ReactDOM.render(
   <ClientProvider value={client}>

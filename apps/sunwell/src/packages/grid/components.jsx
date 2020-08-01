@@ -11,6 +11,7 @@ export const Item = ({
   swRef,
   neRef,
   seRef,
+  isStatic,
   isDraggedOver,
   dragPreviewStyle,
   resizePreviewStyle,
@@ -48,17 +49,17 @@ export const Item = ({
     </>
   ) : (
     <Box style={style} components={components}>
-      <ResizeTrigger ref={nwRef} angle="nw" components={components} />
-      <ResizeTrigger ref={swRef} angle="sw" components={components} />
-      <ResizeTrigger ref={neRef} angle="ne" components={components} />
-      <ResizeTrigger ref={seRef} angle="se" components={components} />
+      {!isStatic && (
+        <>
+          <ResizeTrigger ref={nwRef} angle="nw" components={components} />
+          <ResizeTrigger ref={swRef} angle="sw" components={components} />
+          <ResizeTrigger ref={neRef} angle="ne" components={components} />
+          <ResizeTrigger ref={seRef} angle="se" components={components} />
+        </>
+      )}
       <Full ref={dragRef}>{children}</Full>
     </Box>
   )
-}
-
-export const Content = ({ data, components: { Content = Noop } }) => {
-  return <Content data={data} />
 }
 
 export const OuterItem = ({ style, components }) => {

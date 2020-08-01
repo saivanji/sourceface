@@ -112,8 +112,7 @@ function Content({ modules, isEditing, selectedModuleId, onModuleClick }) {
       positions={positions}
       isEditable={isEditing}
       onChange={onUpdateModulesPositions}
-    >
-      {modules.map(module => (
+      renderItem={module => (
         <Module
           key={module.id}
           isEditable={isEditing}
@@ -123,7 +122,7 @@ function Content({ modules, isEditing, selectedModuleId, onModuleClick }) {
           component={modulesMap[module.type]}
           onClick={onModuleClick}
         />
-      ))}
-    </Grid>
+      )}
+    />
   )
 }
