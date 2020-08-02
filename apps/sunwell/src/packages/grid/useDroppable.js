@@ -16,7 +16,9 @@ export default (
 
   const onOver = useCallback(
     (transfer, { type, clientX, clientY }) => {
-      const { left, top } = utils.cursor(clientX, clientY, transfer.rect)
+      // TODO: consider debouncing if that will cause performace issues
+      const rect = containerRef.current.getBoundingClientRect()
+      const { left, top } = utils.cursor(clientX, clientY, rect)
 
       if (type === "outer") {
         const round = v => Math.ceil(v) - 1
@@ -44,18 +46,18 @@ export default (
         )
       }
     },
-    [initialLayout, info, onLayoutUpdate]
+    [containerRef, initialLayout, info, onLayoutUpdate]
   )
 
   const onEnter = useCallback(
     (transfer, { type, clientX, clientY }) => {
       const { id, leaved, shiftX, shiftY } = transfer
-      const rect = containerRef.current.getBoundingClientRect()
 
       onLayoutEdit()
       setDropping({ id, type })
 
       if (type === "inner" && leaved && layout[id]) {
+        const rect = containerRef.current.getBoundingClientRect()
         const { left, top } = utils.cursor(clientX, clientY, rect)
 
         // TODO: check whether it's working
@@ -70,12 +72,10 @@ export default (
             Math.round
           ) || {}
 
-        return { ...result, rect, leaved: undefined }
+        return { ...result, leaved: undefined }
       }
-
-      return { rect }
     },
-    [initialLayout, layout, containerRef, info, onLayoutEdit, onLayoutUpdate]
+    [containerRef, initialLayout, layout, info, onLayoutEdit, onLayoutUpdate]
   )
 
   const onFinish = useCallback(() => {
