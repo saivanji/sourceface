@@ -16,13 +16,20 @@ export default (
 
   const onOver = useCallback(
     (transfer, { type, clientX, clientY }) => {
-      // TODO: consider debouncing if that will cause performace issues
-      const rect = containerRef.current.getBoundingClientRect()
+      const now = Date.now()
+      const { lastMove = now, rect: prevRect } = transfer
+      const timeDiff = (now - lastMove) / 1000
+
+      const rect =
+        timeDiff > 0.1 ? containerRef.current.getBoundingClientRect() : prevRect
+
       const { left, top } = utils.cursor(clientX, clientY, rect)
+
+      let nextTransfer
 
       if (type === "outer") {
         const round = v => Math.ceil(v) - 1
-        return move(
+        nextTransfer = move(
           transfer,
           left,
           top,
@@ -35,7 +42,7 @@ export default (
 
       if (type === "inner") {
         const { shiftX, shiftY } = transfer
-        return move(
+        nextTransfer = move(
           transfer,
           left - shiftX,
           top - shiftY,
@@ -45,6 +52,8 @@ export default (
           Math.round
         )
       }
+
+      return { ...nextTransfer, rect, lastMove: now }
     },
     [containerRef, initialLayout, info, onLayoutUpdate]
   )
@@ -52,12 +61,12 @@ export default (
   const onEnter = useCallback(
     (transfer, { type, clientX, clientY }) => {
       const { id, leaved, shiftX, shiftY } = transfer
+      const rect = containerRef.current.getBoundingClientRect()
 
       onLayoutEdit()
       setDropping({ id, type })
 
       if (type === "inner" && leaved && layout[id]) {
-        const rect = containerRef.current.getBoundingClientRect()
         const { left, top } = utils.cursor(clientX, clientY, rect)
 
         // TODO: check whether it's working
@@ -72,8 +81,10 @@ export default (
             Math.round
           ) || {}
 
-        return { ...result, leaved: undefined }
+        return { ...result, rect, leaved: undefined }
       }
+
+      return { rect }
     },
     [containerRef, initialLayout, layout, info, onLayoutEdit, onLayoutUpdate]
   )
