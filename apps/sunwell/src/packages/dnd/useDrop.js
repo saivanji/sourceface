@@ -7,7 +7,6 @@ export default (types, { onEnter, onLeave, onOver, onDrop }) => {
   const { provide, type } = useContext(context)
   const lifecycle = provide({ onEnter, onLeave, onOver, onDrop })
 
-  // TODO: pass down offsetX/Y?
   useEffect(() => {
     const listener = callback => e => {
       const t = type()
