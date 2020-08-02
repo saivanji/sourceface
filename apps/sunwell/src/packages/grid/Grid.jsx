@@ -20,8 +20,6 @@ import useLayout from "./useLayout"
 //
 // TODO: When grid item is moved fast outside - it disappears and initial grid keeps edited with initial item visible placeholder(no leave callback called, mouseup called earlier than mouseleave?)
 // TODO: When user scrolls page during resize - preview is shifted
-// TODO: Do not use offsetX/Y and fallback to the getBoundingClientRect in case these props are undefined
-// - first investigate does pageX/Y offsetX/Y causes repaint/reflow?(test both in profiler) since window.scrollX/Y does. get scrollX/Y as difference between clientX and pageX
 
 export default props => {
   const isWrapped = useWrapped()

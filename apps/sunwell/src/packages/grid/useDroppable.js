@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react"
-import { useDrop } from "../dnd"
+import { useDrop, useMiddleware } from "../dnd"
 import { useCall } from "./Provider"
 import * as utils from "./utils"
 
@@ -14,22 +14,27 @@ export default (
   const [dropping, setDropping] = useState(null)
   const change = useCall()
 
-  const onOver = useCallback(
-    (transfer, { type, clientX, clientY }) => {
+  const withRect = useCallback(
+    ({ rectCounted }) => {
       const now = Date.now()
-      const { lastMove = now, rect: prevRect } = transfer
-      const timeDiff = (now - lastMove) / 1000
 
-      const rect =
-        timeDiff > 0.1 ? containerRef.current.getBoundingClientRect() : prevRect
+      if (rectCounted && (now - rectCounted) / 1000 < 1) return
 
-      const { left, top } = utils.cursor(clientX, clientY, rect)
+      return {
+        rectCounted: now,
+        rect: containerRef.current.getBoundingClientRect(),
+      }
+    },
+    [containerRef]
+  )
 
-      let nextTransfer
+  const onMove = useCallback(
+    (transfer, { type, clientX, clientY }) => {
+      const { left, top } = utils.cursor(clientX, clientY, transfer.rect)
 
       if (type === "outer") {
         const round = v => Math.ceil(v) - 1
-        nextTransfer = move(
+        return move(
           transfer,
           left,
           top,
@@ -42,7 +47,7 @@ export default (
 
       if (type === "inner") {
         const { shiftX, shiftY } = transfer
-        nextTransfer = move(
+        return move(
           transfer,
           left - shiftX,
           top - shiftY,
@@ -52,21 +57,19 @@ export default (
           Math.round
         )
       }
-
-      return { ...nextTransfer, rect, lastMove: now }
     },
-    [containerRef, initialLayout, info, onLayoutUpdate]
+    [initialLayout, info, onLayoutUpdate]
   )
 
   const onEnter = useCallback(
     (transfer, { type, clientX, clientY }) => {
       const { id, leaved, shiftX, shiftY } = transfer
-      const rect = containerRef.current.getBoundingClientRect()
 
       onLayoutEdit()
       setDropping({ id, type })
 
       if (type === "inner" && leaved && layout[id]) {
+        const rect = containerRef.current.getBoundingClientRect()
         const { left, top } = utils.cursor(clientX, clientY, rect)
 
         // TODO: check whether it's working
@@ -81,10 +84,8 @@ export default (
             Math.round
           ) || {}
 
-        return { ...result, rect, leaved: undefined }
+        return { ...result, leaved: undefined }
       }
-
-      return { rect }
     },
     [containerRef, initialLayout, layout, info, onLayoutEdit, onLayoutUpdate]
   )
@@ -142,6 +143,8 @@ export default (
     },
     [layout, change, onFinish, onChange]
   )
+
+  const onOver = useMiddleware(withRect, onMove)
 
   const ref = useDrop(["inner", "outer"], {
     onOver,
