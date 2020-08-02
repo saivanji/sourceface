@@ -158,6 +158,7 @@ const ItemProvider = ({
     initialLayout,
     layout,
     info,
+    containerRef,
     {
       onLayoutEdit,
       onLayoutUpdate,
