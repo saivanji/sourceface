@@ -255,7 +255,15 @@ export default () => {
         <Element>First</Element>
       </div>
       <br />
-      <div style={{ display: "flex", margin: 50, border: "1px solid #bbb" }}>
+      <div
+        style={{
+          display: "flex",
+          margin: 50,
+          border: "1px solid #bbb",
+          height: 400,
+          overflowY: "auto",
+        }}
+      >
         <Area data={data1} style={{ borderRight: "1px solid #bbb" }} />
         <Area data={data2} style={{ borderRight: "1px solid #bbb" }} />
         <Area data={data3} />

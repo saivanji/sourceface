@@ -6,7 +6,7 @@ import * as utils from "./utils"
 export default (
   initialLayout,
   layout,
-  container,
+  containerRef,
   info,
   changeId,
   { onLayoutEdit, onLayoutUpdate, onLayoutReset, onChange }
@@ -15,10 +15,8 @@ export default (
   const change = useCall()
 
   const onOver = useCallback(
-    (transfer, { type, pageX, pageY }) => {
-      if (!container) return
-
-      const { left, top } = utils.cursor(pageX, pageY, container)
+    (transfer, { type, clientX, clientY }) => {
+      const { left, top } = utils.cursor(clientX, clientY, transfer.rect)
 
       if (type === "outer") {
         const round = v => Math.ceil(v) - 1
@@ -46,19 +44,21 @@ export default (
         )
       }
     },
-    [initialLayout, container, info, onLayoutUpdate]
+    [initialLayout, info, onLayoutUpdate]
   )
 
   const onEnter = useCallback(
-    (transfer, { type, pageX, pageY }) => {
+    (transfer, { type, clientX, clientY }) => {
       const { id, leaved, shiftX, shiftY } = transfer
+      const rect = containerRef.current.getBoundingClientRect()
 
       onLayoutEdit()
       setDropping({ id, type })
 
       if (type === "inner" && leaved && layout[id]) {
-        const { left, top } = utils.cursor(pageX, pageY, container)
+        const { left, top } = utils.cursor(clientX, clientY, rect)
 
+        // TODO: check whether it's working
         const result =
           move(
             transfer,
@@ -69,10 +69,13 @@ export default (
             onLayoutUpdate,
             Math.round
           ) || {}
-        return { ...result, leaved: undefined }
+
+        return { ...result, rect, leaved: undefined }
       }
+
+      return { rect }
     },
-    [initialLayout, layout, container, info, onLayoutEdit, onLayoutUpdate]
+    [initialLayout, layout, containerRef, info, onLayoutEdit, onLayoutUpdate]
   )
 
   const onFinish = useCallback(() => {

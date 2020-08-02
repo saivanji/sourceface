@@ -19,6 +19,8 @@ import useLayout from "./useLayout"
 // TODO: When grid item is moved fast on drag start to another grid - it's not adding to the destination grid (looks like when drag happens so fast "onOver" is not called and therefore item is not added)
 //
 // TODO: When grid item is moved fast outside - it disappears and initial grid keeps edited with initial item visible placeholder(no leave callback called, mouseup called earlier than mouseleave?)
+// TODO: When user scrolls page during resize - preview is shifted
+// TODO: Use offsetX/Y and fallback to the getBoundingClientRect in case these props are undefined
 
 export default props => {
   const isWrapped = useWrapped()
@@ -40,8 +42,8 @@ function Grid({
   components = {},
 }) {
   const changeId = useRegister(onChange)
-  const [container, setContainer] = useState(null)
-  const info = useApply(utils.toInfo, [cols, rows, container?.width, rowHeight])
+  const [containerWidth, setContainerWidth] = useState(null)
+  const info = useApply(utils.toInfo, [cols, rows, containerWidth, rowHeight])
   const [
     layout,
     isEditingLayout,
@@ -50,10 +52,11 @@ function Grid({
     onLayoutReset,
   ] = useLayout(initialLayout)
 
-  const [containerRef, dropping] = useDroppable(
+  const containerRef = useRef()
+  const [dropRef, dropping] = useDroppable(
     initialLayout,
     layout,
-    container,
+    containerRef,
     info,
     changeId,
     {
@@ -65,16 +68,19 @@ function Grid({
   )
 
   useEffect(() => {
-    setContainer(getOffset(containerRef.current))
+    setContainerWidth(containerRef.current.offsetWidth)
   }, [])
 
   return (
     <div
-      ref={containerRef}
+      ref={node => {
+        containerRef.current = node
+        dropRef.current = node
+      }}
       style={{ ...style, position: "relative", height: info.containerHeight }}
       className={className}
     >
-      {container && isEditingLayout && <Lines info={info} />}
+      {containerWidth && isEditingLayout && <Lines info={info} />}
       {Object.keys(layout).map(id => {
         if (dropping?.type === "outer" && dropping?.id === id) {
           return (
@@ -90,7 +96,7 @@ function Grid({
 
         const content = renderItem(layout[id].data, id)
 
-        if (!container?.width || isStatic) {
+        if (!containerWidth || isStatic) {
           return (
             <Item
               key={id}
@@ -107,10 +113,10 @@ function Grid({
           <ItemProvider
             key={id}
             id={id}
+            containerRef={containerRef}
             initialLayout={initialLayout}
             layout={layout}
             info={info}
-            container={container}
             components={components}
             isDraggedOver={dropping?.type === "inner" && dropping?.id === id}
             onLayoutEdit={onLayoutEdit}
@@ -132,8 +138,8 @@ const ItemProvider = ({
   initialLayout,
   layout,
   info,
+  containerRef,
   components,
-  container,
   isDraggedOver,
   onLayoutEdit,
   onLayoutUpdate,
@@ -142,7 +148,12 @@ const ItemProvider = ({
 }) => {
   const style = useApply(utils.toBoxCSS, utils.toBounds, [layout[id], info])
 
-  const [dragRef, dragPreviewStyle] = useDraggable(id, layout, info, container)
+  const [dragRef, dragPreviewStyle] = useDraggable(
+    id,
+    layout,
+    info,
+    containerRef
+  )
   const [nwRef, swRef, neRef, seRef, resizePreviewStyle] = useResizable(
     id,
     initialLayout,
@@ -178,15 +189,4 @@ const OuterItemProvider = ({ id, layout, info, components }) => {
   const style = useApply(utils.toBoxCSS, utils.toBounds, [layout[id], info])
 
   return <OuterItem style={style} components={components} />
-}
-
-const getOffset = node => {
-  const { left, top, width, height } = node.getBoundingClientRect()
-
-  return {
-    width,
-    height,
-    left: left + window.scrollX,
-    top: top + window.scrollY,
-  }
 }

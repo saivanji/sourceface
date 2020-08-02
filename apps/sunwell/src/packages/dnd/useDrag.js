@@ -78,10 +78,7 @@ export default (type, { onStart, onMove, onEnd }) => {
   }
 }
 
-const createAction = (
-  { clientX, clientY, pageX, pageY },
-  { startX, startY }
-) => ({
+const createAction = ({ clientX, clientY }, { startX, startY }) => ({
   clientX,
   clientY,
   deltaX: clientX - startX,

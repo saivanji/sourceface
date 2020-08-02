@@ -3,14 +3,16 @@ import { useDrag } from "../dnd"
 import { useApply } from "./hooks"
 import * as utils from "./utils"
 
-export default (id, layout, info, container) => {
+export default (id, layout, info, containerRef) => {
   const [previewStyle, setPreviewStyle] = useState(null)
   const unit = layout[id]
   const bounds = useApply(utils.toBounds, [unit, info])
 
   const onStart = useCallback(
-    (transfer, { pageX, pageY }) => {
-      const { left, top } = utils.cursor(pageX, pageY, container)
+    (transfer, { clientX, clientY }) => {
+      const rect = containerRef.current.getBoundingClientRect()
+      const { left, top } = utils.cursor(clientX, clientY, rect)
+
       const shiftX = left - bounds.left
       const shiftY = top - bounds.top
 
@@ -21,7 +23,7 @@ export default (id, layout, info, container) => {
         shiftY,
       }
     },
-    [id, unit, bounds]
+    [containerRef, id, unit, bounds]
   )
 
   const onMove = useCallback(

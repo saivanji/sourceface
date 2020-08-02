@@ -201,7 +201,7 @@ export const put = (id, anchor, layout) => {
   }, layout)
 }
 
-export const cursor = (pageX, pageY, container) => ({
-  left: pageX - container.left,
-  top: pageY - container.top,
+export const cursor = (clientX, clientY, container) => ({
+  left: clientX - container.left,
+  top: clientY - container.top,
 })
