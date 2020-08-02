@@ -2,7 +2,7 @@ import { useRef, useEffect, useContext } from "react"
 import { context } from "./state"
 
 export default (types, { onEnter, onLeave, onOver, onDrop }) => {
-  const ref = useRef()
+  const target = useRef()
   const local = useRef()
   const { provide, type } = useContext(context)
   const lifecycle = provide({ onEnter, onLeave, onOver, onDrop })
@@ -38,16 +38,16 @@ export default (types, { onEnter, onLeave, onOver, onDrop }) => {
       lifecycle.onOver(...args)
     })
 
-    ref.current.addEventListener("mousemove", mousemove)
-    ref.current.addEventListener("mouseleave", mouseleave)
-    ref.current.addEventListener("mouseup", mouseup)
+    target.current.addEventListener("mousemove", mousemove)
+    target.current.addEventListener("mouseleave", mouseleave)
+    target.current.addEventListener("mouseup", mouseup)
 
     return () => {
-      ref.current.removeEventListener("mousemove", mousemove)
-      ref.current.removeEventListener("mouseleave", mouseleave)
-      ref.current.removeEventListener("mouseup", mouseup)
+      target.current.removeEventListener("mousemove", mousemove)
+      target.current.removeEventListener("mouseleave", mouseleave)
+      target.current.removeEventListener("mouseup", mouseup)
     }
-  }, [ref, type, types, onEnter, onLeave, onOver, onDrop])
+  }, [target, type, types, onEnter, onLeave, onOver, onDrop])
 
-  return ref
+  return target
 }

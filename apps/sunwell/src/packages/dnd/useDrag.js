@@ -3,7 +3,7 @@ import { context } from "./state"
 import * as dom from "./dom"
 
 export default (type, { onStart, onMove, onEnd }) => {
-  const trigger = useRef()
+  const source = useRef()
   const local = useRef()
   const connect = useRef()
   const { provide, start, reset } = useContext(context)
@@ -32,7 +32,7 @@ export default (type, { onStart, onMove, onEnd }) => {
     }
 
     const mouseup = () => {
-      // trigger.current && (trigger.current.style["pointer-events"] = "")
+      // source.current && (source.current.style["pointer-events"] = "")
 
       document.removeEventListener("mousemove", mousemove)
       document.removeEventListener("mouseup", mouseup)
@@ -47,15 +47,15 @@ export default (type, { onStart, onMove, onEnd }) => {
     const mousedown = e => {
       if (e.which !== 1) return
 
-      // do not triggering "onEnter" drop events in case trigger is onmounted on drag start
-      // trigger.current.style["pointer-events"] = "none"
+      // do not triggering "onEnter" drop events in case source is onmounted on drag start
+      // source.current.style["pointer-events"] = "none"
 
       document.addEventListener("mousemove", mousemove)
       document.addEventListener("mouseup", mouseup)
     }
 
     connect.current = () => {
-      trigger.current?.addEventListener("mousedown", mousedown)
+      source.current?.addEventListener("mousedown", mousedown)
       if (local.current) {
         document.addEventListener("mousemove", mousemove)
         document.addEventListener("mouseup", mouseup)
@@ -64,16 +64,16 @@ export default (type, { onStart, onMove, onEnd }) => {
     connect.current()
 
     return () => {
-      trigger.current?.removeEventListener("mousedown", mousedown)
+      source.current?.removeEventListener("mousedown", mousedown)
       if (local.current) {
         document.removeEventListener("mousemove", mousemove)
         document.removeEventListener("mouseup", mouseup)
       }
     }
-  }, [local, trigger, type, start, reset, onStart, onMove, onEnd])
+  }, [local, source, type, start, reset, onStart, onMove, onEnd])
 
   return node => {
-    trigger.current = node
+    source.current = node
     connect.current && connect.current()
   }
 }
@@ -82,8 +82,6 @@ const createAction = (
   { clientX, clientY, pageX, pageY },
   { startX, startY }
 ) => ({
-  pageX,
-  pageY,
   clientX,
   clientY,
   deltaX: clientX - startX,
