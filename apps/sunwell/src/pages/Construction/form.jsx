@@ -1,22 +1,27 @@
 // Consider moving to a separate place
 import React, { createContext, useContext, useState } from "react"
 import { ValidationError } from "yup"
-import { context as configContext } from "./Configuration"
 
-const context = createContext({})
+const setupContext = createContext({})
+const valuesContext = createContext({})
 
-export default function Form({ validationSchema, children }) {
-  const values = useContext(configContext)
-
+export function SetupProvider({ children, validationSchema }) {
   return (
-    <context.Provider value={{ values, validationSchema }}>
+    <setupContext.Provider value={{ validationSchema }}>
       {children}
-    </context.Provider>
+    </setupContext.Provider>
+  )
+}
+
+export function ValuesProvider({ children, values }) {
+  return (
+    <valuesContext.Provider value={values}>{children}</valuesContext.Provider>
   )
 }
 
 export function Field({ name, onChange, component: Component, ...props }) {
-  const { values, validationSchema } = useContext(context)
+  const values = useContext(valuesContext)
+  const { validationSchema } = useContext(setupContext)
   const [error, setError] = useState(null)
   const value = values[name]
 

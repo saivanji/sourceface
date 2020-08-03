@@ -1,2 +1,2 @@
 export { default } from "./Grid"
-export { default as GridProvider } from "./Provider"
+export { default as GrillProvider } from "./Provider"

@@ -1,4 +1,9 @@
-import { values } from "ramda"
+import { values, mapObjIndexed } from "ramda"
+
+export const transformModules = mapObjIndexed((value, key) => ({
+  ...value,
+  type: key,
+}))
 
 export const createLayout = modules =>
   modules.reduce(

@@ -5,7 +5,7 @@ import { Row, Label } from "packages/kit"
 import styles from "./index.scss"
 
 // every module should have correspoding loader(depending on type)
-function TextModule({ config, expression }) {
+export const Root = function TextModule({ config, expression }) {
   return (
     <span
       className={styles.root}
@@ -23,11 +23,11 @@ function TextModule({ config, expression }) {
   )
 }
 
-TextModule.Configuration = function TextModuleConfiguration({
+export const Configuration = function TextModuleConfiguration({
   components: { Form, Input, Select },
 }) {
   return (
-    <Form validationSchema={TextModule.validationSchema}>
+    <Form validationSchema={validationSchema}>
       <Row>
         <Label title="Text">
           <Input name="value" type="text" />
@@ -95,7 +95,7 @@ const optionsProps = Object.keys({ ...options }).reduce(
   {}
 )
 
-TextModule.defaultValues = {
+export const defaultValues = {
   value: "Hello world",
   fontSize: system.fontSizes.lg,
   fontWeight: system.fontWeights.regular,
@@ -105,7 +105,7 @@ TextModule.defaultValues = {
   color: "#000",
 }
 
-TextModule.validationSchema = yup.object().shape({
+export const validationSchema = yup.object().shape({
   value: yup.string().required(),
   fontSize: yup.string().oneOf(Object.keys(options.fontSizes)).required(),
   fontWeight: yup.string().oneOf(Object.keys(options.fontWeights)).required(),
@@ -115,4 +115,7 @@ TextModule.validationSchema = yup.object().shape({
   color: yup.string().max(5).required(),
 })
 
-export default TextModule
+export const size = {
+  w: 4,
+  h: 2,
+}

@@ -1,6 +1,6 @@
 import React, { forwardRef, useState, useCallback } from "react"
 import { useDrag } from "../../dnd"
-import Grid, { GridProvider } from "../"
+import Grill, { GrillProvider } from "../"
 
 const data1 = {
   bob: {
@@ -194,7 +194,7 @@ const Card = forwardRef(({ children, style }, ref) => {
 const Element = ({ children }) => {
   const [preview, setPreview] = useState(null)
 
-  const onStart = useCallback(
+  const handleStart = useCallback(
     () => ({
       id: "test",
       unit: {
@@ -209,19 +209,19 @@ const Element = ({ children }) => {
     []
   )
 
-  const onMove = useCallback((transfer, { clientX: x, clientY: y }) => {
+  const handleMove = useCallback((transfer, { clientX: x, clientY: y }) => {
     setPreview({
       x,
       y,
     })
   }, [])
 
-  const onEnd = useCallback(() => setPreview(null), [])
+  const handleEnd = useCallback(() => setPreview(null), [])
 
   const ref = useDrag("outer", {
-    onStart,
-    onMove,
-    onEnd,
+    onStart: handleStart,
+    onMove: handleMove,
+    onEnd: handleEnd,
   })
 
   return (
@@ -250,7 +250,7 @@ const Element = ({ children }) => {
 
 export default () => {
   return (
-    <GridProvider>
+    <GrillProvider>
       <div style={{ padding: 30 }}>
         <Element>First</Element>
       </div>
@@ -268,16 +268,16 @@ export default () => {
         <Area data={data2} style={{ borderRight: "1px solid #bbb" }} />
         <Area data={data3} />
       </div>
-    </GridProvider>
+    </GrillProvider>
   )
 }
 
 const Area = ({ data, style }) => {
   const [layout, setLayout] = useState(data)
-  const onChange = useCallback(event => setLayout(event.layout), [])
+  const handleChange = event => setLayout(event.layout)
 
   return (
-    <Grid
+    <Grill
       style={{ width: "33.3%", ...style }}
       rowHeight={80}
       rows={30}
@@ -303,7 +303,7 @@ const Area = ({ data, style }) => {
           </span>
         </div>
       )}
-      onChange={onChange}
+      onChange={handleChange}
       components={{
         Box,
         OuterItem,

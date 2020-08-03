@@ -4,7 +4,7 @@ import moment from "moment"
 import { Table, Pagination, Row, Label, Section } from "packages/kit"
 import styles from "./index.scss"
 
-function TableModule({ config, expression }) {
+export const Root = function TableModule({ config, expression }) {
   const [page, setPage] = useState(0)
   const limit = 10
   const offset = limit * page
@@ -78,24 +78,12 @@ function TableModule({ config, expression }) {
   )
 }
 
-TableModule.defaultValues = {
-  items: "",
-  pagination: true,
-}
-
-TableModule.validationSchema = yup.object().shape({
-  items: yup.string(),
-  limit: yup.string().required(),
-  pagination: yup.boolean().required(),
-  // TODO: depending whether pagination is selected, other values are required
-})
-
-TableModule.Configuration = function TableModuleConfiguration({
+export const Configuration = function TableModuleConfiguration({
   components: { Form, Input, Checkbox },
   config,
 }) {
   return (
-    <Form validationSchema={TableModule.validationSchema}>
+    <Form validationSchema={validationSchema}>
       <Section title="Basic">
         <Row>
           <Label title="Data">
@@ -131,4 +119,19 @@ TableModule.Configuration = function TableModuleConfiguration({
   )
 }
 
-export default TableModule
+export const defaultValues = {
+  items: "",
+  pagination: true,
+}
+
+export const validationSchema = yup.object().shape({
+  items: yup.string(),
+  limit: yup.string().required(),
+  pagination: yup.boolean().required(),
+  // TODO: depending whether pagination is selected, other values are required
+})
+
+export const size = {
+  w: 8,
+  h: 6,
+}

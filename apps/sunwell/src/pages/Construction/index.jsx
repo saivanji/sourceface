@@ -1,16 +1,24 @@
 // order creation will be in a modal
 
-import React, { createContext, useState } from "react"
-import { keys } from "ramda"
+import React, { createContext, useState, useMemo } from "react"
+import { values } from "ramda"
 import { useQuery, useMutation } from "urql"
-import camelcaseKeys from "camelcase-keys"
-import { useBooleanState } from "hooks/index"
-import { Editor, Frame, Grid, Module, Modules } from "components/index"
+import { GrillProvider } from "packages/grid"
 import * as modules from "packages/modules"
+import { Input, Select, Checkbox } from "packages/kit"
+import { useBooleanState } from "hooks/index"
+import {
+  Configuration,
+  Editor,
+  Frame,
+  Grid,
+  Module,
+  Modules,
+} from "components/index"
 import * as expression from "./expression"
 import * as schema from "./schema"
-import Configuration from "./Configuration"
-import { createLayout, reverseLayout } from "./utils"
+import * as form from "./form"
+import { createLayout, reverseLayout, transformModules } from "./utils"
 
 /* <div className={styles.panel}> */
 /*   <span className={styles.title}>Orders</span> */
@@ -22,9 +30,10 @@ const path = [
   { title: "Users", link: "#" },
 ]
 
-const modulesMap = camelcaseKeys(modules)
-const modulesTypes = keys(modulesMap)
+const modulesDict = transformModules(modules)
+const modulesList = values(modulesDict)
 
+// TODO: move to "expression.js"
 export const context = createContext({})
 // TODO: think about real use case
 
@@ -51,49 +60,94 @@ export default () => {
 function EditorProvider({ modules, onClose }) {
   const [selectedId, setSelectedId] = useState(null)
   const [, addModule] = useMutation(schema.addModule)
+  const [{ fetching: isUpdatingModule }, updateModule] = useMutation(
+    schema.updateModule
+  )
+  const [{ fetching: isUpdatingGrid }, updateModulesPositions] = useMutation(
+    schema.updateModulesPositions
+  )
 
   const handleModuleClick = type =>
-    addModule({ type, config: modulesMap[type].defaultValues })
+    addModule({ type, config: modulesDict[type].defaultValues })
+
+  // TODO: implement debouncing
+  const handleModuleUpdate = (id, key, value) =>
+    updateModule({ moduleId: id, key, value })
+
+  const handleGridChange = event =>
+    event.type === "drag" || event.type === "resize"
+      ? updateModulesPositions({ positions: reverseLayout(event.layout) })
+      : event.type === "enter" && console.log(event)
 
   return (
-    <Editor
-      right={
-        selectedId ? (
-          <ConfigurationProvider id={selectedId} modules={modules} />
-        ) : (
-          <Modules types={modulesTypes} onModuleClick={handleModuleClick} />
-        )
-      }
-      onClose={onClose}
-    >
-      <GridProvider
-        isEditing
-        modules={modules}
-        selectedId={selectedId}
-        onModuleClick={setSelectedId}
-      />
-    </Editor>
+    <GrillProvider>
+      <Editor
+        isSaving={isUpdatingGrid || isUpdatingModule}
+        right={
+          selectedId ? (
+            <ConfigurationProvider
+              id={selectedId}
+              modules={modules}
+              onModuleUpdate={handleModuleUpdate}
+            />
+          ) : (
+            <Modules modules={modulesList} onModuleClick={handleModuleClick} />
+          )
+        }
+        onClose={onClose}
+      >
+        <GridProvider
+          isEditing
+          modules={modules}
+          selectedId={selectedId}
+          onModuleClick={setSelectedId}
+          onChange={handleGridChange}
+        />
+      </Editor>
+    </GrillProvider>
   )
 }
 
-function ConfigurationProvider({ id, modules }) {
+function ConfigurationProvider({ id, modules, onModuleUpdate }) {
   const module = modules?.find(m => m.id === id)
+
+  const components = useMemo(() => {
+    const wrap = Component =>
+      form.populateField(Component, (...args) => onModuleUpdate(id, ...args))
+
+    return {
+      Form: form.SetupProvider,
+      Input: wrap(Input),
+      Select: wrap(Select),
+      Checkbox: wrap(Checkbox),
+    }
+  }, [id])
+
+  const Component = modulesDict[module.type].Configuration
 
   return !module ? (
     "Loading..."
   ) : (
-    <Configuration
-      module={module}
-      component={modulesMap[module.type].Configuration}
-    />
+    <Configuration>
+      <form.ValuesProvider values={module.config}>
+        <Component
+          key={module.id}
+          config={module.config}
+          components={components}
+        />
+      </form.ValuesProvider>
+    </Configuration>
   )
 }
 
-function GridProvider({ modules, isEditing, selectedId, onModuleClick }) {
-  const [, updateModulesPositions] = useMutation(schema.updateModulesPositions)
+function GridProvider({
+  modules,
+  isEditing,
+  selectedId,
+  onChange,
+  onModuleClick,
+}) {
   const layout = modules && createLayout(modules)
-  const onUpdateModulesPositions = layout =>
-    updateModulesPositions({ positions: reverseLayout(layout) })
 
   return !layout ? (
     "Loading..."
@@ -101,7 +155,7 @@ function GridProvider({ modules, isEditing, selectedId, onModuleClick }) {
     <Grid
       layout={layout}
       isEditable={isEditing}
-      onChange={onUpdateModulesPositions}
+      onChange={onChange}
       renderItem={module => (
         <Module
           key={module.id}
@@ -109,7 +163,7 @@ function GridProvider({ modules, isEditing, selectedId, onModuleClick }) {
           isSelected={isEditing && selectedId === module.id}
           data={module}
           expression={expression}
-          component={modulesMap[module.type]}
+          component={modulesDict[module.type].Root}
           onClick={onModuleClick}
         />
       )}

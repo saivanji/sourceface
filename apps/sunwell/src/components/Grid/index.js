@@ -1,18 +1,16 @@
 import React, { forwardRef } from "react"
-import Grid from "packages/grid"
+import Grill from "packages/grid"
 // import styles from "./index.scss"
 
 export default function ({ isEditable, layout, onChange, renderItem }) {
-  const handleChange = event => onChange(event.layout)
-
   return (
-    <Grid
+    <Grill
       rows={50}
       cols={10}
       rowHeight={80}
       isStatic={!isEditable}
       layout={layout}
-      onChange={handleChange}
+      onChange={onChange}
       renderItem={renderItem}
       components={{
         Box,
