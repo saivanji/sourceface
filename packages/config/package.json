@@ -1,6 +1,6 @@
 {
   "name": "@sourceface/config",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "author": "aiven715 <aiven715@gmail.com>",
   "license": "MIT",
   "files": [
@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "autoprefixer": "^9.7.6",
+    "babel-eslint": "^10.1.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-react": "^7.19.0",
     "postcss-preset-env": "^6.7.0"
