@@ -9,11 +9,13 @@ export default (
   containerRef,
   info,
   changeId,
+  // onEnter, onRestack, onFinish, onChange // think more of these names
   { onLayoutEdit, onLayoutUpdate, onLayoutReset, onChange }
 ) => {
   const [dropping, setDropping] = useState(null)
   const change = useCall()
 
+  // provideRect
   const withRect = useCallback(
     ({ rectCounted }) => {
       const now = Date.now()
@@ -28,6 +30,7 @@ export default (
     [containerRef]
   )
 
+  // move...
   const onMove = useCallback(
     (transfer, { type, clientX, clientY }) => {
       const { left, top } = utils.cursor(clientX, clientY, transfer.rect)
@@ -61,6 +64,7 @@ export default (
     [initialLayout, info, onLayoutUpdate]
   )
 
+  // handleEnter
   const onEnter = useCallback(
     (transfer, { type, clientX, clientY }) => {
       const { id, leaved, shiftX, shiftY } = transfer
@@ -90,11 +94,13 @@ export default (
     [containerRef, initialLayout, layout, info, onLayoutEdit, onLayoutUpdate]
   )
 
+  // finish
   const onFinish = useCallback(() => {
     onLayoutReset()
     setDropping(null)
   }, [onLayoutReset])
 
+  // handleLeave
   const onLeave = useCallback(
     ({ id, leaved }, { type }) => {
       onFinish()
@@ -112,6 +118,7 @@ export default (
     [layout, changeId, onFinish]
   )
 
+  // handleDrop
   const onDrop = useCallback(
     ({ id, leaved }, { type }) => {
       onFinish()
@@ -144,6 +151,7 @@ export default (
     [layout, change, onFinish, onChange]
   )
 
+  // handleOver
   const onOver = useMiddleware(withRect, onMove)
 
   const ref = useDrop(["inner", "outer"], {
@@ -176,6 +184,7 @@ const move = (
 
   if (utils.coordsEqual(unit, nextUnit)) return
 
+  // onRestack
   onLayoutUpdate(utils.put(id, nextUnit, initialLayout))
 
   return {

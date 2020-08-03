@@ -1,3 +1,4 @@
+// consider moving to a separate place
 import { useQuery } from "urql"
 import { keys } from "ramda"
 import { useContext } from "react"

@@ -1,4 +1,4 @@
-import React, { createContext, useMemo, useCallback } from "react"
+import React, { createContext } from "react"
 import { useMutation } from "urql"
 import { Input, Select, Checkbox, Tabs } from "packages/kit"
 import Form, { populateField } from "./Form"
@@ -8,21 +8,16 @@ export const context = createContext({})
 
 export default function Configuration({ module, component: Component }) {
   const [, updateModule] = useMutation(schema.updateModule)
-  const onSave = useCallback(
-    // TODO: implement debouncing
-    (key, value) => updateModule({ moduleId: module.id, key, value }),
-    [module.id]
-  )
+  // TODO: implement debouncing
+  const handleSave = (key, value) =>
+    updateModule({ moduleId: module.id, key, value })
 
-  const components = useMemo(
-    () => ({
-      Form,
-      Input: populateField(Input, onSave),
-      Select: populateField(Select, onSave),
-      Checkbox: populateField(Checkbox, onSave),
-    }),
-    [onSave]
-  )
+  const components = {
+    Form,
+    Input: populateField(Input, handleSave),
+    Select: populateField(Select, handleSave),
+    Checkbox: populateField(Checkbox, handleSave),
+  }
 
   // TODO: should tabs be in a different place?
   return (

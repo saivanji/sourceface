@@ -1,5 +1,4 @@
 import { createClient, dedupExchange, fetchExchange } from "urql"
-import { mergeRight } from "ramda"
 import { cacheExchange } from "@urql/exchange-graphcache"
 // import { populateExchange } from "@urql/exchange-populate"
 

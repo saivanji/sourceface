@@ -1,21 +1,16 @@
 // order creation will be in a modal
 
-import React, {
-  createElement,
-  createContext,
-  useState,
-  useMemo,
-  useCallback,
-} from "react"
-import { values } from "ramda"
+import React, { createContext, useState } from "react"
+import { keys } from "ramda"
 import { useQuery, useMutation } from "urql"
+import camelcaseKeys from "camelcase-keys"
 import { useBooleanState } from "hooks/index"
-import { Frame, Editor, Module, Grid } from "components/index"
+import { Editor, Frame, Grid, Module, Modules } from "components/index"
 import * as modules from "packages/modules"
 import * as expression from "./expression"
 import * as schema from "./schema"
 import Configuration from "./Configuration"
-import { createModulesMap, toPositions, reversePositions } from "./utils"
+import { createLayout, reverseLayout } from "./utils"
 
 /* <div className={styles.panel}> */
 /*   <span className={styles.title}>Orders</span> */
@@ -27,7 +22,8 @@ const path = [
   { title: "Users", link: "#" },
 ]
 
-const modulesMap = createModulesMap(modules)
+const modulesMap = camelcaseKeys(modules)
+const modulesTypes = keys(modulesMap)
 
 export const context = createContext({})
 // TODO: think about real use case
@@ -37,86 +33,80 @@ export default () => {
   const [result] = useQuery({
     query: schema.root,
   })
-  const [, addModule] = useMutation(schema.addModule)
-  const [isEditing, enableEditing, disableEditing] = useBooleanState(false)
-  const [selectedModuleId, setSeletedModuleId] = useState()
-  const onCloseEditor = useCallback(() => {
-    disableEditing()
-    setSeletedModuleId(null)
-  }, [disableEditing, setSeletedModuleId])
-  const onModuleClick = useCallback(id => isEditing && setSeletedModuleId(id), [
-    isEditing,
-    setSeletedModuleId,
-  ])
-  const onAddModule = useCallback(
-    type => addModule({ type, config: modulesMap[type].defaultValues }),
-    []
-  )
-  const selectedModule = useMemo(
-    () => result.data?.modules.find(m => m.id === selectedModuleId),
-    [result.data?.modules, selectedModuleId]
-  )
-  const Parent = isEditing ? Editor : Frame
-  const availableModules = useMemo(() => values(modules), [])
+  const [isEditing, editOn, editOff] = useBooleanState(false)
 
-  return Parent.renderRoot(
-    <>
-      {!isEditing ? (
-        <Frame.Elements
-          path={path}
-          actions={<button onClick={enableEditing}>Edit</button>}
-        />
+  return (
+    <context.Provider value={result.data}>
+      {isEditing ? (
+        <EditorProvider modules={result.data?.modules} onClose={editOff} />
       ) : (
-        <Editor.Elements
-          availableModules={availableModules}
-          isLoadingModules={!result.data}
-          configuration={
-            selectedModule && (
-              <Configuration
-                module={selectedModule}
-                component={modulesMap[selectedModule.type].Configuration}
-              />
-            )
-          }
-          onClose={onCloseEditor}
-          onAddModule={onAddModule}
-        />
+        <Frame path={path} actions={<button onClick={editOn}>Edit</button>}>
+          <GridProvider isEditing={false} modules={result.data?.modules} />
+        </Frame>
       )}
-      {!result.data
-        ? "Page is loading..."
-        : Parent.renderChildren(
-            <context.Provider value={result.data}>
-              <Content
-                modules={result.data.modules}
-                isEditing={isEditing}
-                selectedModuleId={selectedModuleId}
-                onModuleClick={onModuleClick}
-              />
-            </context.Provider>
-          )}
-    </>
+    </context.Provider>
   )
 }
 
-function Content({ modules, isEditing, selectedModuleId, onModuleClick }) {
-  const [, updateModulesPositions] = useMutation(schema.updateModulesPositions)
-  const positions = useMemo(() => toPositions(modules), [modules])
-  const onUpdateModulesPositions = useCallback(
-    positions =>
-      updateModulesPositions({ positions: reversePositions(positions) }),
-    []
-  )
+function EditorProvider({ modules, onClose }) {
+  const [selectedId, setSelectedId] = useState(null)
+  const [, addModule] = useMutation(schema.addModule)
+
+  const handleModuleClick = type =>
+    addModule({ type, config: modulesMap[type].defaultValues })
 
   return (
+    <Editor
+      right={
+        selectedId ? (
+          <ConfigurationProvider id={selectedId} modules={modules} />
+        ) : (
+          <Modules types={modulesTypes} onModuleClick={handleModuleClick} />
+        )
+      }
+      onClose={onClose}
+    >
+      <GridProvider
+        isEditing
+        modules={modules}
+        selectedId={selectedId}
+        onModuleClick={setSelectedId}
+      />
+    </Editor>
+  )
+}
+
+function ConfigurationProvider({ id, modules }) {
+  const module = modules?.find(m => m.id === id)
+
+  return !module ? (
+    "Loading..."
+  ) : (
+    <Configuration
+      module={module}
+      component={modulesMap[module.type].Configuration}
+    />
+  )
+}
+
+function GridProvider({ modules, isEditing, selectedId, onModuleClick }) {
+  const [, updateModulesPositions] = useMutation(schema.updateModulesPositions)
+  const layout = modules && createLayout(modules)
+  const onUpdateModulesPositions = layout =>
+    updateModulesPositions({ positions: reverseLayout(layout) })
+
+  return !layout ? (
+    "Loading..."
+  ) : (
     <Grid
-      positions={positions}
+      layout={layout}
       isEditable={isEditing}
       onChange={onUpdateModulesPositions}
       renderItem={module => (
         <Module
           key={module.id}
           isEditable={isEditing}
-          isSelected={isEditing && selectedModuleId === module.id}
+          isSelected={isEditing && selectedId === module.id}
           data={module}
           expression={expression}
           component={modulesMap[module.type]}

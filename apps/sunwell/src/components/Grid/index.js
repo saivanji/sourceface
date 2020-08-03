@@ -1,11 +1,9 @@
-import React, { forwardRef, useCallback } from "react"
+import React, { forwardRef } from "react"
 import Grid from "packages/grid"
 // import styles from "./index.scss"
 
-export default function ({ isEditable, positions, onChange, renderItem }) {
-  const onChangeWrap = useCallback(event => onChange(event.layout), [])
-
-  console.log(positions)
+export default function ({ isEditable, layout, onChange, renderItem }) {
+  const handleChange = event => onChange(event.layout)
 
   return (
     <Grid
@@ -13,8 +11,8 @@ export default function ({ isEditable, positions, onChange, renderItem }) {
       cols={10}
       rowHeight={80}
       isStatic={!isEditable}
-      layout={positions}
-      onChange={onChangeWrap}
+      layout={layout}
+      onChange={handleChange}
       renderItem={renderItem}
       components={{
         Box,

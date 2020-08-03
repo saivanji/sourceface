@@ -6,11 +6,10 @@ import ReactDOM from "react-dom"
 import { Provider as ClientProvider } from "urql"
 import * as pages from "./pages"
 import client from "./graphql"
-import GridExample from "./packages/grid/examples"
 
 ReactDOM.render(
   <ClientProvider value={client}>
-    <GridExample />
+    <pages.Construction />
   </ClientProvider>,
   document.getElementById("root")
 )

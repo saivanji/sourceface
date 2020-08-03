@@ -1,19 +1,6 @@
-import { keys, values } from "ramda"
-import camelCase from "camelcase"
+import { values } from "ramda"
 
-export const createModulesMap = modules =>
-  keys(modules).reduce((acc, key) => {
-    const Module = modules[key]
-
-    Module.type = camelCase(key)
-
-    return {
-      ...acc,
-      [Module.type]: Module,
-    }
-  }, {})
-
-export const toPositions = modules =>
+export const createLayout = modules =>
   modules.reduce(
     (acc, { position, ...data }) => ({
       ...acc,
@@ -22,8 +9,8 @@ export const toPositions = modules =>
     {}
   )
 
-export const reversePositions = positions =>
-  values(positions).reduce(
+export const reverseLayout = layout =>
+  values(layout).reduce(
     (acc, { w, h, x, y, data }) => [...acc, { id: data.id, w, h, x, y }],
     []
   )

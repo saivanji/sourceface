@@ -8,6 +8,7 @@ export default (id, layout, info, containerRef) => {
   const unit = layout[id]
   const bounds = useApply(utils.toBounds, [unit, info])
 
+  // handleStart
   const onStart = useCallback(
     (transfer, { clientX, clientY }) => {
       const rect = containerRef.current.getBoundingClientRect()
@@ -26,6 +27,7 @@ export default (id, layout, info, containerRef) => {
     [containerRef, id, unit, bounds]
   )
 
+  // handleMove
   const onMove = useCallback(
     ({ shiftX, shiftY }, { clientX, clientY }) => {
       const nextBounds = {
@@ -39,6 +41,7 @@ export default (id, layout, info, containerRef) => {
     [bounds]
   )
 
+  // handleEnd
   const onEnd = useCallback(() => setPreviewStyle(null), [])
 
   const ref = useDrag("inner", {

@@ -1,3 +1,4 @@
+// Consider moving to a separate place
 import React, { createContext, useContext, useState } from "react"
 import { ValidationError } from "yup"
 import { context as configContext } from "./Configuration"

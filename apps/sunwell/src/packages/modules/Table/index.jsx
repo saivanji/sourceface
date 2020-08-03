@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react"
+import React, { useState } from "react"
 import * as yup from "yup"
 import moment from "moment"
 import { Table, Pagination, Row, Label, Section } from "packages/kit"
@@ -9,15 +9,8 @@ function TableModule({ config, expression }) {
   const limit = 10
   const offset = limit * page
   // TODO: how to pass "limit" variable from `Value` in one evaluation loop?
-  const constants = useMemo(() => ({ page, limit, offset }), [
-    page,
-    limit,
-    offset,
-  ])
-  const expressions = useMemo(
-    () => [config.items, config.count, config.limit],
-    [config]
-  )
+  const constants = { page, limit, offset }
+  const expressions = [config.items, config.count, config.limit]
 
   if (!config.items) {
     return <div>No items</div>

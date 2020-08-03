@@ -1,12 +1,6 @@
-import React, {
-  useRef,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-} from "react"
+import React, { useRef, useState, useEffect } from "react"
 import { useWrapped, useRegister } from "./Provider"
-import { useDrop, DndProvider } from "../dnd"
+import { DndProvider } from "../dnd"
 import { useApply } from "./hooks"
 import * as utils from "./utils"
 import { Item, OuterItem } from "./components"
@@ -46,6 +40,7 @@ function Grid({
   const [
     layout,
     isEditingLayout,
+    // rename
     onLayoutEdit,
     onLayoutUpdate,
     onLayoutReset,
@@ -160,6 +155,7 @@ const ItemProvider = ({
     info,
     containerRef,
     {
+      // onStart: onResizeStart
       onLayoutEdit,
       onLayoutUpdate,
       onLayoutReset,

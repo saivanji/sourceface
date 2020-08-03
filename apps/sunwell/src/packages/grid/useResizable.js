@@ -31,10 +31,12 @@ const useResizableAngle = (
   info,
   containerRef,
   setPreviewStyle,
+  // onStart, onRestack, onEnd, onChange
   { onLayoutEdit, onLayoutUpdate, onLayoutReset, onChange }
 ) => {
   const unit = initialLayout[id]
 
+  // handleStart
   const onStart = useCallback(() => {
     const { x, y, w, h } = unit
     const start = utils.toBounds(unit, info)
@@ -43,6 +45,7 @@ const useResizableAngle = (
     return { coords: { w, h, x, y }, start }
   }, [unit, info, onLayoutEdit])
 
+  // handleMove
   const onMove = useCallback(
     ({ coords, start }, { deltaX, deltaY }) => {
       const nextBounds = utils.resize(angle, deltaX, deltaY, start, info)
@@ -62,6 +65,7 @@ const useResizableAngle = (
     [angle, id, initialLayout, info, setPreviewStyle, onLayoutUpdate]
   )
 
+  // handleEnd
   const onEnd = useCallback(() => {
     onLayoutReset()
     setPreviewStyle(null)
