@@ -119,7 +119,7 @@ export const Configuration = function TableModuleConfiguration({
   )
 }
 
-export const defaultValues = {
+export const defaultConfig = {
   items: "",
   pagination: true,
 }

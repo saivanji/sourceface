@@ -66,11 +66,14 @@ const useResizableAngle = (
   )
 
   // handleEnd
-  const onEnd = useCallback(() => {
-    onLayoutReset()
-    setPreviewStyle(null)
-    onChange({ type: "resize", layout, id })
-  }, [id, layout, setPreviewStyle, onLayoutReset, onChange])
+  const onEnd = useCallback(
+    (transfer, { type }) => {
+      onLayoutReset()
+      setPreviewStyle(null)
+      onChange(utils.createEvent("resize", layout, id, type, transfer))
+    },
+    [id, layout, setPreviewStyle, onLayoutReset, onChange]
+  )
 
   return useDrag("angle", { onStart, onMove, onEnd })
 }

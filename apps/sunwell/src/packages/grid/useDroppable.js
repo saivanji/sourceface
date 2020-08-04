@@ -120,30 +120,29 @@ export default (
 
   // handleDrop
   const onDrop = useCallback(
-    ({ id, leaved }, { type }) => {
+    (transfer, { type }) => {
+      const { id, leaved } = transfer
+
       onFinish()
 
       if (type === "outer") {
-        onChange({
-          type: "enter",
-          layout,
-          id,
-        })
+        onChange(utils.createEvent("enter", layout, id, type, transfer))
         return
       }
 
-      const event = {
-        type: leaved ? "enter" : "drag",
+      const event = utils.createEvent(
+        leaved ? "enter" : "drag",
         layout,
         id,
-      }
+        type,
+        transfer
+      )
 
       if (leaved) {
-        change(leaved.changeId, {
-          type: "leave",
-          layout: leaved.layout,
-          id: leaved.id,
-        })
+        change(
+          leaved.changeId,
+          utils.createEvent("leave", leaved.layout, leaved.id, type, transfer)
+        )
       }
 
       onChange(event)

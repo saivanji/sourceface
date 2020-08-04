@@ -67,17 +67,23 @@ function EditorProvider({ modules, onClose }) {
     schema.updateModulesPositions
   )
 
-  const handleModuleClick = type =>
-    addModule({ type, config: modulesDict[type].defaultValues })
-
   // TODO: implement debouncing
   const handleModuleUpdate = (id, key, value) =>
     updateModule({ moduleId: id, key, value })
 
-  const handleGridChange = event =>
-    event.type === "drag" || event.type === "resize"
-      ? updateModulesPositions({ positions: reverseLayout(event.layout) })
-      : event.type === "enter" && console.log(event)
+  const handleGridChange = event => {
+    if (event.name === "drag" || event.name === "resize") {
+      return updateModulesPositions({ positions: reverseLayout(event.layout) })
+    }
+
+    if (event.name === "enter" && event.sourceType === "outer") {
+      const { moduleType: type, unit: position } = event.transfer
+
+      // TODO: implement optimistic updates
+      // TODO: put all layout on creation because of the collisions(detach layout from modules and send 2 mutations - addModule and updateLayout?)
+      addModule({ type, config: modulesDict[type].defaultConfig, position })
+    }
+  }
 
   return (
     <GrillProvider>
@@ -91,7 +97,7 @@ function EditorProvider({ modules, onClose }) {
               onModuleUpdate={handleModuleUpdate}
             />
           ) : (
-            <Modules modules={modulesList} onModuleClick={handleModuleClick} />
+            <Modules modules={modulesList} />
           )
         }
         onClose={onClose}

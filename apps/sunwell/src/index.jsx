@@ -41,7 +41,7 @@ ReactDOM.render(
 // - add slug to modules. (after that modules can be created instantly with optimistic updates)
 //
 // Modules state
-// - 2 way binding vs 1 way binding, what's better? probably 2 way
+// - 2 way binding vs 1 way binding, what's better? probably 2 way. Most likely it will be done similar to redux with global state
 //
 //
 // Current:

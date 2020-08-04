@@ -205,3 +205,11 @@ export const cursor = (clientX, clientY, container) => ({
   left: clientX - container.left,
   top: clientY - container.top,
 })
+
+export const createEvent = (name, layout, id, sourceType, transfer) => ({
+  name,
+  layout,
+  id,
+  sourceType,
+  transfer,
+})
