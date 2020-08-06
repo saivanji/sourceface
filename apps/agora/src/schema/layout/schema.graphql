@@ -1,0 +1,17 @@
+scalar Positions
+
+type Layout {
+  id: Int!
+  positions: Positions!
+}
+
+type Position {
+  x: Int!
+  y: Int!
+  w: Int!
+  h: Int!
+}
+
+export type Mutation {
+  updateLayout(id: Int!, positions: Positions!)
+}

@@ -11,6 +11,7 @@ type Module {
   config: JSONObject!
 }
 
+# TODO: define type as scalar with js?
 type ModulePosition {
   x: Int!
   y: Int!
@@ -18,7 +19,7 @@ type ModulePosition {
   h: Int!
 }
 
-input ModulePositionInput {
+input SpecificModulePositionInput {
   id: Int!
   x: Int!
   y: Int!
@@ -26,10 +27,21 @@ input ModulePositionInput {
   h: Int!
 }
 
+input ModulePositionInput {
+  x: Int!
+  y: Int!
+  w: Int!
+  h: Int!
+}
+
 extend type Mutation {
-  addModule(type: ModuleType!, config: JSONObject!): Module!
+  addModule(
+    type: ModuleType!
+    config: JSONObject!
+    position: ModulePositionInput!
+  ): Module!
   updateModule(moduleId: Int!, key: String!, value: JSON!): Module!
-  updateModulesPositions(positions: [ModulePositionInput!]!): [Module!]!
+  updateModulesPositions(positions: [SpecificModulePositionInput!]!): [Module!]!
 }
 
 extend type Query {

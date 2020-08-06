@@ -4,8 +4,8 @@ const modules = async (parent, args, { pg }) => {
   return await moduleRepo.all(pg)
 }
 
-const addModule = async (parent, { type, config }, { pg }) => {
-  return await moduleRepo.create(type, config, pg)
+const addModule = async (parent, { type, config, position }, { pg }) => {
+  return await moduleRepo.create(type, config, position, pg)
 }
 
 const updateModule = async (parent, { moduleId, key, value }, { pg }) => {
@@ -14,6 +14,7 @@ const updateModule = async (parent, { moduleId, key, value }, { pg }) => {
 
     // TODO: perform validation of config input data depending on module type
     // also check on validationSchema whether it has "key" user tries to update
+    // define specific module config types with scalars(bounded with validationSchemas)?
 
     return await moduleRepo.updateConfig(
       moduleId,
