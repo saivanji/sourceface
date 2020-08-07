@@ -1,0 +1,10 @@
+type Page {
+  id: Int!
+  createdAt: DateTime!
+  title: String!
+  layout: Layout!
+}
+
+extend type Mutation {
+  createPage(title: String!): Page! @authenticated @privileged
+}

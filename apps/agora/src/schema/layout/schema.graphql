@@ -1,17 +1,34 @@
-scalar Positions
+scalar Position
 
 type Layout {
   id: Int!
-  positions: Positions!
+  createdAt: DateTime!
+  positions: [Position]
 }
 
 type Position {
+  id: Int!
+  x: Int!
+  y: Int!
+  w: Int!
+  h: Int!
+  content: PositionContent!
+}
+
+input type PositionInput {
+  id: Int!
   x: Int!
   y: Int!
   w: Int!
   h: Int!
 }
 
+enum PositionType {
+  module
+}
+
+union PositionContent = Module
+
 export type Mutation {
-  updateLayout(id: Int!, positions: Positions!)
+  updateLayout(layoutId: Int!, positions: [PositionInput]!): Layout!
 }

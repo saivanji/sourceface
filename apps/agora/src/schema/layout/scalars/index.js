@@ -1,5 +1,5 @@
-import Positions from "./Positions"
+import Position from "./Position"
 
 export default {
-  Positions,
+  Position,
 }

@@ -5,19 +5,18 @@ export const up = () =>
     `)
     await t.none(`
       CREATE TABLE modules(
-        id serial NOT NULL,
+        id serial PRIMARY KEY,
         created_at timestamp NOT NULL DEFAULT NOW(),
-        layout_id integer REFERENCES layouts(id) ON DELETE RESTRICT,
+        position_id integer UNIQUE NOT NULL REFERENCES positions(id) ON DELETE CASCADE,
         type module NOT NULL,
-        position json NOT NULL,
         config json NOT NULL
       )
     `)
     // for the case when module may have child layouts (tabs, sections and so on)
     await t.none(`
       CREATE TABLE modules_layouts(
-        module_id integer REFERENCES modules(id) ON DELETE CASCADE,
-        layout_id integer REFERENCES layouts(id) ON DELETE RESTRICT
+        module_id integer NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
+        layout_id integer UNIQUE NOT NULL REFERENCES layouts(id) ON DELETE CASCADE
       )
     `)
   })

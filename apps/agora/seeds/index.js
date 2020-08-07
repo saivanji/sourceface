@@ -1,5 +1,7 @@
-import sources from "./sources"
-import modules from "./modules"
+import createSources from "./sources"
+import createLayouts from "./layouts"
+import createPages from "./pages"
+import createModules from "./modules"
 
 const pgp = require("pg-promise")()
 
@@ -7,8 +9,10 @@ const db = pgp(process.env.DATABASE_URL)
 
 ;(async () => {
   try {
-    await sources(db, pgp)
-    await modules(db, pgp)
+    await createSources(db, pgp)
+    const layouts = await createLayouts(db, pgp)
+    await createPages(db, pgp, { layouts })
+    await createModules(db, pgp, { layouts })
     console.log("Seeds were applied successfully")
     process.exit(0)
   } catch (err) {

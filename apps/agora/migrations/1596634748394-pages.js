@@ -2,9 +2,9 @@ export const up = () =>
   global.pg.tx(async t => {
     await t.none(`
       CREATE TABLE pages(
-        id serial NOT NULL,
+        id serial PRIMARY KEY,
         created_at timestamp NOT NULL DEFAULT NOW(),
-        layout_id integer REFERENCES layouts(id) ON DELETE RESTRICT,
+        layout_id integer UNIQUE NOT NULL REFERENCES layouts(id) ON DELETE CASCADE,
         title text NOT NULL CHECK (
           title <> ''
         )
