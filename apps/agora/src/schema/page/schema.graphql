@@ -6,6 +6,16 @@ type Page {
   modules: [Module]
 }
 
+# extend type Mutation {
+#   createPage(title: String!): Page! @authenticated @privileged
+# }
+
+extend type Query {
+  page(pageId: Int!): Page!
+  #@authenticated
+}
+
 extend type Mutation {
-  createPage(title: String!): Page! @authenticated @privileged
+  # TODO: make sure all layouts related to that page are removed as well
+  removePage(pageId: Int!): Boolean
 }

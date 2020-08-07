@@ -1,4 +1,3 @@
-export const all = async pg => await pg.manyOrNone(sql.all)
 export const one = async (moduleId, pg) => await pg.one(sql.one, [moduleId])
 export const create = async (type, config, position, pg) =>
   await pg.one(sql.create, [type, config, position])
@@ -6,12 +5,10 @@ export const updateConfig = async (moduleId, config, pg) =>
   await pg.one(sql.updateConfig, [moduleId, config])
 export const updatePosition = async (moduleId, position, pg) =>
   await pg.one(sql.updatePosition, [moduleId, position])
+export const listByPageIds = async (pageIds, pg) =>
+  await pg.manyOrNone(sql.listByPageIds, [pageIds])
 
 const sql = {
-  all: `
-    SELECT * FROM modules
-    ORDER BY id ASC
-  `,
   one: `
     SELECT * FROM modules WHERE id = $1
   `,
@@ -26,5 +23,11 @@ const sql = {
   updatePosition: `
     UPDATE modules SET position = $2 WHERE id = $1
     RETURNING *
+  `,
+  listByPageIds: `
+    SELECT m.*, pg.id AS page_id FROM modules AS m
+    INNER JOIN positions AS p ON (p.id = m.position_id)
+    INNER JOIN pages AS pg ON (pg.layout_id = p.layout_id)
+    WHERE pg.id IN ($1:csv)
   `,
 }

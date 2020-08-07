@@ -7,6 +7,9 @@ import humps from "humps"
 const { DATABASE_URL } = process.env
 
 export const pgp = pgPromise({
+  query: ({ query }) => {
+    console.log(query)
+  },
   receive: data => {
     /**
      * Camelizing column names

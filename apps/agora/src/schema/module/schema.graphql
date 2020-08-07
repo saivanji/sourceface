@@ -13,14 +13,12 @@ type Module {
 }
 
 extend type Mutation {
-  addModule(
+  createModule(
     type: ModuleType!
     config: JSONObject!
     position: PositionInput!
   ): Module!
   updateModule(moduleId: Int!, key: String!, value: JSON!): Module!
-}
-
-extend type Query {
-  modules: [Module!]!
+  # TODO: make sure all related child layouts are removed as well
+  removeModule(moduleId: Int!): Boolean!
 }

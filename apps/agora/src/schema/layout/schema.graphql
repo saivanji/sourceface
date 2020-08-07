@@ -1,4 +1,4 @@
-input type PositionInputWithId {
+input PositionInputWithId {
   id: Int!
   x: Int!
   y: Int!
@@ -6,7 +6,7 @@ input type PositionInputWithId {
   h: Int!
 }
 
-input type PositionInput {
+input PositionInput {
   x: Int!
   y: Int!
   w: Int!
@@ -27,6 +27,6 @@ type Position {
   h: Int!
 }
 
-export type Mutation {
+extend type Mutation {
   updateLayout(layoutId: Int!, positions: [PositionInputWithId]!): Layout!
 }

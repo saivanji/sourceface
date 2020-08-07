@@ -7,6 +7,7 @@ import playground from "graphql-playground-middleware-express"
 // import connectPgSimple from "connect-pg-simple"
 import postgres from "./postgres"
 import schema from "./schema"
+import loaders from "./loaders"
 import connectDrivers from "./drivers"
 
 const { NODE_ENV, SUNWELL_HOST } = process.env
@@ -63,7 +64,7 @@ const app = express()
         pg,
         connections,
         // TODO: generate loaders in the same place as sources instead of at request time?
-        // loaders: loaders(pg)
+        loaders: loaders(pg),
       }),
     }))
   )

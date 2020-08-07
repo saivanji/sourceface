@@ -1,10 +1,6 @@
 import * as moduleRepo from "repos/module"
 
-const modules = async (parent, args, { pg }) => {
-  return await moduleRepo.all(pg)
-}
-
-const addModule = async (parent, { type, config, position }, { pg }) => {
+const createModule = async (parent, { type, config, position }, { pg }) => {
   return await moduleRepo.create(type, config, position, pg)
 }
 
@@ -24,24 +20,21 @@ const updateModule = async (parent, { moduleId, key, value }, { pg }) => {
   })
 }
 
-const updateModulesPositions = async (parent, { positions }, { pg }) => {
-  return await pg.tx(async t => {
-    return await Promise.all(
-      positions.map(
-        async ({ id, ...position }) =>
-          await moduleRepo.updatePosition(id, position, t)
-      )
-    )
-  })
-}
+// const updateModulesPositions = async (parent, { positions }, { pg }) => {
+//   return await pg.tx(async t => {
+//     return await Promise.all(
+//       positions.map(
+//         async ({ id, ...position }) =>
+//           await moduleRepo.updatePosition(id, position, t)
+//       )
+//     )
+//   })
+// }
 
 export default {
-  Query: {
-    modules,
-  },
   Mutation: {
-    addModule,
+    createModule,
     updateModule,
-    updateModulesPositions,
+    // updateModulesPositions,
   },
 }
