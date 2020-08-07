@@ -1,4 +1,17 @@
-scalar Position
+input type PositionInputWithId {
+  id: Int!
+  x: Int!
+  y: Int!
+  w: Int!
+  h: Int!
+}
+
+input type PositionInput {
+  x: Int!
+  y: Int!
+  w: Int!
+  h: Int!
+}
 
 type Layout {
   id: Int!
@@ -12,23 +25,8 @@ type Position {
   y: Int!
   w: Int!
   h: Int!
-  content: PositionContent!
 }
-
-input type PositionInput {
-  id: Int!
-  x: Int!
-  y: Int!
-  w: Int!
-  h: Int!
-}
-
-enum PositionType {
-  module
-}
-
-union PositionContent = Module
 
 export type Mutation {
-  updateLayout(layoutId: Int!, positions: [PositionInput]!): Layout!
+  updateLayout(layoutId: Int!, positions: [PositionInputWithId]!): Layout!
 }

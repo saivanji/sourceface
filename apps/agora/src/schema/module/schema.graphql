@@ -5,17 +5,18 @@ enum ModuleType {
 
 type Module {
   id: Int!
+  positionId: Int!
   createdAt: DateTime!
   type: ModuleType
-  position: Position!
   config: JSONObject!
+  layouts: [Layout]
 }
 
 extend type Mutation {
   addModule(
     type: ModuleType!
     config: JSONObject!
-    position: Position!
+    position: PositionInput!
   ): Module!
   updateModule(moduleId: Int!, key: String!, value: JSON!): Module!
 }
