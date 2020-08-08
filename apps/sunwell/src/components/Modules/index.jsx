@@ -3,8 +3,8 @@ import cx from "classnames"
 import { useDrag } from "packages/dnd"
 import styles from "./index.scss"
 
-export default function Modules({ modules }) {
-  return modules.map(module => (
+export default function Modules({ stock }) {
+  return stock.map(module => (
     <div key={module.type} className={styles.item}>
       <Card module={module} />
     </div>

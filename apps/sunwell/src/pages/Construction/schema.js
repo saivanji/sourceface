@@ -1,14 +1,23 @@
 export const root = `
-  query {
-    modules {
+  query ($pageId: Int!) {
+    page(pageId: $pageId) {
       id
-      type
-      config
-      position {
-        x
-        y
-        w
-        h
+      title
+      layout {
+        id
+        positions {
+          id
+          x
+          y
+          w
+          h
+        } 
+      }
+      modules {
+        id
+        positionId
+        type
+        config
       }
     }
     commands {
@@ -17,9 +26,9 @@ export const root = `
   }
 `
 
-export const addModule = `
+export const createModule = `
   mutation ($type: ModuleType!, $config: JSONObject!, $position: ModulePositionInput!) {
-    addModule(type: $type, config: $config, position: $position) {
+    createModule(type: $type, config: $config, position: $position) {
       id
       type
       config

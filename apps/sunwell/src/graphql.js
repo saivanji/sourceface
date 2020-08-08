@@ -45,12 +45,12 @@ export default createClient({
       },
       updates: {
         Mutation: {
-          addModule: (result, args, cache) => {
+          createModule: (result, args, cache) => {
             const query = "query { modules { id } }"
             cache.updateQuery({ query }, data => {
               return {
                 ...data,
-                modules: [...data.modules, result.addModule],
+                modules: [...data.modules, result.createModule],
               }
             })
           },

@@ -4,7 +4,7 @@ import React, { createContext, useState, useMemo } from "react"
 import { values } from "ramda"
 import { useQuery, useMutation } from "urql"
 import { GrillProvider } from "packages/grid"
-import * as modules from "packages/modules"
+import * as stockModules from "packages/modules"
 import { Input, Select, Checkbox } from "packages/kit"
 import { useBooleanState } from "hooks/index"
 import {
@@ -30,8 +30,8 @@ const path = [
   { title: "Users", link: "#" },
 ]
 
-const modulesDict = transformModules(modules)
-const modulesList = values(modulesDict)
+const stockModulesDict = transformModules(stockModules)
+const stockModulesList = values(stockModulesDict)
 
 // TODO: move to "expression.js"
 export const context = createContext({})
@@ -41,25 +41,27 @@ export const context = createContext({})
 export default () => {
   const [result] = useQuery({
     query: schema.root,
+    variables: { pageId: 1 },
   })
   const [isEditing, editOn, editOff] = useBooleanState(false)
+  const page = result.data?.page
 
   return (
     <context.Provider value={result.data}>
       {isEditing ? (
-        <EditorProvider modules={result.data?.modules} onClose={editOff} />
+        <EditorProvider page={page} onClose={editOff} />
       ) : (
         <Frame path={path} actions={<button onClick={editOn}>Edit</button>}>
-          <GridProvider isEditing={false} modules={result.data?.modules} />
+          <GridProvider isEditing={false} page={page} />
         </Frame>
       )}
     </context.Provider>
   )
 }
 
-function EditorProvider({ modules, onClose }) {
+function EditorProvider({ page, onClose }) {
   const [selectedId, setSelectedId] = useState(null)
-  const [, addModule] = useMutation(schema.addModule)
+  const [, createModule] = useMutation(schema.createModule)
   const [{ fetching: isUpdatingModule }, updateModule] = useMutation(
     schema.updateModule
   )
@@ -80,8 +82,12 @@ function EditorProvider({ modules, onClose }) {
       const { moduleType: type, unit: position } = event.transfer
 
       // TODO: implement optimistic updates
-      // TODO: put all layout on creation because of the collisions(detach layout from modules and send 2 mutations - addModule and updateLayout?)
-      addModule({ type, config: modulesDict[type].defaultConfig, position })
+      // TODO: put all layout on creation because of the collisions(detach layout from modules and send 2 mutations - createModule and updateLayout?)
+      createModule({
+        type,
+        config: stockModulesDict[type].defaultConfig,
+        position,
+      })
     }
   }
 
@@ -93,18 +99,18 @@ function EditorProvider({ modules, onClose }) {
           selectedId ? (
             <ConfigurationProvider
               id={selectedId}
-              modules={modules}
+              modules={page.modules}
               onModuleUpdate={handleModuleUpdate}
             />
           ) : (
-            <Modules modules={modulesList} />
+            <Modules stock={stockModulesList} />
           )
         }
         onClose={onClose}
       >
         <GridProvider
           isEditing
-          modules={modules}
+          page={page}
           selectedId={selectedId}
           onModuleClick={setSelectedId}
           onChange={handleGridChange}
@@ -129,7 +135,7 @@ function ConfigurationProvider({ id, modules, onModuleUpdate }) {
     }
   }, [id])
 
-  const Component = modulesDict[module.type].Configuration
+  const Component = stockModulesDict[module.type].Configuration
 
   return !module ? (
     "Loading..."
@@ -147,13 +153,13 @@ function ConfigurationProvider({ id, modules, onModuleUpdate }) {
 }
 
 function GridProvider({
-  modules,
+  page,
   isEditing,
   selectedId,
   onChange,
   onModuleClick,
 }) {
-  const layout = modules && createLayout(modules)
+  const layout = page && createLayout(page.modules, page.layout.positions)
 
   return !layout ? (
     "Loading..."
@@ -169,7 +175,7 @@ function GridProvider({
           isSelected={isEditing && selectedId === module.id}
           data={module}
           expression={expression}
-          component={modulesDict[module.type].Root}
+          component={stockModulesDict[module.type].Root}
           onClick={onModuleClick}
         />
       )}
