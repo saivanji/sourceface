@@ -20,21 +20,9 @@ const updateModule = async (parent, { moduleId, key, value }, { pg }) => {
   })
 }
 
-// const updateModulesPositions = async (parent, { positions }, { pg }) => {
-//   return await pg.tx(async t => {
-//     return await Promise.all(
-//       positions.map(
-//         async ({ id, ...position }) =>
-//           await moduleRepo.updatePosition(id, position, t)
-//       )
-//     )
-//   })
-// }
-
 export default {
   Mutation: {
     createModule,
     updateModule,
-    // updateModulesPositions,
   },
 }

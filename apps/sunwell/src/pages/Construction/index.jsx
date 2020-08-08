@@ -18,7 +18,7 @@ import {
 import * as expression from "./expression"
 import * as schema from "./schema"
 import * as form from "./form"
-import { createLayout, reverseLayout, transformModules } from "./utils"
+import { createLayout, layoutToPositions, transformModules } from "./utils"
 
 /* <div className={styles.panel}> */
 /*   <span className={styles.title}>Orders</span> */
@@ -39,6 +39,7 @@ export const context = createContext({})
 
 // TODO: handle error on back-end requests
 export default () => {
+  // TODO: query should not be executed again after layout updated
   const [result] = useQuery({
     query: schema.root,
     variables: { pageId: 1 },
@@ -65,8 +66,8 @@ function EditorProvider({ page, onClose }) {
   const [{ fetching: isUpdatingModule }, updateModule] = useMutation(
     schema.updateModule
   )
-  const [{ fetching: isUpdatingGrid }, updateModulesPositions] = useMutation(
-    schema.updateModulesPositions
+  const [{ fetching: isUpdatingGrid }, updateLayout] = useMutation(
+    schema.updateLayout
   )
 
   // TODO: implement debouncing
@@ -74,8 +75,11 @@ function EditorProvider({ page, onClose }) {
     updateModule({ moduleId: id, key, value })
 
   const handleGridChange = event => {
-    if (event.name === "drag" || event.name === "resize") {
-      return updateModulesPositions({ positions: reverseLayout(event.layout) })
+    if (["leave", "drag", "resize"].includes(event.name)) {
+      return updateLayout({
+        layoutId: page.layout.id,
+        positions: layoutToPositions(event.layout),
+      })
     }
 
     if (event.name === "enter" && event.sourceType === "outer") {
@@ -99,7 +103,7 @@ function EditorProvider({ page, onClose }) {
           selectedId ? (
             <ConfigurationProvider
               id={selectedId}
-              modules={page.modules}
+              page={page}
               onModuleUpdate={handleModuleUpdate}
             />
           ) : (
@@ -120,8 +124,8 @@ function EditorProvider({ page, onClose }) {
   )
 }
 
-function ConfigurationProvider({ id, modules, onModuleUpdate }) {
-  const module = modules?.find(m => m.id === id)
+function ConfigurationProvider({ id, page, onModuleUpdate }) {
+  const module = page.modules?.find(m => m.id === id)
 
   const components = useMemo(() => {
     const wrap = Component =>
@@ -160,6 +164,8 @@ function GridProvider({
   onModuleClick,
 }) {
   const layout = page && createLayout(page.modules, page.layout.positions)
+
+  console.log(layout)
 
   return !layout ? (
     "Loading..."

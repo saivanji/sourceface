@@ -26,6 +26,21 @@ export const root = `
   }
 `
 
+export const updateLayout = `
+  mutation ($layoutId: Int!, $positions: [PositionInputWithId!]!) {
+    updateLayout(layoutId: $layoutId, positions: $positions) {
+      id
+      positions {
+        id
+        x
+        y
+        w
+        h
+      }
+    }
+  }
+`
+
 export const createModule = `
   mutation ($type: ModuleType!, $config: JSONObject!, $position: ModulePositionInput!) {
     createModule(type: $type, config: $config, position: $position) {
@@ -47,20 +62,6 @@ export const updateModule = `
     updateModule(moduleId: $moduleId, key: $key, value: $value) {
       id
       config
-    }
-  }
-`
-
-export const updateModulesPositions = `
-  mutation ($positions: [SpecificModulePositionInput!]!) {
-    updateModulesPositions(positions: $positions) {
-      id
-      position {
-        x
-        y
-        w
-        h
-      }
     }
   }
 `

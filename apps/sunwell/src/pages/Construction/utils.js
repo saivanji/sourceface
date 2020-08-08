@@ -1,4 +1,4 @@
-import { values, propEq, mapObjIndexed } from "ramda"
+import { toPairs, propEq, mapObjIndexed } from "ramda"
 
 export const transformModules = mapObjIndexed((value, key) => ({
   ...value,
@@ -14,8 +14,8 @@ export const createLayout = (modules, positions) =>
     {}
   )
 
-export const reverseLayout = layout =>
-  values(layout).reduce(
-    (acc, { w, h, x, y, data }) => [...acc, { id: data.id, w, h, x, y }],
+export const layoutToPositions = layout =>
+  toPairs(layout).reduce(
+    (acc, [id, { w, h, x, y }]) => [...acc, { id: +id, w, h, x, y }],
     []
   )

@@ -28,19 +28,15 @@ export default createClient({
             },
           }
         },
-        updateModulesPositions: ({ positions }, cache) => {
-          // TODO: might need to get all fields of the module dynamically
-          const query = "query { modules { id, position { w, h, x, y } } }"
-          const { modules } = cache.readQuery({ query })
-
-          return modules.map(module => {
-            const { x, y, w, h } = positions.find(item => item.id === module.id)
-
-            return {
-              ...module,
-              position: { __typename: "ModulePosition", x, y, w, h },
-            }
-          })
+        updateLayout: ({ layoutId, positions }) => {
+          return {
+            __typename: "Layout",
+            id: layoutId,
+            positions: positions.map(position => ({
+              __typename: "Position",
+              ...position,
+            })),
+          }
         },
       },
       updates: {

@@ -3,8 +3,6 @@ export const create = async (type, config, position, pg) =>
   await pg.one(sql.create, [type, config, position])
 export const updateConfig = async (moduleId, config, pg) =>
   await pg.one(sql.updateConfig, [moduleId, config])
-export const updatePosition = async (moduleId, position, pg) =>
-  await pg.one(sql.updatePosition, [moduleId, position])
 export const listByPageIds = async (pageIds, pg) =>
   await pg.manyOrNone(sql.listByPageIds, [pageIds])
 
@@ -18,10 +16,6 @@ const sql = {
   `,
   updateConfig: `
     UPDATE modules SET config = $2 WHERE id = $1
-    RETURNING *
-  `,
-  updatePosition: `
-    UPDATE modules SET position = $2 WHERE id = $1
     RETURNING *
   `,
   listByPageIds: `
