@@ -66,8 +66,8 @@ function EditorProvider({ page, onClose }) {
   const [{ fetching: isUpdatingModule }, updateModule] = useMutation(
     schema.updateModule
   )
-  const [{ fetching: isUpdatingGrid }, updateLayout] = useMutation(
-    schema.updateLayout
+  const [{ fetching: isUpdatingGrid }, updateLayouts] = useMutation(
+    schema.updateLayouts
   )
 
   // TODO: implement debouncing
@@ -76,9 +76,14 @@ function EditorProvider({ page, onClose }) {
 
   const handleGridChange = event => {
     if (["leave", "drag", "resize"].includes(event.name)) {
-      return updateLayout({
-        layoutId: page.layout.id,
-        positions: layoutToPositions(event.layout),
+      // TODO: in case of "leave" - push input value to context, so in future it can be combined with "enter" input and sent to server
+      return updateLayouts({
+        layouts: [
+          {
+            layoutId: page.layout.id,
+            positions: layoutToPositions(event.layout),
+          },
+        ],
       })
     }
 

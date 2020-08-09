@@ -26,9 +26,9 @@ export const root = `
   }
 `
 
-export const updateLayout = `
-  mutation ($layoutId: Int!, $positions: [PositionInputWithId!]!) {
-    updateLayout(layoutId: $layoutId, positions: $positions) {
+export const updateLayouts = `
+  mutation ($layouts: [LayoutInput!]!) {
+    updateLayouts(layouts: $layouts) {
       id
       positions {
         id

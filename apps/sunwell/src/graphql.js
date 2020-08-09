@@ -28,15 +28,15 @@ export default createClient({
             },
           }
         },
-        updateLayout: ({ layoutId, positions }) => {
-          return {
+        updateLayouts: ({ layouts }) => {
+          return layouts.map(layout => ({
             __typename: "Layout",
-            id: layoutId,
-            positions: positions.map(position => ({
+            id: layout.layoutId,
+            positions: layout.positions.map(position => ({
               __typename: "Position",
               ...position,
             })),
-          }
+          }))
         },
       },
       updates: {
