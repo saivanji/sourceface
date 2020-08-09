@@ -47,19 +47,27 @@ export default createClient({
                   y
                   w
                   h
+                  module {
+                    id
+                    type
+                    config
+                  }
                 }
               }
             `
 
             const layout = cache.readFragment(layoutFragment, { id: layoutId })
+            const { id, type, config, position } = result.createModule.position
 
             cache.writeFragment(layoutFragment, {
               ...layout,
-              positions: [...layout.positions, result.createModule.position],
+              positions: [
+                ...layout.positions,
+                { ...position, module: { id, type, config } },
+              ],
             })
           },
           updatePositions: (result, args, cache) => {
-            console.log(cache)
             const positions = args.positions.reduce(
               (acc, { id, layoutId }) => ({
                 ...acc,

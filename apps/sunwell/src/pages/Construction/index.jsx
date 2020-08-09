@@ -18,7 +18,12 @@ import {
 import * as expression from "./expression"
 import * as schema from "./schema"
 import * as form from "./form"
-import { createLayout, layoutToPositions, transformModules } from "./utils"
+import {
+  createLayout,
+  layoutToPositions,
+  transformModules,
+  findModule,
+} from "./utils"
 
 /* <div className={styles.panel}> */
 /*   <span className={styles.title}>Orders</span> */
@@ -63,6 +68,9 @@ export default () => {
 function EditorProvider({ page, onClose }) {
   const [selectedId, setSelectedId] = useState(null)
   const [, createModule] = useMutation(schema.createModule)
+  const [{ fetching: isRemovingModule }, removeModule] = useMutation(
+    schema.removeModule
+  )
   const [{ fetching: isUpdatingModule }, updateModule] = useMutation(
     schema.updateModule
   )
@@ -73,6 +81,8 @@ function EditorProvider({ page, onClose }) {
   // TODO: implement debouncing
   const handleModuleUpdate = (id, key, value) =>
     updateModule({ moduleId: id, key, value })
+
+  const handleModuleRemove = id => removeModule({ moduleId: id })
 
   const handleGridChange = event => {
     if (["leave", "drag", "resize"].includes(event.name)) {
@@ -101,13 +111,14 @@ function EditorProvider({ page, onClose }) {
   return (
     <GrillProvider>
       <Editor
-        isSaving={isUpdatingGrid || isUpdatingModule}
+        isSaving={isUpdatingGrid || isUpdatingModule || isRemovingModule}
         right={
           selectedId ? (
             <ConfigurationProvider
               id={selectedId}
               page={page}
-              onModuleUpdate={handleModuleUpdate}
+              onUpdate={handleModuleUpdate}
+              onRemove={handleModuleRemove}
             />
           ) : (
             <Modules stock={stockModulesList} />
@@ -127,12 +138,14 @@ function EditorProvider({ page, onClose }) {
   )
 }
 
-function ConfigurationProvider({ id, page, onModuleUpdate }) {
-  const module = page.modules?.find(m => m.id === id)
+function ConfigurationProvider({ id, page, onUpdate, onRemove }) {
+  const module = page && findModule(id, page.layout.positions)
+
+  const handleRemove = () => onRemove(id)
 
   const components = useMemo(() => {
     const wrap = Component =>
-      form.populateField(Component, (...args) => onModuleUpdate(id, ...args))
+      form.populateField(Component, (...args) => onUpdate(id, ...args))
 
     return {
       Form: form.SetupProvider,
@@ -147,7 +160,7 @@ function ConfigurationProvider({ id, page, onModuleUpdate }) {
   return !module ? (
     "Loading..."
   ) : (
-    <Configuration>
+    <Configuration onRemove={handleRemove}>
       <form.ValuesProvider values={module.config}>
         <Component
           key={module.id}
@@ -166,7 +179,7 @@ function GridProvider({
   onChange,
   onModuleClick,
 }) {
-  const layout = page && createLayout(page.modules, page.layout.positions)
+  const layout = page && createLayout(page.layout.positions)
 
   return !layout ? (
     "Loading..."

@@ -1,7 +1,7 @@
 import React from "react"
 import { Tabs } from "packages/kit"
 
-export default function Configuration({ children }) {
+export default function Configuration({ children, onRemove }) {
   return (
     <Tabs>
       <Tabs.Header>
@@ -9,6 +9,16 @@ export default function Configuration({ children }) {
         <Tabs.Tab>Scope</Tabs.Tab>
       </Tabs.Header>
       {children}
+      <button
+        type="button"
+        onClick={() => {
+          if (window.confirm()) {
+            onRemove()
+          }
+        }}
+      >
+        Remove
+      </button>
     </Tabs>
   )
 }

@@ -20,5 +20,5 @@ extend type Mutation {
   ): Module!
   updateModule(moduleId: Int!, key: String!, value: JSON!): Module!
   # TODO: make sure all related child layouts are removed as well
-  removeModule(moduleId: Int!): Boolean!
+  removeModule(moduleId: Int!): Boolean
 }

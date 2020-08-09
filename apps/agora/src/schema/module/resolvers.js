@@ -1,5 +1,3 @@
-import { keys } from "ramda"
-import graphqlFields from "graphql-fields"
 import * as moduleRepo from "repos/module"
 import * as positionRepo from "repos/position"
 
@@ -35,23 +33,25 @@ const updateModule = async (parent, { moduleId, key, value }, { pg }) => {
   })
 }
 
-const position = (parent, args, ctx, info) => {
-  const fields = keys(graphqlFields(info)).filter(k => k !== "__typename")
-  const id = parent.positionId
-
-  if (fields.length === 1 && fields.includes("id")) {
-    return {
-      id,
-    }
-  }
-
-  return ctx.loaders.position.load(id)
+const removeModule = async (parent, { moduleId }, { pg }) => {
+  /**
+   * Since module is 1:1 polymorphic relation with position, along with
+   * deleting module, it's position needs to be removed as well.
+   * Therefore position is deleted at the first point instead of module
+   * which will be deleted automatically because of a foreign key.
+   */
+  await positionRepo.removeByModule(moduleId, pg)
+  return true
 }
+
+const position = (parent, args, ctx) =>
+  ctx.loaders.position.load(parent.positionId)
 
 export default {
   Mutation: {
     createModule,
     updateModule,
+    removeModule,
   },
   Module: {
     position,

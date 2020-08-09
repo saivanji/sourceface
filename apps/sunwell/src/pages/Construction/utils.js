@@ -5,17 +5,20 @@ export const transformModules = mapObjIndexed((value, key) => ({
   type: key,
 }))
 
-export const createLayout = (modules, positions) =>
+export const createLayout = positions =>
   positions.reduce(
-    (acc, { id, ...coords }) => ({
+    (acc, { id, module, ...coords }) => ({
       ...acc,
       [id]: {
         ...coords,
-        data: modules.find(module => module.position.id == id),
+        data: module,
       },
     }),
     {}
   )
+
+export const findModule = (moduleId, positions) =>
+  positions.find(position => position.module.id === moduleId).module
 
 export const layoutToPositions = (layoutId, layout) =>
   toPairs(layout).reduce(

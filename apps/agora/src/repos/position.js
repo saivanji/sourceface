@@ -6,6 +6,8 @@ export const listByIds = (positionIds, pg) =>
   pg.manyOrNone(sql.listByIds, [positionIds])
 export const listByLayoutIds = (layoutIds, pg) =>
   pg.manyOrNone(sql.listByLayoutIds, [layoutIds])
+export const removeByModule = (moduleId, pg) =>
+  pg.none(sql.removeByModule, [moduleId])
 export const batchUpdate = (positions, pg) =>
   pg.many(sql.batchUpdate(positions))
 
@@ -19,6 +21,11 @@ const sql = {
   `,
   listByLayoutIds: `
     SELECT * FROM positions WHERE layout_id IN ($1:csv)
+  `,
+  removeByModule: `
+    DELETE FROM positions AS p
+    INNER JOIN modules AS m ON (m.position_id = p.id)
+    WHERE m.id = $1
   `,
   batchUpdate: positions =>
     pgp.helpers.update(

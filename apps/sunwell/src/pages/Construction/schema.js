@@ -1,4 +1,4 @@
-// TODO: replace layout.positions by layout.modules.position?
+// TODO: How to create recursive queries in case module will have layout with a child module who has it's child layout and so on? In theory, Tabs module may contain Tabs inside etc.
 export const root = `
   query($pageId: Int!) {
     page(pageId: $pageId) {
@@ -12,14 +12,11 @@ export const root = `
           y
           w
           h
-        }
-      }
-      modules {
-        id
-        type
-        config
-        position {
-          id
+          module {
+            id
+            type
+            config
+          }
         }
       }
     }
@@ -76,5 +73,11 @@ export const updateModule = `
       id
       config
     }
+  }
+`
+
+export const removeModule = `
+  mutation($moduleId: Int!) {
+    removeModule(moduleId: $moduleId)
   }
 `
