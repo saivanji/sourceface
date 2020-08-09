@@ -37,15 +37,29 @@ export default createClient({
       updates: {
         Mutation: {
           createModule: (result, args, cache) => {
-            const query = "query { modules { id } }"
-            cache.updateQuery({ query }, data => {
-              return {
-                ...data,
-                modules: [...data.modules, result.createModule],
+            const { layoutId } = args.position
+            const layoutFragment = gql`
+              fragment _ on Layout {
+                id
+                positions {
+                  id
+                  x
+                  y
+                  w
+                  h
+                }
               }
+            `
+
+            const layout = cache.readFragment(layoutFragment, { id: layoutId })
+
+            cache.writeFragment(layoutFragment, {
+              ...layout,
+              positions: [...layout.positions, result.createModule.position],
             })
           },
           updatePositions: (result, args, cache) => {
+            console.log(cache)
             const positions = args.positions.reduce(
               (acc, { id, layoutId }) => ({
                 ...acc,

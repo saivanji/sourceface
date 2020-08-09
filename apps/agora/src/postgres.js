@@ -8,7 +8,7 @@ const { DATABASE_URL } = process.env
 
 export const pgp = pgPromise({
   query: ({ query }) => {
-    console.log(query)
+    console.log(moment().format("HH:mm:s"), query.trim())
   },
   receive: data => {
     /**

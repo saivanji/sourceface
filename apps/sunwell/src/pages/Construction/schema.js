@@ -1,3 +1,4 @@
+// TODO: replace layout.positions by layout.modules.position?
 export const root = `
   query($pageId: Int!) {
     page(pageId: $pageId) {
@@ -15,9 +16,11 @@ export const root = `
       }
       modules {
         id
-        positionId
         type
         config
+        position {
+          id
+        }
       }
     }
     commands {
@@ -42,7 +45,7 @@ export const createModule = `
   mutation(
     $type: ModuleType!
     $config: JSONObject!
-    $newPosition: PositionInput!
+    $position: PositionInput!
     $positions: [PositionInput!]!
   ) {
     updatePositions(positions: $positions) {
@@ -52,7 +55,7 @@ export const createModule = `
       w
       h
     }
-    createModule(type: $type, config: $config, position: $newPosition) {
+    createModule(type: $type, config: $config, position: $position) {
       id
       type
       config

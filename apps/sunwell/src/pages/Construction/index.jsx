@@ -77,23 +77,24 @@ function EditorProvider({ page, onClose }) {
   const handleGridChange = event => {
     if (["leave", "drag", "resize"].includes(event.name)) {
       // TODO: in case of "leave" - push input value to context, so in future it can be combined with "enter" input and sent to server
-      return updatePositions({
+      updatePositions({
         positions: layoutToPositions(page.layout.id, event.layout),
       })
+      return
     }
 
     if (event.name === "enter" && event.sourceType === "outer") {
-      const { moduleType: type, unit: position } = event.transfer
-
-      console.log(event)
+      const { moduleType } = event.transfer
+      const { outer, ...layout } = event.layout
+      const position = { layoutId: page.layout.id, ...outer }
 
       // TODO: implement optimistic updates
-      // TODO: put all layout on creation because of the collisions(detach layout from modules and send 2 mutations - createModule and updateLayout?)
-      // createModule({
-      //   type,
-      //   config: stockModulesDict[type].defaultConfig,
-      //   position,
-      // })
+      createModule({
+        type: moduleType,
+        config: stockModulesDict[moduleType].defaultConfig,
+        position,
+        positions: layoutToPositions(page.layout.id, layout),
+      })
     }
   }
 

@@ -17,7 +17,7 @@ function Card({ module }) {
   // TODO: investigate the use of "useCallback" hook here. now it's used for the referential equality to satisfy dnd lib
   const handleStart = useCallback(
     () => ({
-      id: "outer_temp",
+      id: "outer",
       unit: module.size,
       moduleType: module.type,
     }),

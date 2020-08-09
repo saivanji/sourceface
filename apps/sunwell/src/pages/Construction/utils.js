@@ -1,4 +1,4 @@
-import { toPairs, propEq, mapObjIndexed } from "ramda"
+import { toPairs, mapObjIndexed } from "ramda"
 
 export const transformModules = mapObjIndexed((value, key) => ({
   ...value,
@@ -9,7 +9,10 @@ export const createLayout = (modules, positions) =>
   positions.reduce(
     (acc, { id, ...coords }) => ({
       ...acc,
-      [id]: { ...coords, data: modules.find(propEq("positionId", id)) },
+      [id]: {
+        ...coords,
+        data: modules.find(module => module.position.id == id),
+      },
     }),
     {}
   )

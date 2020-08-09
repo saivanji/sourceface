@@ -5,6 +5,7 @@ import * as moduleRepo from "repos/module"
 
 export default pg => {
   const layout = new DataLoader(ids => layoutRepo.listByIds(ids, pg))
+  const position = new DataLoader(ids => positionRepo.listByIds(ids, pg))
   const positionsByLayout = new DataLoaderHasMany(
     ids => positionRepo.listByLayoutIds(ids, pg),
     "layoutId"
@@ -14,7 +15,7 @@ export default pg => {
     "pageId"
   )
 
-  return { layout, positionsByLayout, modulesByPage }
+  return { layout, position, positionsByLayout, modulesByPage }
 }
 
 class DataLoaderHasMany extends DataLoader {
