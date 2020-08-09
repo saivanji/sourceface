@@ -1,5 +1,5 @@
 export const root = `
-  query ($pageId: Int!) {
+  query($pageId: Int!) {
     page(pageId: $pageId) {
       id
       title
@@ -11,7 +11,7 @@ export const root = `
           y
           w
           h
-        } 
+        }
       }
       modules {
         id
@@ -26,11 +26,37 @@ export const root = `
   }
 `
 
-export const updateLayouts = `
-  mutation ($layouts: [LayoutInput!]!) {
-    updateLayouts(layouts: $layouts) {
+export const updatePositions = `
+  mutation($positions: [PositionInput!]!) {
+    updatePositions(positions: $positions) {
       id
-      positions {
+      x
+      y
+      w
+      h
+    }
+  }
+`
+
+export const createModule = `
+  mutation(
+    $type: ModuleType!
+    $config: JSONObject!
+    $newPosition: PositionInput!
+    $positions: [PositionInput!]!
+  ) {
+    updatePositions(positions: $positions) {
+      id
+      x
+      y
+      w
+      h
+    }
+    createModule(type: $type, config: $config, position: $newPosition) {
+      id
+      type
+      config
+      position {
         id
         x
         y
@@ -41,24 +67,8 @@ export const updateLayouts = `
   }
 `
 
-export const createModule = `
-  mutation ($type: ModuleType!, $config: JSONObject!, $position: ModulePositionInput!) {
-    createModule(type: $type, config: $config, position: $position) {
-      id
-      type
-      config
-      position {
-        x
-        y
-        w
-        h
-      }
-    }
-  }
-`
-
 export const updateModule = `
-  mutation ($moduleId: Int!, $key: String!, $value: JSON!) {
+  mutation($moduleId: Int!, $key: String!, $value: JSON!) {
     updateModule(moduleId: $moduleId, key: $key, value: $value) {
       id
       config

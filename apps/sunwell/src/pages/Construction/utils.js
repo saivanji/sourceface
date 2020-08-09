@@ -14,8 +14,8 @@ export const createLayout = (modules, positions) =>
     {}
   )
 
-export const layoutToPositions = layout =>
+export const layoutToPositions = (layoutId, layout) =>
   toPairs(layout).reduce(
-    (acc, [id, { w, h, x, y }]) => [...acc, { id: +id, w, h, x, y }],
+    (acc, [id, { w, h, x, y }]) => [...acc, { id: +id, layoutId, w, h, x, y }],
     []
   )

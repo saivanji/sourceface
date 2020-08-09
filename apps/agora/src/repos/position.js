@@ -14,7 +14,7 @@ const sql = {
       positions,
       new pgp.helpers.ColumnSet([
         "?id",
-        "layout_id",
+        { name: "layout_id", prop: "layoutId" },
         { name: "position", cast: "json" },
       ]),
       {

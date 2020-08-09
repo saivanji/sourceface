@@ -1,3 +1,5 @@
+import gql from "graphql-tag"
+import { propEq, keys } from "ramda"
 import { createClient, dedupExchange, fetchExchange } from "urql"
 import { cacheExchange } from "@urql/exchange-graphcache"
 // import { populateExchange } from "@urql/exchange-populate"
@@ -12,9 +14,6 @@ export default createClient({
     // TODO: will be available since graphql schema will be pushed as a separate package so we can import
     // populateExchange({}),
     cacheExchange({
-      keys: {
-        ModulePosition: () => null,
-      },
       optimistic: {
         updateModule: ({ moduleId, key, value }, cache) => {
           const __typename = "Module"
@@ -28,14 +27,10 @@ export default createClient({
             },
           }
         },
-        updateLayouts: ({ layouts }) => {
-          return layouts.map(layout => ({
-            __typename: "Layout",
-            id: layout.layoutId,
-            positions: layout.positions.map(position => ({
-              __typename: "Position",
-              ...position,
-            })),
+        updatePositions: ({ positions }) => {
+          return positions.map(position => ({
+            __typename: "Position",
+            ...position,
           }))
         },
       },
@@ -49,6 +44,43 @@ export default createClient({
                 modules: [...data.modules, result.createModule],
               }
             })
+          },
+          updatePositions: (result, args, cache) => {
+            const positions = args.positions.reduce(
+              (acc, { id, layoutId }) => ({
+                ...acc,
+                [layoutId]: [
+                  ...(acc[layoutId] || []),
+                  result.updatePositions.find(propEq("id", id)),
+                ],
+              }),
+              {}
+            )
+
+            const layoutIds = keys(positions)
+
+            // layout of positions was not changed so no further update needed
+            if (layoutIds.length === 1) return
+
+            for (let layoutId of layoutIds) {
+              const fragment = gql`
+                fragment _ on Layout {
+                  id
+                  positions {
+                    id
+                    x
+                    y
+                    w
+                    h
+                  }
+                }
+              `
+
+              cache.writeFragment(fragment, {
+                id: layoutId,
+                positions: positions[layoutId],
+              })
+            }
           },
         },
       },

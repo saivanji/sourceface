@@ -66,8 +66,8 @@ function EditorProvider({ page, onClose }) {
   const [{ fetching: isUpdatingModule }, updateModule] = useMutation(
     schema.updateModule
   )
-  const [{ fetching: isUpdatingGrid }, updateLayouts] = useMutation(
-    schema.updateLayouts
+  const [{ fetching: isUpdatingGrid }, updatePositions] = useMutation(
+    schema.updatePositions
   )
 
   // TODO: implement debouncing
@@ -77,26 +77,23 @@ function EditorProvider({ page, onClose }) {
   const handleGridChange = event => {
     if (["leave", "drag", "resize"].includes(event.name)) {
       // TODO: in case of "leave" - push input value to context, so in future it can be combined with "enter" input and sent to server
-      return updateLayouts({
-        layouts: [
-          {
-            layoutId: page.layout.id,
-            positions: layoutToPositions(event.layout),
-          },
-        ],
+      return updatePositions({
+        positions: layoutToPositions(page.layout.id, event.layout),
       })
     }
 
     if (event.name === "enter" && event.sourceType === "outer") {
       const { moduleType: type, unit: position } = event.transfer
 
+      console.log(event)
+
       // TODO: implement optimistic updates
       // TODO: put all layout on creation because of the collisions(detach layout from modules and send 2 mutations - createModule and updateLayout?)
-      createModule({
-        type,
-        config: stockModulesDict[type].defaultConfig,
-        position,
-      })
+      // createModule({
+      //   type,
+      //   config: stockModulesDict[type].defaultConfig,
+      //   position,
+      // })
     }
   }
 
@@ -169,8 +166,6 @@ function GridProvider({
   onModuleClick,
 }) {
   const layout = page && createLayout(page.modules, page.layout.positions)
-
-  console.log(layout)
 
   return !layout ? (
     "Loading..."
