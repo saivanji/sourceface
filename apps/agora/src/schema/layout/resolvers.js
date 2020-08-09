@@ -1,26 +1,21 @@
 import * as layoutRepo from "repos/layout"
 import * as positionRepo from "repos/position"
+import * as utils from "./utils"
 
 const positions = async ({ id }, args, ctx) => {
   return ctx.loaders.positionsByLayout.load(id)
 }
 
-const updateLayout = async (parent, { layoutId, positions }, ctx) => {
-  const positionsIn = positions.map(({ id, ...position }) => ({
-    id,
-    position,
-    layout_id: layoutId,
-  }))
+const updateLayouts = async (parent, { layouts: layoutsIn }, ctx) => {
+  const positionsIn = utils.createPositions(layoutsIn)
 
   return await ctx.pg.tx(async t => {
-    const layout = await layoutRepo.one(layoutId, t)
-    await positionRepo.deleteByLayoutId(layoutId, t)
-    const positionsOut = await positionRepo.batchInsert(positionsIn, t)
+    const layouts = await Promise.all(
+      layoutsIn.map(({ layoutId }) => layoutRepo.one(layoutId, t))
+    )
+    const positions = await positionRepo.batchUpdate(positionsIn, t)
 
-    return {
-      ...layout,
-      positions: positionsOut,
-    }
+    return utils.populateLayouts(layouts, positions)
   })
 }
 
@@ -34,7 +29,7 @@ const Position = ["x", "y", "w", "h"].reduce(
 
 export default {
   Mutation: {
-    updateLayout,
+    updateLayouts,
   },
   Layout: {
     positions,

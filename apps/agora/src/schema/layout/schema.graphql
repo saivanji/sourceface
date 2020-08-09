@@ -13,6 +13,11 @@ input PositionInput {
   h: Int!
 }
 
+input LayoutInput {
+  layoutId: Int!
+  positions: [PositionInputWithId!]!
+}
+
 type Layout {
   id: Int!
   createdAt: DateTime!
@@ -28,5 +33,5 @@ type Position {
 }
 
 extend type Mutation {
-  updateLayout(layoutId: Int!, positions: [PositionInputWithId]!): Layout!
+  updateLayouts(layouts: [LayoutInput!]!): [Layout!]!
 }
