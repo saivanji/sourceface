@@ -23,9 +23,10 @@ const sql = {
     SELECT * FROM positions WHERE layout_id IN ($1:csv)
   `,
   removeByModule: `
-    DELETE FROM positions AS p
+    DELETE FROM positions
+    USING positions AS p
     INNER JOIN modules AS m ON (m.position_id = p.id)
-    WHERE m.id = $1
+    WHERE positions.id = p.id AND m.id = $1
   `,
   batchUpdate: positions =>
     pgp.helpers.update(
