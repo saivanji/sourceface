@@ -5,11 +5,11 @@ export const transformPositions = positions =>
     position,
   }))
 
-export const createPositionType = initial =>
+export const createPositionType = () =>
   ["x", "y", "w", "h"].reduce(
     (acc, key) => ({
       ...acc,
       [key]: parent => parent.position[key],
     }),
-    initial || {}
+    {}
   )

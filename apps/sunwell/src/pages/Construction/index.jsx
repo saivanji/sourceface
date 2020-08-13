@@ -1,6 +1,6 @@
 // order creation will be in a modal
 
-import React, { createContext, useState, useMemo } from "react"
+import React, { createContext, useState, useMemo, useContext } from "react"
 import { values } from "ramda"
 import { useQuery, useMutation } from "urql"
 import { GrillProvider } from "packages/grid"
@@ -20,7 +20,7 @@ import * as schema from "./schema"
 import * as form from "./form"
 import {
   createLayout,
-  layoutToPositions,
+  toPositionsRequest,
   transformModules,
   findModule,
 } from "./utils"
@@ -41,6 +41,7 @@ const stockModulesList = values(stockModulesDict)
 // TODO: move to "expression.js"
 export const context = createContext({})
 // TODO: think about real use case
+const editorContext = createContext({})
 
 // TODO: handle error on back-end requests
 export default () => {
@@ -51,21 +52,27 @@ export default () => {
   })
   const [isEditing, editOn, editOff] = useBooleanState(false)
   const page = result.data?.page
+  const layout =
+    page && createLayout(page.layout.id, page.modules, page.layout.positions)
+
+  const children = !layout ? "Loading..." : <ModulesProvider layout={layout} />
 
   return (
     <context.Provider value={result.data}>
       {isEditing ? (
-        <EditorProvider page={page} onClose={editOff} />
+        <EditorProvider modules={page?.modules} onClose={editOff}>
+          {children}
+        </EditorProvider>
       ) : (
         <Frame path={path} actions={<button onClick={editOn}>Edit</button>}>
-          <GridProvider isEditing={false} page={page} />
+          {children}
         </Frame>
       )}
     </context.Provider>
   )
 }
 
-function EditorProvider({ page, onClose }) {
+function EditorProvider({ children, modules, onClose }) {
   const [selectedId, setSelectedId] = useState(null)
   const [, createModule] = useMutation(schema.createModule)
   const [{ fetching: isRemovingModule }, removeModule] = useMutation(
@@ -84,11 +91,11 @@ function EditorProvider({ page, onClose }) {
 
   const handleModuleRemove = id => removeModule({ moduleId: id })
 
-  const handleGridChange = event => {
+  const handleGridChange = (event, layoutId) => {
     if (["leave", "drag", "resize"].includes(event.name)) {
       // TODO: in case of "leave" - push input value to context, so in future it can be combined with "enter" input and sent to server
       updatePositions({
-        positions: layoutToPositions(page.layout.id, event.layout),
+        positions: toPositionsRequest(layoutId, event.layout),
       })
       return
     }
@@ -96,14 +103,14 @@ function EditorProvider({ page, onClose }) {
     if (event.name === "enter" && event.sourceType === "outer") {
       const { moduleType } = event.transfer
       const { outer, ...layout } = event.layout
-      const position = { layoutId: page.layout.id, ...outer }
+      const position = { layoutId, ...outer }
 
       // TODO: implement optimistic updates
       createModule({
         type: moduleType,
         config: stockModulesDict[moduleType].defaultConfig,
         position,
-        positions: layoutToPositions(page.layout.id, layout),
+        positions: toPositionsRequest(layoutId, layout),
       })
     }
   }
@@ -116,7 +123,7 @@ function EditorProvider({ page, onClose }) {
           selectedId ? (
             <ConfigurationProvider
               id={selectedId}
-              page={page}
+              modules={modules}
               onUpdate={handleModuleUpdate}
               onRemove={handleModuleRemove}
             />
@@ -126,20 +133,23 @@ function EditorProvider({ page, onClose }) {
         }
         onClose={onClose}
       >
-        <GridProvider
-          isEditing
-          page={page}
-          selectedId={selectedId}
-          onModuleClick={setSelectedId}
-          onChange={handleGridChange}
-        />
+        <editorContext.Provider
+          value={{
+            isEditing: true,
+            selectedId,
+            onModuleClick: setSelectedId,
+            onChange: handleGridChange,
+          }}
+        >
+          {children}
+        </editorContext.Provider>
       </Editor>
     </GrillProvider>
   )
 }
 
-function ConfigurationProvider({ id, page, onUpdate, onRemove }) {
-  const module = page && findModule(id, page.layout.positions)
+function ConfigurationProvider({ id, modules, onUpdate, onRemove }) {
+  const module = modules && findModule(id, modules)
 
   const handleRemove = () => onRemove(id)
 
@@ -172,22 +182,21 @@ function ConfigurationProvider({ id, page, onUpdate, onRemove }) {
   )
 }
 
-function GridProvider({
-  page,
-  isEditing,
-  selectedId,
-  onChange,
-  onModuleClick,
-}) {
-  const layout = page && createLayout(page.layout.positions)
+function ModulesProvider({ layout }) {
+  const { isEditing, selectedId, onChange, onModuleClick } = useContext(
+    editorContext
+  )
 
-  return !layout ? (
-    "Loading..."
-  ) : (
+  const handleChange = event => onChange(event, layout.id)
+  const components = {
+    Modules: ModulesProvider,
+  }
+
+  return (
     <Grid
-      layout={layout}
+      layout={layout.positions}
       isEditable={isEditing}
-      onChange={onChange}
+      onChange={handleChange}
       renderItem={module => (
         <Module
           key={module.id}
@@ -195,6 +204,7 @@ function GridProvider({
           isSelected={isEditing && selectedId === module.id}
           data={module}
           expression={expression}
+          components={components}
           component={stockModulesDict[module.type].Root}
           onClick={onModuleClick}
         />

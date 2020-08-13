@@ -7,6 +7,7 @@ const pgp = require("pg-promise")()
 
 const db = pgp(process.env.DATABASE_URL)
 
+// TODO: should seeds be created with graphql for the simplicity?
 ;(async () => {
   try {
     await createSources(db, pgp)

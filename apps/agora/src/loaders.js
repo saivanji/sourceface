@@ -6,16 +6,26 @@ import * as moduleRepo from "repos/module"
 export default pg => {
   const layout = new DataLoader(ids => layoutRepo.listByIds(ids, pg))
   const position = new DataLoader(ids => positionRepo.listByIds(ids, pg))
-  const moduleByPosition = new DataLoaderHasOne(
-    ids => moduleRepo.listByPositionIds(ids, pg),
-    "positionId"
+  const modulesByPage = new DataLoaderHasMany(
+    ids => moduleRepo.listByPageIds(ids, pg),
+    "pageId"
   )
   const positionsByLayout = new DataLoaderHasMany(
     ids => positionRepo.listByLayoutIds(ids, pg),
     "layoutId"
   )
+  const layoutsByModule = new DataLoaderHasMany(
+    ids => layoutRepo.listByModuleIds(ids, pg),
+    "moduleId"
+  )
 
-  return { layout, position, moduleByPosition, positionsByLayout }
+  return {
+    layout,
+    layoutsByModule,
+    position,
+    positionsByLayout,
+    modulesByPage,
+  }
 }
 
 class DataLoaderHasMany extends DataLoader {

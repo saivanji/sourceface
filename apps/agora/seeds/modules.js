@@ -5,63 +5,24 @@ export default (db, pgp, { layouts }) =>
     await createModule(
       layoutId,
       "text",
-      {
-        value: "Hello world",
-        fontSize: "sm",
-        fontWeight: "semibold",
-        alignmentX: "left",
-        alignmentY: "baseline",
-        decoration: "underline",
-        color: "#000",
-      },
-      {
-        x: 1,
-        y: 12,
-        w: 1,
-        h: 1,
-      },
+      createTextConfig("Hello"),
+      [1, 12, 1, 1],
       t
     )
 
     await createModule(
       layoutId,
       "text",
-      {
-        value: "Hola!",
-        fontSize: "lg",
-        fontWeight: "regular",
-        alignmentX: "left",
-        alignmentY: "baseline",
-        decoration: "none",
-        color: "#000",
-      },
-      {
-        x: 4,
-        y: 12,
-        w: 2,
-        h: 3,
-      },
+      createTextConfig("Hola"),
+      [4, 12, 2, 3],
       t
     )
 
     await createModule(
       layoutId,
       "text",
-      {
-        value: "Orders count is {{ ~commands.countOrders }}",
-        fontSize: "base",
-        fontWeight: "bold",
-        alignmentX: "left",
-        alignmentY: "baseline",
-        decoration: "underline",
-        color: "#000",
-      },
-      {
-        x: 6,
-        y: 12,
-        w: 2,
-        h: 4,
-      },
+      createTextConfig("Orders count is {{ ~commands.countOrders }}"),
+      [6, 12, 2, 4],
       t
     )
 
@@ -74,26 +35,131 @@ export default (db, pgp, { layouts }) =>
         limit: "10",
         pagination: true,
       },
-      {
-        x: 0,
-        y: 0,
-        w: 9,
-        h: 11,
-      },
+      [0, 0, 9, 11],
+      t
+    )
+
+    await createContainerModule(
+      layoutId,
+      async layoutId => [
+        await createModule(
+          layoutId,
+          "text",
+          createTextConfig("Hello 1"),
+          [1, 1, 1, 1],
+          t
+        ),
+        await createModule(
+          layoutId,
+          "text",
+          createTextConfig("Hello 2"),
+          [2, 2, 1, 1],
+          t
+        ),
+        await createContainerModule(
+          layoutId,
+          async layoutId => [
+            await createModule(
+              layoutId,
+              "text",
+              createTextConfig("Hello 3"),
+              [1, 1, 1, 1],
+              t
+            ),
+            await createContainerModule(
+              layoutId,
+              async layoutId => [
+                await createModule(
+                  layoutId,
+                  "text",
+                  createTextConfig("Hello 1"),
+                  [1, 1, 1, 1],
+                  t
+                ),
+                await createModule(
+                  layoutId,
+                  "text",
+                  createTextConfig("Hello 2"),
+                  [2, 2, 1, 1],
+                  t
+                ),
+              ],
+              [2, 2, 1, 1],
+              t
+            ),
+          ],
+          [3, 3, 4, 4],
+          t
+        ),
+      ],
+      [3, 15, 4, 4],
       t
     )
   })
 
-const createModule = async (layoutId, type, config, position, db) => {
+const attachLayout = (layoutId, moduleId, db) =>
+  db.none(
+    "INSERT INTO modules_layouts (layout_id, module_id) VALUES ($1, $2)",
+    [layoutId, moduleId]
+  )
+
+const createModule = async (layoutId, type, config, [x, y, w, h], db) => {
   const {
     id: positionId,
   } = await db.one(
     "INSERT INTO positions (layout_id, position) VALUES ($1, $2) RETURNING id",
-    [layoutId, position]
+    [layoutId, { x, y, w, h }]
   )
 
-  await db.none(
-    "INSERT INTO modules (position_id, type, config) VALUES ($1, $2, $3)",
+  const {
+    id,
+  } = await db.one(
+    "INSERT INTO modules (position_id, type, config) VALUES ($1, $2, $3) RETURNING id",
     [positionId, type, config]
   )
+
+  return id
 }
+
+const createLayout = async db => {
+  const { id } = await db.one(
+    "INSERT INTO layouts (id) VALUES (nextval('layouts_id_seq')) RETURNING *"
+  )
+
+  return id
+}
+
+const createContainerModule = async (
+  parentLayoutId,
+  createChildModules,
+  position,
+  db
+) => {
+  const layoutId = await createLayout(db)
+
+  await createChildModules(layoutId, db)
+
+  const moduleId = await createModule(
+    parentLayoutId,
+    "container",
+    {
+      layoutId,
+    },
+    position,
+    db
+  )
+
+  await attachLayout(layoutId, moduleId, db)
+
+  return moduleId
+}
+
+const createTextConfig = value => ({
+  value,
+  fontSize: "sm",
+  fontWeight: "semibold",
+  alignmentX: "left",
+  alignmentY: "baseline",
+  decoration: "underline",
+  color: "#000",
+})

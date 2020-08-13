@@ -7,6 +7,7 @@ export default ({
   isSelected,
   onClick,
   component: Component,
+  components,
   expression,
   data,
 }) => {
@@ -19,7 +20,12 @@ export default ({
         isSelected && styles.selected
       )}
     >
-      <Component config={data.config} expression={expression} />
+      <Component
+        config={data.config}
+        layouts={data.layouts}
+        components={components}
+        expression={expression}
+      />
     </div>
   )
 }

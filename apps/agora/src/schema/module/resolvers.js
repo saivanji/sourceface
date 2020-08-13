@@ -1,3 +1,5 @@
+import { keys } from "ramda"
+import graphqlFields from "graphql-fields"
 import * as moduleRepo from "repos/module"
 import * as positionRepo from "repos/position"
 
@@ -44,8 +46,25 @@ const removeModule = async (parent, { moduleId }, { pg }) => {
   return true
 }
 
-const position = (parent, args, ctx) =>
-  ctx.loaders.position.load(parent.positionId)
+const position = (parent, args, ctx, info) => {
+  const fields = keys(graphqlFields(info)).filter(k => k !== "__typename")
+  const id = parent.positionId
+
+  /**
+   * Returning position id from parent in case only id field was requested
+   * to avoid sending extra database request.
+   */
+  if (fields.length === 1 && fields.includes("id")) {
+    return {
+      id,
+    }
+  }
+
+  return ctx.loaders.position.load(id)
+}
+
+const layouts = (parent, args, ctx) =>
+  ctx.loaders.layoutsByModule.load(parent.id)
 
 export default {
   Mutation: {
@@ -55,5 +74,6 @@ export default {
   },
   Module: {
     position,
+    layouts,
   },
 }

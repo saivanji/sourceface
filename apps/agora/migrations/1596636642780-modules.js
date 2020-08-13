@@ -1,7 +1,7 @@
 export const up = () =>
   global.pg.tx(async t => {
     await t.none(`
-      CREATE TYPE module AS ENUM ('text', 'table')
+      CREATE TYPE module AS ENUM ('text', 'table', 'container')
     `)
     await t.none(`
       CREATE TABLE modules(
