@@ -1,9 +1,13 @@
-// consider moving to a separate place
+import React, { createContext, useContext } from "react"
 import { useQuery } from "urql"
 import { keys } from "ramda"
-import { useContext } from "react"
 import * as engine from "packages/engine"
-import { context } from "./"
+
+const context = createContext({})
+
+export function CommandsProvider({ commands, children }) {
+  return <context.Provider value={commands}>{children}</context.Provider>
+}
 
 export function Value({ input, constants, children }) {
   const [data, { fetching }] = useEvaluation(input, constants)
@@ -36,7 +40,7 @@ export function Template({ input, constants, children }) {
 
 // TODO: in case expression return value has no commands, do not send request to server
 const useEvaluation = (input, constants) => {
-  const { commands } = useContext(context)
+  const commands = useContext(context)
   const evaluated = evaluateMany(input, createScope(commands, constants))
 
   if (evaluated.every(result => result.type !== "command")) {

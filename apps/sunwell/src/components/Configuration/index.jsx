@@ -1,26 +1,34 @@
-import React from "react"
-import { Tabs } from "packages/kit"
+import React, { useMemo } from "react"
+import { Input, Select, Checkbox } from "packages/kit"
+import * as stock from "packages/modules"
+import * as form from "lib/form"
+import View from "./View"
 
-export default function Configuration({ children, onRemove }) {
-  return (
-    <Tabs>
-      <Tabs.Header>
-        <Tabs.Tab isSelected>Configuration</Tabs.Tab>
-        <Tabs.Tab>Scope</Tabs.Tab>
-      </Tabs.Header>
-      {children}
-      <button
-        type="button"
-        onClick={() => {
-          if (window.confirm()) {
-            onRemove()
-          }
-        }}
-      >
-        Remove
-      </button>
-    </Tabs>
+export default function ConfigurationContainer({ module, onUpdate, onRemove }) {
+  const Component = stock.dict[module.type].Configuration
+
+  const components = useMemo(() => {
+    const wrap = Component => form.populateField(Component, onUpdate)
+
+    return {
+      Form: form.SetupProvider,
+      Input: wrap(Input),
+      Select: wrap(Select),
+      Checkbox: wrap(Checkbox),
+    }
+  }, [module.id])
+
+  return !module ? (
+    "Loading..."
+  ) : (
+    <View onRemove={onRemove}>
+      <form.ValuesProvider values={module.config}>
+        <Component
+          key={module.id}
+          config={module.config}
+          components={components}
+        />
+      </form.ValuesProvider>
+    </View>
   )
 }
-
-// TODO: should be no distincion from the input point of view between readable and writable. For the user everything is an expression

@@ -1,59 +1,51 @@
-import React, { useState, useCallback } from "react"
-import cx from "classnames"
-import { useDrag } from "packages/dnd"
-import styles from "./index.scss"
+import React, { createContext, useContext } from "react"
+import * as stock from "packages/modules"
+import * as expression from "lib/expression"
+import Grid from "./Grid"
+import Module from "./Module"
 
-export default function Modules({ stock }) {
-  return stock.map(module => (
-    <div key={module.type} className={styles.item}>
-      <Card module={module} />
-    </div>
-  ))
-}
+const context = createContext({})
 
-function Card({ module }) {
-  const [preview, setPreview] = useState(null)
-
-  // TODO: investigate the use of "useCallback" hook here. now it's used for the referential equality to satisfy dnd lib
-  const handleStart = useCallback(
-    () => ({
-      id: "outer",
-      unit: module.size,
-      moduleType: module.type,
-    }),
-    []
-  )
-
-  const handleMove = useCallback((transfer, { clientX, clientY }) => {
-    setPreview({
-      x: clientX - 30,
-      y: clientY - 14,
-    })
-  }, [])
-
-  const handleEnd = useCallback(() => setPreview(null), [])
-
-  const dragRef = useDrag("outer", {
-    onStart: handleStart,
-    onMove: handleMove,
-    onEnd: handleEnd,
-  })
+export default function Modules({ layout }) {
+  const { isEditing, selectedId, onChange, onModuleClick } = useContext(context)
+  const handleChange = event => onChange(event, layout.id)
+  const components = {
+    Modules,
+  }
 
   return (
-    <>
-      <div ref={dragRef} className={cx(styles.card, preview && styles.dimmed)}>
-        {module.type}
-      </div>
-      {preview && (
-        <div
-          style={{
-            transform: `translate(${preview.x}px, ${preview.y}px)`,
-          }}
-          className={cx(styles.card, styles.preview)}
-        >
-          {module.type}
-        </div>
+    <Grid
+      layout={layout.positions}
+      isEditable={isEditing}
+      onChange={handleChange}
+      renderItem={module => (
+        <Module
+          key={module.id}
+          isEditable={isEditing}
+          isSelected={isEditing && selectedId === module.id}
+          data={module}
+          expression={expression}
+          components={components}
+          component={stock.dict[module.type].Root}
+          onClick={onModuleClick}
+        />
       )}
-    </>
+    />
+  )
+}
+
+Modules.Provider = ({
+  children,
+  isEditing,
+  selectedId,
+  onChange,
+  onModuleClick,
+}) => {
+  return (
+    <context.Provider
+      value={{ isEditing, selectedId, onChange, onModuleClick }}
+    >
+      {children}
+    </context.Provider>
   )
 }

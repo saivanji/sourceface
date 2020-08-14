@@ -1,13 +1,3 @@
-import { toPairs, mapObjIndexed } from "ramda"
-
-/**
- * Assigning type to a module.
- */
-export const transformModules = mapObjIndexed((value, key) => ({
-  ...value,
-  type: key,
-}))
-
 /**
  * Creating recursive layout data for the grid.
  */
@@ -38,15 +28,3 @@ const createModule = (id, modules) => {
     ),
   }
 }
-
-export const findModule = (moduleId, modules) =>
-  modules.find(module => module.id === moduleId)
-
-/**
- * Transforming grid layout to positions input for the grid reorder request.
- */
-export const toPositionsRequest = (layoutId, layout) =>
-  toPairs(layout).reduce(
-    (acc, [id, { w, h, x, y }]) => [...acc, { id: +id, layoutId, w, h, x, y }],
-    []
-  )

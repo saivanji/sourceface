@@ -1,6 +1,6 @@
 import React from "react"
 import cx from "classnames"
-import styles from "./styles.scss"
+import styles from "./index.scss"
 
 export default ({
   isEditable,
@@ -15,7 +15,7 @@ export default ({
     <div
       onClick={() => onClick && onClick(data.id)}
       className={cx(
-        styles.root,
+        styles.module,
         isEditable && styles.editable,
         isSelected && styles.selected
       )}

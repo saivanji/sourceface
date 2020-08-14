@@ -2,7 +2,7 @@ import React, { forwardRef } from "react"
 import Grill from "packages/grid"
 // import styles from "./index.scss"
 
-export default function ({ isEditable, layout, onChange, renderItem }) {
+export default function Grid({ isEditable, layout, onChange, renderItem }) {
   return (
     <Grill
       rows={50}

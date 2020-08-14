@@ -1,0 +1,24 @@
+@import "~@sourceface/style/index.scss";
+
+.item {
+  margin-bottom: $value-2;
+  border-bottom: 1px solid $color-gray-200;
+}
+
+.card {
+  padding: $value-2;
+  border-radius: $rounded-base;
+  background-color: $color-white;
+  &.dimmed {
+    opacity: 0.4;
+  }
+  &.preview {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    pointer-events: none;
+    box-shadow: $shadow-base;
+    width: $value-48;
+  }
+}
