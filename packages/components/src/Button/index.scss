@@ -1,0 +1,40 @@
+@import "~@sourceface/style/index.scss";
+
+.root {
+  border: 0;
+  appearance: none;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: $rounded-base;
+  font-size: $font-size-sm;
+  color: $color-white;
+  background-color: $color-blue-500;
+  line-height: $leading-5;
+  box-shadow: $shadow-base;
+  &.full {
+    width: 100%;
+  }
+  &:focus {
+    outline: 0;
+    box-shadow: 0 0 0 3px $color-blue-200;
+  }
+  &:hover {
+    background-color: $color-blue-600;
+  }
+  &:active {
+    box-shadow: none;
+    background-color: $color-blue-700;
+  }
+  &.small {
+    font-size: $font-size-xs;
+    padding: $value-1 $value-2;
+  }
+  &.regular {
+    font-size: $font-size-sm;
+    padding: $value-2 $value-3;
+  }
+  &.large {
+    font-size: $font-size-base;
+    padding: $value-3 $value-4;
+  }
+}

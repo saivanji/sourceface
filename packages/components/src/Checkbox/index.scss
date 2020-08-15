@@ -1,0 +1,10 @@
+@import "~@sourceface/style/index.scss";
+
+.root {
+  display: flex;
+  align-items: center;
+}
+
+.label {
+  margin-left: $value-2;
+}

@@ -1,0 +1,64 @@
+@import "~@sourceface/style/index.scss";
+
+.root {
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
+  font-size: $font-size-sm;
+  line-height: $leading-5;
+}
+
+.item {
+  display: flex;
+  user-select: none;
+  &:first-child,
+  &:last-child {
+    .link:not(.disabled) {
+      color: $color-gray-700;
+    }
+  }
+  &:not(:first-child, :last-child) {
+    .link {
+      padding: $value-1 $value-2;
+    }
+    .link:not(.dots) {
+      margin: 0 $value-1;
+    }
+  }
+}
+
+.link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  background-color: $color-white;
+  color: $color-gray-800;
+  border-radius: $rounded-base;
+  svg {
+    width: $value-6;
+  }
+  &.selected {
+    background-color: $color-gray-200;
+    color: $color-gray-800;
+  }
+  &.disabled {
+    cursor: not-allowed;
+    color: $color-gray-500;
+  }
+  &:hover:not(.selected, .disabled) {
+    background-color: $color-gray-100;
+  }
+  &:active:not(.selected, .disabled) {
+    background-color: $color-gray-200;
+  }
+  &:focus:not(.disabled) {
+    z-index: 10;
+    border-radius: $rounded-sm;
+    box-shadow: 0 0 0 3px $color-blue-200;
+  }
+  &:focus {
+    outline: none;
+  }
+}

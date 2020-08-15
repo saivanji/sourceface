@@ -1,0 +1,31 @@
+@import "~@sourceface/style/index.scss";
+
+.root {
+  display: flex;
+  flex-direction: column;
+  font-size: $font-size-sm;
+}
+
+.header {
+  display: flex;
+  border-bottom: 1px solid $color-gray-300;
+  margin-bottom: $value-4;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+  background: none;
+  margin-bottom: -1px;
+  padding-right: $value-2;
+  padding-bottom: $value-3;
+  margin-right: $value-2;
+  border-bottom: 2px solid transparent;
+  &.selected {
+    font-weight: 700;
+    border-color: $color-gray-600;
+  }
+}

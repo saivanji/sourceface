@@ -1,0 +1,50 @@
+@import "~@sourceface/style/index.scss";
+
+.root {
+  width: 100%;
+  text-align: left;
+  border-collapse: separate;
+  border-spacing: 0;
+  // temp
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  //
+  border-radius: $rounded-base;
+  border-top: 1px solid $color-gray-300;
+  background-color: $color-white;
+}
+
+.thead {
+  text-transform: uppercase;
+  font-size: $font-size-xs;
+}
+
+.thead,
+.tbody {
+  .td {
+    padding: $value-4;
+    border-bottom: 1px solid $color-gray-300;
+  }
+}
+
+.tfoot {
+  .td {
+    padding: $value-3 $value-4;
+  }
+}
+
+.th {
+  border-bottom: 1px solid $color-gray-300;
+  background-color: $color-gray-100;
+  padding: $value-3 $value-4;
+  &:first-child {
+    border-top-left-radius: $rounded-base;
+  }
+  &:last-child {
+    border-top-right-radius: $rounded-base;
+  }
+}
+
+// .tr:hover {
+//   background-color: $color-gray-100;
+// }
