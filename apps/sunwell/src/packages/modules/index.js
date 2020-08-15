@@ -10,4 +10,4 @@ import * as text from "./text"
 const stock = { container, table, text }
 
 export const dict = transformModules(stock)
-export const list = values(stock)
+export const list = values(dict)

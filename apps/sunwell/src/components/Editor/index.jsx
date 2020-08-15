@@ -11,19 +11,23 @@ import { toPositionsRequest, findModule } from "./utils"
 
 export default function Editor({ children, modules, onClose }) {
   const [selectedId, setSelectedId] = useState(null)
+  const removeSelection = () => setSelectedId(null)
+
   const { isChanging, updateModule, removeModule, changeGrid } = useChange(
-    selectedId
+    selectedId,
+    removeSelection
   )
-  const module = modules && findModule(selectedId, modules)
+  const selectedModule =
+    modules && selectedId && findModule(selectedId, modules)
 
   return (
     <GrillProvider>
       <View
         isSaving={isChanging}
         right={
-          selectedId ? (
+          selectedModule ? (
             <Configuration
-              module={module}
+              module={selectedModule}
               onUpdate={updateModule}
               onRemove={removeModule}
             />
@@ -46,7 +50,7 @@ export default function Editor({ children, modules, onClose }) {
   )
 }
 
-const useChange = selectedId => {
+const useChange = (selectedId, onModuleRemove) => {
   const [, createModule] = useMutation(schema.createModule)
   const [{ fetching: isRemovingModule }, removeModule] = useMutation(
     schema.removeModule
@@ -62,7 +66,10 @@ const useChange = selectedId => {
   const handleModuleUpdate = (key, value) =>
     updateModule({ moduleId: selectedId, key, value })
 
-  const handleModuleRemove = () => removeModule({ moduleId: selectedId })
+  const handleModuleRemove = async () => {
+    await removeModule({ moduleId: selectedId })
+    onModuleRemove()
+  }
 
   const handleGridChange = (event, layoutId) => {
     if (["leave", "drag", "resize"].includes(event.name)) {
@@ -78,7 +85,6 @@ const useChange = selectedId => {
       const { outer, ...layout } = event.layout
       const position = { layoutId, ...outer }
 
-      // TODO: implement optimistic updates
       createModule({
         type: moduleType,
         config: stock.dict[moduleType].defaultConfig,

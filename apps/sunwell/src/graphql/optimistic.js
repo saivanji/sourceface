@@ -1,3 +1,17 @@
+export const removeModule = ({ moduleId }, cache) => {
+  // cache.invalidate({ __typename: "Position", id: module.position.id })
+
+  // TODO: will implementing schema awareness feature will force removing the
+  // position assigned with that module without fetching page query?
+  // (that will allow to remove module immediately without waiting until page is fetched)
+  // Check that by retrieving module position in some time after module invalidation.
+
+  // TODO: sometimes when deleting nested layout(probably not only nested) - an error
+  // is raised(can not read "layouts" of undefined in "createModule" function)
+  // TODO: Check if all nested child stack was removed when parent module was invalidated
+  cache.invalidate({ __typename: "Module", id: moduleId })
+}
+
 export const updateModule = ({ moduleId, key, value }, cache) => {
   const __typename = "Module"
 

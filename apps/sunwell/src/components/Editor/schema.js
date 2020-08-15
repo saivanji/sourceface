@@ -35,6 +35,16 @@ export const createModule = `
         w
         h
       }
+      layouts {
+        id
+        positions {
+          id
+          x
+          y
+          w
+          h
+        }
+      }
     }
   }
 `

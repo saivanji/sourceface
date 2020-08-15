@@ -45,5 +45,9 @@ ReactDOM.render(
 //
 //
 // Current:
-// - Implement dropping modules on a grid
+// - Implement schema awareness
+// - Update cache after create and delete
+// - Implement restack of nested modules
+// - Implement creating modules with child layouts
+//
 // - Improve ux of modules editing
