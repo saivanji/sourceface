@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@babel/standalone": "^7.10.4",
+    "@sourceface/schema": "^0.0.1",
     "bcryptjs": "^2.4.3",
     "connect-pg-simple": "^6.1.0",
     "core-js": "^3.6.4",

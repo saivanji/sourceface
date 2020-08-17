@@ -10,13 +10,14 @@
   },
   "dependencies": {
     "@babel/standalone": "^7.10.4",
+    "@sourceface/schema": "^0.0.1",
     "@sourceface/style": "0.0.1",
-    "@urql/exchange-graphcache": "^3.0.1",
+    "@urql/exchange-graphcache": "^3.0.2",
     "@urql/exchange-populate": "^0.1.8",
     "camelcase": "5.3.1",
     "classnames": "^2.2.6",
     "formik": "^2.1.4",
-    "graphql": "^15.1.0",
+    "graphql": "^15.3.0",
     "graphql-tag": "^2.11.0",
     "moment": "^2.27.0",
     "normalize.css": "^8.0.1",
@@ -26,7 +27,7 @@
     "react-grid-layout": "^0.18.3",
     "react-grill": "^0.0.3",
     "react-responsive": "^8.0.3",
-    "urql": "^1.9.8",
+    "urql": "^1.10.0",
     "yup": "^0.29.1"
   },
   "devDependencies": {

@@ -5,7 +5,7 @@ import React from "react"
 import ReactDOM from "react-dom"
 import { Provider as ClientProvider } from "urql"
 import * as pages from "./pages"
-import client from "./graphql"
+import client from "./schema"
 
 ReactDOM.render(
   <ClientProvider value={client}>

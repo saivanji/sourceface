@@ -1,4 +1,5 @@
-export const root = `
+// TODO: what if we request x, y, w, h from modules position instead of layout?
+export const constructionPage = `
   query($pageId: Int!) {
     page(pageId: $pageId) {
       id

@@ -2,7 +2,7 @@ type Layout {
   id: Int!
   createdAt: DateTime!
   page: Page!
-  positions: [Position]
+  positions: [Position!]!
 }
 
 type Position {

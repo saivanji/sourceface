@@ -1754,6 +1754,11 @@
     postcss-import "^12.0.1"
     postcss-preset-env "^6.7.0"
 
+"@sourceface/schema@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@sourceface/schema/-/schema-0.0.1.tgz#3c845180f25c8a3e27ccd3cfffba2a42b41b4479"
+  integrity sha512-HKCrfpe5H6yHyyGZ7o0kcGlELGQSboDHMdDy5UE4DrHd0eQTLtKwpYFw9dBVUZvmW16w/nOPRq9O6gzLUyjN1g==
+
 "@types/babel__core@^7.1.7":
   version "7.1.7"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.7.tgz#1dacad8840364a57c98d0dd4855c6dd3752c6b89"

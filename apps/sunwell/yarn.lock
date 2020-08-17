@@ -1844,6 +1844,11 @@
     eslint-plugin-react "^7.19.0"
     postcss-preset-env "^6.7.0"
 
+"@sourceface/schema@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@sourceface/schema/-/schema-0.0.1.tgz#3c845180f25c8a3e27ccd3cfffba2a42b41b4479"
+  integrity sha512-HKCrfpe5H6yHyyGZ7o0kcGlELGQSboDHMdDy5UE4DrHd0eQTLtKwpYFw9dBVUZvmW16w/nOPRq9O6gzLUyjN1g==
+
 "@sourceface/style@0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@sourceface/style/-/style-0.0.1.tgz#96210402425d7b40c43097d42a0291edcc5993a1"
@@ -2044,26 +2049,26 @@
     "@types/webpack-sources" "*"
     source-map "^0.6.0"
 
-"@urql/core@>=1.12.0", "@urql/core@>=1.12.1":
+"@urql/core@>=1.12.0":
   version "1.12.2"
   resolved "https://registry.yarnpkg.com/@urql/core/-/core-1.12.2.tgz#88c031dc0e39da412964b05ae8e89c634fca0220"
   integrity sha512-GGG9fzDRscuLdYVpJSTOfTPLHHEXadrUI/LNZ0vAIXrof5whWL8Nyxc2x2EhilrajZ+7DgZUuT+nuiVF4/Z7fA==
   dependencies:
     wonka "^4.0.14"
 
-"@urql/core@^1.12.0":
-  version "1.12.1"
-  resolved "https://registry.yarnpkg.com/@urql/core/-/core-1.12.1.tgz#9ed26d05255f0c08f638ad2b9ad6d176cb0bf88d"
-  integrity sha512-mu0xHbbMWU7RDkHawCNvHKEfDtQT0dfHPD2KXMMv9ibxp0CNdvQ00hppvf6C9j2WuPxGn2NadIjVg51vGCYr5w==
+"@urql/core@>=1.12.3", "@urql/core@^1.12.3":
+  version "1.12.3"
+  resolved "https://registry.yarnpkg.com/@urql/core/-/core-1.12.3.tgz#74f7b8e073cf706380bb3dd28484b8136cc96905"
+  integrity sha512-e4IXXQ4nes3KyusgYV925DuzfDAfo4ex7Ls3tZfOExkxEcXh0i0XnizXp0rvZmWRch69YCkc+Lh1Gy2aY49HTQ==
   dependencies:
     wonka "^4.0.14"
 
-"@urql/exchange-graphcache@^3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@urql/exchange-graphcache/-/exchange-graphcache-3.0.1.tgz#9ca02aee8127da6f5e41e2c85f940c50663978c9"
-  integrity sha512-ZuDx4KL/Zrf/ogTzd4v5hKSR7awv0myyRVOtGds3EE0YrziMNTPCOL9pO9c48aO6P+J5yrKFYDeKu8BDv3aN4w==
+"@urql/exchange-graphcache@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@urql/exchange-graphcache/-/exchange-graphcache-3.0.2.tgz#074db388c1b301660f298336fd6dbc6d09340364"
+  integrity sha512-spFdJRpHXBfpF9+RcmzKDIjYds/x256dBvBYyf7Mo3MRE4xn7hQzqVnTzT+jpnokhvngzkjjzy7TIz2L5BFxyA==
   dependencies:
-    "@urql/core" ">=1.12.1"
+    "@urql/core" ">=1.12.3"
     wonka "^4.0.14"
 
 "@urql/exchange-populate@^0.1.8":
@@ -4710,10 +4715,10 @@ graphql-tag@^2.11.0:
   resolved "https://registry.yarnpkg.com/graphql-tag/-/graphql-tag-2.11.0.tgz#1deb53a01c46a7eb401d6cb59dec86fa1cccbffd"
   integrity sha512-VmsD5pJqWJnQZMUeRwrDhfgoyqcfwEkvtpANqcoUG8/tOLkwNgU9mzub/Mc78OJMhHjx7gfAMTxzdG43VGg3bA==
 
-graphql@^15.1.0:
-  version "15.1.0"
-  resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.1.0.tgz#b93e28de805294ec08e1630d901db550cb8960a1"
-  integrity sha512-0TVyfOlCGhv/DBczQkJmwXOK6fjWkjzY3Pt7wY8i0gcYXq8aogG3weCsg48m72lywKSeOqedEHvVPOvZvSD51Q==
+graphql@^15.3.0:
+  version "15.3.0"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.3.0.tgz#3ad2b0caab0d110e3be4a5a9b2aa281e362b5278"
+  integrity sha512-GTCJtzJmkFLWRfFJuoo9RWWa/FfamUHgiFosxi/X1Ani4AVWbeyBenZTNX6dM+7WSbbFfTo/25eh0LLkwHMw2w==
 
 handle-thing@^2.0.0:
   version "2.0.1"
@@ -8978,12 +8983,12 @@ url@^0.11.0:
     punycode "1.3.2"
     querystring "0.2.0"
 
-urql@^1.9.8:
-  version "1.9.8"
-  resolved "https://registry.yarnpkg.com/urql/-/urql-1.9.8.tgz#07d76efdc698205a55724a2acd2640f7706a036d"
-  integrity sha512-AMikyJ9ldVvFVRND7AjgHJ3dBZXH2ygTM9bj4BwQzE9gfJfWA1wK+dXffV1WTOdOoCRngIxGWgZIzSkoLGBpbw==
+urql@^1.10.0:
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/urql/-/urql-1.10.0.tgz#609f13891d3c5345635764b71b072edd88a1ae7e"
+  integrity sha512-Cxx1INTWNUMg9A2gyltqNqukOLFVtztkHxFGfv01OvsFAtR+wCmLyJqIzGUZRKVbKepTLocGbelS7QDxtjcqtg==
   dependencies:
-    "@urql/core" "^1.12.0"
+    "@urql/core" "^1.12.3"
     wonka "^4.0.14"
 
 use@^3.1.0:

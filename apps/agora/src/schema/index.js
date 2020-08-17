@@ -1,10 +1,6 @@
 import { makeExecutableSchema } from "graphql-tools"
+import { printedSDL } from "@sourceface/schema"
 import { mergeAll } from "utils/index"
-import baseDef from "./base/schema.graphql"
-import sourceDef from "./source/schema.graphql"
-import moduleDef from "./module/schema.graphql"
-import layoutDef from "./layout/schema.graphql"
-import pageDef from "./page/schema.graphql"
 import baseResolvers from "./base/resolvers"
 import sourceResolvers from "./source/resolvers"
 import moduleResolvers from "./module/resolvers"
@@ -15,14 +11,7 @@ import pageResolvers from "./page/resolvers"
 // import * as userDirectives from "./user/directives"
 
 export default makeExecutableSchema({
-  typeDefs: [
-    baseDef,
-    sourceDef,
-    moduleDef,
-    layoutDef,
-    pageDef,
-    // userDef
-  ],
+  typeDefs: printedSDL,
   resolvers: mergeAll(
     baseResolvers,
     sourceResolvers,

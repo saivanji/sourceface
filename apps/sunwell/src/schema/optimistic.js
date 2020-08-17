@@ -7,7 +7,7 @@ export const removeModule = ({ moduleId }, cache) => {
   // Check that by retrieving module position in some time after module invalidation.
 
   // TODO: sometimes when deleting nested layout(probably not only nested) - an error
-  // is raised(can not read "layouts" of undefined in "createModule" function)
+  // is raised(can not read "positions" of undefined in "layout.positions" in "Modules" component)
   // TODO: Check if all nested child stack was removed when parent module was invalidated
   cache.invalidate({ __typename: "Module", id: moduleId })
 }

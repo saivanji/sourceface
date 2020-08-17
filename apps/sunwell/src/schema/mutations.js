@@ -1,12 +1,6 @@
 export const updatePositions = `
   mutation($positions: [PositionInput!]!) {
-    updatePositions(positions: $positions) {
-      id
-      x
-      y
-      w
-      h
-    }
+    updatePositions(positions: $positions) @populate
   }
 `
 
@@ -17,17 +11,12 @@ export const createModule = `
     $position: PositionInput!
     $positions: [PositionInput!]!
   ) {
-    updatePositions(positions: $positions) {
-      id
-      x
-      y
-      w
-      h
-    }
+    updatePositions(positions: $positions) @populate
     createModule(type: $type, config: $config, position: $position) {
       id
       type
       config
+      layouts @populate
       position {
         id
         x
@@ -35,26 +24,13 @@ export const createModule = `
         w
         h
       }
-      layouts {
-        id
-        positions {
-          id
-          x
-          y
-          w
-          h
-        }
-      }
     }
   }
 `
 
 export const updateModule = `
   mutation($moduleId: Int!, $key: String!, $value: JSON!) {
-    updateModule(moduleId: $moduleId, key: $key, value: $value) {
-      id
-      config
-    }
+    updateModule(moduleId: $moduleId, key: $key, value: $value) @populate
   }
 `
 

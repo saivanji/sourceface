@@ -1,6 +1,7 @@
 import { createClient, dedupExchange, fetchExchange } from "urql"
+import { introspection } from "@sourceface/schema"
 import { cacheExchange } from "@urql/exchange-graphcache"
-// import { populateExchange } from "@urql/exchange-populate"
+import { populateExchange } from "@urql/exchange-populate"
 import * as optimistic from "./optimistic"
 import * as updates from "./updates"
 
@@ -11,9 +12,11 @@ export default createClient({
   maskTypename: true,
   exchanges: [
     dedupExchange,
-    // TODO: will be available since graphql schema will be pushed as a separate package so we can import
-    // populateExchange({}),
+    populateExchange({
+      schema: introspection,
+    }),
     cacheExchange({
+      schema: introspection,
       optimistic,
       updates: {
         Mutation: updates,

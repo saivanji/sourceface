@@ -5,7 +5,7 @@ import { useQuery } from "urql"
 import { useBooleanState } from "hooks/index"
 import { Frame, Editor, Modules } from "components/index"
 import * as expression from "lib/expression"
-import * as schema from "./schema"
+import * as queries from "schema/queries"
 import { createLayout } from "./utils"
 
 // TODO: think about real use case
@@ -23,7 +23,7 @@ const path = [
 // TODO: handle error on back-end requests
 export default () => {
   const [result] = useQuery({
-    query: schema.root,
+    query: queries.constructionPage,
     variables: { pageId: 1 },
   })
   const [isEditing, editOn, editOff] = useBooleanState(false)

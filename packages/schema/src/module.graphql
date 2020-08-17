@@ -10,7 +10,7 @@ type Module {
   type: ModuleType
   config: JSONObject!
   position: Position!
-  layouts: [Layout]
+  layouts: [Layout!]!
 }
 
 extend type Mutation {

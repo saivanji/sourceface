@@ -2,10 +2,15 @@ version: "3.4"
 services:
   agora:
     build: ./apps/agora
-    command: "yarn start"
+    command: >
+      bash -c "cd /mnt/schema && yarn link &&
+               cd /var/www && yarn link @sourceface/schema &&
+               yarn start"
     volumes:
       - ./apps/agora:/var/www
       - /var/www/node_modules
+      - ./packages/schema:/mnt/schema
+      - schema_node_modules:/mnt/schema/node_modules
     environment:
       - NODE_ENV=development
       - PORT=5001
@@ -36,8 +41,9 @@ services:
     command: >
       bash -c "cd /mnt/style && yarn link &&
                cd /mnt/components && yarn link &&
+               cd /mnt/schema && yarn link &&
                cd /var/www &&
-               yarn link @sourceface/style @sourceface/components &&
+               yarn link @sourceface/style @sourceface/components @sourceface/schema &&
                yarn start"
     volumes:
       - ./apps/sunwell:/var/www
@@ -46,6 +52,8 @@ services:
       - style_node_modules:/mnt/style/node_modules
       - ./packages/components:/mnt/components
       - components_node_modules:/mnt/components/node_modules
+      - ./packages/schema:/mnt/schema
+      - schema_node_modules:/mnt/schema/node_modules
     environment:
       - NODE_ENV=development
       - AGORA_HOST
@@ -66,6 +74,13 @@ services:
       - style_node_modules:/mnt/style/node_modules
     ports:
       - "4001:4001"
+
+  schema:
+    build: ./packages/schema
+    command: "tail -f /dev/null"
+    volumes:
+      - ./packages/schema:/var/www
+      - schema_node_modules:/var/www/node_modules
 
   style:
     build: ./packages/style
@@ -93,3 +108,4 @@ services:
 volumes:
   style_node_modules:
   components_node_modules:
+  schema_node_modules:

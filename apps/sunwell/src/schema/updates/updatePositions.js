@@ -35,10 +35,6 @@ const layoutFragment = gql`
     id
     positions {
       id
-      x
-      y
-      w
-      h
     }
   }
 `

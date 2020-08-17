@@ -6,7 +6,7 @@ import Configuration from "../Configuration"
 import Stock from "../Stock"
 import Modules from "../Modules"
 import View from "./View"
-import * as schema from "./schema"
+import * as mutatations from "schema/mutations"
 import { toPositionsRequest, findModule } from "./utils"
 
 export default function Editor({ children, modules, onClose }) {
@@ -51,15 +51,15 @@ export default function Editor({ children, modules, onClose }) {
 }
 
 const useChange = (selectedId, onModuleRemove) => {
-  const [, createModule] = useMutation(schema.createModule)
+  const [, createModule] = useMutation(mutatations.createModule)
   const [{ fetching: isRemovingModule }, removeModule] = useMutation(
-    schema.removeModule
+    mutatations.removeModule
   )
   const [{ fetching: isUpdatingModule }, updateModule] = useMutation(
-    schema.updateModule
+    mutatations.updateModule
   )
   const [{ fetching: isUpdatingGrid }, updatePositions] = useMutation(
-    schema.updatePositions
+    mutatations.updatePositions
   )
 
   // TODO: implement debouncing
