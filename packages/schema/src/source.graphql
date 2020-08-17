@@ -1,0 +1,39 @@
+# enum SourceType {
+#   postgres
+# }
+
+# TODO: validation of source configs with scalars?
+
+# union SourceConfig = PostgresSourceConfig
+union CommandConfig = PostgresCommandConfig
+
+# type PostgresSourceConfig {
+#   connection: String!
+# }
+
+type PostgresCommandConfig {
+  value: String
+}
+
+# type Source {
+#   id: String!
+#   createdAt: DateTime!
+#   type: SourceType!
+#   config: SourceConfig!
+# }
+
+type Command {
+  id: String!
+  createdAt: DateTime!
+  # source: Source!
+  config: CommandConfig!
+}
+
+extend type Query {
+  commands: [Command!]!
+  readCommand(commandId: String!, args: JSONObject): JSON
+}
+
+extend type Mutation {
+  writeCommand(commandId: String!, args: JSONObject): JSON
+}

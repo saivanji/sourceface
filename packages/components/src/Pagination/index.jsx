@@ -1,7 +1,7 @@
 import React from "react"
 import cx from "classnames"
-import ChevL from "assets/chev-l.svg"
-import ChevR from "assets/chev-r.svg"
+import ChevL from "../../assets/chev-l.svg"
+import ChevR from "../../assets/chev-r.svg"
 import styles from "./index.scss"
 
 export default function Pagination(

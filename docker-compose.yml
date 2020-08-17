@@ -34,14 +34,18 @@ services:
     stdin_open: true
     build: ./apps/sunwell
     command: >
-      bash -c "rm -rf /var/www/node_modules/@sourceface/style &&
-               ln -s /mnt/style /var/www/node_modules/@sourceface/style &&
+      bash -c "cd /mnt/style && yarn link &&
+               cd /mnt/components && yarn link &&
+               cd /var/www &&
+               yarn link @sourceface/style @sourceface/components &&
                yarn start"
     volumes:
       - ./apps/sunwell:/var/www
       - /var/www/node_modules
       - ./packages/style:/mnt/style
       - style_node_modules:/mnt/style/node_modules
+      - ./packages/components:/mnt/components
+      - components_node_modules:/mnt/components/node_modules
     environment:
       - NODE_ENV=development
       - AGORA_HOST
@@ -49,22 +53,19 @@ services:
     ports:
       - "3001:3001"
 
-  # components:
-  #   build: ./packages/components
-  #   command: >
-  #     bash -c "rm -rf /var/www/node_modules/react &&
-  #              ln -s /mnt/sunwell/node_modules/react /var/www/node_modules/react &&
-  #              rm -rf /var/www/node_modules/@sourceface/style &&
-  #              ln -s /mnt/style /var/www/node_modules/@sourceface/style &&
-  #              yarn start"
-  #   volumes:
-  #     - ./packages/components:/var/www
-  #     - components_node_modules:/var/www/node_modules
-  #     - ./packages/style:/mnt/style
-  #     - style_node_modules:/mnt/style/node_modules
-  #     - sunwell_node_modules:/mnt/sunwell/node_modules
-  #   ports:
-  #     - "4001:4001"
+  components:
+    build: ./packages/components
+    command: >
+      bash -c "cd /mnt/style && yarn link &&
+               cd /var/www && yarn link @sourceface/style &&
+               tail -f /dev/null"
+    volumes:
+      - ./packages/components:/var/www
+      - components_node_modules:/var/www/node_modules
+      - ./packages/style:/mnt/style
+      - style_node_modules:/mnt/style/node_modules
+    ports:
+      - "4001:4001"
 
   style:
     build: ./packages/style
@@ -91,3 +92,4 @@ services:
 
 volumes:
   style_node_modules:
+  components_node_modules:

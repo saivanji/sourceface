@@ -1,5 +1,5 @@
 import React, { useMemo } from "react"
-import { Input, Select, Checkbox } from "packages/kit"
+import { Input, Select, Checkbox } from "@sourceface/components"
 import * as stock from "packages/modules"
 import * as form from "lib/form"
 import View from "./View"

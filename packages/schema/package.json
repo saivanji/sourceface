@@ -1,0 +1,19 @@
+{
+  "name": "@sourceface/schema",
+  "version": "0.0.1",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "rimraf ./lib && node ./index.js"
+  },
+  "devDependencies": {
+    "@graphql-tools/load-files": "^6.0.18",
+    "@graphql-tools/merge": "^6.0.18",
+    "@sourceface/config": "^0.0.24",
+    "graphql": "^15.3.0",
+    "rimraf": "^3.0.2"
+  }
+}

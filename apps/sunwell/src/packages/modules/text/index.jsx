@@ -1,7 +1,7 @@
 import React from "react"
 import * as yup from "yup"
 import * as system from "@sourceface/style"
-import { Row, Label } from "packages/kit"
+import { Row, Label } from "@sourceface/components"
 import styles from "./index.scss"
 
 // every module should have correspoding loader(depending on type)

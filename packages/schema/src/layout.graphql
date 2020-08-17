@@ -1,0 +1,27 @@
+type Layout {
+  id: Int!
+  createdAt: DateTime!
+  page: Page!
+  positions: [Position]
+}
+
+type Position {
+  id: Int!
+  x: Int!
+  y: Int!
+  w: Int!
+  h: Int!
+}
+
+input PositionInput {
+  id: Int
+  layoutId: Int!
+  x: Int!
+  y: Int!
+  w: Int!
+  h: Int!
+}
+
+extend type Mutation {
+  updatePositions(positions: [PositionInput]!): [Position!]!
+}

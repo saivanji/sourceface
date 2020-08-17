@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import * as yup from "yup"
 import moment from "moment"
-import { Table, Pagination, Row, Label, Section } from "packages/kit"
+import { Table, Pagination, Row, Label, Section } from "@sourceface/components"
 import styles from "./index.scss"
 
 export const Root = function TableModule({ config, expression }) {

@@ -1,5 +1,5 @@
 import React from "react"
-import { Breadcrumbs } from "packages/kit/index"
+import { Breadcrumbs } from "@sourceface/components"
 import styles from "./index.scss"
 
 // dashboard frame component containing Header component and so on

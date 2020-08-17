@@ -1,4 +1,5 @@
 const path = require("path")
+const pkg = require("./package.json")
 
 const NODE_ENV = process.env.NODE_ENV || "production"
 const isProd = NODE_ENV === "production"
@@ -12,14 +13,9 @@ module.exports = {
     filename: isProd ? "index.min.js" : "index.js",
     libraryTarget: "umd",
   },
-  externals: {
-    react: {
-      commonjs: "react",
-      commonjs2: "react",
-      amd: "react",
-      root: "React",
-    },
-  },
+  externals: Object.keys(
+    Object.assign({}, pkg.dependencies, pkg.peerDependencies)
+  ).reduce((acc, key) => Object.assign({}, acc, { [key]: key }), {}),
   module: {
     rules: [
       {
@@ -30,13 +26,12 @@ module.exports = {
         },
       },
       {
-        test: /\.css$/,
+        test: /\.scss$/,
         use: [
           "style-loader",
           {
             loader: "css-loader",
             options: {
-              import: false,
               modules: {
                 localIdentName: isProd
                   ? "[hash:base64]"
@@ -46,13 +41,11 @@ module.exports = {
             },
           },
           "postcss-loader",
+          "sass-loader",
         ],
       },
       {
         test: /\.svg$/,
-        issuer: {
-          test: /\.jsx$/,
-        },
         use: {
           loader: "@svgr/webpack",
           options: {

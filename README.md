@@ -8,8 +8,9 @@
 ## Command
 
 ```
-docker-compose up &
-docker-compose exec agora yarn migrate:up
+docker-compose up
+docker-compose exec agora sh -c "yarn migrate:up && yarn seed"
+docker-compose exec absinthe yarn start
 ```
 
 # Building the app

@@ -1,5 +1,5 @@
 import React from "react"
-import { Tabs } from "packages/kit"
+import { Tabs } from "@sourceface/components"
 
 export default function View({ children, onRemove }) {
   return (
