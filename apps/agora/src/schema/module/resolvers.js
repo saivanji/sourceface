@@ -1,5 +1,3 @@
-import { keys } from "ramda"
-import graphqlFields from "graphql-fields"
 import * as moduleRepo from "repos/module"
 import * as positionRepo from "repos/position"
 
@@ -9,13 +7,8 @@ const createModule = async (
   { pg }
 ) => {
   return pg.tx(async t => {
-    const positionOut = await positionRepo.create(layoutId, position, t)
-    const module = await moduleRepo.create(type, config, positionOut.id, t)
-
-    return {
-      ...module,
-      position: positionOut,
-    }
+    const { id: positionId } = await positionRepo.create(layoutId, position, t)
+    return await moduleRepo.create(type, config, positionId, t)
   })
 }
 
@@ -46,23 +39,6 @@ const removeModule = async (parent, { moduleId }, { pg }) => {
   return true
 }
 
-const position = (parent, args, ctx, info) => {
-  const fields = keys(graphqlFields(info)).filter(k => k !== "__typename")
-  const id = parent.positionId
-
-  /**
-   * Returning position id from parent in case only id field was requested
-   * to avoid sending extra database request.
-   */
-  if (fields.length === 1 && fields.includes("id")) {
-    return {
-      id,
-    }
-  }
-
-  return ctx.loaders.position.load(id)
-}
-
 const layouts = (parent, args, ctx) =>
   ctx.loaders.layoutsByModule.load(parent.id)
 
@@ -73,7 +49,6 @@ export default {
     removeModule,
   },
   Module: {
-    position,
     layouts,
   },
 }

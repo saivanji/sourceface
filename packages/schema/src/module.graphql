@@ -6,10 +6,10 @@ enum ModuleType {
 
 type Module {
   id: Int!
+  positionId: Int!
   createdAt: DateTime!
   type: ModuleType
   config: JSONObject!
-  position: Position!
   layouts: [Layout!]!
 }
 

@@ -5,7 +5,7 @@ import { useQuery } from "urql"
 import { useBooleanState } from "hooks/index"
 import { Frame, Editor, Modules } from "components/index"
 import * as expression from "lib/expression"
-import * as queries from "schema/queries"
+import * as queries from "./queries"
 import { createLayout } from "./utils"
 
 // TODO: think about real use case

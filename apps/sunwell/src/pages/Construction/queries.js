@@ -1,4 +1,3 @@
-// TODO: what if we request x, y, w, h from modules position instead of layout?
 export const constructionPage = `
   query($pageId: Int!) {
     page(pageId: $pageId) {
@@ -18,9 +17,7 @@ export const constructionPage = `
         id
         type
         config
-        position {
-          id
-        }
+        positionId
         layouts {
           id
           positions {

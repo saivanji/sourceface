@@ -12,19 +12,7 @@ export const createModule = `
     $positions: [PositionInput!]!
   ) {
     updatePositions(positions: $positions) @populate
-    createModule(type: $type, config: $config, position: $position) {
-      id
-      type
-      config
-      layouts @populate
-      position {
-        id
-        x
-        y
-        w
-        h
-      }
-    }
+    createModule(type: $type, config: $config, position: $position) @populate
   }
 `
 
