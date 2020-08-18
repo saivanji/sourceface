@@ -13,7 +13,15 @@ export default ({
 }) => {
   return (
     <div
-      onClick={() => onClick && onClick(data.id)}
+      onClick={e => {
+        if (onClick) {
+          /**
+           * Propagating click events in order to be able to click on nested module
+           */
+          e.stopPropagation()
+          onClick(data.id)
+        }
+      }}
       className={cx(
         styles.module,
         isEditable && styles.editable,
