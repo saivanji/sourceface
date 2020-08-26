@@ -16,11 +16,33 @@ const data1 = {
   john: {
     x: 4,
     y: 1,
-    w: 2,
-    h: 3,
+    w: 4,
+    h: 8,
     data: {
       text: "John",
       color: "darkCyan",
+      layout: {
+        mike: {
+          x: 6,
+          y: 2,
+          w: 2,
+          h: 4,
+          data: {
+            text: "Mike",
+            color: "sandybrown",
+          },
+        },
+        kyle: {
+          x: 3,
+          y: 6,
+          w: 5,
+          h: 1,
+          data: {
+            text: "Kyle",
+            color: "chocolate",
+          },
+        },
+      },
     },
   },
 }
@@ -260,49 +282,54 @@ export default () => {
           display: "flex",
           margin: 50,
           border: "1px solid #bbb",
-          height: 400,
+          height: 900,
           overflowY: "auto",
         }}
       >
-        <Area data={data1} style={{ borderRight: "1px solid #bbb" }} />
-        <Area data={data2} style={{ borderRight: "1px solid #bbb" }} />
-        <Area data={data3} />
+        <Area data={data1} />
       </div>
     </GrillProvider>
   )
 }
 
-const Area = ({ data, style }) => {
+const Area = ({ data, style, cols = 10, rows = 30, rowHeight = 80 }) => {
   const [layout, setLayout] = useState(data)
   const handleChange = event => setLayout(event.layout)
 
   return (
     <Grill
-      style={{ width: "33.3%", ...style }}
-      rowHeight={80}
-      rows={30}
-      cols={10}
+      style={{ width: "100%", ...style }}
+      rowHeight={rowHeight}
+      cols={cols}
+      rows={rows}
       layout={layout}
-      renderItem={data => (
-        <div
-          style={{
-            width: "100%",
-            height: "100%",
-            backgroundColor: data.color,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <span
+      renderItem={data =>
+        !data.layout ? (
+          <div
             style={{
-              fontSize: "2rem",
+              width: "100%",
+              height: "100%",
+              backgroundColor: data.color,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              userSelect: "none",
             }}
           >
-            {data.text}
-          </span>
-        </div>
-      )}
+            <span
+              style={{
+                fontSize: "1.5rem",
+              }}
+            >
+              {data.text}
+            </span>
+          </div>
+        ) : (
+          <div style={{ backgroundColor: "#fff", border: "1px solid #aaa" }}>
+            <Area data={data.layout} cols={18} rows={20} rowHeight={30} />
+          </div>
+        )
+      }
       onChange={handleChange}
       components={{
         Box,

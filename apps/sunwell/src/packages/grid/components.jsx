@@ -1,4 +1,5 @@
 import React, { forwardRef } from "react"
+import { createPortal } from "react-dom"
 
 export const Noop = () => null
 
@@ -95,7 +96,7 @@ const Box = ({ children, style, components }) => {
 const DragPreview = ({ children, style, components }) => {
   const Parent = components.DragPreview || "div"
 
-  return (
+  return createPortal(
     <Parent
       style={{
         ...style,
@@ -107,7 +108,9 @@ const DragPreview = ({ children, style, components }) => {
       }}
     >
       {children}
-    </Parent>
+    </Parent>,
+    // TODO: cache
+    document.getElementById("preview-container")
   )
 }
 

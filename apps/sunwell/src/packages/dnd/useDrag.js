@@ -1,6 +1,5 @@
 import { useRef, useEffect, useContext } from "react"
 import { context } from "./state"
-import * as dom from "./dom"
 
 export default (type, { onStart, onMove, onEnd }) => {
   const source = useRef()
@@ -46,6 +45,12 @@ export default (type, { onStart, onMove, onEnd }) => {
 
     const mousedown = e => {
       if (e.which !== 1) return
+
+      // TODO: replase "stopPropagation" by a condition for checking whether the drag is currently
+      // in progress. Stopping propagation may lead to unpredictable consequences when we set global
+      // click handlers, for example on "document". But keep in mind that we might have a case with
+      // 2+ different DnDProvider's.
+      e.stopPropagation()
 
       // do not triggering "onEnter" drop events in case source is onmounted on drag start
       // source.current.style["pointer-events"] = "none"

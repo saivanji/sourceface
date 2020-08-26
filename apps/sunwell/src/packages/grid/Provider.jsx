@@ -28,9 +28,12 @@ export default ({ children }) => {
   ])
 
   return (
-    <context.Provider value={{ isWrapped: true, register, call }}>
-      <DndProvider>{children}</DndProvider>
-    </context.Provider>
+    <>
+      <context.Provider value={{ isWrapped: true, register, call }}>
+        <DndProvider>{children}</DndProvider>
+      </context.Provider>
+      <div id="preview-container"></div>
+    </>
   )
 }
 
