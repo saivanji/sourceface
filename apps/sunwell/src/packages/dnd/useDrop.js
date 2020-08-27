@@ -1,7 +1,10 @@
 import { useRef, useEffect, useContext } from "react"
 import { context } from "./state"
 
-export default (types, { onEnter, onLeave, onOver, onDrop }) => {
+export default (
+  types,
+  { propagate = true, onEnter, onLeave, onOver, onDrop }
+) => {
   const target = useRef()
   const local = useRef()
   const { provide, type } = useContext(context)
@@ -30,6 +33,7 @@ export default (types, { onEnter, onLeave, onOver, onDrop }) => {
           isEntered: true,
         }
 
+        // TODO: register overed elements
         lifecycle.onEnter(...args)
 
         return

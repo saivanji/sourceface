@@ -1,7 +1,7 @@
 import React, { useState } from "react"
-import { ShiftedProvider, useDrag, useDrop } from "../"
+import { DndProvider, useDrag, useDrop } from "../"
 
-const Component = () => {
+const Root = () => {
   const [{ deltaX, deltaY }, setMovement] = useState({})
 
   const dragRef = useDrag("element", {
@@ -13,56 +13,85 @@ const Component = () => {
     },
   })
 
-  const dropRef = useDrop(["element"], {
-    onEnter: (transfer, { clientY }) => {
-      return {
-        dropStartY: clientY,
-      }
-    },
-    onLeave: ({ id }) => {
-      return {
-        // onItemLeave: () => onItemLeave(id)
-      }
-    },
-    onHover: ({ dropStartY }, { clientY, startY }) => {
-      const dropDeltaY = clientY - (dropStartY || startY)
-
-      console.log(clientY, dropStartY, startY, dropDeltaY)
-    },
-  })
-
   return (
-    <ShiftedProvider>
+    <div>
       <div
-        ref={dropRef}
         style={{
-          border: "1px solid",
-          padding: 10,
-          display: "flex",
-          alignItems: "center",
-          height: 200,
+          margin: 20,
+          height: 400,
         }}
       >
-        Drop here
-        <div
+        <Area id="parent" normalColor="white" overColor="yellow">
+          <div style={{ width: 300, height: 200 }}>
+            <Area id="child" normalColor="gray" overColor="green">
+              Drop here
+            </Area>
+          </div>
+        </Area>
+      </div>
+      <div style={{ margin: 20 }}>
+        <span
           ref={dragRef}
           style={{
+            padding: 10,
+            border: "1px solid #aaa",
+            borderRadius: 4,
+            cursor: "move",
+            display: "inline-block",
             transform:
               deltaX && deltaY && `translate(${deltaX}px, ${deltaY}px)`,
             pointerEvents: deltaX && deltaY && "none",
           }}
         >
           Drag me
-        </div>
+        </span>
       </div>
-    </ShiftedProvider>
+    </div>
+  )
+}
+
+const Area = ({ id, children, normalColor, overColor }) => {
+  const [isOver, setOver] = useState(false)
+
+  const dropRef = useDrop(["element"], {
+    onEnter: () => {
+      console.log("enter", id)
+      setOver(true)
+    },
+    onLeave: () => {
+      console.log("leave", id)
+      setOver(false)
+    },
+    onOver: () => {
+      console.log("over", id)
+    },
+    onDrop: () => {
+      setOver(false)
+    },
+  })
+
+  return (
+    <div
+      ref={dropRef}
+      style={{
+        border: "1px solid",
+        padding: 10,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100%",
+        backgroundColor: isOver ? overColor : normalColor,
+      }}
+    >
+      {children}
+    </div>
   )
 }
 
 export default () => {
   return (
-    <ShiftedProvider>
-      <Component />
-    </ShiftedProvider>
+    <DndProvider>
+      <Root />
+    </DndProvider>
   )
 }

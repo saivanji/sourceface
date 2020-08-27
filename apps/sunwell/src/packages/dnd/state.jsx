@@ -20,10 +20,10 @@ export const Provider = ({ children }) => {
           for (let key of Object.keys(callbacks)) {
             const fn = callbacks[key]
 
-            result[key] = internal => {
+            result[key] = action => {
               {
-                const prev = ref.current.internal
-                ref.current.internal = Object.assign({}, prev, internal)
+                const prev = ref.current.action
+                ref.current.action = Object.assign({}, prev, action)
               }
 
               {
@@ -33,7 +33,7 @@ export const Provider = ({ children }) => {
                 ref.current.transfer = Object.assign(
                   {},
                   prev,
-                  fn(prev, ref.current.internal)
+                  fn(prev, ref.current.action)
                 )
               }
             }

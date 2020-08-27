@@ -33,6 +33,7 @@ export default (
   // move...
   const onMove = useCallback(
     (transfer, { type, clientX, clientY }) => {
+      console.log("move")
       const { left, top } = utils.cursor(clientX, clientY, transfer.rect)
 
       if (type === "outer") {
@@ -67,6 +68,7 @@ export default (
   // handleEnter
   const onEnter = useCallback(
     (transfer, { type, clientX, clientY }) => {
+      console.log("enter")
       const { id, leaved, shiftX, shiftY } = transfer
 
       onLayoutEdit()

@@ -19,7 +19,7 @@ export default props => {
   const isWrapped = useWrapped()
   const grid = <Grid {...props} />
 
-  // TODO: Might use Provider instead of DndProvider
+  // TODO: might use Provider instead of DndProvider
   return !isWrapped ? <DndProvider>{grid}</DndProvider> : grid
 }
 
@@ -48,19 +48,19 @@ function Grid({
   ] = useLayout(initialLayout)
 
   const containerRef = useRef()
-  // const [dropRef, dropping] = useDroppable(
-  //   initialLayout,
-  //   layout,
-  //   containerRef,
-  //   info,
-  //   changeId,
-  //   {
-  //     onLayoutEdit,
-  //     onLayoutUpdate,
-  //     onLayoutReset,
-  //     onChange,
-  //   }
-  // )
+  const [dropRef, dropping] = useDroppable(
+    initialLayout,
+    layout,
+    containerRef,
+    info,
+    changeId,
+    {
+      onLayoutEdit,
+      onLayoutUpdate,
+      onLayoutReset,
+      onChange,
+    }
+  )
 
   useEffect(() => {
     setContainerWidth(containerRef.current.offsetWidth)
@@ -70,24 +70,24 @@ function Grid({
     <div
       ref={node => {
         containerRef.current = node
-        // dropRef.current = node
+        dropRef.current = node
       }}
       style={{ ...style, position: "relative", height: info.containerHeight }}
       className={className}
     >
       {containerWidth && isEditingLayout && <Lines info={info} />}
       {Object.keys(layout).map(id => {
-        // if (dropping?.type === "outer" && dropping?.id === id) {
-        //   return (
-        //     <OuterItemProvider
-        //       key={id}
-        //       id={id}
-        //       layout={layout}
-        //       info={info}
-        //       components={components}
-        //     />
-        //   )
-        // }
+        if (dropping?.type === "outer" && dropping?.id === id) {
+          return (
+            <OuterItemProvider
+              key={id}
+              id={id}
+              layout={layout}
+              info={info}
+              components={components}
+            />
+          )
+        }
 
         const content = renderItem(layout[id].data, id)
 
@@ -113,6 +113,7 @@ function Grid({
             layout={layout}
             info={info}
             components={components}
+            isDraggedOver={dropping?.type === "inner" && dropping?.id === id}
             onLayoutEdit={onLayoutEdit}
             onLayoutUpdate={onLayoutUpdate}
             onLayoutReset={onLayoutReset}
