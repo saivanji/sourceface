@@ -22,9 +22,13 @@ const Root = () => {
         }}
       >
         <Area id="parent" normalColor="white" overColor="yellow">
-          <div style={{ width: 300, height: 200 }}>
+          <div style={{ width: 300, height: 300 }}>
             <Area id="child" normalColor="gray" overColor="green">
-              Drop here
+              <div style={{ width: 100, height: 100 }}>
+                <Area id="child-2" normalColor="gray" overColor="green">
+                  Drop here
+                </Area>
+              </div>
             </Area>
           </div>
         </Area>

@@ -6,12 +6,19 @@ export default (
   { propagate = true, onEnter, onLeave, onOver, onDrop }
 ) => {
   const target = useRef()
-  const local = useRef()
-  const { provide, type } = useContext(context)
+  const local = useRef({})
+  const {
+    provide,
+    type,
+    registerDrop,
+    leaveDrops,
+    enterDrops,
+    isActiveDrop,
+  } = useContext(context)
   const lifecycle = provide({ onEnter, onLeave, onOver, onDrop })
 
   useEffect(() => {
-    const listener = callback => e => {
+    const listener = callback => () => {
       const t = type()
       if (types.includes(t)) {
         callback && callback({ type: t })
@@ -28,12 +35,19 @@ export default (
     })
 
     const mousemove = listener((...args) => {
-      if (!local.current?.isEntered) {
-        local.current = {
-          isEntered: true,
-        }
+      if (local.current.index && !isActiveDrop(local.current.index)) return
 
-        // TODO: register overed elements
+      if (!local.current?.isEntered) {
+        leaveDrops()
+
+        if (!local.current.index) {
+          local.current.index = registerDrop(mouseleave)
+        }
+      }
+
+      if (!local.current?.isEntered) {
+        local.current.isEntered = true
+
         lifecycle.onEnter(...args)
 
         return
