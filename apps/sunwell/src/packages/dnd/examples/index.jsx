@@ -2,6 +2,33 @@ import React, { useState } from "react"
 import { DndProvider, useDrag, useDrop } from "../"
 
 const Root = () => {
+  return (
+    <div>
+      <div
+        style={{
+          margin: 20,
+          height: 600,
+        }}
+      >
+        <Area id="parent" normalColor="white" overColor="yellow">
+          <div style={{ width: 600, height: 400 }}>
+            <Area id="child" normalColor="gray" overColor="green">
+              <div style={{ width: 200, height: 200 }}>
+                <Area id="child-2" normalColor="gray" overColor="green">
+                  Drop here
+                  <Draggable />
+                </Area>
+              </div>
+            </Area>
+          </div>
+        </Area>
+      </div>
+      <Draggable />
+    </div>
+  )
+}
+
+const Draggable = () => {
   const [{ deltaX, deltaY }, setMovement] = useState({})
 
   const dragRef = useDrag("element", {
@@ -14,43 +41,21 @@ const Root = () => {
   })
 
   return (
-    <div>
-      <div
-        style={{
-          margin: 20,
-          height: 400,
-        }}
-      >
-        <Area id="parent" normalColor="white" overColor="yellow">
-          <div style={{ width: 300, height: 300 }}>
-            <Area id="child" normalColor="gray" overColor="green">
-              <div style={{ width: 100, height: 100 }}>
-                <Area id="child-2" normalColor="gray" overColor="green">
-                  Drop here
-                </Area>
-              </div>
-            </Area>
-          </div>
-        </Area>
-      </div>
-      <div style={{ margin: 20 }}>
-        <span
-          ref={dragRef}
-          style={{
-            padding: 10,
-            border: "1px solid #aaa",
-            borderRadius: 4,
-            cursor: "move",
-            display: "inline-block",
-            transform:
-              deltaX && deltaY && `translate(${deltaX}px, ${deltaY}px)`,
-            pointerEvents: deltaX && deltaY && "none",
-          }}
-        >
-          Drag me
-        </span>
-      </div>
-    </div>
+    <span
+      ref={dragRef}
+      style={{
+        margin: 20,
+        padding: 10,
+        border: "1px solid #aaa",
+        borderRadius: 4,
+        cursor: "move",
+        display: "inline-block",
+        transform: deltaX && deltaY && `translate(${deltaX}px, ${deltaY}px)`,
+        pointerEvents: deltaX && deltaY && "none",
+      }}
+    >
+      Drag me
+    </span>
   )
 }
 
@@ -66,7 +71,7 @@ const Area = ({ id, children, normalColor, overColor }) => {
       console.log("leave", id)
       setOver(false)
     },
-    onOver: () => {
+    onOver: (transfer, action) => {
       console.log("over", id)
     },
     onDrop: () => {

@@ -7,11 +7,10 @@ import { Provider as ClientProvider } from "urql"
 import * as pages from "./pages"
 import client from "./schema"
 import Grid from "./packages/grid/examples"
-import DnD from "./packages/dnd/examples"
 
 ReactDOM.render(
   <ClientProvider value={client}>
-    <DnD />
+    <Grid />
   </ClientProvider>,
   document.getElementById("root")
 )

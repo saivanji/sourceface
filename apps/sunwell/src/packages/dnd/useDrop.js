@@ -1,20 +1,10 @@
 import { useRef, useEffect, useContext } from "react"
 import { context } from "./state"
 
-export default (
-  types,
-  { propagate = true, onEnter, onLeave, onOver, onDrop }
-) => {
+export default (types, { onEnter, onLeave, onOver, onDrop }) => {
   const target = useRef()
   const local = useRef({})
-  const {
-    provide,
-    type,
-    registerDrop,
-    leaveDrops,
-    enterDrops,
-    isActiveDrop,
-  } = useContext(context)
+  const { provide, type } = useContext(context)
   const lifecycle = provide({ onEnter, onLeave, onOver, onDrop })
 
   useEffect(() => {
@@ -35,16 +25,6 @@ export default (
     })
 
     const mousemove = listener((...args) => {
-      if (local.current.index && !isActiveDrop(local.current.index)) return
-
-      if (!local.current?.isEntered) {
-        leaveDrops()
-
-        if (!local.current.index) {
-          local.current.index = registerDrop(mouseleave)
-        }
-      }
-
       if (!local.current?.isEntered) {
         local.current.isEntered = true
 

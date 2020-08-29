@@ -1,9 +1,7 @@
 import React, { forwardRef } from "react"
-import { createPortal } from "react-dom"
 
 export const Noop = () => null
 
-// TODO: when pointerEvents "none" is set, cursor is ignored
 export const Item = ({
   children,
   style,
@@ -12,77 +10,32 @@ export const Item = ({
   swRef,
   neRef,
   seRef,
-  isStatic,
-  isDraggedOver,
-  dragPreviewStyle,
-  resizePreviewStyle,
+  isDragging,
   components,
 }) => {
-  return isDraggedOver || dragPreviewStyle ? (
+  return !isDragging ? (
     <>
-      {isDraggedOver && (
-        <Placeholder
-          style={style}
-          components={components}
-          name="DragPlaceholder"
-        >
-          {children}
-        </Placeholder>
-      )}
-      {dragPreviewStyle && (
-        <DragPreview style={dragPreviewStyle} components={components}>
-          {children}
-        </DragPreview>
-      )}
-    </>
-  ) : resizePreviewStyle ? (
-    <>
-      <Placeholder
-        style={style}
-        components={components}
-        name="ResizePlaceholder"
-      >
+      <Box ref={dragRef} style={{ ...style }} components={components}>
+        <ResizeTrigger ref={nwRef} angle="nw" components={components} />
+        <ResizeTrigger ref={swRef} angle="sw" components={components} />
+        <ResizeTrigger ref={neRef} angle="ne" components={components} />
+        <ResizeTrigger ref={seRef} angle="se" components={components} />
         {children}
-      </Placeholder>
-      <ResizePreview style={resizePreviewStyle} components={components}>
-        {children}
-      </ResizePreview>
+      </Box>
     </>
   ) : (
-    <Box style={style} components={components}>
-      {!isStatic && (
-        <>
-          <ResizeTrigger ref={nwRef} angle="nw" components={components} />
-          <ResizeTrigger ref={swRef} angle="sw" components={components} />
-          <ResizeTrigger ref={neRef} angle="ne" components={components} />
-          <ResizeTrigger ref={seRef} angle="se" components={components} />
-        </>
-      )}
-      <Full ref={dragRef}>{children}</Full>
-    </Box>
+    <Placeholder name="DragPlaceholder" style={style} components={components}>
+      {children}
+    </Placeholder>
   )
 }
 
-export const OuterItem = ({ style, components }) => {
-  const Parent = components.OuterItem || Noop
-
-  return (
-    <Parent
-      style={{
-        ...style,
-        position: "absolute",
-        top: 0,
-        left: 0,
-      }}
-    />
-  )
-}
-
-const Box = ({ children, style, components }) => {
+export const Box = forwardRef(({ children, style, components }, ref) => {
   const Parent = components.Box || "div"
 
   return (
     <Parent
+      ref={ref}
       style={{
         ...style,
         position: "absolute",
@@ -91,32 +44,10 @@ const Box = ({ children, style, components }) => {
       {children}
     </Parent>
   )
-}
+})
 
-const DragPreview = ({ children, style, components }) => {
-  const Parent = components.DragPreview || "div"
-
-  return createPortal(
-    <Parent
-      style={{
-        ...style,
-        position: "fixed",
-        top: 0,
-        left: 0,
-        pointerEvents: "none",
-        zIndex: 1,
-      }}
-    >
-      {children}
-    </Parent>,
-    // TODO: cache
-    document.getElementById("preview-container")
-  )
-}
-
-const Placeholder = ({ children, style, name, components }) => {
+export const Placeholder = ({ children, style, name, components }) => {
   const Parent = components[name] || Noop
-
   return (
     <Parent
       style={{
@@ -124,24 +55,6 @@ const Placeholder = ({ children, style, name, components }) => {
         position: "absolute",
         top: 0,
         left: 0,
-      }}
-    >
-      {children}
-    </Parent>
-  )
-}
-
-const ResizePreview = ({ children, style, components }) => {
-  const Parent = components.ResizePreview || "div"
-
-  return (
-    <Parent
-      style={{
-        ...style,
-        position: "absolute",
-        top: 0,
-        left: 0,
-        zIndex: 1,
       }}
     >
       {children}
@@ -150,26 +63,20 @@ const ResizePreview = ({ children, style, components }) => {
 }
 
 const ResizeTrigger = forwardRef(({ angle, components }, ref) => {
-  const Parent = components.ResizeTrigger || Angle
-
-  return (
-    <Parent
-      ref={ref}
-      angle={angle}
-      style={{
-        position: "absolute",
-        zIndex: 1,
-      }}
-    />
-  )
-})
-
-const Angle = forwardRef(({ angle, style }, ref) => {
   const angles = {
     nw: ["top", "left"],
     sw: ["bottom", "left"],
     ne: ["top", "right"],
     se: ["bottom", "right"],
+  }
+  const style = {
+    position: "absolute",
+    zIndex: 1,
+    ...angles[angle].reduce((acc, key) => ({ ...acc, [key]: 0 }), {}),
+  }
+
+  if (components.ResizeTrigger) {
+    return <components.ResizeTrigger ref={ref} style={style} />
   }
 
   return (
@@ -180,16 +87,7 @@ const Angle = forwardRef(({ angle, style }, ref) => {
         cursor: `${angle}-resize`,
         width: 20,
         height: 20,
-        ...angles[angle].reduce((acc, key) => ({ ...acc, [key]: 0 }), {}),
       }}
     />
-  )
-})
-
-const Full = forwardRef(({ children, style }, ref) => {
-  return (
-    <div style={{ ...style, width: "100%", height: "100%" }} ref={ref}>
-      {children}
-    </div>
   )
 })
