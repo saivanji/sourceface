@@ -4,6 +4,7 @@ import * as utils from "./utils"
 import { Box, Item } from "./components"
 import Lines from "./Lines"
 import useDraggable from "./useDraggable"
+import useDroppable from "./useDroppable"
 
 export default props => {
   const isWrapped = useWrapped()
@@ -14,7 +15,7 @@ export default props => {
 
 function Grid({
   className,
-  style = {},
+  style,
   cols = 10,
   rows = 10,
   rowHeight = 20,
@@ -28,6 +29,7 @@ function Grid({
   const info = utils.toInfo(cols, rows, containerWidth, rowHeight)
 
   const containerRef = useRef()
+  const [dropRef, isOver, overItem] = useDroppable()
 
   useEffect(() => {
     setContainerWidth(containerRef.current.offsetWidth)
@@ -35,11 +37,11 @@ function Grid({
 
   return (
     <div
-      ref={containerRef}
+      ref={combineRefs(containerRef, dropRef)}
       style={{ ...style, position: "relative", height: info.containerHeight }}
       className={className}
     >
-      {containerWidth && false && <Lines info={info} />}
+      {containerWidth && isOver && <Lines info={info} />}
       {Object.keys(layout).map(id => {
         const content = renderItem(layout[id].data, id)
 
@@ -58,6 +60,7 @@ function Grid({
         return (
           <ItemProvider
             key={id}
+            isDragging={overItem?.id === id && isOver}
             id={id}
             layout={layout}
             info={info}
@@ -71,10 +74,18 @@ function Grid({
   )
 }
 
-const ItemProvider = ({ children, id, layout, info, components }) => {
-  const style = utils.toBoxCSS(utils.toBounds(layout[id], info))
+const ItemProvider = ({
+  children,
+  isDragging,
+  id,
+  layout,
+  info,
+  components,
+}) => {
+  const bounds = utils.toBounds(layout[id], info)
+  const style = utils.toBoxCSS(bounds)
 
-  const [dragRef, isDragging] = useDraggable()
+  const [dragRef] = useDraggable(id, children, bounds, components)
 
   return (
     <Item
@@ -86,4 +97,9 @@ const ItemProvider = ({ children, id, layout, info, components }) => {
       {children}
     </Item>
   )
+}
+
+const combineRefs = (containerRef, dropRef) => (...args) => {
+  containerRef.current = args[0]
+  return dropRef(...args)
 }

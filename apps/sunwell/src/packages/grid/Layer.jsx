@@ -3,36 +3,47 @@ import { useDragLayer } from "react-dnd"
 import * as itemTypes from "./itemTypes"
 
 export default function Layer() {
-  const { itemType, isDragging, currentOffset } = useDragLayer(monitor => ({
-    itemType: monitor.getItemType(),
-    currentOffset: monitor.getSourceClientOffset(),
-    isDragging: monitor.isDragging(),
-  }))
+  const { item, itemType, isDragging, currentOffset } = useDragLayer(
+    monitor => ({
+      item: monitor.getItem(),
+      itemType: monitor.getItemType(),
+      currentOffset: monitor.getSourceClientOffset(),
+      isDragging: monitor.isDragging(),
+    })
+  )
 
-  const renderItem = () => {
-    switch (itemType) {
-      case itemTypes.INNER:
-        return (
-          <div
-            style={{
-              transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
-            }}
-          >
-            Preview
-          </div>
-        )
-      default:
-        return null
-    }
-  }
-
-  if (!isDragging) {
+  /**
+   * When dropping the item on a drop target, "currentOffset" becomes "null", therefore
+   * we need to handle that case.
+   */
+  if (!isDragging || !currentOffset) {
     return null
   }
 
-  console.log(currentOffset)
+  return (
+    <div style={layerStyle}>{renderItem(item, itemType, currentOffset)}</div>
+  )
+}
 
-  return <div style={layerStyle}>{renderItem(currentOffset)}</div>
+const renderItem = (item, itemType, currentOffset) => {
+  switch (itemType) {
+    case itemTypes.INNER: {
+      const { DragPreview = "div" } = item.components
+      return (
+        <DragPreview
+          style={{
+            transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
+            width: item.bounds.width,
+            height: item.bounds.height,
+          }}
+        >
+          {item.content}
+        </DragPreview>
+      )
+    }
+    default:
+      return null
+  }
 }
 
 const layerStyle = {

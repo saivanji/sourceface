@@ -1,9 +1,9 @@
 import { useDrag } from "react-dnd"
 import * as itemTypes from "./itemTypes"
 
-export default () => {
+export default (id, content, bounds, components) => {
   const [{ isDragging }, dragRef] = useDrag({
-    item: { type: itemTypes.INNER },
+    item: { type: itemTypes.INNER, id, content, bounds, components },
     collect: monitor => ({
       isDragging: monitor.isDragging(),
     }),
