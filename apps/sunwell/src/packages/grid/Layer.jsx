@@ -1,6 +1,7 @@
 import React from "react"
 import { useDragLayer } from "react-dnd"
 import * as itemTypes from "./itemTypes"
+import * as utils from "./utils"
 
 export default function Layer() {
   const { item, itemType, isDragging, currentOffset } = useDragLayer(
@@ -27,14 +28,22 @@ export default function Layer() {
 
 const renderItem = (item, itemType, currentOffset) => {
   switch (itemType) {
-    case itemTypes.INNER: {
+    case itemTypes.DRAGGABLE_INNER: {
       const { DragPreview = "div" } = item.components
+      const { unit, info } = item
+      /**
+       * Calculating size dynamically since it may vary when item is moved across
+       * grids which have different cell sizes.
+       */
+      const width = utils.calcLeft(unit.w, info.cols, info.containerWidth)
+      const height = utils.calcTop(unit.h, info.rowHeight)
+
       return (
         <DragPreview
           style={{
             transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
-            width: item.bounds.width,
-            height: item.bounds.height,
+            width,
+            height,
           }}
         >
           {item.content}

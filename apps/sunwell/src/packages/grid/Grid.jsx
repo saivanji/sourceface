@@ -5,6 +5,7 @@ import { Box, Item } from "./components"
 import Lines from "./Lines"
 import useDraggable from "./useDraggable"
 import useDroppable from "./useDroppable"
+import useLayout from "./useLayout"
 
 export default props => {
   const isWrapped = useWrapped()
@@ -20,16 +21,23 @@ function Grid({
   rows = 10,
   rowHeight = 20,
   isStatic,
-  layout,
+  layout: initialLayout,
   renderItem,
   onChange,
   components = {},
 }) {
   const [containerWidth, setContainerWidth] = useState(null)
+  const [layout, updateLayout, resetLayout] = useLayout(initialLayout)
   const info = utils.toInfo(cols, rows, containerWidth, rowHeight)
 
   const containerRef = useRef()
-  const [dropRef, isOver, overItem] = useDroppable()
+  const [dropRef, isOver, overItem] = useDroppable(
+    containerRef,
+    initialLayout,
+    info,
+    updateLayout,
+    resetLayout
+  )
 
   useEffect(() => {
     setContainerWidth(containerRef.current.offsetWidth)
@@ -60,7 +68,7 @@ function Grid({
         return (
           <ItemProvider
             key={id}
-            isDragging={overItem?.id === id && isOver}
+            isPicked={overItem?.id === id && isOver}
             id={id}
             layout={layout}
             info={info}
@@ -74,24 +82,29 @@ function Grid({
   )
 }
 
-const ItemProvider = ({
-  children,
-  isDragging,
-  id,
-  layout,
-  info,
-  components,
-}) => {
-  const bounds = utils.toBounds(layout[id], info)
-  const style = utils.toBoxCSS(bounds)
+const ItemProvider = ({ children, isPicked, id, layout, info, components }) => {
+  const [dragRef, isDragging] = useDraggable(
+    id,
+    layout,
+    info,
+    children,
+    components
+  )
 
-  const [dragRef] = useDraggable(id, children, bounds, components)
+  const bounds = utils.toBounds(layout[id], info)
+  const style = {
+    ...utils.toBoxCSS(bounds),
+    /**
+     * Preventing cases when dragged grid is hovered on itself.
+     */
+    ...(isDragging && { pointerEvents: "none" }),
+  }
 
   return (
     <Item
       dragRef={dragRef}
       style={style}
-      isDragging={isDragging}
+      isPicked={isPicked}
       components={components}
     >
       {children}

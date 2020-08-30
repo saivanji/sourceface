@@ -16,10 +16,8 @@ const data1 = {
     x: 4,
     y: 1,
     w: 4,
-    h: 8,
+    h: 7,
     data: {
-      text: "John",
-      color: "darkCyan",
       layout: {
         mike: {
           x: 6,
@@ -39,6 +37,27 @@ const data1 = {
           data: {
             text: "Kyle",
             color: "chocolate",
+          },
+        },
+        nick: {
+          x: 1,
+          y: 8,
+          w: 12,
+          h: 8,
+          data: {
+            color: "white",
+            layout: {
+              sam: {
+                x: 1,
+                y: 1,
+                w: 4,
+                h: 4,
+                data: {
+                  text: "Sam",
+                  color: "darkCyan",
+                },
+              },
+            },
           },
         },
       },
@@ -182,7 +201,14 @@ const Area = ({ data, style, cols = 10, rows = 30, rowHeight = 80 }) => {
               </span>
             </div>
           ) : (
-            <div style={{ backgroundColor: "#fff", border: "1px solid #aaa" }}>
+            <div
+              style={{
+                backgroundColor: "#fff",
+                border: "1px solid #aaa",
+                height: "100%",
+                overflowY: "auto",
+              }}
+            >
               <Area data={data.layout} cols={18} rows={20} rowHeight={30} />
             </div>
           )

@@ -10,12 +10,12 @@ export const Item = ({
   swRef,
   neRef,
   seRef,
-  isDragging,
+  isPicked,
   components,
 }) => {
-  return !isDragging ? (
+  return !isPicked ? (
     <>
-      <Box ref={dragRef} style={{ ...style }} components={components}>
+      <Box ref={dragRef} style={style} components={components}>
         <ResizeTrigger ref={nwRef} angle="nw" components={components} />
         <ResizeTrigger ref={swRef} angle="sw" components={components} />
         <ResizeTrigger ref={neRef} angle="ne" components={components} />
