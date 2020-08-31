@@ -3,14 +3,12 @@ import { useDrop } from "react-dnd"
 import * as itemTypes from "./itemTypes"
 import * as utils from "./utils"
 
-// TODO: when Sam is dropped on a root parent surface, it appears again, when another item is dropped on his grid.
-// TODO: in all cases do a reset of a temp layout in case drop happened
 export default (
   containerRef,
   initialLayout,
   info,
   onRestack,
-  onFinish,
+  onReset,
   onChange
 ) => {
   const [{ item, isOver, didDrop }, dropRef] = useDrop({
@@ -24,11 +22,18 @@ export default (
       const itemType = monitor.getItemType()
 
       /**
+       * Preventing hovers on a parent container
+       */
+      if (!isOver) {
+        return
+      }
+
+      /**
        * Putting reset function so it can be called on drag end when item
        * is dropped outside of a grid.
        */
       if (!item.reset) {
-        item.reset = onFinish
+        item.reset = onReset
       }
 
       /**
@@ -46,13 +51,6 @@ export default (
               "transfer"
             )
           )
-      }
-
-      /**
-       * Preventing hovers on a parent container
-       */
-      if (!isOver) {
-        return
       }
 
       /**
@@ -108,7 +106,7 @@ export default (
        */
       if (item.leave && isLeft) {
         item.leave()
-        // TODO: should call reset here as well?
+        item.reset()
       }
 
       const layout = utils.put(item.id, item.unit, initialLayout)
@@ -122,15 +120,19 @@ export default (
       )
 
       onChange(event)
-      onFinish()
+      onReset()
     },
   })
 
   /**
-   * Updating a grid with layout without the dragging item when it'is left.
+   * In case grid initially has dragging item - updating it with the layout without
+   * the item. Otherwise - resetting a grid.
    */
   useLeave(
-    () => onRestack(utils.without(item.id, initialLayout)),
+    () =>
+      initialLayout[item.id]
+        ? onRestack(utils.without(item.id, initialLayout))
+        : onReset(),
     isOver,
     didDrop
   )

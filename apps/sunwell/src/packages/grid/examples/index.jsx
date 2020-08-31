@@ -115,7 +115,7 @@ function Placeholder({ style }) {
   )
 }
 
-const Box = forwardRef(function Box({ children, style }, ref) {
+const Box = forwardRef(function CustomBox({ children, style }, ref) {
   return (
     <div
       ref={ref}
@@ -165,7 +165,7 @@ export default () => {
 
 const Area = ({ data, style, cols = 10, rows = 30, rowHeight = 80 }) => {
   const [layout, setLayout] = useState(data)
-  const handleChange = event => !console.log(event) && setLayout(event.layout)
+  const handleChange = event => setLayout(event.layout)
 
   return (
     <div
