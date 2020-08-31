@@ -2,7 +2,7 @@ import React, { forwardRef } from "react"
 
 export const Noop = () => null
 
-export const Item = ({
+export function Item({
   children,
   style,
   dragRef,
@@ -12,7 +12,7 @@ export const Item = ({
   seRef,
   isPicked,
   components,
-}) => {
+}) {
   return !isPicked ? (
     <>
       <Box ref={dragRef} style={style} components={components}>
@@ -30,7 +30,10 @@ export const Item = ({
   )
 }
 
-export const Box = forwardRef(({ children, style, components }, ref) => {
+export const Box = forwardRef(function Box(
+  { children, style, components },
+  ref
+) {
   const Parent = components.Box || "div"
 
   return (
@@ -46,7 +49,7 @@ export const Box = forwardRef(({ children, style, components }, ref) => {
   )
 })
 
-export const Placeholder = ({ children, style, name, components }) => {
+export function Placeholder({ children, style, name, components }) {
   const Parent = components[name] || Noop
   return (
     <Parent
@@ -62,7 +65,10 @@ export const Placeholder = ({ children, style, name, components }) => {
   )
 }
 
-const ResizeTrigger = forwardRef(({ angle, components }, ref) => {
+const ResizeTrigger = forwardRef(function ResizeTrigger(
+  { angle, components },
+  ref
+) {
   const angles = {
     nw: ["top", "left"],
     sw: ["bottom", "left"],

@@ -90,11 +90,17 @@ export default (
       item.unit = nextUnit
     },
     drop: (item, monitor) => {
-      // TODO: drop is called 2 times. 2nd time is on a wrong area
-
-      console.log("drop")
       const isLeft = !initialLayout[item.id]
       const itemType = monitor.getItemType()
+      const didDrop = monitor.didDrop()
+
+      /**
+       * When dropping the item on a nested grid, "drop" callback is called on all parent
+       * grids additionally. Using "didDrop" to understand whether "drop" callback was called.
+       */
+      if (didDrop) {
+        return
+      }
 
       /**
        * In case dropping id does not exists on initial layout then we are moving item

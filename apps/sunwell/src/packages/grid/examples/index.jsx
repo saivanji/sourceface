@@ -88,7 +88,7 @@ const data2 = {
   },
 }
 
-const OuterItem = ({ style }) => {
+function OuterItem({ style }) {
   return (
     <div
       style={{
@@ -102,7 +102,7 @@ const OuterItem = ({ style }) => {
   )
 }
 
-const Placeholder = ({ style }) => {
+function Placeholder({ style }) {
   return (
     <div
       style={{
@@ -115,19 +115,21 @@ const Placeholder = ({ style }) => {
   )
 }
 
-const Box = forwardRef(({ children, style }, ref) => (
-  <div
-    ref={ref}
-    style={{
-      ...style,
-      transition: "all cubic-bezier(0.2, 0, 0, 1) .2s",
-    }}
-  >
-    {children}
-  </div>
-))
+const Box = forwardRef(function Box({ children, style }, ref) {
+  return (
+    <div
+      ref={ref}
+      style={{
+        ...style,
+        transition: "all cubic-bezier(0.2, 0, 0, 1) .2s",
+      }}
+    >
+      {children}
+    </div>
+  )
+})
 
-const Card = forwardRef(({ children, style }, ref) => {
+const Card = forwardRef(function Card({ children, style }, ref) {
   return (
     <div
       ref={ref}
@@ -163,7 +165,7 @@ export default () => {
 
 const Area = ({ data, style, cols = 10, rows = 30, rowHeight = 80 }) => {
   const [layout, setLayout] = useState(data)
-  const handleChange = event => setLayout(event.layout)
+  const handleChange = event => !console.log(event) && setLayout(event.layout)
 
   return (
     <div

@@ -5,7 +5,7 @@ import Layer from "./Layer"
 
 const context = createContext({ isWrapped: false })
 
-export default ({ children }) => {
+export default function GrillProvider({ children }) {
   return (
     <context.Provider value={{ isWrapped: true }}>
       <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>

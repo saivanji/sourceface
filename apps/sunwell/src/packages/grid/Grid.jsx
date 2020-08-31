@@ -7,7 +7,7 @@ import useDraggable from "./useDraggable"
 import useDroppable from "./useDroppable"
 import useLayout from "./useLayout"
 
-export default props => {
+export default function GridRoot(props) {
   const isWrapped = useWrapped()
   const grid = <Grid {...props} />
 
@@ -83,7 +83,7 @@ function Grid({
   )
 }
 
-const ItemProvider = ({ children, isPicked, id, layout, info, components }) => {
+function ItemProvider({ children, isPicked, id, layout, info, components }) {
   const [dragRef, isDragging] = useDraggable(
     id,
     layout,
