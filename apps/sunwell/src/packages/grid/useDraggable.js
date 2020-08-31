@@ -14,6 +14,17 @@ export default (id, layout, info, content, components) => {
     collect: monitor => ({
       isDragging: monitor.isDragging(),
     }),
+    end: (item, monitor) => {
+      const didDrop = monitor.didDrop()
+
+      /**
+       * Resetting source grid to the initial state when item was dropped
+       * out of the grid.
+       */
+      if (item.reset && !didDrop) {
+        item.reset()
+      }
+    },
   })
 
   // useEffect(() => {

@@ -3,8 +3,16 @@ import { useDrop } from "react-dnd"
 import * as itemTypes from "./itemTypes"
 import * as utils from "./utils"
 
-// TODO: how to change monitor item from drop without direct mutation?
-export default (containerRef, initialLayout, info, onRestack, onFinish) => {
+// TODO: when Sam is dropped on a root parent surface, it appears again, when another item is dropped on his grid.
+// TODO: in all cases do a reset of a temp layout in case drop happened
+export default (
+  containerRef,
+  initialLayout,
+  info,
+  onRestack,
+  onFinish,
+  onChange
+) => {
   const [{ item, isOver, didDrop }, dropRef] = useDrop({
     accept: itemTypes.DRAGGABLE_INNER,
     collect: monitor => ({
@@ -13,18 +21,28 @@ export default (containerRef, initialLayout, info, onRestack, onFinish) => {
       didDrop: monitor.didDrop(),
     }),
     hover: (item, monitor) => {
+      const itemType = monitor.getItemType()
+
+      /**
+       * Putting reset function so it can be called on drag end when item
+       * is dropped outside of a grid.
+       */
+      if (!item.reset) {
+        item.reset = onFinish
+      }
+
       /**
        * Putting leave function to the "item" object, so it can be called in case drop will
        * happen on another grid.
        */
       if (!item.leave) {
         item.leave = () =>
-          console.log(
+          onChange(
             utils.createEvent(
               events.LEAVE,
               utils.without(item.id, initialLayout),
               item.id,
-              "type",
+              itemType,
               "transfer"
             )
           )
@@ -71,25 +89,45 @@ export default (containerRef, initialLayout, info, onRestack, onFinish) => {
        */
       item.unit = nextUnit
     },
-    drop: item => {
+    drop: (item, monitor) => {
+      // TODO: drop is called 2 times. 2nd time is on a wrong area
+
+      console.log("drop")
+      const isLeft = !initialLayout[item.id]
+      const itemType = monitor.getItemType()
+
       /**
        * In case dropping id does not exists on initial layout then we are moving item
        * from one grid to another and can call "leave" function of the original grid.
        */
-      if (item.leave && !initialLayout[item.id]) {
+      if (item.leave && isLeft) {
         item.leave()
+        // TODO: should call reset here as well?
       }
 
-      // TODO: duplicate usage of "put" here
+      const layout = utils.put(item.id, item.unit, initialLayout)
 
+      const event = utils.createEvent(
+        isLeft ? events.ENTER : events.DRAG,
+        layout,
+        item.id,
+        itemType,
+        "transfer"
+      )
+
+      onChange(event)
       onFinish()
     },
   })
 
   /**
-   * Resetting grid layout when dragged item is left to keep it in the original state.
+   * Updating a grid with layout without the dragging item when it'is left.
    */
-  useLeave(() => onFinish(), isOver, didDrop)
+  useLeave(
+    () => onRestack(utils.without(item.id, initialLayout)),
+    isOver,
+    didDrop
+  )
 
   return [dropRef, isOver, item]
 }
@@ -108,4 +146,6 @@ const useLeave = (callback, isOver, didDrop) => {
 
 const events = {
   LEAVE: "leave",
+  ENTER: "enter",
+  DRAG: "drag",
 }

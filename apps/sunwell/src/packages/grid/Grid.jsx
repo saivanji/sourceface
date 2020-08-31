@@ -36,7 +36,8 @@ function Grid({
     initialLayout,
     info,
     updateLayout,
-    resetLayout
+    resetLayout,
+    onChange
   )
 
   useEffect(() => {
