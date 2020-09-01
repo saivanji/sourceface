@@ -99,12 +99,19 @@ function Grid({
 }
 
 function ItemProvider({ children, isPicked, id, layout, info, components }) {
+  /**
+   * Using reference for resize preview so it can be rendered from a Layer using portal
+   * to hide it under overflow when resize is performed while scrolling the grid.
+   */
+  const resizePreviewRef = useRef()
+
   const [drag, isSorting] = useSort(id, layout, info, children, components)
   const [nw, sw, ne, se, isResizing] = useResize(
     id,
     layout,
     children,
-    components
+    components,
+    resizePreviewRef
   )
 
   const bounds = utils.toBounds(layout[id], info)
@@ -118,15 +125,18 @@ function ItemProvider({ children, isPicked, id, layout, info, components }) {
   }
 
   return (
-    <Item
-      connect={[drag, nw, sw, ne, se]}
-      style={style}
-      isPicked={isPicked}
-      isResizing={isResizing}
-      components={components}
-    >
-      {children}
-    </Item>
+    <>
+      <Item
+        connect={[drag, nw, sw, ne, se]}
+        style={style}
+        isPicked={isPicked}
+        isResizing={isResizing}
+        components={components}
+      >
+        {children}
+      </Item>
+      <div ref={resizePreviewRef} />
+    </>
   )
 }
 

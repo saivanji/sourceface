@@ -1,14 +1,16 @@
 import React from "react"
+import { createPortal } from "react-dom"
 import { useDragLayer } from "react-dnd"
 import * as itemTypes from "./itemTypes"
 import * as utils from "./utils"
 
-// TODO: after every new drag preview dom node is not removed from them DOM
 export default function Layer() {
   const { item, itemType, isDragging, currentOffset } = useDragLayer(
     monitor => ({
       item: monitor.getItem(),
       itemType: monitor.getItemType(),
+      // TODO: can't we use getClientOffset() instead of getSourceClientOffset() everywhere?
+      // refactor code in sortable first
       currentOffset: monitor.getSourceClientOffset(),
       isDragging: monitor.isDragging(),
     })
@@ -22,12 +24,6 @@ export default function Layer() {
     return null
   }
 
-  return (
-    <div style={layerStyle}>{renderItem(item, itemType, currentOffset)}</div>
-  )
-}
-
-const renderItem = (item, itemType, currentOffset) => {
   switch (itemType) {
     case itemTypes.SORTABLE_INNER: {
       const { SortPreview = "div" } = item.components
@@ -40,29 +36,35 @@ const renderItem = (item, itemType, currentOffset) => {
       const height = utils.calcTop(unit.h, info.rowHeight)
 
       return (
-        <SortPreview
-          style={{
-            transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
-            width,
-            height,
-          }}
-        >
-          {content}
-        </SortPreview>
+        <div style={layerStyle}>
+          <SortPreview
+            style={{
+              transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
+              width,
+              height,
+            }}
+          >
+            {content}
+          </SortPreview>
+        </div>
       )
     }
     case itemTypes.RESIZABLE: {
       const { ResizePreview = "div" } = item.components
-      const { content, preview } = item
+      const { content, previewRef } = item
+
+      const style = {}
 
       /**
-       * Sometimes preview is empty at first tick so we render nothing in that case.
-       * TODO: that causes small blink in the beginning in such cases. Probably in case
-       * preview is empty use "getInitialSourceClientOffset" to get positions?
+       * Rendering preview within source grid to hide it under overflow when resize is
+       * performed while scrolling the grid.
        */
-      if (!preview) return null
-
-      return <ResizePreview style={preview}>{content}</ResizePreview>
+      return createPortal(
+        <ResizePreview style={{ ...style, ...resizeStyle }}>
+          {content}
+        </ResizePreview>,
+        previewRef.current
+      )
     }
     default:
       return null
@@ -77,4 +79,10 @@ const layerStyle = {
   top: 0,
   width: "100%",
   height: "100%",
+}
+
+const resizeStyle = {
+  position: "absolute",
+  top: 0,
+  left: 0,
 }

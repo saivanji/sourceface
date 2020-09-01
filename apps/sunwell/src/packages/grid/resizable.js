@@ -2,7 +2,13 @@ import { useDrag, useDrop } from "react-dnd"
 import * as itemTypes from "./itemTypes"
 import * as utils from "./utils"
 
-export const useResize = function Resizable(id, layout, content, components) {
+export const useResize = function Resizable(
+  id,
+  layout,
+  content,
+  components,
+  previewRef
+) {
   const inputs = createInputs(angle => ({
     item: {
       type: itemTypes.RESIZABLE,
@@ -11,7 +17,7 @@ export const useResize = function Resizable(id, layout, content, components) {
       components,
       unit: layout[id],
       angle,
-      // TODO: pass "preview" as well to avoid blink?
+      previewRef,
     },
     collect: monitor => ({
       isResizing: monitor.isDragging(),
@@ -32,8 +38,6 @@ export const useResize = function Resizable(id, layout, content, components) {
   ]
 }
 
-// TODO: create symbol in a grid instance and pass as type in order not to conflicts with sibling surfaces?
-// Most likely that additionally will let us get rid of "isOver" variable.
 export const useResizeArea = function ResizableArea(
   containerRef,
   initialLayout,
@@ -45,8 +49,12 @@ export const useResizeArea = function ResizableArea(
   const [{ isOver }, connect] = useDrop({
     accept: itemTypes.RESIZABLE,
     collect: monitor => ({
-      isOver: monitor.isOver({ shallow: true }),
+      isOver: monitor.canDrop() && monitor.isOver(),
     }),
+    /**
+     * Restrict resizing within a current grid.
+     */
+    canDrop: item => !!initialLayout[item.id],
     hover: (item, monitor) => {
       /**
        * Preventing hovers on a parent container
@@ -55,20 +63,30 @@ export const useResizeArea = function ResizableArea(
         return
       }
 
-      const start = utils.toBounds(initialLayout[item.id], info)
-      const delta = monitor.getDifferenceFromInitialOffset()
-      const nextBounds = utils.resize(item.angle, delta.x, delta.y, start, info)
-      const nextCoords = utils.toCoords(nextBounds, info)
+      const startBounds = utils.toBounds(initialLayout[item.id], info)
+      const currentOffset = monitor.getSourceClientOffset()
 
       /**
        * Might be a performance concern. Think of using throttling.
        */
       const rect = containerRef.current.getBoundingClientRect()
+      const cursor = utils.cursor(currentOffset.x, currentOffset.y, rect)
 
       /**
-       * Assigning preview info so it can be accessed in Layer component.
+       * Calculating movements based on cursor and start position.
        */
-      item.preview = preview(nextBounds, rect)
+      const moveX = cursor.left - (startBounds.left + startBounds.width)
+      const moveY = cursor.top - (startBounds.top + startBounds.height)
+
+      // TODO: resize result is wrong a bit
+      const nextBounds = utils.resize(
+        item.angle,
+        moveX,
+        moveY,
+        startBounds,
+        info
+      )
+      const nextCoords = utils.toCoords(nextBounds, info)
 
       if (utils.coordsEqual(item.unit, nextCoords)) return
 
@@ -97,17 +115,6 @@ export const useResizeArea = function ResizableArea(
   })
 
   return [connect, isOver]
-}
-
-/**
- * Considering container boundaries while calculating preview position.
- */
-const preview = (bounds, rect) => {
-  return utils.toBoxCSS({
-    ...bounds,
-    left: rect.left + bounds.left,
-    top: rect.top + bounds.top,
-  })
 }
 
 /**
