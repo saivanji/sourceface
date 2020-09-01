@@ -1,4 +1,5 @@
 import React, { forwardRef, useState } from "react"
+import { useDrag } from "react-dnd"
 import Grill, { GrillProvider } from "../"
 
 const data1 = {
@@ -129,12 +130,11 @@ const Box = forwardRef(function CustomBox({ children, style }, ref) {
   )
 })
 
-const Card = forwardRef(function Card({ children, style }, ref) {
+const Card = forwardRef(function Card({ children }, ref) {
   return (
     <div
       ref={ref}
       style={{
-        ...style,
         border: "1px solid #ddd",
         background: "#fff",
         borderRadius: 3,
@@ -147,9 +147,33 @@ const Card = forwardRef(function Card({ children, style }, ref) {
   )
 })
 
+function Pane() {
+  const [, dragRef] = useDrag({
+    item: {
+      type: "draggable-outer",
+      id: "custom",
+      unit: {
+        w: 3,
+        h: 4,
+        data: {
+          text: "Test",
+          color: "indianred",
+        },
+      },
+    },
+  })
+
+  return (
+    <div style={{ margin: "10px 0", padding: 5 }}>
+      <Card ref={dragRef}>Custom item</Card>
+    </div>
+  )
+}
+
 export default () => {
   return (
     <GrillProvider>
+      <Pane />
       <div
         style={{
           display: "flex",

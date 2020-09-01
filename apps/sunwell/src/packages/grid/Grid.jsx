@@ -1,8 +1,9 @@
 import React, { useRef, useState, useEffect } from "react"
 import Provider, { useWrapped } from "./Provider"
 import * as utils from "./utils"
-import { Box, Item } from "./components"
+import { Box, Item, OuterItem } from "./components"
 import Lines from "./Lines"
+import * as itemTypes from "./itemTypes"
 import useDraggable from "./useDraggable"
 import useDroppable from "./useDroppable"
 import useLayout from "./useLayout"
@@ -31,7 +32,7 @@ function Grid({
   const info = utils.toInfo(cols, rows, containerWidth, rowHeight)
 
   const containerRef = useRef()
-  const [dropRef, isOver, overItem] = useDroppable(
+  const [dropRef, isOver, overItem, overItemType] = useDroppable(
     containerRef,
     initialLayout,
     info,
@@ -52,6 +53,11 @@ function Grid({
     >
       {containerWidth && isOver && <Lines info={info} />}
       {Object.keys(layout).map(id => {
+        if (overItemType === itemTypes.DRAGGABLE_OUTER && overItem.id === id) {
+          const style = utils.toBoxCSS(utils.toBounds(layout[id], info))
+          return <OuterItem key={id} style={style} components={components} />
+        }
+
         const content = renderItem(layout[id].data, id)
 
         if (!containerWidth || isStatic) {

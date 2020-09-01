@@ -65,6 +65,20 @@ export function Placeholder({ children, style, name, components }) {
   )
 }
 
+export function OuterItem({ style, components }) {
+  const Parent = components.OuterItem || Noop
+  return (
+    <Parent
+      style={{
+        ...style,
+        position: "absolute",
+        top: 0,
+        left: 0,
+      }}
+    />
+  )
+}
+
 const ResizeTrigger = forwardRef(function ResizeTrigger(
   { angle, components },
   ref

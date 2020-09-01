@@ -213,3 +213,5 @@ export const createEvent = (name, layout, id, sourceType, transfer) => ({
   sourceType,
   transfer,
 })
+
+export const round = v => Math.ceil(v) - 1

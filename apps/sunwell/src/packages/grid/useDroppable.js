@@ -11,16 +11,15 @@ export default (
   onReset,
   onChange
 ) => {
-  const [{ item, isOver, didDrop }, dropRef] = useDrop({
-    accept: itemTypes.DRAGGABLE_INNER,
+  const [{ item, itemType, isOver, didDrop }, dropRef] = useDrop({
+    accept: [itemTypes.DRAGGABLE_INNER, itemTypes.DRAGGABLE_OUTER],
     collect: monitor => ({
       item: monitor.getItem(),
+      itemType: monitor.getItemType(),
       isOver: monitor.isOver({ shallow: true }),
       didDrop: monitor.didDrop(),
     }),
     hover: (item, monitor) => {
-      const itemType = monitor.getItemType()
-
       /**
        * Preventing hovers on a parent container
        */
@@ -28,11 +27,13 @@ export default (
         return
       }
 
+      const itemType = monitor.getItemType()
+
       /**
-       * Putting reset function so it can be called on drag end when item
-       * is dropped outside of a grid.
+       * Putting reset function for the source layout, so it can be resetted
+       * when needed.
        */
-      if (!item.reset) {
+      if (itemType === itemTypes.DRAGGABLE_INNER && !item.reset) {
         item.reset = onReset
       }
 
@@ -40,7 +41,7 @@ export default (
        * Putting leave function to the "item" object, so it can be called in case drop will
        * happen on another grid.
        */
-      if (!item.leave) {
+      if (itemType === itemTypes.DRAGGABLE_INNER && !item.leave) {
         item.leave = () =>
           onChange(
             utils.createEvent(
@@ -61,13 +62,15 @@ export default (
 
       const currentOffset = monitor.getSourceClientOffset()
       /**
-       * Might be a performance concern.
+       * Might be a performance concern. Think of using throttling.
        */
       const rect = containerRef.current.getBoundingClientRect()
       const cursor = utils.cursor(currentOffset.x, currentOffset.y, rect)
+      const round =
+        itemType === itemTypes.DRAGGABLE_OUTER ? utils.round : Math.round
 
-      const nextX = utils.calcX(cursor.left, item.unit.w, info, Math.round)
-      const nextY = utils.calcY(cursor.top, item.unit.h, info, Math.round)
+      const nextX = utils.calcX(cursor.left, item.unit.w, info, round)
+      const nextY = utils.calcY(cursor.top, item.unit.h, info, round)
 
       if (nextX === item.unit.x && nextY === item.unit.y) {
         return
@@ -104,7 +107,7 @@ export default (
        * In case dropping id does not exists on initial layout then we are moving item
        * from one grid to another and can call "leave" function of the original grid.
        */
-      if (item.leave && isLeft) {
+      if (itemType === itemTypes.DRAGGABLE_INNER && isLeft) {
         item.leave()
         item.reset()
       }
@@ -137,7 +140,7 @@ export default (
     didDrop
   )
 
-  return [dropRef, isOver, item]
+  return [dropRef, isOver, item, itemType]
 }
 
 const useLeave = (callback, isOver, didDrop) => {
