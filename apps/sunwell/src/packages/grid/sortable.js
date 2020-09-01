@@ -84,7 +84,7 @@ export const useSortArea = function SortArea(
       }
 
       /**
-       * Mutating item object with info from the drop container so drag preview can
+       * Mutating item object with info from the drop container so SortLayer can
        * adjust it's size when target layout grid is different from the original.
        */
       item.info = info

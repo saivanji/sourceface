@@ -1,6 +1,6 @@
 import React, { forwardRef, useState } from "react"
 import { useDrag } from "react-dnd"
-import Grill, { GrillProvider } from "../"
+import Grill, { GrillProvider, SORTABLE_OUTER } from "../"
 
 const data1 = {
   bob: {
@@ -150,7 +150,7 @@ const Card = forwardRef(function Card({ children }, ref) {
 function Pane() {
   const [, connect] = useDrag({
     item: {
-      type: "sortable-outer",
+      type: SORTABLE_OUTER,
       id: "custom",
       unit: {
         w: 3,

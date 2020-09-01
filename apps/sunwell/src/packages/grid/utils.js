@@ -11,7 +11,6 @@ export const calcTop = (y, rowHeight) => y * rowHeight
 export const calcPercentageLeft = (x, columns) => `${(x / columns) * 100}%`
 
 export const toInfo = (cols, rows, containerWidth, rowHeight) => {
-  // TODO: rename to boxWidth, boxHeight or similar
   const minWidth = containerWidth && calcLeft(1, cols, containerWidth)
   const minHeight = calcTop(1, rowHeight)
 
