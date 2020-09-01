@@ -16,7 +16,7 @@ export default function GrillProvider({ children }) {
   )
 }
 
-export const useWrapped = () => {
+export const useWrapped = function Wrapped() {
   const { isWrapped } = useContext(context)
 
   return isWrapped

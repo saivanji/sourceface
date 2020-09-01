@@ -1,12 +1,11 @@
-import React, { useRef, useState, useEffect } from "react"
+import React, { forwardRef, useRef, useState, useEffect } from "react"
 import Provider, { useWrapped } from "./Provider"
 import * as utils from "./utils"
 import { Box, Item, OuterItem } from "./components"
 import Lines from "./Lines"
 import * as itemTypes from "./itemTypes"
-import useDraggable from "./useDraggable"
-import useDroppable from "./useDroppable"
-import useLayout from "./useLayout"
+import { useSort, useSortArea } from "./sortable"
+import { useResize, useResizeArea } from "./resizable"
 
 export default function GridRoot(props) {
   const isWrapped = useWrapped()
@@ -32,7 +31,7 @@ function Grid({
   const info = utils.toInfo(cols, rows, containerWidth, rowHeight)
 
   const containerRef = useRef()
-  const [dropRef, isOver, overItem, overItemType] = useDroppable(
+  const [sortArea, isSortOver, overItem, overItemType] = useSortArea(
     containerRef,
     initialLayout,
     info,
@@ -40,20 +39,23 @@ function Grid({
     resetLayout,
     onChange
   )
+  const [resizeArea, isResizeOver] = useResizeArea()
 
   useEffect(() => {
     setContainerWidth(containerRef.current.offsetWidth)
   }, [])
 
   return (
-    <div
-      ref={combineRefs(containerRef, dropRef)}
+    <Wrap
+      ref={containerRef}
+      sortArea={sortArea}
+      resizeArea={resizeArea}
       style={{ ...style, position: "relative", height: info.containerHeight }}
       className={className}
     >
-      {containerWidth && isOver && <Lines info={info} />}
+      {containerWidth && (isSortOver || isResizeOver) && <Lines info={info} />}
       {Object.keys(layout).map(id => {
-        if (overItemType === itemTypes.DRAGGABLE_OUTER && overItem.id === id) {
+        if (overItemType === itemTypes.SORTABLE_OUTER && overItem.id === id) {
           const style = utils.toBoxCSS(utils.toBounds(layout[id], info))
           return <OuterItem key={id} style={style} components={components} />
         }
@@ -75,7 +77,7 @@ function Grid({
         return (
           <ItemProvider
             key={id}
-            isPicked={overItem?.id === id && isOver}
+            isPicked={overItem?.id === id && isSortOver}
             id={id}
             layout={layout}
             info={info}
@@ -85,18 +87,13 @@ function Grid({
           </ItemProvider>
         )
       })}
-    </div>
+    </Wrap>
   )
 }
 
 function ItemProvider({ children, isPicked, id, layout, info, components }) {
-  const [dragRef, isDragging] = useDraggable(
-    id,
-    layout,
-    info,
-    children,
-    components
-  )
+  const [drag, isSorting] = useSort(id, layout, info, children, components)
+  const [se, isResizing] = useResize(children, components)
 
   const bounds = utils.toBounds(layout[id], info)
   const style = {
@@ -104,14 +101,15 @@ function ItemProvider({ children, isPicked, id, layout, info, components }) {
     /**
      * Preventing cases when dragged grid is hovered on itself.
      */
-    ...(isDragging && { pointerEvents: "none" }),
+    ...(isSorting && { pointerEvents: "none" }),
   }
 
   return (
     <Item
-      dragRef={dragRef}
+      connect={[drag, null, null, null, se]}
       style={style}
       isPicked={isPicked}
+      isResizing={isResizing}
       components={components}
     >
       {children}
@@ -119,7 +117,41 @@ function ItemProvider({ children, isPicked, id, layout, info, components }) {
   )
 }
 
-const combineRefs = (containerRef, dropRef) => (...args) => {
-  containerRef.current = args[0]
-  return dropRef(...args)
+/**
+ * When item position is changed, it's always put on the initial layout to avoid messing up
+ * the layout while item is dragged.
+ *
+ * To achieve that, we have intermediate layout which we update during drag operation for displaying
+ * the recent state to the user.
+ *
+ */
+const useLayout = function Layout(initialLayout) {
+  const [layout, update] = useState(null)
+
+  const reset = () => update(null)
+
+  return [layout || initialLayout, update, reset]
 }
+
+/**
+ * It seems there is no way to assign multiple connector functions to one DOM node, so using a
+ * separate node for each connector.
+ */
+const Wrap = forwardRef(function Wrap(
+  { children, style, className, sortArea, resizeArea },
+  ref
+) {
+  const childStyle = {
+    height: "100%",
+  }
+
+  return (
+    <div style={style} className={className} ref={ref}>
+      <div style={childStyle} ref={sortArea}>
+        <div style={childStyle} ref={resizeArea}>
+          {children}
+        </div>
+      </div>
+    </div>
+  )
+})

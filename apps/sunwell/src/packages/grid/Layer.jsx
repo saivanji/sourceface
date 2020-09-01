@@ -28,9 +28,9 @@ export default function Layer() {
 
 const renderItem = (item, itemType, currentOffset) => {
   switch (itemType) {
-    case itemTypes.DRAGGABLE_INNER: {
-      const { DragPreview = "div" } = item.components
-      const { unit, info } = item
+    case itemTypes.SORTABLE_INNER: {
+      const { SortPreview = "div" } = item.components
+      const { unit, info, content } = item
       /**
        * Calculating size dynamically since it may vary when item is moved across
        * grids which have different cell sizes.
@@ -39,16 +39,21 @@ const renderItem = (item, itemType, currentOffset) => {
       const height = utils.calcTop(unit.h, info.rowHeight)
 
       return (
-        <DragPreview
+        <SortPreview
           style={{
             transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
             width,
             height,
           }}
         >
-          {item.content}
-        </DragPreview>
+          {content}
+        </SortPreview>
       )
+    }
+    case itemTypes.RESIZABLE: {
+      const { ResizePreview = "div" } = item.components
+      const { content } = item
+      return <ResizePreview style={{}}>{content}</ResizePreview>
     }
     default:
       return null

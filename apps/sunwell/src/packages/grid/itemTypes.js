@@ -1,4 +1,4 @@
 // TODO: use symbols
-export const DRAGGABLE_INNER = "draggable-inner"
-export const DRAGGABLE_OUTER = "draggable-outer"
-export const RESIZE_TRIGGER = "resize-trigger"
+export const SORTABLE_INNER = "sortable-inner"
+export const SORTABLE_OUTER = "sortable-outer"
+export const RESIZABLE = "resizable"

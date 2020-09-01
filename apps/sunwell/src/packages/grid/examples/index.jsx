@@ -148,9 +148,9 @@ const Card = forwardRef(function Card({ children }, ref) {
 })
 
 function Pane() {
-  const [, dragRef] = useDrag({
+  const [, connect] = useDrag({
     item: {
-      type: "draggable-outer",
+      type: "sortable-outer",
       id: "custom",
       unit: {
         w: 3,
@@ -165,7 +165,7 @@ function Pane() {
 
   return (
     <div style={{ margin: "10px 0", padding: 5 }}>
-      <Card ref={dragRef}>Custom item</Card>
+      <Card ref={connect}>Custom item</Card>
     </div>
   )
 }
@@ -243,7 +243,7 @@ const Area = ({ data, style, cols = 10, rows = 30, rowHeight = 80 }) => {
         components={{
           Box,
           OuterItem,
-          DragPlaceholder: Placeholder,
+          SortPlaceholder: Placeholder,
           ResizePlaceholder: Placeholder,
         }}
       />

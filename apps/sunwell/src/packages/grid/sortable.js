@@ -1,18 +1,47 @@
 import { useRef, useEffect } from "react"
-import { useDrop } from "react-dnd"
+import { useDrag, useDrop } from "react-dnd"
 import * as itemTypes from "./itemTypes"
 import * as utils from "./utils"
 
-export default (
+export const useSort = function Sort(id, layout, info, content, components) {
+  const [{ isSorting }, connect] = useDrag({
+    item: {
+      type: itemTypes.SORTABLE_INNER,
+      id,
+      content,
+      components,
+      unit: layout[id],
+      info,
+    },
+    collect: monitor => ({
+      isSorting: monitor.isDragging(),
+    }),
+    end: (item, monitor) => {
+      const didDrop = monitor.didDrop()
+
+      /**
+       * Resetting source grid to the initial state when item was dropped
+       * out of the grid.
+       */
+      if (item.reset && !didDrop) {
+        item.reset()
+      }
+    },
+  })
+
+  return [connect, isSorting]
+}
+
+export const useSortArea = function SortArea(
   containerRef,
   initialLayout,
   info,
   onRestack,
   onReset,
   onChange
-) => {
-  const [{ item, itemType, isOver, didDrop }, dropRef] = useDrop({
-    accept: [itemTypes.DRAGGABLE_INNER, itemTypes.DRAGGABLE_OUTER],
+) {
+  const [{ item, itemType, isOver, didDrop }, connect] = useDrop({
+    accept: [itemTypes.SORTABLE_INNER, itemTypes.SORTABLE_OUTER],
     collect: monitor => ({
       item: monitor.getItem(),
       itemType: monitor.getItemType(),
@@ -33,7 +62,7 @@ export default (
        * Putting reset function for the source layout, so it can be resetted
        * when needed.
        */
-      if (itemType === itemTypes.DRAGGABLE_INNER && !item.reset) {
+      if (itemType === itemTypes.SORTABLE_INNER && !item.reset) {
         item.reset = onReset
       }
 
@@ -41,7 +70,7 @@ export default (
        * Putting leave function to the "item" object, so it can be called in case drop will
        * happen on another grid.
        */
-      if (itemType === itemTypes.DRAGGABLE_INNER && !item.leave) {
+      if (itemType === itemTypes.SORTABLE_INNER && !item.leave) {
         item.leave = () =>
           onChange(
             utils.createEvent(
@@ -67,7 +96,7 @@ export default (
       const rect = containerRef.current.getBoundingClientRect()
       const cursor = utils.cursor(currentOffset.x, currentOffset.y, rect)
       const round =
-        itemType === itemTypes.DRAGGABLE_OUTER ? utils.round : Math.round
+        itemType === itemTypes.SORTABLE_OUTER ? utils.round : Math.round
 
       const nextX = utils.calcX(cursor.left, item.unit.w, info, round)
       const nextY = utils.calcY(cursor.top, item.unit.h, info, round)
@@ -107,7 +136,7 @@ export default (
        * In case dropping id does not exists on initial layout then we are moving item
        * from one grid to another and can call "leave" function of the original grid.
        */
-      if (itemType === itemTypes.DRAGGABLE_INNER && isLeft) {
+      if (itemType === itemTypes.SORTABLE_INNER && isLeft) {
         item.leave()
         item.reset()
       }
@@ -115,7 +144,7 @@ export default (
       const layout = utils.put(item.id, item.unit, initialLayout)
 
       const event = utils.createEvent(
-        isLeft ? events.ENTER : events.DRAG,
+        isLeft ? events.ENTER : events.SORT,
         layout,
         item.id,
         itemType,
@@ -140,10 +169,10 @@ export default (
     didDrop
   )
 
-  return [dropRef, isOver, item, itemType]
+  return [connect, isOver, item, itemType]
 }
 
-const useLeave = (callback, isOver, didDrop) => {
+const useLeave = function Leave(callback, isOver, didDrop) {
   const ref = useRef(isOver)
 
   useEffect(() => {
@@ -158,5 +187,5 @@ const useLeave = (callback, isOver, didDrop) => {
 const events = {
   LEAVE: "leave",
   ENTER: "enter",
-  DRAG: "drag",
+  SORT: "sort",
 }

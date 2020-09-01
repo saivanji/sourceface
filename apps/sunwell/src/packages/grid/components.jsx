@@ -3,30 +3,31 @@ import React, { forwardRef } from "react"
 export const Noop = () => null
 
 export function Item({
+  connect: [drag, nw, sw, ne, se],
   children,
   style,
-  dragRef,
-  nwRef,
-  swRef,
-  neRef,
-  seRef,
   isPicked,
+  isResizing,
   components,
 }) {
-  return !isPicked ? (
+  return isPicked ? (
+    <Placeholder name="SortPlaceholder" style={style} components={components}>
+      {children}
+    </Placeholder>
+  ) : isResizing ? (
+    <Placeholder name="ResizePlaceholder" style={style} components={components}>
+      {children}
+    </Placeholder>
+  ) : (
     <>
-      <Box ref={dragRef} style={style} components={components}>
-        <ResizeTrigger ref={nwRef} angle="nw" components={components} />
-        <ResizeTrigger ref={swRef} angle="sw" components={components} />
-        <ResizeTrigger ref={neRef} angle="ne" components={components} />
-        <ResizeTrigger ref={seRef} angle="se" components={components} />
+      <Box ref={drag} style={style} components={components}>
+        <ResizeTrigger ref={nw} angle="nw" components={components} />
+        <ResizeTrigger ref={sw} angle="sw" components={components} />
+        <ResizeTrigger ref={ne} angle="ne" components={components} />
+        <ResizeTrigger ref={se} angle="se" components={components} />
         {children}
       </Box>
     </>
-  ) : (
-    <Placeholder name="DragPlaceholder" style={style} components={components}>
-      {children}
-    </Placeholder>
   )
 }
 
