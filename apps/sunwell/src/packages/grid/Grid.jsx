@@ -39,7 +39,14 @@ function Grid({
     resetLayout,
     onChange
   )
-  const [resizeArea, isResizeOver] = useResizeArea()
+  const [resizeArea, isResizeOver] = useResizeArea(
+    containerRef,
+    initialLayout,
+    info,
+    updateLayout,
+    resetLayout,
+    onChange
+  )
 
   useEffect(() => {
     setContainerWidth(containerRef.current.offsetWidth)
@@ -93,7 +100,12 @@ function Grid({
 
 function ItemProvider({ children, isPicked, id, layout, info, components }) {
   const [drag, isSorting] = useSort(id, layout, info, children, components)
-  const [se, isResizing] = useResize(children, components)
+  const [nw, sw, ne, se, isResizing] = useResize(
+    id,
+    layout,
+    children,
+    components
+  )
 
   const bounds = utils.toBounds(layout[id], info)
   const style = {
@@ -106,7 +118,7 @@ function ItemProvider({ children, isPicked, id, layout, info, components }) {
 
   return (
     <Item
-      connect={[drag, null, null, null, se]}
+      connect={[drag, nw, sw, ne, se]}
       style={style}
       isPicked={isPicked}
       isResizing={isResizing}
@@ -134,7 +146,7 @@ const useLayout = function Layout(initialLayout) {
 }
 
 /**
- * It seems there is no way to assign multiple connector functions to one DOM node, so using a
+ * It seems there is no way to assign multiple drop targets to one DOM node, so using a
  * separate node for each connector.
  */
 const Wrap = forwardRef(function Wrap(

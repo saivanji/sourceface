@@ -3,6 +3,7 @@ import { useDragLayer } from "react-dnd"
 import * as itemTypes from "./itemTypes"
 import * as utils from "./utils"
 
+// TODO: after every new drag preview dom node is not removed from them DOM
 export default function Layer() {
   const { item, itemType, isDragging, currentOffset } = useDragLayer(
     monitor => ({
@@ -52,8 +53,16 @@ const renderItem = (item, itemType, currentOffset) => {
     }
     case itemTypes.RESIZABLE: {
       const { ResizePreview = "div" } = item.components
-      const { content } = item
-      return <ResizePreview style={{}}>{content}</ResizePreview>
+      const { content, preview } = item
+
+      /**
+       * Sometimes preview is empty at first tick so we render nothing in that case.
+       * TODO: that causes small blink in the beginning in such cases. Probably in case
+       * preview is empty use "getInitialSourceClientOffset" to get positions?
+       */
+      if (!preview) return null
+
+      return <ResizePreview style={preview}>{content}</ResizePreview>
     }
     default:
       return null
