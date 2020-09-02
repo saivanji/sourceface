@@ -1,6 +1,7 @@
 import React, { forwardRef, useState } from "react"
-import { useDrag } from "react-dnd"
-import Grill, { GrillProvider, SORTABLE_OUTER } from "../"
+import { DndProvider, useDrag } from "react-dnd"
+import { TouchBackend } from "react-dnd-touch-backend"
+import Grill, { SORTABLE_OUTER } from "../"
 
 const data1 = {
   bob: {
@@ -172,7 +173,7 @@ function Pane() {
 
 export default () => {
   return (
-    <GrillProvider>
+    <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
       <Pane />
       <div
         style={{
@@ -183,7 +184,7 @@ export default () => {
         <Area data={data1} />
         <Area data={data2} />
       </div>
-    </GrillProvider>
+    </DndProvider>
   )
 }
 
