@@ -16,6 +16,10 @@ export const useSort = function Sort(id, layout, info, content, components) {
     collect: monitor => ({
       isSorting: monitor.isDragging(),
     }),
+    start: () => {
+      // TODO: calculate shifts here.
+      // sourceClientOffset - clientOffset?
+    },
     end: (item, monitor) => {
       const didDrop = monitor.didDrop()
 

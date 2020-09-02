@@ -7,6 +7,9 @@ import * as itemTypes from "./itemTypes"
 import { useSort, useSortArea } from "./sortable"
 import { useResize, useResizeArea } from "./resizable"
 
+// react-infinite-grid
+// react-deep-grid
+// react-nested-grid
 export default function GridRoot(props) {
   const isWrapped = useWrapped()
   const grid = <Grid {...props} />
