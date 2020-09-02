@@ -13,8 +13,8 @@ export function Item({
   const isMoving = isPicked || isResizing
 
   /**
-   * Since unmounting "Box" component when item is moving causes rendering extra node(most likely
-   * bug in react-dnd) in the end of the document, we simply hide it with "display: none".
+   * Since unmounting "Box" component when item is moving causes rendering extra node(because
+   * of touch back-end) in the end of the document, we simply hide it with "display: none".
    */
   return (
     <>
