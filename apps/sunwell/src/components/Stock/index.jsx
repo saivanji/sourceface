@@ -1,7 +1,8 @@
-import React, { useState, useCallback } from "react"
+import React from "react"
+import { useDrag } from "react-dnd"
+import { SORTABLE_OUTER } from "../../packages/grid"
 import cx from "classnames"
 import * as stock from "packages/modules"
-import { useDrag } from "packages/dnd"
 import styles from "./index.scss"
 
 export default function Stock() {
@@ -13,48 +14,23 @@ export default function Stock() {
 }
 
 function Card({ module }) {
-  const [preview, setPreview] = useState(null)
-
-  // TODO: investigate the use of "useCallback" hook here. now it's used for the referential equality to satisfy dnd lib
-  const handleStart = useCallback(
-    () => ({
+  const [{ isDragging }, connect] = useDrag({
+    item: {
+      type: SORTABLE_OUTER,
       id: "outer",
       unit: module.size,
-      moduleType: module.type,
+      custom: {
+        moduleType: module.type,
+      },
+    },
+    collect: monitor => ({
+      isDragging: monitor.isDragging(),
     }),
-    []
-  )
-
-  const handleMove = useCallback((transfer, { clientX, clientY }) => {
-    setPreview({
-      x: clientX - 30,
-      y: clientY - 14,
-    })
-  }, [])
-
-  const handleEnd = useCallback(() => setPreview(null), [])
-
-  const dragRef = useDrag("outer", {
-    onStart: handleStart,
-    onMove: handleMove,
-    onEnd: handleEnd,
   })
 
   return (
-    <>
-      <div ref={dragRef} className={cx(styles.card, preview && styles.dimmed)}>
-        {module.type}
-      </div>
-      {preview && (
-        <div
-          style={{
-            transform: `translate(${preview.x}px, ${preview.y}px)`,
-          }}
-          className={cx(styles.card, styles.preview)}
-        >
-          {module.type}
-        </div>
-      )}
-    </>
+    <div ref={connect} className={cx(styles.card, isDragging && styles.dimmed)}>
+      {module.type}
+    </div>
   )
 }

@@ -4,13 +4,13 @@ import "./index.scss"
 import React from "react"
 import ReactDOM from "react-dom"
 import { Provider as ClientProvider } from "urql"
-// import * as pages from "./pages"
+import * as pages from "./pages"
 import client from "./schema"
-import Grid from "./packages/grid/examples"
+// import Grid from "./packages/grid/examples"
 
 ReactDOM.render(
   <ClientProvider value={client}>
-    <Grid />
+    <pages.Construction />
   </ClientProvider>,
   document.getElementById("root")
 )
@@ -31,7 +31,7 @@ ReactDOM.render(
 // Improve / Change editor UI? start with a feature approach
 // Pages
 // Performance optimizations
-// Investigate race conditions with optimistic updates and debouncing. Additinally in the context of mutations
+// Investigate race conditions with optimistic updates and debouncing. Additionally in the context of mutations
 // Editor design(keep in mind mobile first approach)
 //  - Permissions will be defined in editor for every command(because they're related to the commands)?
 //    - Creating groups will be near users but assigning command to a group will be in command "permissions" tab

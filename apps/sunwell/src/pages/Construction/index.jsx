@@ -1,6 +1,8 @@
 // order creation will be in a modal
 
 import React from "react"
+import { DndProvider } from "react-dnd"
+import { TouchBackend } from "react-dnd-touch-backend"
 import { useQuery } from "urql"
 import { useBooleanState } from "hooks/index"
 import { Frame, Editor, Modules } from "components/index"
@@ -34,16 +36,18 @@ export default () => {
   const children = !layout ? "Loading..." : <Modules layout={layout} />
 
   return (
-    <expression.CommandsProvider commands={result.data?.commands}>
-      {isEditing ? (
-        <Editor modules={page?.modules} onClose={editOff}>
-          {children}
-        </Editor>
-      ) : (
-        <Frame path={path} actions={<button onClick={editOn}>Edit</button>}>
-          {children}
-        </Frame>
-      )}
-    </expression.CommandsProvider>
+    <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
+      <expression.CommandsProvider commands={result.data?.commands}>
+        {isEditing ? (
+          <Editor modules={page?.modules} onClose={editOff}>
+            {children}
+          </Editor>
+        ) : (
+          <Frame path={path} actions={<button onClick={editOn}>Edit</button>}>
+            {children}
+          </Frame>
+        )}
+      </expression.CommandsProvider>
+    </DndProvider>
   )
 }

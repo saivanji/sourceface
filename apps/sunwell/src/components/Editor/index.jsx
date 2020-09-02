@@ -1,6 +1,5 @@
 import React, { useState } from "react"
 import { useMutation } from "urql"
-import { GrillProvider } from "packages/grid"
 import * as stock from "packages/modules"
 import Configuration from "../Configuration"
 import Stock from "../Stock"
@@ -21,32 +20,30 @@ export default function Editor({ children, modules, onClose }) {
     modules && selectedId && findModule(selectedId, modules)
 
   return (
-    <GrillProvider>
-      <View
-        isSaving={isChanging}
-        right={
-          selectedModule ? (
-            <Configuration
-              module={selectedModule}
-              onUpdate={updateModule}
-              onRemove={removeModule}
-            />
-          ) : (
-            <Stock />
-          )
-        }
-        onClose={onClose}
+    <View
+      isSaving={isChanging}
+      right={
+        selectedModule ? (
+          <Configuration
+            module={selectedModule}
+            onUpdate={updateModule}
+            onRemove={removeModule}
+          />
+        ) : (
+          <Stock />
+        )
+      }
+      onClose={onClose}
+    >
+      <Modules.Provider
+        isEditing
+        selectedId={selectedId}
+        onModuleClick={setSelectedId}
+        onChange={changeGrid}
       >
-        <Modules.Provider
-          isEditing
-          selectedId={selectedId}
-          onModuleClick={setSelectedId}
-          onChange={changeGrid}
-        >
-          {children}
-        </Modules.Provider>
-      </View>
-    </GrillProvider>
+        {children}
+      </Modules.Provider>
+    </View>
   )
 }
 
