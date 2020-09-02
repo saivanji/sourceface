@@ -101,6 +101,8 @@ function Grid({
   )
 }
 
+// TODO: when unmounting a component which is using drag as reference - extra node
+// is rendered in the end of a document.
 function ItemProvider({ children, isPicked, id, layout, info, components }) {
   /**
    * Using reference for resize preview so it can be rendered from a Layer using portal
@@ -119,7 +121,6 @@ function ItemProvider({ children, isPicked, id, layout, info, components }) {
   )
 
   const bounds = utils.toBounds(layout[id], info)
-  // TODO: after every new drag preview dom node is not removed from them DOM
   const style = {
     ...utils.toBoxCSS(bounds),
     /**
