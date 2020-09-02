@@ -102,7 +102,8 @@ function Grid({
 }
 
 // TODO: when unmounting a component which is using drag as reference - extra node
-// is rendered in the end of a document.
+// is rendered in the end of a document. See that issue as a reference:
+// https://github.com/react-dnd/react-dnd/issues/2745
 function ItemProvider({ children, isPicked, id, layout, info, components }) {
   /**
    * Using reference for resize preview so it can be rendered from a Layer using portal
