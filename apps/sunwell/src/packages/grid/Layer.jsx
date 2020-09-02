@@ -5,22 +5,25 @@ import * as itemTypes from "./itemTypes"
 import * as utils from "./utils"
 
 export default function Layer() {
-  const { item, itemType, isDragging, currentOffset } = useDragLayer(
-    monitor => ({
-      item: monitor.getItem(),
-      itemType: monitor.getItemType(),
-      // TODO: can't we use getClientOffset() instead of getSourceClientOffset() everywhere?
-      // refactor code in sortable first
-      currentOffset: monitor.getSourceClientOffset(),
-      isDragging: monitor.isDragging(),
-    })
-  )
+  const {
+    item,
+    itemType,
+    isDragging,
+    sourceOffset,
+    clientOffset,
+  } = useDragLayer(monitor => ({
+    item: monitor.getItem(),
+    itemType: monitor.getItemType(),
+    sourceOffset: monitor.getSourceClientOffset(),
+    clientOffset: monitor.getClientOffset(),
+    isDragging: monitor.isDragging(),
+  }))
 
   /**
-   * When dropping the item on a drop target, "currentOffset" becomes "null", therefore
+   * When dropping the item on a drop target, "sourceOffset" becomes "null", therefore
    * we need to handle that case.
    */
-  if (!isDragging || !currentOffset) {
+  if (!isDragging || !sourceOffset) {
     return null
   }
 
@@ -39,7 +42,7 @@ export default function Layer() {
         <div style={layerStyle}>
           <SortPreview
             style={{
-              transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
+              transform: `translate(${sourceOffset.x}px, ${sourceOffset.y}px)`,
               width,
               height,
             }}
@@ -51,9 +54,14 @@ export default function Layer() {
     }
     case itemTypes.RESIZABLE: {
       const { ResizePreview = "div" } = item.components
-      const { content, previewRef } = item
+      const { angle, content, previewRef, rect, unit, info } = item
 
-      const style = {}
+      const startBounds = utils.toBounds(unit, info)
+      const style = utils.toBoxCSS(
+        !rect
+          ? startBounds
+          : resizePreview(angle, clientOffset, startBounds, info, rect)
+      )
 
       /**
        * Rendering preview within source grid to hide it under overflow when resize is
@@ -69,6 +77,11 @@ export default function Layer() {
     default:
       return null
   }
+}
+
+const resizePreview = (angle, clientOffset, startBounds, info, rect) => {
+  const cursor = utils.cursor(clientOffset.x, clientOffset.y, rect)
+  return utils.resize(angle, cursor, startBounds, info)
 }
 
 const layerStyle = {

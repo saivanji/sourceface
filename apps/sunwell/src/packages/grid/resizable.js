@@ -5,6 +5,7 @@ import * as utils from "./utils"
 export const useResize = function Resizable(
   id,
   layout,
+  info,
   content,
   components,
   previewRef
@@ -16,6 +17,7 @@ export const useResize = function Resizable(
       content,
       components,
       unit: layout[id],
+      info,
       angle,
       previewRef,
     },
@@ -63,30 +65,23 @@ export const useResizeArea = function ResizableArea(
         return
       }
 
-      const startBounds = utils.toBounds(initialLayout[item.id], info)
-      const currentOffset = monitor.getSourceClientOffset()
+      const startBounds = utils.toBounds(item.unit, info)
+      const clientOffset = monitor.getClientOffset()
 
       /**
        * Might be a performance concern. Think of using throttling.
        */
       const rect = containerRef.current.getBoundingClientRect()
-      const cursor = utils.cursor(currentOffset.x, currentOffset.y, rect)
+      const cursor = utils.cursor(clientOffset.x, clientOffset.y, rect)
+
+      const nextBounds = utils.resize(item.angle, cursor, startBounds, info)
+      const nextCoords = utils.toCoords(nextBounds, info)
 
       /**
-       * Calculating movements based on cursor and start position.
+       * Passing "rect" down to the "item" object so it can be accessed in
+       * Layer for rendering resize preview.
        */
-      const moveX = cursor.left - (startBounds.left + startBounds.width)
-      const moveY = cursor.top - (startBounds.top + startBounds.height)
-
-      // TODO: resize result is wrong a bit
-      const nextBounds = utils.resize(
-        item.angle,
-        moveX,
-        moveY,
-        startBounds,
-        info
-      )
-      const nextCoords = utils.toCoords(nextBounds, info)
+      item.rect = rect
 
       if (utils.coordsEqual(item.unit, nextCoords)) return
 

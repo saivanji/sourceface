@@ -117,17 +117,22 @@ export const resizeSide = (
 
 export const resize = (
   angle,
-  deltaX,
-  deltaY,
+  cursor,
   { left, top, width, height },
   { minWidth, minHeight, containerWidth, containerHeight }
 ) => {
+  /**
+   * Calculating movements based on cursor and start position.
+   */
+  const moveX = cursor.left - (left + width)
+  const moveY = cursor.top - (top + height)
+
   const isNorth = angle === "nw" || angle === "ne"
   const isWest = angle === "nw" || angle === "sw"
 
   const [nextWidth, nextLeft] = resizeSide(
     isWest,
-    deltaX,
+    moveX,
     left,
     width,
     minWidth,
@@ -135,7 +140,7 @@ export const resize = (
   )
   const [nextHeight, nextTop] = resizeSide(
     isNorth,
-    deltaY,
+    moveY,
     top,
     height,
     minHeight,

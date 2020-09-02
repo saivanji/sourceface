@@ -112,6 +112,7 @@ function ItemProvider({ children, isPicked, id, layout, info, components }) {
   const [nw, sw, ne, se, isResizing] = useResize(
     id,
     layout,
+    info,
     children,
     components,
     resizePreviewRef
