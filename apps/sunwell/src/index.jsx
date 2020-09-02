@@ -4,7 +4,7 @@ import "./index.scss"
 import React from "react"
 import ReactDOM from "react-dom"
 import { Provider as ClientProvider } from "urql"
-import * as pages from "./pages"
+// import * as pages from "./pages"
 import client from "./schema"
 import Grid from "./packages/grid/examples"
 

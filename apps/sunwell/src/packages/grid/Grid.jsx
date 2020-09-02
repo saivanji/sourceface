@@ -108,7 +108,7 @@ function ItemProvider({ children, isPicked, id, layout, info, components }) {
    */
   const resizePreviewRef = useRef()
 
-  const [drag, isSorting] = useSort(id, layout, info, children, components)
+  const [sort, isSorting] = useSort(id, layout, info, children, components)
   const [nw, sw, ne, se, isResizing] = useResize(
     id,
     layout,
@@ -131,7 +131,7 @@ function ItemProvider({ children, isPicked, id, layout, info, components }) {
   return (
     <>
       <Item
-        connect={[drag, nw, sw, ne, se]}
+        connect={[sort, nw, sw, ne, se]}
         style={style}
         isPicked={isPicked}
         isResizing={isResizing}
