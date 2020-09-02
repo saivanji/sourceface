@@ -15,7 +15,7 @@ export default function Grid({ isEditable, layout, onChange, renderItem }) {
       components={{
         Box,
         OuterItem,
-        DragPlaceholder: Placeholder,
+        SortPlaceholder: Placeholder,
         ResizePlaceholder: Placeholder,
       }}
     />

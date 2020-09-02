@@ -77,8 +77,7 @@ export const useSortArea = function SortArea(
               events.LEAVE,
               utils.without(item.id, initialLayout),
               item.id,
-              itemType,
-              "transfer"
+              itemType
             )
           )
       }
@@ -147,8 +146,7 @@ export const useSortArea = function SortArea(
         isLeft ? events.ENTER : events.SORT,
         layout,
         item.id,
-        itemType,
-        "transfer"
+        itemType
       )
 
       onChange(event)

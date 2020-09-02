@@ -102,9 +102,7 @@ export const useResizeArea = function ResizableArea(
       const itemType = monitor.getItemType()
       const layout = utils.put(item.id, item.unit, initialLayout)
 
-      onChange(
-        utils.createEvent(events.RESIZE, layout, item.id, itemType, "transfer")
-      )
+      onChange(utils.createEvent(events.RESIZE, layout, item.id, itemType))
       onReset()
     },
   })

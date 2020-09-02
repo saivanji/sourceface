@@ -87,13 +87,6 @@ export const toCoords = ({ left, top, width, height }, info) => {
   return { x, y, w, h }
 }
 
-export const drag = (deltaX, deltaY, { left, top, width, height }) => ({
-  left: left + deltaX,
-  top: top + deltaY,
-  width,
-  height,
-})
-
 export const resizeSide = (
   isNorthWest,
   cursor,
@@ -208,12 +201,11 @@ export const cursor = (clientX, clientY, container) => ({
   top: clientY - container.top,
 })
 
-export const createEvent = (name, layout, id, sourceType, transfer) => ({
+export const createEvent = (name, layout, id, sourceType) => ({
   name,
   layout,
   id,
   sourceType,
-  transfer,
 })
 
 export const round = v => Math.ceil(v) - 1

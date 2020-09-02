@@ -72,7 +72,7 @@ const useChange = (selectedId, onModuleRemove) => {
   }
 
   const handleGridChange = (event, layoutId) => {
-    if (["leave", "drag", "resize"].includes(event.name)) {
+    if (["leave", "sort", "resize"].includes(event.name)) {
       // TODO: in case of "leave" - push input value to context, so in future it can be combined with "enter" input and sent to server
       updatePositions({
         positions: toPositionsRequest(layoutId, event.layout),
@@ -80,6 +80,7 @@ const useChange = (selectedId, onModuleRemove) => {
       return
     }
 
+    // TODO: most likely perform the action below in endDrag callback
     if (event.name === "enter" && event.sourceType === "outer") {
       const { moduleType } = event.transfer
       const { outer, ...layout } = event.layout
