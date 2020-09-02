@@ -65,7 +65,7 @@ export const useResizeArea = function ResizableArea(
         return
       }
 
-      const startBounds = utils.toBounds(item.unit, info)
+      const bounds = utils.toBounds(item.unit, info)
       const clientOffset = monitor.getClientOffset()
 
       /**
@@ -74,7 +74,7 @@ export const useResizeArea = function ResizableArea(
       const rect = containerRef.current.getBoundingClientRect()
       const cursor = utils.cursor(clientOffset.x, clientOffset.y, rect)
 
-      const nextBounds = utils.resize(item.angle, cursor, startBounds, info)
+      const nextBounds = utils.resize(item.angle, cursor, bounds, info)
       const nextCoords = utils.toCoords(nextBounds, info)
 
       /**

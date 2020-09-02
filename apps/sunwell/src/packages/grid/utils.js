@@ -96,7 +96,7 @@ export const drag = (deltaX, deltaY, { left, top, width, height }) => ({
 
 export const resizeSide = (
   isNorthWest,
-  delta,
+  cursor,
   initialOffset,
   initialSize,
   minSize,
@@ -104,13 +104,17 @@ export const resizeSide = (
 ) => {
   if (isNorthWest) {
     return [
-      range(initialSize - delta, minSize, initialSize + initialOffset),
-      range(initialOffset + delta, 0, initialOffset + initialSize - minSize),
+      range(
+        initialSize + (initialOffset - cursor),
+        minSize,
+        initialSize + initialOffset
+      ),
+      range(cursor, 0, initialOffset + initialSize - minSize),
     ]
   }
 
   return [
-    range(initialSize + delta, minSize, limit - initialOffset),
+    range(cursor - initialOffset, minSize, limit - initialOffset),
     initialOffset,
   ]
 }
@@ -121,18 +125,12 @@ export const resize = (
   { left, top, width, height },
   { minWidth, minHeight, containerWidth, containerHeight }
 ) => {
-  /**
-   * Calculating movements based on cursor and start position.
-   */
-  const moveX = cursor.left - (left + width)
-  const moveY = cursor.top - (top + height)
-
   const isNorth = angle === "nw" || angle === "ne"
   const isWest = angle === "nw" || angle === "sw"
 
   const [nextWidth, nextLeft] = resizeSide(
     isWest,
-    moveX,
+    cursor.left,
     left,
     width,
     minWidth,
@@ -140,7 +138,7 @@ export const resize = (
   )
   const [nextHeight, nextTop] = resizeSide(
     isNorth,
-    moveY,
+    cursor.top,
     top,
     height,
     minHeight,
