@@ -3,30 +3,51 @@ import React, { forwardRef } from "react"
 export const Noop = () => null
 
 export function Item({
-  connect: [drag, nw, sw, ne, se],
+  connect: [sort, nw, sw, ne, se],
   children,
   style,
   isPicked,
   isResizing,
   components,
 }) {
-  return isPicked ? (
-    <Placeholder name="SortPlaceholder" style={style} components={components}>
-      {children}
-    </Placeholder>
-  ) : isResizing ? (
-    <Placeholder name="ResizePlaceholder" style={style} components={components}>
-      {children}
-    </Placeholder>
-  ) : (
+  const isMoving = isPicked || isResizing
+
+  /**
+   * Since unmounting "Box" component when item is moving causes rendering extra node
+   * in the end of the document, we simply hide it with "display: none".
+   */
+  return (
     <>
-      <Box ref={drag} style={style} components={components}>
+      <Box
+        ref={sort}
+        style={{ ...style, ...(isMoving && { display: "none" }) }}
+        components={components}
+      >
         <ResizeTrigger ref={nw} angle="nw" components={components} />
         <ResizeTrigger ref={sw} angle="sw" components={components} />
         <ResizeTrigger ref={ne} angle="ne" components={components} />
         <ResizeTrigger ref={se} angle="se" components={components} />
         {children}
       </Box>
+      {isPicked ? (
+        <Placeholder
+          name="SortPlaceholder"
+          style={style}
+          components={components}
+        >
+          {children}
+        </Placeholder>
+      ) : (
+        isResizing && (
+          <Placeholder
+            name="ResizePlaceholder"
+            style={style}
+            components={components}
+          >
+            {children}
+          </Placeholder>
+        )
+      )}
     </>
   )
 }

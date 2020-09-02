@@ -89,6 +89,20 @@ const data2 = {
   },
 }
 
+const Box = forwardRef(function CustomBox({ children, style }, ref) {
+  return (
+    <div
+      ref={ref}
+      style={{
+        ...style,
+        transition: "all cubic-bezier(0.2, 0, 0, 1) .2s",
+      }}
+    >
+      {children}
+    </div>
+  )
+})
+
 function OuterItem({ style }) {
   return (
     <div
@@ -227,6 +241,7 @@ const Area = ({ data, style, cols = 10, rows = 30, rowHeight = 80 }) => {
         }
         onChange={handleChange}
         components={{
+          Box,
           OuterItem,
           SortPlaceholder: Placeholder,
           ResizePlaceholder: Placeholder,
