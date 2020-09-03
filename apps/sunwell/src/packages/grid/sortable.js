@@ -146,7 +146,8 @@ export const useSortArea = function SortArea(
         isLeft ? events.ENTER : events.SORT,
         layout,
         item.id,
-        itemType
+        itemType,
+        itemType === itemTypes.SORTABLE_OUTER ? item.custom : undefined
       )
 
       onChange(event)

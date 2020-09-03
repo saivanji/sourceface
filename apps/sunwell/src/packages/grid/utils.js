@@ -201,11 +201,12 @@ export const cursor = (clientX, clientY, container) => ({
   top: clientY - container.top,
 })
 
-export const createEvent = (name, layout, id, sourceType) => ({
+export const createEvent = (name, layout, id, sourceType, custom) => ({
   name,
   layout,
   id,
   sourceType,
+  custom,
 })
 
 export const round = v => Math.ceil(v) - 1

@@ -39,16 +39,15 @@ ReactDOM.render(
 //  - Have multiple selections of modules?
 //
 // Modules
-// - add slug to modules. (after that modules can be created instantly with optimistic updates)
+// - add uuid as id to modules. (after that modules can be created instantly with optimistic updates)
 //
 // Modules state
 // - 2 way binding vs 1 way binding, what's better? probably 2 way. Most likely it will be done similar to redux with global state
 //
 //
 // Current:
-// - Implement schema awareness
-// - Update cache after create and delete
-// - Implement restack of nested modules
-// - Implement creating modules with child layouts
+// - Module deletion works incorrectly
+// - Modules reordering within nested grid works wrong sometimes
+// - Grid size is not updated when parent module is resized
 //
 // - Improve ux of modules editing

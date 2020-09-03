@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import { SORTABLE_OUTER } from "../../packages/grid"
 import { useMutation } from "urql"
 import * as stock from "packages/modules"
 import Configuration from "../Configuration"
@@ -77,9 +78,8 @@ const useChange = (selectedId, onModuleRemove) => {
       return
     }
 
-    // TODO: most likely perform the action below in endDrag callback
-    if (event.name === "enter" && event.sourceType === "outer") {
-      const { moduleType } = event.transfer
+    if (event.name === "enter" && event.sourceType === SORTABLE_OUTER) {
+      const { moduleType } = event.custom
       const { outer, ...layout } = event.layout
       const position = { layoutId, ...outer }
 
