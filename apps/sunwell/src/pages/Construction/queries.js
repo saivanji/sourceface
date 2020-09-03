@@ -1,4 +1,4 @@
-export const constructionPage = `
+export const root = `
   query($pageId: Int!) {
     page(pageId: $pageId) {
       id

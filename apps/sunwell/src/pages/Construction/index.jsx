@@ -25,7 +25,7 @@ const path = [
 // TODO: handle error on back-end requests
 export default () => {
   const [result] = useQuery({
-    query: queries.constructionPage,
+    query: queries.root,
     variables: { pageId: 1 },
   })
   const [isEditing, editOn, editOff] = useBooleanState(false)
