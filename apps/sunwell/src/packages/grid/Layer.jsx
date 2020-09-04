@@ -28,6 +28,9 @@ export default function Layer() {
   }
 
   switch (itemType) {
+    // TODO: have layer for SORTABLE_OUTER here or probably no
+    // since we may have multiple SORTABLE_OUTER types(so user will handle drag layer on it's own), instead of having SORTABLE_OUTER, ask
+    // for an outer type in Grid props
     case itemTypes.SORTABLE_INNER: {
       const { SortPreview = "div" } = item.components
       const { unit, info, content } = item

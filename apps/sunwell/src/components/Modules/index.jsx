@@ -8,6 +8,8 @@ const context = createContext({})
 
 export default function Modules({ layout }) {
   const { isEditing, selectedId, onChange, onModuleClick } = useContext(context)
+  // TODO: consider passing whole layout, instead of id for getting calculated changed
+  // positions
   const handleChange = event => onChange(event, layout.id)
   const components = {
     Modules,

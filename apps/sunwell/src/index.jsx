@@ -46,9 +46,9 @@ ReactDOM.render(
 //
 //
 // Current:
-// - Module deletion works incorrectly
-//  - Fetch request is sent after deletion
-// - Modules reordering within nested grid works wrong sometimes
+// - Modules moving from one grid to another within nested grid doesn't work
+//  - Ensure optimistic update works
+//  - Ensure position is removed from the layout on back-end
 // - Grid size is not updated when parent module is resized
 //
 // - Improve ux of modules editing

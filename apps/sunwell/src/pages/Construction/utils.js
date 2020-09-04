@@ -18,8 +18,8 @@ export const createLayout = (id, modules, positions) => ({
 /**
  * Creating a module object with recursive layouts data.
  */
-const createModule = (id, modules) => {
-  const module = modules.find(module => module.positionId === id)
+const createModule = (positionId, modules) => {
+  const module = modules.find(module => module.positionId === positionId)
 
   return {
     ...module,

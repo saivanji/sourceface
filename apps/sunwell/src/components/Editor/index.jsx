@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { SORTABLE_OUTER } from "../../packages/grid"
+import { SORTABLE_INNER, SORTABLE_OUTER } from "../../packages/grid"
 import { useMutation } from "urql"
 import * as stock from "packages/modules"
 import Configuration from "../Configuration"
@@ -70,8 +70,16 @@ const useChange = (selectedId, onModuleRemove) => {
   }
 
   const handleGridChange = (event, layoutId) => {
-    if (["leave", "sort", "resize"].includes(event.name)) {
-      // TODO: in case of "leave" - push input value to context, so in future it can be combined with "enter" input and sent to server
+    if (
+      ["sort", "resize"].includes(event.name) ||
+      (event.name === "enter" && event.sourceType === SORTABLE_INNER)
+    ) {
+      console.log(layoutId, event.layout)
+      // Issues with moving item from one grid to another:
+      // TODO: either enter or leave event is handled wrong, since on both events we send the similar list of positions
+      // TODO: make sure reordering is handled optimistically
+      // TODO: cache is updated incorrectly after reordering
+      // TODO: send only changed positions and not all positions in a layout
       updatePositions({
         positions: toPositionsRequest(layoutId, event.layout),
       })
@@ -89,6 +97,7 @@ const useChange = (selectedId, onModuleRemove) => {
         position,
         positions: toPositionsRequest(layoutId, layout),
       })
+      return
     }
   }
 

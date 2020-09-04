@@ -26,6 +26,7 @@ function Grid({
   isStatic,
   layout: initialLayout,
   renderItem,
+  // TODO: consider passing diff of changed elements
   onChange,
   components = {},
 }) {
