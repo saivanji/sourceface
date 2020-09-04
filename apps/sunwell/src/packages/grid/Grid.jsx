@@ -10,6 +10,7 @@ import { useResize, useResizeArea } from "./resizable"
 // react-infinite-grid
 // react-deep-grid
 // react-nested-grid
+// @sourceface/grid
 export default function GridRoot(props) {
   const isWrapped = useWrapped()
   const grid = <Grid {...props} />
@@ -17,6 +18,8 @@ export default function GridRoot(props) {
   return !isWrapped ? <Provider>{grid}</Provider> : grid
 }
 
+// TODO: Introduce a delay for sorting. That will solve a problem of putting
+// new item on a grid when grid is full.
 function Grid({
   className,
   style,
@@ -26,7 +29,6 @@ function Grid({
   isStatic,
   layout: initialLayout,
   renderItem,
-  // TODO: consider passing diff of changed elements
   onChange,
   components = {},
 }) {

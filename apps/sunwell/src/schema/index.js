@@ -1,7 +1,8 @@
 import { createClient, dedupExchange, fetchExchange } from "urql"
-import { introspection } from "@sourceface/schema"
+import { devtoolsExchange } from "@urql/devtools"
 import { cacheExchange } from "@urql/exchange-graphcache"
 import { populateExchange } from "@urql/exchange-populate"
+import { introspection } from "@sourceface/schema"
 import * as optimistic from "./optimistic"
 import * as updates from "./updates"
 
@@ -11,6 +12,7 @@ export default createClient({
   url: endpoint,
   maskTypename: true,
   exchanges: [
+    devtoolsExchange,
     dedupExchange,
     populateExchange({
       schema: introspection,

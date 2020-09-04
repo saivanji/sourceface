@@ -2,15 +2,25 @@ import React, { forwardRef } from "react"
 import Grill from "packages/grid"
 // import styles from "./index.scss"
 
-export default function Grid({ isEditable, layout, onChange, renderItem }) {
+export default function Grid({ isEditable, positions, onChange, renderItem }) {
+  /**
+   * Renaming "layout" to "positions" to avoid confusion between application layout
+   * and "react-grill" layout.
+   */
+  const handleChange = ({ layout, ...event }) =>
+    onChange({
+      positions: layout,
+      ...event,
+    })
+
   return (
     <Grill
+      layout={positions}
       rows={50}
       cols={10}
       rowHeight={80}
       isStatic={!isEditable}
-      layout={layout}
-      onChange={onChange}
+      onChange={handleChange}
       renderItem={renderItem}
       components={{
         Box,

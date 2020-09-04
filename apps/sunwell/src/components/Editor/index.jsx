@@ -69,33 +69,60 @@ const useChange = (selectedId, onModuleRemove) => {
     onModuleRemove()
   }
 
-  const handleGridChange = (event, layoutId) => {
+  const handleGridChange = (event, prevLayout) => {
+    const layoutId = prevLayout.id
+
+    /**
+     * Update layout positions when items are sorted, resized or put on
+     * a layout.
+     */
     if (
       ["sort", "resize"].includes(event.name) ||
       (event.name === "enter" && event.sourceType === SORTABLE_INNER)
     ) {
-      console.log(layoutId, event.layout)
       // Issues with moving item from one grid to another:
       // TODO: either enter or leave event is handled wrong, since on both events we send the similar list of positions
       // TODO: make sure reordering is handled optimistically
       // TODO: cache is updated incorrectly after reordering
       // TODO: send only changed positions and not all positions in a layout
+      // TODO: test cases for partial updates:
+      //   - inner sort
+      //    - single
+      //    - multiple
+      //    - child single
+      //    - child multipe
+      //   - resize
+      //    - single
+      //    - multiple
+      //    - child single
+      //    - child multipe
+      //   - move from one grid to another
+      //    - single
+      //    - multiple
+      //    - child single
+      //    - child multipe
       updatePositions({
-        positions: toPositionsRequest(layoutId, event.layout),
+        positions: toPositionsRequest(prevLayout, event.positions),
       })
       return
     }
 
     if (event.name === "enter" && event.sourceType === SORTABLE_OUTER) {
       const { moduleType } = event.custom
-      const { outer, ...layout } = event.layout
+      const { outer, ...filtered } = event.positions
       const position = { layoutId, ...outer }
 
+      // TODO: test cases for partial updates:
+      // - create item from the stock
+      //  - single
+      //  - multiple
+      //  - child single
+      //  - child multipe
       createModule({
         type: moduleType,
         config: stock.dict[moduleType].defaultConfig,
         position,
-        positions: toPositionsRequest(layoutId, layout),
+        positions: toPositionsRequest(prevLayout, filtered),
       })
       return
     }

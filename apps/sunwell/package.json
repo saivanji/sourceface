@@ -12,6 +12,7 @@
     "@babel/standalone": "^7.10.4",
     "@sourceface/schema": "^0.0.1",
     "@sourceface/style": "0.0.1",
+    "@urql/devtools": "^2.0.2",
     "@urql/exchange-graphcache": "^3.0.2",
     "@urql/exchange-populate": "^0.1.8",
     "camelcase": "5.3.1",
