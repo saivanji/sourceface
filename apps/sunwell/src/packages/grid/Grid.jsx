@@ -19,7 +19,9 @@ export default function GridRoot(props) {
 }
 
 // TODO: Introduce a delay for sorting. That will solve a problem of putting
-// new item on a grid when grid is full.
+// new item on a grid when grid is full. Or alternatively use debouncing for
+// example 300ms. We collide items, if in 300ms no move happened - sort, otherwise
+// not collide and do clearTimeout
 function Grid({
   className,
   style,

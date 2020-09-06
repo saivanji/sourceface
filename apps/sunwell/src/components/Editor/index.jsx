@@ -90,7 +90,7 @@ const useChange = (selectedId, onModuleRemove) => {
       //    - single
       //    - multiple
       //    - child single
-      //    - child multipe
+      //    - child multiple
       //   - resize
       //    - single
       //    - multiple
@@ -117,7 +117,7 @@ const useChange = (selectedId, onModuleRemove) => {
       //  - single
       //  - multiple
       //  - child single
-      //  - child multipe
+      //  - child multiple
       createModule({
         type: moduleType,
         config: stock.dict[moduleType].defaultConfig,

@@ -1,14 +1,11 @@
 import gql from "graphql-tag"
 import * as utils from "../utils"
 
-// TODO: crash when adding on a child layout
 export default (result, { position }, cache) => {
   const { layoutId, x, y, w, h } = position
   const { positionId } = result.createModule
 
   const pageId = utils.findPageIdByLayout(layoutId, cache)
-
-  console.log(pageId)
 
   const page = cache.readFragment(pageFragment, { id: pageId })
   const layout = cache.readFragment(layoutFragment, { id: layoutId })

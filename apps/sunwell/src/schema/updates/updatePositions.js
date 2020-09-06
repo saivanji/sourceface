@@ -1,5 +1,6 @@
 import gql from "graphql-tag"
-import { propEq, keys } from "ramda"
+import { chain, difference, prop, propEq, keys } from "ramda"
+import * as utils from "../utils"
 
 /**
  * There are multiple different cases when positions are updated:
@@ -15,29 +16,113 @@ import { propEq, keys } from "ramda"
  * while updating the cache.
  */
 export default (result, args, cache) => {
-  // const positionsByLayout = tranfsormPositions(
-  //   args.positions,
-  //   result.updatePositions
-  // )
-  // const layoutIds = keys(positionsByLayout)
-  // // TODO: item disappears when moving "Hello 1" from parent to child and backwards
-  // for (let layoutId of layoutIds) {
-  //   /**TODO:
-  //    * Since one position can belong only to one layout, making sure that
-  //    * it doesn't exist somewhere else(in case when we move item from one
-  //    * layout to another).
-  //    */
-  //   const positions = cache.readFragment(layoutFragment, {
-  //     id: +layoutId,
-  //   })
-  //   console.log(positions, positionsByLayout[layoutId])
-  //   cache.writeFragment(layoutFragment, {
-  //     id: +layoutId,
-  //     // TODO: when we'll be updating only changed positions, get initial layout positions and merge them with updated data
-  //     positions: positionsByLayout[layoutId],
-  //   })
-  // }
+  /**
+   * Since that mutation allows to update positions for many layouts, we're groupping
+   * positions by layoutId.
+   */
+  const positionsByLayout = tranfsormPositions(
+    args.positions,
+    result.updatePositions
+  )
+  const layoutIds = keys(positionsByLayout)
+
+  for (let id of layoutIds) {
+    const layoutId = +id
+    const updatedPositionIds = positionsByLayout[layoutId].map(prop("id"))
+    const positionIds = getLayoutPositionIds(layoutId, cache)
+    const diff = difference(updatedPositionIds, positionIds)
+
+    /**
+     * Do nothing when positions were changed within the same layout. Cases #1 and #3.
+     */
+    if (!diff.length) {
+      return
+    }
+
+    /**
+     * Since layouts are not spread across multiple pages, we can safely assume that
+     * layout belongs to only one page.
+     */
+    const pageId = utils.findPageIdByLayout(layoutId, cache)
+
+    /**
+     * Since one position can belong only to one layout, making sure that
+     * it doesn't exist somewhere else(in case when we move item from one
+     * layout to another).
+     */
+    cleanupPageLayout(diff, pageId, cache)
+    cleanupModulesLayouts(diff, pageId, cache)
+
+    const updatedPositions = positionsByLayout[layoutId].filter(p =>
+      diff.includes(p.id)
+    )
+
+    const { positions } = cache.readFragment(layoutFragment, {
+      id: layoutId,
+    })
+    cache.writeFragment(layoutFragment, {
+      id: layoutId,
+      positions: [...positions, ...updatedPositions],
+    })
+  }
 }
+
+/**
+ * Removes position ids in "diff" from a root layout on a given page.
+ */
+const cleanupPageLayout = (diff, pageId, cache) => {
+  const layoutId = cache.resolve(
+    cache.resolve({ __typename: "Page", id: pageId }, "layout"),
+    "id"
+  )
+
+  for (let positionId of diff) {
+    removePositionIfExists(layoutId, positionId, cache)
+  }
+}
+
+/**
+ * Removes position ids in "diff" from a modules layouts on a given page.
+ */
+const cleanupModulesLayouts = (diff, pageId, cache) => {
+  const moduleLinks = cache.resolve(
+    { __typename: "Page", id: pageId },
+    "modules"
+  )
+  const layoutIdsOfModules = chain(
+    link =>
+      cache.resolve(link, "layouts").map(link => cache.resolve(link, "id")),
+    moduleLinks
+  )
+
+  for (let layoutId of layoutIdsOfModules) {
+    for (let positionId of diff) {
+      removePositionIfExists(layoutId, positionId, cache)
+    }
+  }
+}
+
+const removePositionIfExists = (layoutId, positionId, cache) => {
+  const { positions } = cache.readFragment(layoutFragment, { id: layoutId })
+  const hasPosition = !!positions.find(p => p.id === positionId)
+
+  /**
+   * No need to remove if layout has no desired position.
+   */
+  if (!hasPosition) {
+    return
+  }
+
+  cache.writeFragment(layoutFragment, {
+    id: layoutId,
+    positions: positions.filter(p => p.id !== positionId),
+  })
+}
+
+const getLayoutPositionIds = (layoutId, cache) =>
+  cache
+    .resolve({ __typename: "Layout", id: layoutId }, "positions")
+    .map(link => cache.resolve(link, "id"))
 
 const tranfsormPositions = (positionsIn, positionsOut) =>
   positionsIn.reduce(
