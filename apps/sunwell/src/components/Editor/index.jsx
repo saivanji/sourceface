@@ -80,27 +80,6 @@ const useChange = (selectedId, onModuleRemove) => {
       ["sort", "resize"].includes(event.name) ||
       (event.name === "enter" && event.sourceType === SORTABLE_INNER)
     ) {
-      // Issues with moving item from one grid to another:
-      // TODO: either enter or leave event is handled wrong, since on both events we send the similar list of positions
-      // TODO: make sure reordering is handled optimistically
-      // TODO: cache is updated incorrectly after reordering
-      // TODO: send only changed positions and not all positions in a layout
-      // TODO: test cases for partial updates:
-      //   - inner sort
-      //    - single
-      //    - multiple
-      //    - child single
-      //    - child multiple
-      //   - resize
-      //    - single
-      //    - multiple
-      //    - child single
-      //    - child multipe
-      //   - move from one grid to another
-      //    - single
-      //    - multiple
-      //    - child single
-      //    - child multipe
       updatePositions({
         positions: toPositionsRequest(prevLayout, event.positions),
       })
@@ -112,12 +91,6 @@ const useChange = (selectedId, onModuleRemove) => {
       const { outer, ...filtered } = event.positions
       const position = { layoutId, ...outer }
 
-      // TODO: test cases for partial updates:
-      // - create item from the stock
-      //  - single
-      //  - multiple
-      //  - child single
-      //  - child multiple
       createModule({
         type: moduleType,
         config: stock.dict[moduleType].defaultConfig,
