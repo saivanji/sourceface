@@ -63,7 +63,7 @@ export default (db, pgp, { layouts }) =>
               layoutId,
               "text",
               createTextConfig("Hello 3"),
-              [1, 1, 1, 1],
+              [2, 2, 1, 1],
               t
             ),
             await createContainerModule(
@@ -73,26 +73,26 @@ export default (db, pgp, { layouts }) =>
                   layoutId,
                   "text",
                   createTextConfig("Hello 1"),
-                  [1, 1, 1, 1],
+                  [2, 2, 2, 2],
                   t
                 ),
                 await createModule(
                   layoutId,
                   "text",
                   createTextConfig("Hello 2"),
-                  [2, 2, 1, 1],
+                  [4, 3, 2, 2],
                   t
                 ),
               ],
-              [2, 2, 1, 1],
+              [1, 1, 5, 5],
               t
             ),
           ],
-          [3, 3, 4, 4],
+          [1, 3, 8, 6],
           t
         ),
       ],
-      [3, 15, 4, 4],
+      [0, 16, 10, 8],
       t
     )
   })
