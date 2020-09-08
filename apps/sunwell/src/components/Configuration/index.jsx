@@ -1,5 +1,6 @@
 import React, { useMemo } from "react"
 import { Input, Select, Checkbox } from "@sourceface/components"
+import { ExpressionInput } from "components/index"
 import * as stock from "packages/modules"
 import * as form from "lib/form"
 import View from "./View"
@@ -13,6 +14,7 @@ export default function ConfigurationContainer({ module, onUpdate, onRemove }) {
     return {
       Form: form.SetupProvider,
       Input: wrap(Input),
+      ExpressionInput: wrap(ExpressionInput),
       Select: wrap(Select),
       Checkbox: wrap(Checkbox),
     }

@@ -79,7 +79,7 @@ export const Root = function TableModule({ config, expression }) {
 }
 
 export const Configuration = function TableModuleConfiguration({
-  components: { Form, Input, Checkbox },
+  components: { Form, Input, ExpressionInput, Checkbox },
   config,
 }) {
   return (
@@ -87,7 +87,7 @@ export const Configuration = function TableModuleConfiguration({
       <Section title="Basic">
         <Row>
           <Label title="Data">
-            <Input name="items" type="text" />
+            <ExpressionInput name="items" />
           </Label>
         </Row>
       </Section>

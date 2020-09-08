@@ -1,5 +1,11 @@
 // front end and back end will have templating with evaluating
 
+// TODO: most likely templating feature should not be part of a library at all?
+// Library is responsible for evaluating expressions only. Templating might be
+// in a different library.
+
+// TODO: have "formula" or "expression" name
+
 export const evaluate = (expression, scope) => {
   if (false) {
     throw new EngineSyntaxError()

@@ -155,7 +155,7 @@ const createContainerModule = async (
 }
 
 const createTextConfig = value => ({
-  value,
+  text: value,
   fontSize: "sm",
   fontWeight: "semibold",
   alignmentX: "left",

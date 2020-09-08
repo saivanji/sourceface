@@ -1,0 +1,13 @@
+@import "~@sourceface/style/index.scss";
+
+.root {
+  border: 0;
+  background-color: $color-gray-200;
+  padding: $value-1 $value-2;
+  border-radius: $rounded-sm;
+  border: 1px solid $color-gray-500;
+}
+
+.error {
+  color: $color-red-400;
+}

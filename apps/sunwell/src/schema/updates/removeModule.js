@@ -9,7 +9,15 @@ export default (result, { moduleId }, cache) => {
   const page = cache.readFragment(pageFragment, { id: pageId })
   const { positionId } = page.modules.find(module => module.id === moduleId)
 
+  /**
+   * Removing position from the root layout in case top-level module
+   * was deleted.
+   */
   const positions = filterPositions(positionId, page.layout.positions)
+  /**
+   * Removing deleted module from the list. Also removing assigned position
+   * from the layout in case module was located in nested layout.
+   */
   const modules = filterModules(moduleId, positionId, page.modules)
 
   cache.writeFragment(pageFragment, {
@@ -22,10 +30,6 @@ export default (result, { moduleId }, cache) => {
   })
 }
 
-/**
- * Removing deleted module from the list. Also removing assigned position
- * from the layout in case module was located in nested layout.
- */
 const filterModules = (moduleId, positionId, modules) =>
   modules.reduce(
     (acc, module) =>
@@ -44,9 +48,6 @@ const filterModules = (moduleId, positionId, modules) =>
     []
   )
 
-/**
- * Removing assigned position of deleted module.
- */
 const filterPositions = (positionId, positions) =>
   positions.filter(position => position.id !== positionId)
 

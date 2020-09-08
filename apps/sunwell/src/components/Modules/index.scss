@@ -12,9 +12,13 @@
 }
 
 .editable {
+  border-radius: $rounded-base;
   &:hover {
     box-shadow: 0 0 0 2px $color-blue-300;
     background-color: $color-blue-100;
+    &:not(.selected) {
+      cursor: pointer;
+    }
   }
   &.selected {
     box-shadow: 0 0 0 2px $color-blue-500;
