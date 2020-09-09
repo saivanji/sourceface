@@ -1,10 +1,14 @@
 import React, { useMemo } from "react"
 import { Input, Select, Checkbox } from "@sourceface/components"
-import { ExpressionInput } from "components/index"
 import * as stock from "packages/modules"
 import * as form from "lib/form"
 import View from "./View"
 
+// TODO: implement api which will be passed down to Configuration and module component itself.
+// will contain:
+// 1. setConfig/onConfigChange for setting configuration variable
+// 2. config
+//
 export default function ConfigurationContainer({ module, onUpdate, onRemove }) {
   const Component = stock.dict[module.type].Configuration
 
@@ -14,7 +18,6 @@ export default function ConfigurationContainer({ module, onUpdate, onRemove }) {
     return {
       Form: form.SetupProvider,
       Input: wrap(Input),
-      ExpressionInput: wrap(ExpressionInput),
       Select: wrap(Select),
       Checkbox: wrap(Checkbox),
     }

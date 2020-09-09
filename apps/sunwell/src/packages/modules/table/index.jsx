@@ -3,8 +3,6 @@ import * as yup from "yup"
 import moment from "moment"
 import { Table, Pagination, Row, Label, Section } from "@sourceface/components"
 import styles from "./index.scss"
-// TODO: temp
-import Braces from "assets/braces.svg"
 
 export const Root = function TableModule({ config, expression }) {
   const [page, setPage] = useState(0)
@@ -21,7 +19,7 @@ export const Root = function TableModule({ config, expression }) {
   return (
     <expression.Value input={expressions} constants={constants}>
       {({ data: [rows, count, limit] }) => (
-        <Table>
+        <Table className={styles.root}>
           <Table.Thead>
             <Table.Tr>
               <Table.Th>Id</Table.Th>
@@ -81,6 +79,7 @@ export const Root = function TableModule({ config, expression }) {
 }
 
 export const Configuration = function TableModuleConfiguration({
+  // TODO: use form components from kit
   components: { Form, Input, ExpressionInput, Checkbox },
   config,
 }) {
@@ -88,20 +87,8 @@ export const Configuration = function TableModuleConfiguration({
     <Form validationSchema={validationSchema}>
       <Section title="Basic">
         <Row>
-          <Label
-            title="Data"
-            end={
-              <Braces
-                style={{
-                  width: 18,
-                  backgroundColor: "#ddd",
-                  padding: 2,
-                  borderRadius: 4,
-                }}
-              />
-            }
-          >
-            <ExpressionInput name="items" />
+          <Label title="Data">
+            <Input name="items" type="text" />
           </Label>
         </Row>
       </Section>

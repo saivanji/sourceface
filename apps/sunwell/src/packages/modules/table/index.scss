@@ -1,5 +1,9 @@
 @import "~@sourceface/style/index.scss";
 
+.root {
+  height: 100%;
+}
+
 .footer {
   display: flex;
   align-items: center;
