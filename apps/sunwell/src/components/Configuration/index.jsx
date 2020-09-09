@@ -6,8 +6,10 @@ import View from "./View"
 
 // TODO: implement api which will be passed down to Configuration and module component itself.
 // will contain:
-// 1. setConfig/onConfigChange for setting configuration variable
+// 1. onConfigChange for setting configuration variable
 // 2. config
+// 3. Module specific
+// - isEditing
 //
 export default function ConfigurationContainer({ module, onUpdate, onRemove }) {
   const Component = stock.dict[module.type].Configuration
@@ -26,6 +28,7 @@ export default function ConfigurationContainer({ module, onUpdate, onRemove }) {
   return !module ? (
     "Loading..."
   ) : (
+    // TODO: get rid of ValuesProvider so default values will be passed to Form
     <View onRemove={onRemove}>
       <form.ValuesProvider values={module.config}>
         <Component

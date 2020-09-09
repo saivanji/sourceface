@@ -35,6 +35,7 @@ export default () => {
 
   const children = !layout ? "Loading..." : <Modules layout={layout} />
 
+  // TODO: CommandsProvider is at the right place
   return (
     <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
       <expression.CommandsProvider commands={result.data?.commands}>

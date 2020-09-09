@@ -5,7 +5,6 @@ import * as engine from "packages/engine"
 
 const context = createContext({})
 
-// TODO: combine with ConfigProvider?
 export function CommandsProvider({ commands, children }) {
   return <context.Provider value={commands}>{children}</context.Provider>
 }

@@ -20,6 +20,7 @@ export default function Editor({ children, modules, onClose }) {
   const selectedModule =
     modules && selectedId && findModule(selectedId, modules)
 
+  // TODO: use <Modules /> instead of ModulesProvider
   return (
     <View
       isSaving={isChanging}

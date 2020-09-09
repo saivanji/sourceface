@@ -80,7 +80,7 @@ export const Root = function TableModule({ config, expression }) {
 
 export const Configuration = function TableModuleConfiguration({
   // TODO: use form components from kit
-  components: { Form, Input, ExpressionInput, Checkbox },
+  components: { Form, Input, Checkbox },
   config,
 }) {
   return (

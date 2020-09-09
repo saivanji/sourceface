@@ -7,6 +7,7 @@ import Module from "./Module"
 const context = createContext({})
 
 export default function Modules({ layout }) {
+  // TODO: move all in props as optional props
   const { isEditing, selectedId, onChange, onModuleClick } = useContext(context)
   /**
    * Passing down event and previous layout.
