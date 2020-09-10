@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { SORTABLE_INNER, SORTABLE_OUTER } from "../../packages/grid"
+import { SORTABLE_INNER, SORTABLE_OUTER } from "packages/grid"
 import { useMutation } from "urql"
 import * as stock from "packages/modules"
 import Configuration from "../Configuration"
@@ -42,6 +42,7 @@ export default function Editor({ layout, modules, onClose }) {
         selectedId={selectedId}
         onModuleClick={setSelectedId}
         onChange={changeGrid}
+        onConfigChange={updateModule}
       />
     </View>
   )

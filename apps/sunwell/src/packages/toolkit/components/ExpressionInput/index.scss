@@ -1,6 +1,6 @@
 @import "~@sourceface/style/index.scss";
 
-.expression {
+.root {
   border: 0;
   background-color: $color-gray-200;
   padding: $value-1 $value-2;
@@ -8,6 +8,6 @@
   border: 1px solid $color-gray-500;
 }
 
-.error-message {
+.error {
   color: $color-red-400;
 }

@@ -1,32 +1,21 @@
-// Consider moving to a separate place
 import React, { createContext, useContext, useState } from "react"
 import { ValidationError } from "yup"
 
-const setupContext = createContext({})
-const valuesContext = createContext({})
+const context = createContext({})
 
-export function SetupProvider({ children, validationSchema }) {
+export function Form({ children, config, validationSchema, onConfigChange }) {
   return (
-    <setupContext.Provider value={{ validationSchema }}>
+    <context.Provider value={{ config, validationSchema, onConfigChange }}>
       {children}
-    </setupContext.Provider>
+    </context.Provider>
   )
 }
 
-// TODO: rename to ConfigProvider
-// values -> config
-// onChange
-export function ValuesProvider({ children, values }) {
-  return (
-    <valuesContext.Provider value={values}>{children}</valuesContext.Provider>
-  )
-}
-
-export function Field({ name, onChange, component: Component, ...props }) {
-  const values = useContext(valuesContext)
-  const { validationSchema } = useContext(setupContext)
+// TODO: use Option view component here
+export function Field({ name, component: Component, ...props }) {
+  const { config, validationSchema, onConfigChange } = useContext(context)
   const [error, setError] = useState(null)
-  const value = values[name]
+  const value = config[name]
 
   return (
     <Component
@@ -39,7 +28,7 @@ export function Field({ name, onChange, component: Component, ...props }) {
           const { value } = event.target
           validationSchema.fields[name].validateSync(value)
           setError(null)
-          onChange(name, value)
+          onConfigChange(name, value)
         } catch (err) {
           if (!(err instanceof ValidationError)) throw err
           setError(err)
@@ -48,7 +37,3 @@ export function Field({ name, onChange, component: Component, ...props }) {
     />
   )
 }
-
-export const populateField = (Component, onChange) => ({ name, ...props }) => (
-  <Field {...props} name={name} component={Component} onChange={onChange} />
-)

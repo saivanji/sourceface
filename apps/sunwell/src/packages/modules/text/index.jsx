@@ -1,8 +1,8 @@
 import React from "react"
 import * as yup from "yup"
 import * as system from "@sourceface/style"
-import { Row, Label } from "@sourceface/components"
-import { Compute } from "packages/toolkit"
+import { Row, Label, Input, Select } from "@sourceface/components"
+import { Compute, Form, Field } from "packages/toolkit"
 import styles from "./index.scss"
 
 // every module should have correspoding loader(depending on type)
@@ -27,43 +27,68 @@ export const Root = function TextModule({ config }) {
 }
 
 export const Configuration = function TextModuleConfiguration({
-  components: { Form, Input, Select },
+  config,
+  onConfigChange,
 }) {
   return (
-    <Form validationSchema={validationSchema}>
+    <Form
+      config={config}
+      onConfigChange={onConfigChange}
+      validationSchema={validationSchema}
+    >
       <Row>
         <Label title="Text">
-          <Input name="text" type="text" />
+          <Field name="text" type="text" component={Input} />
         </Label>
       </Row>
       <Row>
         <Label title="Size">
-          <Select name="fontSize" items={optionsProps.fontSizes} />
+          <Field
+            name="fontSize"
+            items={optionsProps.fontSizes}
+            component={Select}
+          />
         </Label>
       </Row>
       <Row>
         <Label title="Font weight">
-          <Select name="fontWeight" items={optionsProps.fontWeights} />
+          <Field
+            name="fontWeight"
+            items={optionsProps.fontWeights}
+            component={Select}
+          />
         </Label>
       </Row>
       <Row>
         <Label title="Horizontal alignment">
-          <Select name="alignmentX" items={optionsProps.alignmentsX} />
+          <Field
+            name="alignmentX"
+            items={optionsProps.alignmentsX}
+            component={Select}
+          />
         </Label>
       </Row>
       <Row>
         <Label title="Vertical alignment">
-          <Select name="alignmentY" items={optionsProps.alignmentsY} />
+          <Field
+            name="alignmentY"
+            items={optionsProps.alignmentsY}
+            component={Select}
+          />
         </Label>
       </Row>
       <Row>
         <Label title="Decoration">
-          <Select name="decoration" items={optionsProps.decorations} />
+          <Field
+            name="decoration"
+            items={optionsProps.decorations}
+            component={Select}
+          />
         </Label>
       </Row>
       <Row>
         <Label title="Color">
-          <Input name="color" type="text" />
+          <Field name="color" type="text" component={Input} />
         </Label>
       </Row>
     </Form>

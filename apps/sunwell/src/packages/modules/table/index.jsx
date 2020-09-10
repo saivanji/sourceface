@@ -1,8 +1,16 @@
 import React, { useState } from "react"
 import * as yup from "yup"
 import moment from "moment"
-import { Table, Pagination, Row, Label, Section } from "@sourceface/components"
-import { Compute } from "packages/toolkit"
+import {
+  Table,
+  Pagination,
+  Row,
+  Label,
+  Section,
+  Input,
+  Checkbox,
+} from "@sourceface/components"
+import { Compute, Form, Field } from "packages/toolkit"
 import styles from "./index.scss"
 
 export const Root = function TableModule({ config }) {
@@ -80,38 +88,41 @@ export const Root = function TableModule({ config }) {
 }
 
 export const Configuration = function TableModuleConfiguration({
-  // TODO: use form components from kit
-  components: { Form, Input, Checkbox },
   config,
+  onConfigChange,
 }) {
   return (
-    <Form validationSchema={validationSchema}>
+    <Form
+      config={config}
+      onConfigChange={onConfigChange}
+      validationSchema={validationSchema}
+    >
       <Section title="Basic">
         <Row>
           <Label title="Data">
-            <Input name="items" type="text" />
+            <Field name="items" type="text" component={Input} />
           </Label>
         </Row>
       </Section>
       <Section title="Pagination">
         <Row>
-          <Checkbox name="pagination" label="Enabled" />
+          <Field name="pagination" label="Enabled" component={Checkbox} />
         </Row>
         {config.pagination && (
           <>
             <Row>
               <Label title="Items per page">
-                <Input name="limit" type="text" />
+                <Field name="limit" type="text" component={Input} />
               </Label>
             </Row>
             <Row>
               <Label title="Total count">
-                <Input name="count" type="text" />
+                <Field name="count" type="text" component={Input} />
               </Label>
             </Row>
             <Row>
               <Label title="Current page">
-                <Input name="currentPage" type="text" />
+                <Field name="currentPage" type="text" component={Input} />
               </Label>
             </Row>
           </>
