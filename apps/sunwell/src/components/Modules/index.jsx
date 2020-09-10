@@ -1,6 +1,5 @@
 import React from "react"
 import * as stock from "packages/modules"
-import * as expression from "lib/expression"
 import Grid from "./Grid"
 import Module from "./Module"
 
@@ -32,7 +31,6 @@ export default function Modules({
           isEditable={isEditing}
           isSelected={isEditing && selectedId === module.id}
           data={module}
-          expression={expression}
           components={components}
           component={stock.dict[module.type].Root}
           onClick={onModuleClick}

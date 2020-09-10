@@ -18,7 +18,7 @@ export default function Grid({ isEditable, positions, onChange, renderItem }) {
       layout={positions}
       rows={50}
       cols={10}
-      rowHeight={80}
+      rowHeight={60}
       isStatic={!isEditable}
       onChange={handleChange}
       renderItem={renderItem}

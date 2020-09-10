@@ -2,10 +2,11 @@ import React from "react"
 import * as yup from "yup"
 import * as system from "@sourceface/style"
 import { Row, Label } from "@sourceface/components"
+import { Compute } from "packages/toolkit"
 import styles from "./index.scss"
 
 // every module should have correspoding loader(depending on type)
-export const Root = function TextModule({ config, expression }) {
+export const Root = function TextModule({ config }) {
   return (
     <span
       className={styles.root}
@@ -18,7 +19,9 @@ export const Root = function TextModule({ config, expression }) {
         color: config.color,
       }}
     >
-      <expression.Template input={config.text} />
+      <Compute type="template" input={config.text}>
+        {({ data }) => data}
+      </Compute>
     </span>
   )
 }

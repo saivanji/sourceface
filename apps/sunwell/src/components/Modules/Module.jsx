@@ -8,7 +8,6 @@ export default ({
   onClick,
   component: Component,
   components,
-  expression,
   data,
 }) => {
   return (
@@ -32,7 +31,6 @@ export default ({
         config={data.config}
         layouts={data.layouts}
         components={components}
-        expression={expression}
       />
     </div>
   )

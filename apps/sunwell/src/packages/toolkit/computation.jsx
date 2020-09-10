@@ -5,25 +5,17 @@ import * as engine from "packages/engine"
 
 const context = createContext({})
 
-export function CommandsProvider({ commands, children }) {
-  return <context.Provider value={commands}>{children}</context.Provider>
+// TODO: rename commands to queries completely
+export function QueriesProvider({ queries, children }) {
+  return <context.Provider value={queries}>{children}</context.Provider>
 }
 
-export function Value({ input, constants, children }) {
-  const [data, { fetching }] = useEvaluation(input, constants)
-
-  if (!data) {
-    return "Initial loading..."
-  }
-
-  return children({
-    data: input instanceof Array ? data : data[0],
-    fetching,
-  })
-}
-
-export function Template({ input, constants, children }) {
-  const expressions = engine.parseTemplate(input)
+/**
+ * Computing expression. Type could be either "expression" or "template"
+ */
+export function Compute({ type = "expression", input, constants, children }) {
+  const expressions =
+    type === "expression" ? input : engine.parseTemplate(input)
 
   const [data, { fetching }] = useEvaluation(expressions, constants)
 
@@ -31,9 +23,15 @@ export function Template({ input, constants, children }) {
     return "Initial loading..."
   }
 
-  const replaced = engine.replaceTemplate(input, i => data[i])
-
-  return !children ? replaced || null : children({ data: replaced, fetching })
+  return children({
+    data:
+      type === "expression"
+        ? input instanceof Array
+          ? data
+          : data[0]
+        : engine.replaceTemplate(input, i => data[i]),
+    fetching,
+  })
 }
 
 // export function Effect({ expression }) {}

@@ -2,9 +2,10 @@ import React, { useState } from "react"
 import * as yup from "yup"
 import moment from "moment"
 import { Table, Pagination, Row, Label, Section } from "@sourceface/components"
+import { Compute } from "packages/toolkit"
 import styles from "./index.scss"
 
-export const Root = function TableModule({ config, expression }) {
+export const Root = function TableModule({ config }) {
   const [page, setPage] = useState(0)
   const limit = 10
   const offset = limit * page
@@ -17,7 +18,7 @@ export const Root = function TableModule({ config, expression }) {
   }
 
   return (
-    <expression.Value input={expressions} constants={constants}>
+    <Compute input={expressions} constants={constants}>
       {({ data: [rows, count, limit] }) => (
         <Table className={styles.root}>
           <Table.Thead>
@@ -74,7 +75,7 @@ export const Root = function TableModule({ config, expression }) {
           )}
         </Table>
       )}
-    </expression.Value>
+    </Compute>
   )
 }
 

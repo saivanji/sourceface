@@ -6,7 +6,7 @@ import { TouchBackend } from "react-dnd-touch-backend"
 import { useQuery } from "urql"
 import { useBooleanState } from "hooks/index"
 import { Frame, Editor, Modules } from "components/index"
-import * as expression from "lib/expression"
+import { QueriesProvider } from "packages/toolkit"
 import * as queries from "./queries"
 import { createLayout } from "./utils"
 
@@ -33,10 +33,9 @@ export default () => {
   const layout =
     page && createLayout(page.layout.id, page.modules, page.layout.positions)
 
-  // TODO: CommandsProvider is at the right place
   return (
     <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
-      <expression.CommandsProvider commands={result.data?.commands}>
+      <QueriesProvider queries={result.data?.commands}>
         {isEditing ? (
           <Editor layout={layout} modules={page?.modules} onClose={editOff} />
         ) : (
@@ -44,7 +43,7 @@ export default () => {
             <Modules layout={layout} />
           </Frame>
         )}
-      </expression.CommandsProvider>
+      </QueriesProvider>
     </DndProvider>
   )
 }
