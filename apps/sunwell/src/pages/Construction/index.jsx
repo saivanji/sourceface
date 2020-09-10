@@ -33,19 +33,15 @@ export default () => {
   const layout =
     page && createLayout(page.layout.id, page.modules, page.layout.positions)
 
-  const children = !layout ? "Loading..." : <Modules layout={layout} />
-
   // TODO: CommandsProvider is at the right place
   return (
     <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
       <expression.CommandsProvider commands={result.data?.commands}>
         {isEditing ? (
-          <Editor modules={page?.modules} onClose={editOff}>
-            {children}
-          </Editor>
+          <Editor layout={layout} modules={page?.modules} onClose={editOff} />
         ) : (
           <Frame path={path} actions={<button onClick={editOn}>Edit</button>}>
-            {children}
+            <Modules layout={layout} />
           </Frame>
         )}
       </expression.CommandsProvider>

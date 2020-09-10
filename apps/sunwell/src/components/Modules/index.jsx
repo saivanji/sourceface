@@ -1,14 +1,16 @@
-import React, { createContext, useContext } from "react"
+import React from "react"
 import * as stock from "packages/modules"
 import * as expression from "lib/expression"
 import Grid from "./Grid"
 import Module from "./Module"
 
-const context = createContext({})
-
-export default function Modules({ layout }) {
-  // TODO: move all in props as optional props
-  const { isEditing, selectedId, onChange, onModuleClick } = useContext(context)
+export default function Modules({
+  layout,
+  isEditing,
+  selectedId,
+  onChange,
+  onModuleClick,
+}) {
   /**
    * Passing down event and previous layout.
    */
@@ -17,7 +19,9 @@ export default function Modules({ layout }) {
     Modules,
   }
 
-  return (
+  return !layout ? (
+    "Loading..."
+  ) : (
     <Grid
       positions={layout.positions}
       isEditable={isEditing}
@@ -35,21 +39,5 @@ export default function Modules({ layout }) {
         />
       )}
     />
-  )
-}
-
-Modules.Provider = ({
-  children,
-  isEditing,
-  selectedId,
-  onChange,
-  onModuleClick,
-}) => {
-  return (
-    <context.Provider
-      value={{ isEditing, selectedId, onChange, onModuleClick }}
-    >
-      {children}
-    </context.Provider>
   )
 }

@@ -9,7 +9,7 @@ import View from "./View"
 import * as mutatations from "schema/mutations"
 import { toPositionsRequest, findModule } from "./utils"
 
-export default function Editor({ children, modules, onClose }) {
+export default function Editor({ layout, modules, onClose }) {
   const [selectedId, setSelectedId] = useState(null)
   const removeSelection = () => setSelectedId(null)
 
@@ -20,7 +20,6 @@ export default function Editor({ children, modules, onClose }) {
   const selectedModule =
     modules && selectedId && findModule(selectedId, modules)
 
-  // TODO: use <Modules /> instead of ModulesProvider
   return (
     <View
       isSaving={isChanging}
@@ -37,14 +36,13 @@ export default function Editor({ children, modules, onClose }) {
       }
       onClose={onClose}
     >
-      <Modules.Provider
+      <Modules
+        layout={layout}
         isEditing
         selectedId={selectedId}
         onModuleClick={setSelectedId}
         onChange={changeGrid}
-      >
-        {children}
-      </Modules.Provider>
+      />
     </View>
   )
 }
