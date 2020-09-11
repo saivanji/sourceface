@@ -6,6 +6,7 @@ import * as engine from "packages/engine"
 const context = createContext({})
 
 // TODO: rename commands to queries completely
+// TODO: rename QueriesProvider to ScopeProvider?
 export function QueriesProvider({ queries, children }) {
   return <context.Provider value={queries}>{children}</context.Provider>
 }
@@ -39,7 +40,8 @@ export function Compute({ type = "expression", input, constants, children }) {
 // TODO: in case expression return value has no commands, do not send request to server
 const useEvaluation = (input, constants) => {
   const commands = useContext(context)
-  const evaluated = evaluateMany(input, createScope(commands, constants))
+  const scope = createScope(commands, constants)
+  const evaluated = evaluateMany(input, scope)
 
   if (evaluated.every(result => result.type !== "command")) {
     return [evaluated, { fetching: false }]
@@ -60,6 +62,7 @@ const provideData = (evaluated, commandsData) =>
     !result.type ? result : result.type === "command" && commandsData[i]
   )
 
+// TODO: remove?
 const createScope = (commands, constants) => ({
   funcs: {
     commands: commands.reduce(

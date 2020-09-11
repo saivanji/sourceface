@@ -1,2 +1,2 @@
-export { default as ExpressionInput } from "./ExpressionInput"
-export { default as Option } from "./Option"
+export { default as Expression } from "./Expression"
+export { default as Template } from "./Template"

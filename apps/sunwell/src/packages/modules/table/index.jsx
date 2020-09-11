@@ -10,24 +10,30 @@ import {
   Input,
   Checkbox,
 } from "@sourceface/components"
-import { Compute, Form, Field } from "packages/toolkit"
+import { Compute, Form, Field, Expression } from "packages/toolkit"
 import styles from "./index.scss"
 
+// The best approach is to define constants once and then reference them in the app
+// But if that's not possible define config types and export that variable
+//
+// hint: useModuleState(key, initialValue) hook. use recoil? or with contexts and global state
+
 export const Root = function TableModule({ config }) {
+  // const [page, setPage] = useModuleState('page', 0);
   const [page, setPage] = useState(0)
-  const limit = 10
+  const limit = +config.limit
   const offset = limit * page
   // TODO: how to pass "limit" variable from `Value` in one evaluation loop?
-  const constants = { page, limit, offset }
-  const expressions = [config.items, config.count, config.limit]
+  // TODO: accept "constants" from props? or even better get them from context
+  const constants = { offset, limit }
 
   if (!config.items) {
     return <div>No items</div>
   }
 
   return (
-    <Compute input={expressions} constants={constants}>
-      {({ data: [rows, count, limit] }) => (
+    <Compute input={[config.items, config.count]} constants={constants}>
+      {({ data: [rows, count] }) => (
         <Table className={styles.root}>
           <Table.Thead>
             <Table.Tr>
@@ -42,22 +48,24 @@ export const Root = function TableModule({ config }) {
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {rows.map(row => (
-              <Table.Tr key={row.id}>
-                <Table.Td>{row.id}</Table.Td>
-                <Table.Td>
-                  {moment(row.created_at).format("DD MMM YY, HH:mm")}
-                </Table.Td>
-                <Table.Td>{row.customer_name}</Table.Td>
-                <Table.Td>{row.address}</Table.Td>
-                <Table.Td>{row.delivery_type}</Table.Td>
-                <Table.Td>{row.status}</Table.Td>
-                <Table.Td>{row.payment_type}</Table.Td>
-                <Table.Td>
-                  {row.amount} {row.currency}
-                </Table.Td>
-              </Table.Tr>
-            ))}
+            {rows &&
+              // TODO: fix "createQuery" function to provide variables dynamically
+              rows.map(row => (
+                <Table.Tr key={row.id}>
+                  <Table.Td>{row.id}</Table.Td>
+                  <Table.Td>
+                    {moment(row.created_at).format("DD MMM YY, HH:mm")}
+                  </Table.Td>
+                  <Table.Td>{row.customer_name}</Table.Td>
+                  <Table.Td>{row.address}</Table.Td>
+                  <Table.Td>{row.delivery_type}</Table.Td>
+                  <Table.Td>{row.status}</Table.Td>
+                  <Table.Td>{row.payment_type}</Table.Td>
+                  <Table.Td>
+                    {row.amount} {row.currency}
+                  </Table.Td>
+                </Table.Tr>
+              ))}
           </Table.Tbody>
           {config.pagination && limit !== 0 && (
             <Table.Tfoot>
@@ -87,6 +95,8 @@ export const Root = function TableModule({ config }) {
   )
 }
 
+// TODO: apply progressive disclosure technique for pagination and
+// other optional stuff. (probably with accordion for the section?)
 export const Configuration = function TableModuleConfiguration({
   config,
   onConfigChange,
@@ -100,7 +110,7 @@ export const Configuration = function TableModuleConfiguration({
       <Section title="Basic">
         <Row>
           <Label title="Data">
-            <Field name="items" type="text" component={Input} />
+            <Field name="items" type="text" component={Expression} />
           </Label>
         </Row>
       </Section>
@@ -111,18 +121,18 @@ export const Configuration = function TableModuleConfiguration({
         {config.pagination && (
           <>
             <Row>
-              <Label title="Items per page">
-                <Field name="limit" type="text" component={Input} />
-              </Label>
-            </Row>
-            <Row>
               <Label title="Total count">
-                <Field name="count" type="text" component={Input} />
+                <Field name="count" type="text" component={Expression} />
               </Label>
             </Row>
             <Row>
               <Label title="Current page">
-                <Field name="currentPage" type="text" component={Input} />
+                <Field name="currentPage" type="text" component={Expression} />
+              </Label>
+            </Row>
+            <Row>
+              <Label title="Items per page">
+                <Field name="limit" type="number" component={Input} />
               </Label>
             </Row>
           </>
@@ -131,6 +141,11 @@ export const Configuration = function TableModuleConfiguration({
     </Form>
   )
 }
+
+export const createLocalConstants = (config, state) => ({
+  limit: config.limit,
+  offset: config.limit * state.page,
+})
 
 export const defaultConfig = {
   items: "",

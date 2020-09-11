@@ -2,9 +2,7 @@ import React, { useState } from "react"
 import { Label } from "@sourceface/components"
 import Braces from "assets/braces.svg"
 
-export default function Field({ children, title, name, type = "combined" }) {
-  // const [] = useState('plain')
-
+export default function Field({ children, title }) {
   return (
     <Label
       title={title}
@@ -12,7 +10,7 @@ export default function Field({ children, title, name, type = "combined" }) {
         <Braces
           style={{
             width: 18,
-            // backgroundColor: "#ddd",
+            backgroundColor: "#ddd",
             padding: 2,
             borderRadius: 4,
           }}

@@ -25,7 +25,7 @@ export default function Modules({
   ) : (
     <Grid
       positions={layout.positions}
-      isEditing={isEditing}
+      isEditable={isEditing}
       onChange={handleChange}
       renderItem={module => {
         const isSelected = isEditing && selectedId === module.id
