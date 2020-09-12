@@ -29,6 +29,8 @@ import styles from "./index.scss"
 
 // TODO: consider implementing hooks api instead of Compute
 
+// TODO: implement "input" module and make search over table feature
+
 export const Root = function TableModule({ config }) {
   // TODO: move "state" to props and have `const setPage = useStateUpdate("page")` instead? another name - `useTransition`
   const [page, setPage] = useConnectedState("page")
