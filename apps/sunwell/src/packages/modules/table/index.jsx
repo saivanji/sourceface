@@ -23,8 +23,14 @@ import styles from "./index.scss"
 // TODO: clarify difference between scope, constants and variables. Fix naming issues.
 // TODO: consider merging funcs and constants. why there is a such separation in the engine?
 
+// TODO: implement actions. on clicking button - execute query. or open another page
+
+// TODO: remember engine implementation for additional context
+
+// TODO: consider implementing hooks api instead of Compute
+
 export const Root = function TableModule({ config }) {
-  // TODO: move "state" to props and have `const setPage = useStateUpdate("page")` instead?
+  // TODO: move "state" to props and have `const setPage = useStateUpdate("page")` instead? another name - `useTransition`
   const [page, setPage] = useConnectedState("page")
   // TODO: should put to props? or get config with hook instead?
   const { limit, offset } = useVariables()

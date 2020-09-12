@@ -44,6 +44,10 @@ ReactDOM.render(
 // Modules state
 // - 2 way binding vs 1 way binding, what's better? probably 2 way. Most likely it will be done similar to redux with global state
 //
+// Pipelines
+// - It will be a separate feature in the same row with Sources or Pages which will allow to combine multiple actions into one. Also will have another prefix in "funcs" of the engine's scope - "pipelines".
+// Alternative of that feature - is custom JS. So user can define it's own functions to use in modules.
+//
 //
 // Current:
 // - Modules moving from one grid to another within nested grid doesn't work
