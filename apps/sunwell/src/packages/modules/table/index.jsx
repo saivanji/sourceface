@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import * as yup from "yup"
 import moment from "moment"
 import {
@@ -10,29 +10,32 @@ import {
   Input,
   Checkbox,
 } from "@sourceface/components"
-import { Compute, Form, Field, Expression } from "packages/toolkit"
+import {
+  Compute,
+  Form,
+  Field,
+  Expression,
+  useVariables,
+  useConnectedState,
+} from "packages/toolkit"
 import styles from "./index.scss"
 
-// The best approach is to define constants once and then reference them in the app
-// But if that's not possible define config types and export that variable
-//
-// hint: useModuleState(key, initialValue) hook. use recoil? or with contexts and global state
+// TODO: clarify difference between scope, constants and variables. Fix naming issues.
+// TODO: consider merging funcs and constants. why there is a such separation in the engine?
 
 export const Root = function TableModule({ config }) {
-  // const [page, setPage] = useModuleState('page', 0);
-  const [page, setPage] = useState(0)
-  const limit = +config.limit
-  const offset = limit * page
-  // TODO: how to pass "limit" variable from `Value` in one evaluation loop?
-  // TODO: accept "constants" from props? or even better get them from context
-  const constants = { offset, limit }
+  // TODO: move "state" to props and have `const setPage = useStateUpdate("page")` instead?
+  const [page, setPage] = useConnectedState("page")
+  // TODO: should put to props? or get config with hook instead?
+  const { limit, offset } = useVariables()
 
   if (!config.items) {
     return <div>No items</div>
   }
 
+  // TODO: compute "current page" input as well
   return (
-    <Compute input={[config.items, config.count]} constants={constants}>
+    <Compute input={[config.items, config.count]}>
       {({ data: [rows, count] }) => (
         <Table className={styles.root}>
           <Table.Thead>
@@ -142,10 +145,15 @@ export const Configuration = function TableModuleConfiguration({
   )
 }
 
-export const createLocalConstants = (config, state) => ({
-  limit: config.limit,
-  offset: config.limit * state.page,
+// TODO: remove parsing to int and have limit as integer in config instead
+export const createVariables = (config, state) => ({
+  limit: +config.limit,
+  offset: +config.limit * state.page,
 })
+
+export const initialState = {
+  page: 0,
+}
 
 export const defaultConfig = {
   items: "",

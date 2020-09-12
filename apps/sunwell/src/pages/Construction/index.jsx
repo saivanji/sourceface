@@ -6,7 +6,8 @@ import { TouchBackend } from "react-dnd-touch-backend"
 import { useQuery } from "urql"
 import { useBooleanState } from "hooks/index"
 import { Frame, Editor, Modules } from "components/index"
-import { QueriesProvider } from "packages/toolkit"
+import { Container } from "packages/toolkit"
+import * as stock from "packages/modules"
 import * as queries from "./queries"
 import { createLayout } from "./utils"
 
@@ -33,9 +34,14 @@ export default () => {
   const layout =
     page && createLayout(page.layout.id, page.modules, page.layout.positions)
 
+  // TODO: consider putting container to another place
   return (
     <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
-      <QueriesProvider queries={result.data?.commands}>
+      <Container
+        queries={result.data?.commands}
+        modules={result.data?.page.modules}
+        stock={stock.dict}
+      >
         {isEditing ? (
           <Editor layout={layout} modules={page?.modules} onClose={editOff} />
         ) : (
@@ -43,7 +49,7 @@ export default () => {
             <Modules layout={layout} />
           </Frame>
         )}
-      </QueriesProvider>
+      </Container>
     </DndProvider>
   )
 }

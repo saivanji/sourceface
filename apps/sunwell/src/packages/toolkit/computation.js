@@ -1,24 +1,18 @@
-import React, { createContext, useContext } from "react"
 import { useQuery } from "urql"
 import { keys } from "ramda"
 import * as engine from "packages/engine"
-
-const context = createContext({})
+import { useScope, useIdentity } from "./container"
 
 // TODO: rename commands to queries completely
-// TODO: rename QueriesProvider to ScopeProvider?
-export function QueriesProvider({ queries, children }) {
-  return <context.Provider value={queries}>{children}</context.Provider>
-}
 
 /**
  * Computing expression. Type could be either "expression" or "template"
  */
-export function Compute({ type = "expression", input, constants, children }) {
+export function Compute({ type = "expression", input, children }) {
   const expressions =
     type === "expression" ? input : engine.parseTemplate(input)
 
-  const [data, { fetching }] = useEvaluation(expressions, constants)
+  const [data, { fetching }] = useEvaluation(expressions)
 
   if (!data) {
     return "Initial loading..."
@@ -38,9 +32,9 @@ export function Compute({ type = "expression", input, constants, children }) {
 // export function Effect({ expression }) {}
 
 // TODO: in case expression return value has no commands, do not send request to server
-const useEvaluation = (input, constants) => {
-  const commands = useContext(context)
-  const scope = createScope(commands, constants)
+const useEvaluation = input => {
+  const id = useIdentity()
+  const scope = useScope(id)
   const evaluated = evaluateMany(input, scope)
 
   if (evaluated.every(result => result.type !== "command")) {
@@ -61,26 +55,6 @@ const provideData = (evaluated, commandsData) =>
   evaluated.map((result, i) =>
     !result.type ? result : result.type === "command" && commandsData[i]
   )
-
-// TODO: remove?
-const createScope = (commands, constants) => ({
-  funcs: {
-    commands: commands.reduce(
-      (acc, command) => ({
-        ...acc,
-        [command.id]: args => ({
-          type: "command",
-          payload: {
-            commandId: command.id,
-            args,
-          },
-        }),
-      }),
-      {}
-    ),
-  },
-  constants,
-})
 
 const evaluateMany = (input, scope) =>
   input instanceof Array
