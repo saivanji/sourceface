@@ -24,10 +24,6 @@ ReactDOM.render(
 //    - How to allow a user provide a string to input by default not surrounded by quotes? Dirty solution is to separate expressions and templates and provide ability to switch with a checkbox
 // - Table row click action
 // Add other modules? Input, Button
-// Modules grid
-//  - Should we replicate size of a draggable source or use a simple line instead?
-//  - Implement nesting
-//  - Be able to drag module with holding a button instead of drag handle
 // Improve / Change editor UI? start with a feature approach
 // Pages
 // Performance optimizations
