@@ -4,7 +4,7 @@
 // Library is responsible for evaluating expressions only. Templating might be
 // in a different library.
 
-// TODO: have "formula" or "expression" name
+// TODO: have "comma", "command", "run", "execute" as name.  alternate - "formula" or "expression" name
 
 export const evaluate = (expression, scope) => {
   if (false) {
@@ -80,3 +80,46 @@ class EngineSyntaxError extends Error {}
 //     },
 //   })
 // )
+//
+// New syntax:
+//
+// `listOrders local.limit, local.offset`
+// `listOrders ~limit, ~offset`
+// `listOrders search: input1.value`
+// `listOrders input2.foo.bar, offset: 5`
+// `foo.bar.listOrders limit: 1, offset: 5`
+//
+// TODO: literals and functions are in different scopes. Therefore
+// it may happen that we have code like that:
+// `orders orders`, where 1st `orders` is a function and another one is
+// argument. Should we have single scope for literals and functions in the
+// application level? If yes, should engine have it as well? What are the
+// benefits of having single and separate scopes?
+//
+// TODO: should we replace named arguments by position arguments for simplicity?
+//
+// evaluate("listOrders ~limit ~offset", {
+//   functions: {
+//     foo: {
+//       bar: {
+//         listOrders: () => {}
+//       }
+//     }
+//   },
+//   literals: {
+//     local: {
+//       limit: 1,
+//       offset: 5
+//     }
+//     foo: {
+//       bar: {
+//         baz: 4
+//       }
+//     }
+//   }
+// }, {
+//   shortcuts: {
+//     'local': '~',
+//     'foo.bar': '@'
+//   }
+// })

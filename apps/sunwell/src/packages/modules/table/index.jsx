@@ -21,6 +21,7 @@ import {
 import styles from "./index.scss"
 
 // TODO: clarify difference between scope, constants and variables. Fix naming issues.
+// Will have only "scope", constants and variables are not needed.
 // TODO: consider merging funcs and constants. why there is a such separation in the engine?
 
 // TODO: implement actions. on clicking button - execute query. or open another page
@@ -31,8 +32,10 @@ import styles from "./index.scss"
 
 // TODO: implement "input" module and make search over table feature
 
-export const Root = function TableModule({ config }) {
-  // TODO: move "state" to props and have `const setPage = useStateUpdate("page")` instead? another name - `useTransition`
+// TODO: rename useVariables to useLocal. or better have "local" module prop
+
+export const Root = function TableModule({ config, state, local }) {
+  // TODO: move "state" to props and have `const changePage = useTransition("page")` instead?
   const [page, setPage] = useConnectedState("page")
   // TODO: should put to props? or get config with hook instead?
   const { limit, offset } = useVariables()
