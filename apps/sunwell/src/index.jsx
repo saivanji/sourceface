@@ -47,6 +47,8 @@ ReactDOM.render(
 // Pipelines
 // - It will be a separate feature in the same row with Sources or Pages which will allow to combine multiple actions into one. Also will have another prefix in "funcs" of the engine's scope - "pipelines".
 // Alternative of that feature - is custom JS. So user can define it's own functions to use in modules.
+// Pipelines can be defined sequentially or asynchronously(like Promise.all)
+// Real world use case: get data from one API then from second API then combine to a single object and display it in the UI
 //
 //
 // Current:
