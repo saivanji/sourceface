@@ -1,14 +1,15 @@
-import React, { cloneElement, useState } from "react"
+import React, { useState } from "react"
 import { SORTABLE_INNER, SORTABLE_OUTER } from "packages/grid"
 import { useMutation } from "urql"
 import * as stock from "packages/modules"
 import Configuration from "../Configuration"
 import Stock from "../Stock"
+import Modules from "../Modules"
 import View from "./View"
 import * as mutatations from "schema/mutations"
 import { toPositionsRequest, findModule } from "./utils"
 
-export default function Editor({ children, modules, onClose }) {
+export default function Editor({ layout, modules, onClose }) {
   const [selectedId, setSelectedId] = useState(null)
   const removeSelection = () => setSelectedId(null)
 
@@ -35,13 +36,14 @@ export default function Editor({ children, modules, onClose }) {
       }
       onClose={onClose}
     >
-      {cloneElement(children, {
-        selectedId,
-        isEditing: true,
-        onModuleClick: setSelectedId,
-        onChange: changeGrid,
-        onConfigChange: updateModule,
-      })}
+      <Modules
+        layout={layout}
+        isEditing
+        selectedId={selectedId}
+        onModuleClick={setSelectedId}
+        onChange={changeGrid}
+        onConfigChange={updateModule}
+      />
     </View>
   )
 }
