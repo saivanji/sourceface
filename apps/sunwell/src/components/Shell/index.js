@@ -3,7 +3,7 @@ import { Breadcrumbs } from "@sourceface/components"
 import styles from "./index.scss"
 
 // dashboard frame component containing Header component and so on
-export default function Frame({ children, path, actions }) {
+export default function Shell({ children, path, actions }) {
   return (
     <div className={styles.root}>
       <div className={styles.pane}>

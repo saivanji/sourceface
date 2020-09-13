@@ -1,17 +1,14 @@
 import { toPairs, pick } from "ramda"
 
-export const findModule = (moduleId, modules) =>
-  modules.find(module => module.id === moduleId)
-
 /**
  * Extracting only changed positions or positions which are not in a
  * previous layout for the grid reorder request.
  */
-export const toPositionsRequest = (prevLayout, positions) =>
-  toPairs(positions).reduce(
-    (acc, [id, item]) => {
-      const prevPosition = prevLayout.positions[id]
-      const position = pick(["w", "h", "x", "y"], item)
+export const toPositionsRequest = (prevLayer, units) =>
+  toPairs(units).reduce(
+    (acc, [id, unit]) => {
+      const prevPosition = prevLayer.units[id]
+      const position = pick(["w", "h", "x", "y"], unit)
 
       if (prevPosition && positionsEqual(prevPosition, position)) {
         return acc
@@ -21,7 +18,7 @@ export const toPositionsRequest = (prevLayout, positions) =>
         ...acc,
         {
           id: +id,
-          layoutId: prevLayout.id,
+          layoutId: prevLayer.layoutId,
           ...position,
         },
       ]

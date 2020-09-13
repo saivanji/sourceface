@@ -1,9 +1,9 @@
 /**
- * Creating recursive layout data for the grid.
+ * Creating recursive layer data for the grid.
  */
-export const createLayout = (id, modules, positions) => ({
-  id,
-  positions: positions.reduce(
+export const createLayer = (layout, modules) => ({
+  layoutId: layout.id,
+  units: layout.positions.reduce(
     (acc, { id, ...coords }) => ({
       ...acc,
       [id]: {
@@ -16,15 +16,13 @@ export const createLayout = (id, modules, positions) => ({
 })
 
 /**
- * Creating a module object with recursive layouts data.
+ * Creating a module object with recursive layers data.
  */
 const createModule = (positionId, modules) => {
   const module = modules.find(module => module.positionId === positionId)
 
   return {
     ...module,
-    layouts: module.layouts.map(layout =>
-      createLayout(layout.id, modules, layout.positions)
-    ),
+    layers: module.layouts.map(layout => createLayer(layout, modules)),
   }
 }

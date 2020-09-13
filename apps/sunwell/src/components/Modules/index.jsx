@@ -4,9 +4,17 @@ import * as stock from "packages/modules"
 import { Identifier } from "packages/toolkit"
 import Grid from "./Grid"
 import styles from "./index.scss"
+import { createLayer } from "./utils"
 
-export default function Modules({
-  layout,
+export default function Modules({ layout, modules, ...props }) {
+  const layer = layout && createLayer(layout, modules)
+  const isLoaded = !!layout
+
+  return !isLoaded ? "Loading..." : <Frame layer={layer} {...props} />
+}
+
+function Frame({
+  layer,
   isEditing,
   selectedId,
   onChange,
@@ -14,18 +22,16 @@ export default function Modules({
   onConfigChange,
 }) {
   /**
-   * Passing down event and previous layout.
+   * Passing down event and previous layer.
    */
-  const handleChange = event => onChange(event, layout)
+  const handleChange = event => onChange(event, layer)
   const components = {
-    Modules,
+    Frame,
   }
 
-  return !layout ? (
-    "Loading..."
-  ) : (
+  return (
     <Grid
-      positions={layout.positions}
+      units={layer.units}
       isEditable={isEditing}
       onChange={handleChange}
       renderItem={module => {
@@ -52,7 +58,7 @@ export default function Modules({
             >
               <Component
                 config={module.config}
-                layouts={module.layouts}
+                layers={module.layers}
                 components={components}
                 isEditing={isEditing}
                 onConfigChange={onConfigChange}

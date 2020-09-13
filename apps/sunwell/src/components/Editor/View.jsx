@@ -4,7 +4,7 @@ import styles from "./index.scss"
 // near the orders page will be a button opening a modal to edit current page properties(url, etc?)
 // page title is editable?
 // page creation button could be near page title
-export default function View({ children, isSaving, right, onClose }) {
+export default function EditorView({ children, isSaving, right, onClose }) {
   return (
     <div className={styles.root}>
       <div className={styles.header}>

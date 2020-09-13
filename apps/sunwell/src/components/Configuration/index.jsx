@@ -4,13 +4,22 @@ import { Tabs } from "@sourceface/components"
 import { useScope } from "packages/toolkit"
 import * as stock from "packages/modules"
 
-export default function ConfigurationContainer({ module, onUpdate, onRemove }) {
+export default function Configuration({
+  selectedId,
+  modules,
+  onUpdate,
+  onRemove,
+}) {
   const [selected, setSelected] = useState("configuration")
+
+  if (!modules) {
+    return "Loading..."
+  }
+
+  const module = modules.find(x => x.id === selectedId)
   const Component = stock.dict[module.type].Configuration
 
-  return !module ? (
-    "Loading..."
-  ) : (
+  return (
     <>
       <TabHead selected={selected} onSelect={setSelected} />
       <Tabs>

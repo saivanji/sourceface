@@ -7,7 +7,7 @@ import Stock from "../Stock"
 import Modules from "../Modules"
 import View from "./View"
 import * as mutatations from "schema/mutations"
-import { toPositionsRequest, findModule } from "./utils"
+import { toPositionsRequest } from "./utils"
 
 export default function Editor({ layout, modules, onClose }) {
   const [selectedId, setSelectedId] = useState(null)
@@ -17,16 +17,15 @@ export default function Editor({ layout, modules, onClose }) {
     selectedId,
     removeSelection
   )
-  const selectedModule =
-    modules && selectedId && findModule(selectedId, modules)
 
   return (
     <View
       isSaving={isChanging}
       right={
-        selectedModule ? (
+        selectedId ? (
           <Configuration
-            module={selectedModule}
+            modules={modules}
+            selectedId={selectedId}
             onUpdate={updateModule}
             onRemove={removeModule}
           />
@@ -38,6 +37,7 @@ export default function Editor({ layout, modules, onClose }) {
     >
       <Modules
         layout={layout}
+        modules={modules}
         isEditing
         selectedId={selectedId}
         onModuleClick={setSelectedId}
@@ -69,8 +69,8 @@ const useChange = (selectedId, onModuleRemove) => {
     onModuleRemove()
   }
 
-  const handleGridChange = (event, prevLayout) => {
-    const layoutId = prevLayout.id
+  const handleGridChange = (event, prevLayer) => {
+    const { layoutId } = prevLayer
 
     /**
      * Update layout positions when items are sorted, resized or put on
@@ -81,21 +81,24 @@ const useChange = (selectedId, onModuleRemove) => {
       (event.name === "enter" && event.sourceType === SORTABLE_INNER)
     ) {
       updatePositions({
-        positions: toPositionsRequest(prevLayout, event.positions),
+        positions: toPositionsRequest(prevLayer, event.units),
       })
       return
     }
 
+    /**
+     * Create new module from the stock.
+     */
     if (event.name === "enter" && event.sourceType === SORTABLE_OUTER) {
       const { moduleType } = event.custom
-      const { outer, ...filtered } = event.positions
+      const { outer, ...filtered } = event.units
       const position = { layoutId, ...outer }
 
       createModule({
         type: moduleType,
         config: stock.dict[moduleType].defaultConfig,
         position,
-        positions: toPositionsRequest(prevLayout, filtered),
+        positions: toPositionsRequest(prevLayer, filtered),
       })
       return
     }
