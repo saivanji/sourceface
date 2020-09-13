@@ -6,10 +6,7 @@ import { TouchBackend } from "react-dnd-touch-backend"
 import { useQuery } from "urql"
 import { useBooleanState } from "hooks/index"
 import { Frame, Editor, Modules } from "components/index"
-import { Container } from "packages/toolkit"
-import * as stock from "packages/modules"
 import * as queries from "./queries"
-import { createLayout } from "./utils"
 
 // TODO: think about real use case
 
@@ -30,26 +27,28 @@ export default () => {
     variables: { pageId: 1 },
   })
   const [isEditing, editOn, editOff] = useBooleanState(false)
-  const page = result.data?.page
-  const layout =
-    page && createLayout(page.layout.id, page.modules, page.layout.positions)
 
-  // TODO: consider putting container to another place
+  const modules = !result.data ? (
+    "Loading..."
+  ) : (
+    <Modules
+      queries={result.data.commands}
+      modules={result.data.page.modules}
+      layout={result.data.page.layout}
+    />
+  )
+
   return (
     <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
-      <Container
-        queries={result.data?.commands}
-        modules={result.data?.page.modules}
-        stock={stock.dict}
-      >
-        {isEditing ? (
-          <Editor layout={layout} modules={page?.modules} onClose={editOff} />
-        ) : (
-          <Frame path={path} actions={<button onClick={editOn}>Edit</button>}>
-            <Modules layout={layout} />
-          </Frame>
-        )}
-      </Container>
+      {isEditing ? (
+        <Editor modules={result.data?.page.modules} onClose={editOff}>
+          {modules}
+        </Editor>
+      ) : (
+        <Frame path={path} actions={<button onClick={editOn}>Edit</button>}>
+          {modules}
+        </Frame>
+      )}
     </DndProvider>
   )
 }
