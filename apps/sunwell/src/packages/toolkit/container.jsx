@@ -9,8 +9,7 @@ export function Container({ children, queries, modules, stock }) {
    * Transforming modules list to the dictionary for the performance reasons of
    * accessing the module by it's id.
    */
-  // TODO: remove sanity check
-  const dict = modules && toDict(modules)
+  const dict = toDict(modules)
 
   const [state, setState] = useState({})
 

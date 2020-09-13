@@ -5,7 +5,7 @@ import { DndProvider } from "react-dnd"
 import { TouchBackend } from "react-dnd-touch-backend"
 import { useQuery } from "urql"
 import { useBooleanState } from "hooks/index"
-import { Shell, Editor, Modules } from "components/index"
+import { Shell, Editor, Modules, When } from "components/index"
 import { Container } from "packages/toolkit"
 import * as stock from "packages/modules"
 import * as queries from "./queries"
@@ -33,7 +33,9 @@ export default () => {
 
   return (
     <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
-      <Container
+      <When
+        cond={!!page}
+        component={Container}
         queries={result.data?.commands}
         modules={page?.modules}
         stock={stock.dict}
@@ -49,7 +51,7 @@ export default () => {
             <Modules layout={page?.layout} modules={page?.modules} />
           </Shell>
         )}
-      </Container>
+      </When>
     </DndProvider>
   )
 }
