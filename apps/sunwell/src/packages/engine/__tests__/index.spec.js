@@ -16,8 +16,6 @@ test("evaluates variables from the scope", () => {
   expect(evaluate("x", { x: 4 })).toBe(4)
 })
 
-test("fails when variable not exist", () => {})
-
 test("evaluates nested object properies", () => {
   expect(evaluate("foo.bar.baz", { foo: { bar: { baz: 4 } } })).toBe(4)
 })
@@ -125,6 +123,8 @@ test("evaluates function call with nested shorthand variable arguments when shor
     )
   ).toBe(10)
 })
+
+test("fails when variable not exist", () => {})
 
 test("fails to accept function call as argument", () => {
   expect(evaluate("exec x: bar", { exec: () => 8, bar: () => 4 }))
