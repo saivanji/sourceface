@@ -83,11 +83,16 @@ class EngineSyntaxError extends Error {}
 //
 // New syntax:
 //
+// `listOrders`
 // `listOrders local.limit, local.offset`
 // `listOrders ~limit, ~offset`
 // `listOrders search: input1.value`
 // `listOrders input2.foo.bar, offset: 5`
 // `foo.bar.listOrders limit: 1, offset: 5`
+//
+// TODO: is it fine to call functions the same way we evaluates variables, for example:
+// `foo` is a literal in the scope
+// `foo` is function in the scope
 //
 // TODO: literals and functions are in different scopes. Therefore
 // it may happen that we have code like that:

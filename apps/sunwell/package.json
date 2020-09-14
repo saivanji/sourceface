@@ -5,6 +5,7 @@
   "scripts": {
     "start": "webpack-dev-server",
     "build": "webpack",
+    "test": "jest",
     "format": "prettier --write \"src/**/*.{js,jsx}\"",
     "check": "prettier --check \"src/**/*.{js,jsx}\" && eslint \"src/**/*.{js,jsx}\""
   },
@@ -48,6 +49,7 @@
     "css-loader": "^3.5.3",
     "eslint": "^7.1.0",
     "html-webpack-plugin": "^4.3.0",
+    "jest": "^26.4.2",
     "mini-css-extract-plugin": "^0.9.0",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "postcss-loader": "^3.0.0",
