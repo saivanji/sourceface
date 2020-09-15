@@ -5,11 +5,11 @@ test("evaluates numbers", () => {
 })
 
 test("evaluates strings with single quotes", () => {
-  expect(evaluate("'hello'")).toBe(5)
+  expect(evaluate("'hello'")).toBe("hello")
 })
 
 test("evaluates strings with double quotes", () => {
-  expect(evaluate('"hello"')).toBe(5)
+  expect(evaluate('"hello"')).toBe("hello")
 })
 
 test("evaluates variables from the scope", () => {
@@ -53,6 +53,16 @@ test("evaluates function call with shorthand variable arguments", () => {
 test("evaluates function call with nested shorthand variable arguments", () => {
   expect(
     evaluate("exec foo.x, bar.y", {
+      exec: ({ x, y }) => x + y,
+      foo: { x: 8 },
+      bar: { y: 2 },
+    })
+  ).toBe(10)
+})
+
+test("evaluates function call with nested variable arguments", () => {
+  expect(
+    evaluate("exec x: foo.x, y: bar.y", {
       exec: ({ x, y }) => x + y,
       foo: { x: 8 },
       bar: { y: 2 },
@@ -124,12 +134,48 @@ test("evaluates function call with nested shorthand variable arguments when shor
   ).toBe(10)
 })
 
-test("fails when variable not exist", () => {})
+test("evaluates successfully with extra leading and trailing spaces", () => {
+  expect(evaluate("    4      ")).toBe(4)
+})
+
+test("evaluates successfully function call with extra leading spaces in the first argument", () => {
+  expect(evaluate("exec      x: 8", { exec: ({ x }) => x })).toBe(8)
+})
+
+test("evaluates successfully function call with arguments with extra spaces in between", () => {
+  expect(
+    evaluate("exec x:   8,    y  : 2", { exec: ({ x, y }) => x + y })
+  ).toBe(10)
+})
+
+test("fails on syntax errors", () => {
+  expect(() => evaluate("error[]")).toThrow("Syntax error")
+})
+
+test("fails when variable not exist", () => {
+  expect(() => evaluate("x")).toThrow("Variable is not defined")
+})
+
+test("fails to call a function when variable has wrong type", () => {
+  expect(() => evaluate("foo bar: 4", { foo: 2 })).toThrow(
+    "Can not call non function type"
+  )
+})
 
 test("fails to accept function call as argument", () => {
-  expect(evaluate("exec x: bar", { exec: () => 8, bar: () => 4 }))
+  expect(() =>
+    evaluate("exec x: bar", { exec: () => 8, bar: () => 4 })
+  ).toThrow("Can not accept function as argument")
 })
 
 test("fails to accept function call as argument when passed as a shorthand", () => {
-  expect(evaluate("exec bar", { exec: () => 8, bar: () => 4 }))
+  expect(() => evaluate("exec bar", { exec: () => 8, bar: () => 4 })).toThrow(
+    "Can not accept function as argument"
+  )
+})
+
+test("fails when shortcut is not defined", () => {
+  expect(() => evaluate("~x", { foo: { bar: { x: 4 } } })).toThrow(
+    "Shortcut is not defined"
+  )
 })
