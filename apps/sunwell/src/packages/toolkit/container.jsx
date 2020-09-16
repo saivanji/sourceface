@@ -23,6 +23,9 @@ export function Container({ children, queries, modules, stock }) {
     setState(assocPath([id, key], value))
   }
 
+  // TODO: getLocalScope
+  // TODO: getGlobalScope
+
   function getScope(id) {
     const { type, config } = dict[id]
     const { createLocalVariables, initialState } = stock[type]

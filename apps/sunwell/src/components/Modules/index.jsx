@@ -38,6 +38,7 @@ function Frame({
       renderItem={module => {
         const isSelected = isEditing && selectedId === module.id
         const Component = stock.dict[module.type].Root
+        // TODO: getLocalScope
         const scope = getScope(module.id)
         const state = readState(module.id)
 
