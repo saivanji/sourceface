@@ -21,7 +21,7 @@ export default (db, pgp, { layouts }) =>
     await createModule(
       layoutId,
       "text",
-      createTextConfig("Orders count is {{ ~commands.countOrders }}"),
+      createTextConfig("Orders count is {{ countOrders }}"),
       [6, 12, 2, 4],
       t
     )
@@ -30,8 +30,8 @@ export default (db, pgp, { layouts }) =>
       layoutId,
       "table",
       {
-        items: "~commands.listOrders limit, offset",
-        count: "~commands.countOrders",
+        items: "listOrders ~limit, ~offset",
+        count: "countOrders",
         limit: "10",
         pagination: true,
       },

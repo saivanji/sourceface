@@ -20,12 +20,12 @@ test("evaluates nested object properies", () => {
   expect(evaluate("foo.bar.baz", { foo: { bar: { baz: 4 } } })).toBe(4)
 })
 
-test("evaluates variables when shortcut is set", () => {
+test("evaluates variables when namespace is set", () => {
   expect(
     evaluate(
       "~x",
       { foo: { bar: { x: 4 } } },
-      { shortcuts: { "foo.bar": "~" } }
+      { namespaces: { "foo.bar": "~" } }
     )
   ).toBe(4)
 })
@@ -74,17 +74,17 @@ test("evaluates nested object properies function call", () => {
   expect(evaluate("foo.bar.baz", { foo: { bar: { baz: () => 4 } } })).toBe(4)
 })
 
-test("evaluates function call when shortcut is set", () => {
+test("evaluates function call when namespace is set", () => {
   expect(
     evaluate(
       "~exec",
       { foo: { bar: { exec: 4 } } },
-      { shortcuts: { "foo.bar": "~" } }
+      { namespaces: { "foo.bar": "~" } }
     )
   ).toBe(4)
 })
 
-test("evaluates function call with variable arguments when shortcut is set", () => {
+test("evaluates function call with variable arguments when namespace is set", () => {
   expect(
     evaluate(
       "exec x: ~a, y: b",
@@ -94,7 +94,7 @@ test("evaluates function call with variable arguments when shortcut is set", () 
         b: 2,
       },
       {
-        shortcuts: {
+        namespaces: {
           "foo.bar": "~",
         },
       }
@@ -102,17 +102,17 @@ test("evaluates function call with variable arguments when shortcut is set", () 
   ).toBe(10)
 })
 
-test("evaluates function call with shorthand variable arguments when shortcut is set", () => {
+test("evaluates function call with shorthand variable arguments when namespace is set", () => {
   expect(
     evaluate(
       "exec ~x, y",
       { exec: ({ x, y }) => x + y, foo: { bar: { x: 8 } }, y: 2 },
-      { shortcuts: { "foo.bar": "~" } }
+      { namespaces: { "foo.bar": "~" } }
     )
   ).toBe(10)
 })
 
-test("evaluates function call with nested shorthand variable arguments when shortcut is set", () => {
+test("evaluates function call with nested shorthand variable arguments when namespace is set", () => {
   expect(
     evaluate(
       "exec ~baz.x, bar.y",
@@ -126,7 +126,7 @@ test("evaluates function call with nested shorthand variable arguments when shor
         bar: { y: 2 },
       },
       {
-        shortcuts: {
+        namespaces: {
           "foo.bar": "~",
         },
       }
@@ -174,8 +174,8 @@ test("fails to accept function call as argument when passed as a shorthand", () 
   )
 })
 
-test("fails when shortcut is not defined", () => {
+test("fails when namespace is not defined", () => {
   expect(() => evaluate("~x", { foo: { bar: { x: 4 } } })).toThrow(
-    "Shortcut is not defined"
+    "Namespace is not defined"
   )
 })

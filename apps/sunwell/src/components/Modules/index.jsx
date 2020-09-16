@@ -1,7 +1,7 @@
 import React from "react"
 import cx from "classnames"
 import * as stock from "packages/modules"
-import { Identifier } from "packages/toolkit"
+import { Identifier, useContainer } from "packages/toolkit"
 import Grid from "./Grid"
 import styles from "./index.scss"
 import { createLayer } from "./utils"
@@ -28,6 +28,7 @@ function Frame({
   const components = {
     Frame,
   }
+  const { readState, getScope } = useContainer()
 
   return (
     <Grid
@@ -37,6 +38,8 @@ function Frame({
       renderItem={module => {
         const isSelected = isEditing && selectedId === module.id
         const Component = stock.dict[module.type].Root
+        const scope = getScope(module.id)
+        const state = readState(module.id)
 
         return (
           <Identifier key={module.id} id={module.id}>
@@ -58,6 +61,8 @@ function Frame({
             >
               <Component
                 config={module.config}
+                state={state}
+                local={scope.local}
                 layers={module.layers}
                 components={components}
                 isEditing={isEditing}

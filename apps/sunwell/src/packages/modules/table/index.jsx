@@ -15,30 +15,18 @@ import {
   Form,
   Field,
   Expression,
-  useVariables,
-  useConnectedState,
+  useTransition,
 } from "packages/toolkit"
 import styles from "./index.scss"
 
-// TODO: clarify difference between scope, constants and variables. Fix naming issues.
-// Will have only "scope", constants and variables are not needed.
-// TODO: consider merging funcs and constants. why there is a such separation in the engine?
-
 // TODO: implement actions. on clicking button - execute query. or open another page
-
-// TODO: remember engine implementation for additional context
 
 // TODO: consider implementing hooks api instead of Compute
 
 // TODO: implement "input" module and make search over table feature
 
-// TODO: rename useVariables to useLocal. or better have "local" module prop
-
-export const Root = function TableModule({ config, state, local }) {
-  // TODO: move "state" to props and have `const changePage = useTransition("page")` instead?
-  const [page, setPage] = useConnectedState("page")
-  // TODO: should put to props? or get config with hook instead?
-  const { limit, offset } = useVariables()
+export const Root = function TableModule({ config, local: { limit, offset } }) {
+  const changePage = useTransition("page")
 
   if (!config.items) {
     return <div>No items</div>
@@ -46,8 +34,8 @@ export const Root = function TableModule({ config, state, local }) {
 
   // TODO: compute "current page" input as well
   return (
-    <Compute input={[config.items, config.count]}>
-      {({ data: [rows, count] }) => (
+    <Compute input={[config.items, config.count, config.currentPage]}>
+      {({ data: [rows, count, page] }) => (
         <Table className={styles.root}>
           <Table.Thead>
             <Table.Tr>
@@ -96,7 +84,7 @@ export const Root = function TableModule({ config, state, local }) {
                       pageCount={Math.ceil(count / limit)}
                       selectedPage={page}
                       pageSurroundings={1}
-                      onPageClick={setPage}
+                      onPageClick={changePage}
                     />
                   </div>
                 </Table.Td>
@@ -157,9 +145,12 @@ export const Configuration = function TableModuleConfiguration({
 }
 
 // TODO: remove parsing to int and have limit as integer in config instead
-export const createVariables = (config, state) => ({
+export const createLocalVariables = (config, state) => ({
   limit: +config.limit,
+  // TODO: offset should be based on computed page value from config not from state
   offset: +config.limit * state.page,
+  // TODO: local page variable also should be based on computed page from config, not from state
+  page: state.page,
 })
 
 export const initialState = {
@@ -169,12 +160,14 @@ export const initialState = {
 export const defaultConfig = {
   items: "",
   pagination: true,
+  currentPage: "~page",
 }
 
 export const validationSchema = yup.object().shape({
   items: yup.string(),
   limit: yup.string().required(),
   pagination: yup.boolean().required(),
+  currentPage: yup.string(),
   // TODO: depending whether pagination is selected, other values are required
 })
 

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react"
-import { mergeRight, assocPath, path } from "ramda"
+import { mergeRight, assocPath } from "ramda"
 
 const rootContext = createContext({})
 const identityContext = createContext({})
@@ -13,10 +13,10 @@ export function Container({ children, queries, modules, stock }) {
 
   const [state, setState] = useState({})
 
-  function readState(id, key) {
+  function readState(id) {
     const { initialState } = stock[dict[id].type]
 
-    return path([id, key], state) ?? initialState[key]
+    return state[id] ?? initialState
   }
 
   function assignState(id, key, value) {
@@ -25,11 +25,11 @@ export function Container({ children, queries, modules, stock }) {
 
   function getScope(id) {
     const { type, config } = dict[id]
-    const { createVariables, initialState } = stock[type]
+    const { createLocalVariables, initialState } = stock[type]
 
     return createScope(
       queries,
-      createVariables(config, mergeRight(initialState, state[id]))
+      createLocalVariables(config, mergeRight(initialState, state[id]))
     )
   }
 
@@ -54,46 +54,42 @@ export const useIdentity = function Identity() {
   return id
 }
 
+// TODO: remove in favor of useContainer? or vice versa?
 export const useScope = function Scope(id) {
   const { getScope } = useContext(rootContext)
 
   return getScope(id)
 }
 
-export const useConnectedState = function ConnectedState(key) {
-  const { readState, assignState } = useContext(rootContext)
+export const useTransition = function StateTransition(key) {
+  const { assignState } = useContext(rootContext)
   const id = useIdentity()
 
-  return [readState(id, key), value => assignState(id, key, value)]
+  return value => assignState(id, key, value)
 }
 
-export const useVariables = function Variables() {
-  const id = useIdentity()
-  const scope = useScope(id)
-
-  return scope.constants
+export const useContainer = function Container() {
+  return useContext(rootContext)
 }
 
 /**
  * Creating scope to be used in module.
  */
-const createScope = (commands, constants) => ({
-  funcs: {
-    commands: commands.reduce(
-      (acc, command) => ({
-        ...acc,
-        [command.id]: args => ({
-          type: "command",
-          payload: {
-            commandId: command.id,
-            args,
-          },
-        }),
+const createScope = (commands, local) => ({
+  local,
+  ...commands.reduce(
+    (acc, command) => ({
+      ...acc,
+      [command.id]: args => ({
+        type: "command",
+        payload: {
+          commandId: command.id,
+          args,
+        },
       }),
-      {}
-    ),
-  },
-  constants,
+    }),
+    {}
+  ),
 })
 
 /**

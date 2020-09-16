@@ -6,16 +6,38 @@
 
 // TODO: have "comma", "command", "run", "execute" as name.  alternate - "formula" or "expression" name
 
-export const evaluate = (expression, scope = {}, { shortcuts = {} } = {}) => {
+// New syntax:
+//
+// `listOrders`
+// `listOrders local.limit, local.offset`
+// `listOrders ~limit, ~offset`
+// `listOrders search: input1.value`
+// `listOrders input2.foo.bar, offset: 5`
+// `foo.bar.listOrders limit: 1, offset: 5`
+//
+// TODO: is it fine to call functions the same way we evaluates variables, for example:
+// `foo` is a literal in the scope
+// `foo` is function in the scope
+//
+// TODO: literals and functions are in different scopes. Therefore
+// it may happen that we have code like that:
+// `orders orders`, where 1st `orders` is a function and another one is
+// argument. Should we have single scope for literals and functions in the
+// application level? If yes, should engine have it as well? What are the
+// benefits of having single and separate scopes?
+//
+// TODO: should we replace named arguments by position arguments for simplicity?
+
+export const evaluate = (expression, scope = {}, { namespaces = {} } = {}) => {
   /**
    * Making sure syntax is correct.
-   * TODO: accept valid list of shortcuts
+   * TODO: accept valid list of namespaces
    */
   if (false) {
     throw "Syntax error"
   }
 
-  const [variable, args] = parse(expression, shortcuts)
+  const [variable, args] = parse(expression, namespaces)
 
   /**
    * No arguments means that variable is the expression that contains literal or
@@ -28,9 +50,9 @@ export const evaluate = (expression, scope = {}, { shortcuts = {} } = {}) => {
   return applyFunc(variable, args, scope)
 }
 
-const validShortcuts = ["@", "~", "$"]
+const validNamespaces = ["@", "~", "$"]
 
-const parse = (expression, shortcuts) => {
+const parse = (expression, namespaces) => {
   const [variable, ...rest] = expression.trim().split(" ")
 
   const args =
@@ -38,33 +60,33 @@ const parse = (expression, shortcuts) => {
     rest
       .join("")
       .split(",")
-      .map(arg => parseArgument(arg, shortcuts))
+      .map(arg => parseArgument(arg, namespaces))
       .reduce((acc, arg) => ({ ...acc, ...arg }), {})
 
-  return [replaceShortcuts(variable, shortcuts), args]
+  return [replaceNamespaces(variable, namespaces), args]
 }
 
-const replaceShortcuts = (input, shortcuts) => {
-  if (!validShortcuts.includes(input[0])) {
+const replaceNamespaces = (input, namespaces) => {
+  if (!validNamespaces.includes(input[0])) {
     return input
   }
 
-  for (let path of Object.keys(shortcuts)) {
-    const shortcut = shortcuts[path]
+  for (let path of Object.keys(namespaces)) {
+    const namespace = namespaces[path]
 
-    if (input[0] === shortcut) {
+    if (input[0] === namespace) {
       return `${path}.${input.slice(1)}`
     }
   }
 
-  throw "Shortcut is not defined"
+  throw "Namespace is not defined"
 }
 
-const parseArgument = (arg, shortcuts) => {
+const parseArgument = (arg, namespaces) => {
   const [key, value = key] = arg.split(":")
 
   /**
-   * Making sure argument name has no shortcuts in case shortcut is used
+   * Making sure argument name has no namespaces in case namespace is used
    * together with shorthand arguments:
    * `exec ~foo`
    *
@@ -72,9 +94,9 @@ const parseArgument = (arg, shortcuts) => {
    * nested shorthand variable was passed:
    * `exec foo.bar.baz`
    */
-  const name = replaceShortcuts(key, shortcuts).split(".").splice(-1)[0]
+  const name = replaceNamespaces(key, namespaces).split(".").splice(-1)[0]
 
-  return { [name]: replaceShortcuts(value, shortcuts) }
+  return { [name]: replaceNamespaces(value, namespaces) }
 }
 
 const applyFunc = (variable, args, scope) => {
@@ -130,7 +152,7 @@ const evaluateVariable = (expression, scope, passFunc = false) => {
      */
     const value = look(expression, scope)
 
-    if (!value) {
+    if (typeof value === "undefined") {
       throw "Variable is not defined"
     }
 
@@ -146,138 +168,8 @@ const evaluateVariable = (expression, scope, passFunc = false) => {
   }
 }
 
-class SyntaxError {}
+class SyntaxError extends Error {}
 
-class ParseError {}
+class ParseError extends Error {}
 
-class EvaluationError {}
-
-// export const evaluate = (expression, scope) => {
-//   /**
-//    * Making sure syntax is correct.
-//    */
-//   if (false) {
-//     throw "Syntax error"
-//   }
-
-//   if (expression[0] !== "~") {
-//     return evaluateValue(expression, scope.constants)
-//   }
-
-//   const [, ...[prefix, name, args]] = expression
-//     .trim()
-//     .match(/^(?:~([a-z]+)\.)?([a-z][a-zA-Z]+)(?:\s+(.+))?$/)
-
-//   const resultArgs =
-//     args &&
-//     args
-//       .replace(/\s/g, "")
-//       .split(",")
-//       .reduce((acc, item) => {
-//         const [name, value = name] = item.split(":")
-//         return {
-//           ...acc,
-//           [name]: evaluateValue(value, scope.constants),
-//         }
-//       }, {})
-
-//   const func = !prefix ? scope.funcs[name] : scope.funcs[prefix][name]
-
-//   return func(resultArgs)
-// }
-
-// export const render = (template, scope) =>
-//   template.replace(templateRegex, (full, match) => evaluate(match, scope))
-
-// export const parseTemplate = temlate =>
-//   Array.from(temlate.matchAll(templateRegex)).map(
-//     ([, expression]) => expression
-//   )
-
-// export const replaceTemplate = (template, fn) => {
-//   let i = 0
-
-//   return template.replace(templateRegex, () => fn(i++))
-// }
-
-// const templateRegex = /\{\{\s*(.*?)\s*\}\}/g
-
-// const evaluateValue = (value, scope) => {
-//   try {
-//     /**
-//      * JSON.parse parses only double-quoted strings so replacing them in
-//      * order to succeed.
-//      */
-//     return JSON.parse(value.replace(/'/g, '"'))
-//   } catch (err) {
-//     return scope[value]
-//   }
-// }
-
-// class EngineSyntaxError extends Error {}
-
-// console.log(
-//   render("hello {{ foo }} {{ bar }} abc", { constants: { foo: "world" } })
-// )
-
-// console.log(
-//   evaluate("~commands.ordersList limit: 1, offset: offset, foo, bar: '123'", {
-//     funcs: {
-//       commands: {
-//         ordersList: ({ limit }) => limit,
-//       },
-//     },
-//     constants: {
-//       offset: 5,
-//       foo: "hello",
-//     },
-//   })
-// )
-//
-// New syntax:
-//
-// `listOrders`
-// `listOrders local.limit, local.offset`
-// `listOrders ~limit, ~offset`
-// `listOrders search: input1.value`
-// `listOrders input2.foo.bar, offset: 5`
-// `foo.bar.listOrders limit: 1, offset: 5`
-//
-// TODO: is it fine to call functions the same way we evaluates variables, for example:
-// `foo` is a literal in the scope
-// `foo` is function in the scope
-//
-// TODO: literals and functions are in different scopes. Therefore
-// it may happen that we have code like that:
-// `orders orders`, where 1st `orders` is a function and another one is
-// argument. Should we have single scope for literals and functions in the
-// application level? If yes, should engine have it as well? What are the
-// benefits of having single and separate scopes?
-//
-// TODO: should we replace named arguments by position arguments for simplicity?
-//
-// evaluate("listOrders ~limit ~offset", {
-//   functions: {
-//     foo: {
-//       bar: {
-//         listOrders: () => {}
-//       }
-//     }
-//   },
-//   literals: {
-//     local: {
-//       limit: 1,
-//       offset: 5
-//     }
-//     foo: {
-//       bar: {
-//         baz: 4
-//       }
-//     }
-//   }
-// }, {
-//   shortcuts: {
-//     'local': '~',
-//     'foo.bar': '@'
-//   }
-// })
+class EvaluationError extends Error {}

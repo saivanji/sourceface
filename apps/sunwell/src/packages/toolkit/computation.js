@@ -1,6 +1,7 @@
 import { useQuery } from "urql"
 import { keys } from "ramda"
 import * as engine from "packages/engine"
+import * as template from "packages/template"
 import { useScope, useIdentity } from "./container"
 
 // TODO: rename commands to queries completely
@@ -9,8 +10,10 @@ import { useScope, useIdentity } from "./container"
  * Computing expression. Type could be either "expression" or "template"
  */
 export function Compute({ type = "expression", input, children }) {
+  const isArray = input instanceof Array
+
   const expressions =
-    type === "expression" ? input : engine.parseTemplate(input)
+    type === "expression" ? (isArray ? input : [input]) : template.parse(input)
 
   const [data, { fetching }] = useEvaluation(expressions)
 
@@ -21,10 +24,10 @@ export function Compute({ type = "expression", input, children }) {
   return children({
     data:
       type === "expression"
-        ? input instanceof Array
+        ? isArray
           ? data
           : data[0]
-        : engine.replaceTemplate(input, i => data[i]),
+        : template.replace(input, i => data[i]),
     fetching,
   })
 }
@@ -56,10 +59,12 @@ const provideData = (evaluated, commandsData) =>
     !result.type ? result : result.type === "command" && commandsData[i]
   )
 
-const evaluateMany = (input, scope) =>
-  input instanceof Array
-    ? input.map(expression => engine.evaluate(expression, scope))
-    : [engine.evaluate(input, scope)]
+const evaluateOptions = { namespaces: { local: "~" } }
+
+const evaluateMany = (expressions, scope) =>
+  expressions.map(expression =>
+    engine.evaluate(expression, scope, evaluateOptions)
+  )
 
 const createQuery = evaluated => {
   const body = evaluated.reduce(
