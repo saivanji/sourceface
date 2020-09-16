@@ -13,6 +13,8 @@ export default function Modules({ layout, modules, ...props }) {
   return !isLoaded ? "Loading..." : <Frame layer={layer} {...props} />
 }
 
+// TODO: get some props from context provided from Editor? (explore git history for the additional context)
+// since that component is used inside another modules and there is no another way to get this data
 function Frame({
   layer,
   isEditing,

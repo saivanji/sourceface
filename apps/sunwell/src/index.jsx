@@ -34,6 +34,8 @@ ReactDOM.render(
 //  - In top right are probably display spinner icon indicating that something is saving
 //  - Have multiple selections of modules?
 //
+// Cache logged in user information in the local storage in order not to display global loader when application is loaded.
+//
 // Modules
 // - add uuid as id to modules. (after that modules can be created instantly with optimistic updates)
 //

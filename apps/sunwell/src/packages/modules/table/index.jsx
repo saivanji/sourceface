@@ -32,7 +32,6 @@ export const Root = function TableModule({ config, local: { limit, offset } }) {
     return <div>No items</div>
   }
 
-  // TODO: compute "current page" input as well
   return (
     <Compute input={[config.items, config.count, config.currentPage]}>
       {({ data: [rows, count, page] }) => (
@@ -151,6 +150,22 @@ export const createLocalVariables = (config, state) => ({
   offset: +config.limit * state.page,
   // TODO: local page variable also should be based on computed page from config, not from state
   page: state.page,
+  // TODO: computed variables are executed only when used in order not to calculate everything when
+  // module is initiated since some variables might be used only in future. Use getter feature for that?(might not work,
+  // since local variables used in render. As alternative access local variables with component, or improve Compute
+  // component in order to support computing local variables). Also local variables are used for computing, not only in
+  // react components.
+  //
+  // Two ways of using computing local variables:
+  // 1. To render it's data in the component. In that case improved "Compute" component may be used to compute the value.
+  // 2. To use it's value when computing another code. In that case the value will be computed when its needed.
+  //
+  // TODO: think of real use-case of the above. Is that really needed?
+  //
+  // TODO: use memoization for computing in order not to send the same request when arguments are not changed
+  //
+  // _page: compute(config.currentPage),
+  // _offset: compute(config.currentPage, currentPage => currentPage * config.limit)
 })
 
 export const initialState = {

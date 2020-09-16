@@ -32,7 +32,8 @@ export function Container({ children, queries, modules, stock }) {
 
     return createScope(
       queries,
-      createLocalVariables(config, mergeRight(initialState, state[id]))
+      createLocalVariables &&
+        createLocalVariables(config, mergeRight(initialState, state[id]))
     )
   }
 
@@ -78,9 +79,9 @@ export const useContainer = function Container() {
 /**
  * Creating scope to be used in module.
  */
-const createScope = (commands, local) => ({
+const createScope = (commands, local = {}) => ({
   local,
-  ...commands.reduce(
+  queries: commands.reduce(
     (acc, command) => ({
       ...acc,
       [command.id]: args => ({

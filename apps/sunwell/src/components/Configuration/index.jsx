@@ -16,6 +16,7 @@ export default function Configuration({
     return "Loading..."
   }
 
+  // TODO: crash, when module is deleted(explore git history for the additional scope on how that was solved before)
   const module = modules.find(x => x.id === selectedId)
   const Component = stock.dict[module.type].Configuration
 
