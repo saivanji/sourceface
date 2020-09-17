@@ -160,7 +160,8 @@ export const createLocalVariables = (config, state) => ({
   // 1. To render it's data in the component. In that case improved "Compute" component may be used to compute the value.
   // 2. To use it's value when computing another code. In that case the value will be computed when its needed.
   //
-  // TODO: think of real use-case of the above. Is that really needed?
+  // TODO: think of real use-case of the above. Is that really needed? Probably postpone that feature until it will be
+  // really needed and start implementing new modules now?
   //
   // TODO: use memoization for computing in order not to send the same request when arguments are not changed
   //
