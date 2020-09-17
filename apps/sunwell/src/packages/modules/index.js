@@ -4,10 +4,11 @@ import { values } from "ramda"
 import { transformModules } from "./utils"
 
 import * as container from "./container"
+import * as input from "./input"
 import * as table from "./table"
 import * as text from "./text"
 
-const stock = { container, table, text }
+const stock = { container, input, table, text }
 
 export const dict = transformModules(stock)
 export const list = values(dict)
