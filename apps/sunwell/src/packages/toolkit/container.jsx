@@ -23,18 +23,14 @@ export function Container({ children, queries, modules, stock }) {
     setState(assocPath([id, key], value))
   }
 
-  // TODO: getLocalScope
-  // TODO: getGlobalScope
-
   function getScope(id) {
-    const { type, config } = dict[id]
-    const { createLocalVariables, initialState } = stock[type]
-
-    return createScope(
-      queries,
-      createLocalVariables &&
-        createLocalVariables(config, mergeRight(initialState, state[id]))
-    )
+    return {
+      // TODO: think of how to memoize?
+      queries: createQueriesScope(queries),
+      modules: createModulesScope(modules, state, stock),
+      //
+      local: createLocalScope(dict[id], state, stock),
+    }
   }
 
   return (
@@ -76,12 +72,8 @@ export const useContainer = function Container() {
   return useContext(rootContext)
 }
 
-/**
- * Creating scope to be used in module.
- */
-const createScope = (commands, local = {}) => ({
-  local,
-  queries: commands.reduce(
+const createQueriesScope = queries =>
+  queries.reduce(
     (acc, command) => ({
       ...acc,
       [command.id]: args => ({
@@ -93,8 +85,31 @@ const createScope = (commands, local = {}) => ({
       }),
     }),
     {}
-  ),
-})
+  )
+
+const createModulesScope = (modules, state, stock) =>
+  modules.reduce((acc, module) => {
+    const local = createLocalScope(module, state, stock)
+
+    if (!local) {
+      return acc
+    }
+
+    return {
+      ...acc,
+      [module.id]: local,
+    }
+  }, {})
+
+const createLocalScope = (module, state, stock) => {
+  const { type, config } = module
+  const { createLocalVariables, initialState } = stock[type]
+
+  return (
+    createLocalVariables &&
+    createLocalVariables(config, mergeRight(initialState, state[module.id]))
+  )
+}
 
 /**
  * Transforms list to dictionary by element id.
