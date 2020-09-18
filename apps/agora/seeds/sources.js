@@ -22,7 +22,8 @@ export default db =>
       [
         id,
         {
-          value: "SELECT * FROM orders LIMIT {{limit}} OFFSET {{offset}}",
+          value:
+            "SELECT * FROM orders WHERE customer_name LIKE '{{search}}%' LIMIT {{limit}} OFFSET {{offset}}",
           result: "many",
         },
         {
