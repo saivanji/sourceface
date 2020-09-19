@@ -2,7 +2,6 @@ export {
   Container,
   Identifier,
   useScope,
-  useLocal,
   useContainer,
   useTransition,
 } from "./container"

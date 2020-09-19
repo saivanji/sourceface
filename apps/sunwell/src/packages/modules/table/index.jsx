@@ -23,8 +23,6 @@ import styles from "./index.scss"
 
 // TODO: consider implementing hooks api instead of Compute
 
-// TODO: implement "input" module and make search over table feature
-
 export const Root = function TableModule({ config, local: { limit, offset } }) {
   const changePage = useTransition("page")
 
@@ -144,7 +142,7 @@ export const Configuration = function TableModuleConfiguration({
 }
 
 // TODO: remove parsing to int and have limit as integer in config instead
-export const createLocalVariables = (config, state) => ({
+export const createLocalVariables = (config, state, updateState) => ({
   limit: +config.limit,
   // TODO: offset should be based on computed page value from config not from state
   offset: +config.limit * state.page,

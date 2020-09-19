@@ -29,6 +29,7 @@ export function Container({ children, queries, modules, stock }) {
       queries: createQueriesScope(queries),
       modules: createModulesScope(id, modules, state, stock),
       //
+      core: createCoreScope(),
       local: createLocalScope(dict[id], state, stock),
     }
   }
@@ -109,6 +110,13 @@ const createLocalScope = (module, state, stock) => {
     createLocalVariables &&
     createLocalVariables(config, mergeRight(initialState, state[module.id]))
   )
+}
+
+const createCoreScope = () => {
+  return {
+    navigate: () => {},
+    notify: () => {},
+  }
 }
 
 /**

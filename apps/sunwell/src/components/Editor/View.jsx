@@ -3,7 +3,7 @@ import styles from "./index.scss"
 
 // near the orders page will be a button opening a modal to edit current page properties(url, etc?)
 // page title is editable?
-// page creation button could be near page title
+// page creation button could be near page title, also page title is a select which has all pages inside
 export default function EditorView({ children, isSaving, right, onClose }) {
   return (
     <div className={styles.root}>

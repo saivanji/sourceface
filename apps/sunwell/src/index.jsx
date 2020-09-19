@@ -48,8 +48,15 @@ ReactDOM.render(
 // Pipelines can be defined sequentially or asynchronously(like Promise.all)
 // Real world use case: get data from one API then from second API then combine to a single object and display it in the UI
 //
+// Dependent queries
+// - Once one query will be executed, a set of queries which needs to be executed afterwards might be specified.
 //
 // Current:
+// - Engine functions
+// - Multiple pages support
+// - Button module(implement navigation to another page)
+// - Find various simple real world use-cases
+//
 // - Modules moving from one grid to another within nested grid doesn't work
 //  - Ensure optimistic update works
 //  - Ensure position is removed from the layout on back-end
