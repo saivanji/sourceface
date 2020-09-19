@@ -27,7 +27,7 @@ export function Container({ children, queries, modules, stock }) {
     return {
       // TODO: think of how to memoize?
       queries: createQueriesScope(queries),
-      modules: createModulesScope(modules, state, stock),
+      modules: createModulesScope(id, modules, state, stock),
       //
       local: createLocalScope(dict[id], state, stock),
     }
@@ -87,11 +87,11 @@ const createQueriesScope = queries =>
     {}
   )
 
-const createModulesScope = (modules, state, stock) =>
+const createModulesScope = (id, modules, state, stock) =>
   modules.reduce((acc, module) => {
     const local = createLocalScope(module, state, stock)
 
-    if (!local) {
+    if (!local || module.id === id) {
       return acc
     }
 
