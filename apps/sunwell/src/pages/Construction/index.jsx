@@ -18,8 +18,8 @@ import * as queries from "./queries"
 /* </div> */
 
 const path = [
-  { title: "Administration", link: "#" },
-  { title: "Users", link: "#" },
+  { title: "Content", link: "#" },
+  { title: "Orders", link: "#" },
 ]
 
 // TODO: handle error on back-end requests

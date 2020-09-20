@@ -109,7 +109,7 @@ export const Configuration = function TableModuleConfiguration({
       <Section title="Basic">
         <Row>
           <Label title="Data">
-            <Field name="items" type="text" component={Expression} />
+            <Field name="items" component={Expression} />
           </Label>
         </Row>
       </Section>
@@ -121,7 +121,7 @@ export const Configuration = function TableModuleConfiguration({
           <>
             <Row>
               <Label title="Total count">
-                <Field name="count" type="text" component={Expression} />
+                <Field name="count" component={Expression} />
               </Label>
             </Row>
             <Row>

@@ -17,6 +17,7 @@
 //
 // function definition:
 // `x, y -> listOrders x, y, foo: ~bar`
+// `-> listOrders x, y`
 //
 // TODO: is it fine to call functions the same way we evaluates variables, for example:
 // `foo` is a literal in the scope

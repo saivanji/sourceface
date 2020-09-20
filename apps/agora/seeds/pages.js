@@ -1,8 +1,10 @@
 export default (db, pgp, { layouts }) =>
   db.tx(async t => {
-    const layoutId = layouts[0].id
-    await t.none(
-      "INSERT INTO pages (title, layout_id) VALUES ('test page', $1)",
-      [layoutId]
-    )
+    await t.none("INSERT INTO pages (title, layout_id) VALUES ('Orders', $1)", [
+      layouts.orders.id,
+    ])
+
+    await t.none("INSERT INTO pages (title, layout_id) VALUES ('Order', $1)", [
+      layouts.order.id,
+    ])
   })

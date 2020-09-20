@@ -1,47 +1,53 @@
 export default (db, pgp, { layouts }) =>
   db.tx(async t => {
-    const layoutId = layouts[0].id
+    const ordersLayoutId = layouts.orders.id
 
     await createModule(
-      layoutId,
+      ordersLayoutId,
       "text",
-      createTextConfig("Hello"),
-      [1, 12, 1, 1],
+      createTextConfig("Orders list ({{ queries.countOrders }})"),
+      [0, 0, 4, 1],
+      t
+    )
+
+    const searchModuleId = await createModule(
+      ordersLayoutId,
+      "input",
+      {
+        placeholder: "Search for orders",
+      },
+      [0, 1, 3, 1],
       t
     )
 
     await createModule(
-      layoutId,
-      "text",
-      createTextConfig("Hola"),
-      [4, 12, 2, 3],
+      ordersLayoutId,
+      "button",
+      {
+        text: "Create new order",
+        size: "regular",
+        shouldFitContainer: true,
+      },
+      [8, 1, 2, 1],
       t
     )
 
     await createModule(
-      layoutId,
-      "text",
-      createTextConfig("Orders count is {{ queries.countOrders }}"),
-      [6, 12, 2, 4],
-      t
-    )
-
-    await createModule(
-      layoutId,
+      ordersLayoutId,
       "table",
       {
-        items: "queries.listOrders ~limit, ~offset",
+        items: `queries.listOrders ~limit, ~offset, search: modules.${searchModuleId}.value`,
         count: "queries.countOrders",
         currentPage: "~page",
         limit: "10",
         pagination: true,
       },
-      [0, 0, 9, 11],
+      [0, 2, 10, 11],
       t
     )
 
     await createContainerModule(
-      layoutId,
+      ordersLayoutId,
       async layoutId => [
         await createModule(
           layoutId,
@@ -157,10 +163,10 @@ const createContainerModule = async (
 
 const createTextConfig = value => ({
   text: value,
-  fontSize: "sm",
+  fontSize: "2xl",
   fontWeight: "semibold",
   alignmentX: "left",
   alignmentY: "baseline",
-  decoration: "underline",
+  decoration: "none",
   color: "#000",
 })
