@@ -3,6 +3,7 @@ import "./index.scss"
 
 import React from "react"
 import ReactDOM from "react-dom"
+import { BrowserRouter, Route } from "react-router-dom"
 import { Provider as ClientProvider } from "urql"
 import * as pages from "./pages"
 import client from "./schema"
@@ -10,7 +11,14 @@ import client from "./schema"
 
 ReactDOM.render(
   <ClientProvider value={client}>
-    <pages.Construction />
+    <BrowserRouter>
+      <Route exact path="/">
+        Home
+      </Route>
+      <Route exact path="/e/:path*">
+        <pages.Construction />
+      </Route>
+    </BrowserRouter>
   </ClientProvider>,
   document.getElementById("root")
 )
@@ -31,6 +39,7 @@ ReactDOM.render(
 // Editor design(keep in mind mobile first approach)
 //  - Permissions will be defined in editor for every command(because they're related to the commands)?
 //    - Creating groups will be near users but assigning command to a group will be in command "permissions" tab
+//    - TODO: rethink permissions, might need to set only on module level.
 //  - In top right are probably display spinner icon indicating that something is saving
 //  - Have multiple selections of modules?
 //

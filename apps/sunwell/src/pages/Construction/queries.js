@@ -1,6 +1,6 @@
 export const root = `
-  query($pageId: Int!) {
-    page(pageId: $pageId) {
+  query($path: String!) {
+    page(path: $path) {
       id
       title
       layout {

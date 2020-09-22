@@ -19,6 +19,8 @@ import {
 } from "packages/toolkit"
 import styles from "./index.scss"
 
+// TODO: filters might be displayed in place of a column(filtered column will have gray rounded bg and "i" icon. When user will hover it - will display applied filters)
+
 // TODO: implement actions. on clicking button - execute query. or open another page
 
 // TODO: consider implementing hooks api instead of Compute

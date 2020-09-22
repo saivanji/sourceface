@@ -1,9 +1,11 @@
 type Page {
   id: Int!
   createdAt: DateTime!
+  route: String!
   title: String!
   layout: Layout!
   modules: [Module!]!
+  # parents: [Page!]!
 }
 
 # extend type Mutation {
@@ -11,9 +13,9 @@ type Page {
 # }
 
 extend type Query {
-  page(pageId: Int!): Page!
+  # TODO: path might be optional in case default page needs to be returned
+  page(path: String!): Page!
   #@authenticated
-  pages: [Page!]!
 }
 
 extend type Mutation {

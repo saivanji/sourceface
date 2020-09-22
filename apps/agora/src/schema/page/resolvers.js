@@ -1,7 +1,7 @@
 import * as pageRepo from "repos/page"
 
-const page = async (parent, { pageId }, { pg }) =>
-  await pageRepo.one(pageId, pg)
+const page = async (parent, { path }, { pg }) =>
+  await pageRepo.oneByPath(path, pg)
 
 const layout = async ({ layoutId }, args, ctx) =>
   ctx.loaders.layout.load(layoutId)

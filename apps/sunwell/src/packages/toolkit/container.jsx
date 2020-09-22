@@ -31,6 +31,8 @@ export function Container({ children, queries, modules, stock }) {
       //
       core: createCoreScope(),
       local: createLocalScope(dict[id], state, stock),
+      // TODO: for example in case when we have editable cell or action cell in the table
+      // parent: ""
     }
   }
 

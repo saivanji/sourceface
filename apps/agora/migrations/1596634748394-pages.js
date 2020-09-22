@@ -4,6 +4,7 @@ export const up = () =>
       CREATE TABLE pages(
         id serial PRIMARY KEY,
         created_at timestamp NOT NULL DEFAULT NOW(),
+        route text UNIQUE NOT NULL,
         layout_id integer UNIQUE NOT NULL REFERENCES layouts(id) ON DELETE CASCADE,
         title text NOT NULL CHECK (
           title <> ''

@@ -20,6 +20,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "build"),
     filename: "bundle.[contenthash].js",
+    publicPath: "/",
   },
   module: {
     rules: [
@@ -88,5 +89,6 @@ module.exports = {
     port: PORT,
     contentBase: path.resolve(__dirname, "static"),
     stats: "errors-only",
+    historyApiFallback: true,
   },
 }

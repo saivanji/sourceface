@@ -3,6 +3,7 @@
 import React from "react"
 import { DndProvider } from "react-dnd"
 import { TouchBackend } from "react-dnd-touch-backend"
+import { useParams } from "react-router-dom"
 import { useQuery } from "urql"
 import { useBooleanState } from "hooks/index"
 import { Shell, Editor, Modules, When } from "components/index"
@@ -12,21 +13,19 @@ import * as queries from "./queries"
 
 // TODO: think about real use case
 
+// TODO: have single name for manage, content and construction
+
 /* <div className={styles.panel}> */
 /*   <span className={styles.title}>Orders</span> */
 /*   <Button className={styles.newOrder}>New order</Button> */
 /* </div> */
 
-const path = [
-  { title: "Content", link: "#" },
-  { title: "Orders", link: "#" },
-]
-
 // TODO: handle error on back-end requests
 export default () => {
+  const { path } = useParams()
   const [result] = useQuery({
     query: queries.root,
-    variables: { pageId: 1 },
+    variables: { path },
   })
   const [isEditing, editOn, editOff] = useBooleanState(false)
   const page = result.data?.page
@@ -47,7 +46,13 @@ export default () => {
             onClose={editOff}
           />
         ) : (
-          <Shell path={path} actions={<button onClick={editOn}>Edit</button>}>
+          <Shell
+            path={[
+              { title: "Content", link: "/e" },
+              { title: page?.title, link: "." },
+            ]}
+            actions={<button onClick={editOn}>Edit</button>}
+          >
             <Modules layout={page?.layout} modules={page?.modules} />
           </Shell>
         )}
