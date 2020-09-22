@@ -33,6 +33,10 @@ export function Container({ children, queries, modules, stock }) {
       local: createLocalScope(dict[id], state, stock),
       // TODO: for example in case when we have editable cell or action cell in the table
       // parent: ""
+      // TODO: for global page info
+      // page: {
+      //   params: {}
+      // }
     }
   }
 
