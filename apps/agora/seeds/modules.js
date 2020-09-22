@@ -26,6 +26,7 @@ export default (db, pgp, { layouts }) =>
       {
         text: "Create new order",
         size: "regular",
+        action: "-> core.navigate to: '/orders/create'",
         shouldFitContainer: true,
       },
       [8, 1, 2, 1],
