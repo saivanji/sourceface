@@ -9,6 +9,9 @@ const layout = async ({ layoutId }, args, ctx) =>
 const modules = async (parent, args, ctx) =>
   ctx.loaders.modulesByPage.load(parent.id)
 
+const trail = async (parent, args, ctx) =>
+  ctx.loaders.trailByPage.load(parent.id)
+
 export default {
   Query: {
     page,
@@ -16,5 +19,6 @@ export default {
   Page: {
     layout,
     modules,
+    trail,
   },
 }

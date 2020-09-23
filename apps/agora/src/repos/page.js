@@ -1,31 +1,73 @@
+import { sort } from "ramda"
+
 export const oneByPath = async (path, pg) =>
-  await pg.one(sql.oneByPath, [pathToPattern(path)])
+  matchPage(await pg.many(sql.manyByPath, [createRegExp(path)]))
+
+export const trailByPageIds = async (pageIds, pg) =>
+  await pg.manyOrNone(sql.trailByPageIds, [pageIds])
 
 const sql = {
-  // TODO: investigate how to sort by a text column with help of regexp.
-  // TODO: Sort pages by left to right path matching when multiple records
-  // are returned. (exact path inclusions are having higher precedence over params).
-  // TODO: cover by tests.
-  oneByPath: `
+  manyByPath: `
     SELECT * FROM pages WHERE route ~ $1
-    ORDER BY substring(route, $1)
-    LIMIT 1
   `,
-  hierarchy: `
+  trailByPageIds: `
+    SELECT t.*, p.id AS page_id FROM pages AS t
+    LEFT JOIN pages AS p ON (p.route LIKE t.route || '%' AND t.id != p.id)
+    WHERE p.id IN ($1:csv)
+    ORDER BY length(regexp_replace(t.route, '(\/:?[a-z]+)', '.', 'g'));
+    ;
   `,
 }
 
 /**
- * Transforming path to a pattern used for matching corresponding route.
+ * Transforming path to a regular expression used for finding matched page.
  */
-const pathToPattern = path => {
-  const pattern = path
-    .split("/")
-    /**
-     * Excluding slashes for the current item using negative look arounds.
-     */
-    .map(x => `(${x}|:[a-z]+)`)
-    .join("\\/")
+const createRegExp = (path, creator) => {
+  const pattern = split(path)
+    .map(x => `\\/(${x}|:[a-z]+)`)
+    .join("")
 
-  return `^\\/${pattern}$`
+  return `^${pattern}$`
 }
+
+/**
+ * Finds best matching page if multiple pages were returned.
+ */
+const matchPage = pages => sort(compare, pages)[0]
+
+/**
+ * Compares two pages. The one having param at greater index is having lower precedence.
+ */
+const compare = (left, right, shift = 0) => {
+  const leftIndex = paramIndex(left, shift)
+  const rightIndex = paramIndex(right, shift)
+
+  if (leftIndex === -1 && rightIndex === -1) return 0
+  if (leftIndex === -1) return -1
+  if (rightIndex === -1) return 1
+
+  if (leftIndex !== rightIndex) {
+    return rightIndex - leftIndex
+  }
+
+  return compare(left, right, shift + 1)
+}
+
+/**
+ * Finds earliest parameter index of the page
+ */
+const paramIndex = (page, shift) => {
+  return (
+    split(page.route)
+      .slice(shift)
+      .reduce(
+        (result, item, i) => result || (item[0] !== ":" ? result : i),
+        null
+      ) ?? -1
+  )
+}
+
+/**
+ * Splits slash separated path or route string to a list.
+ */
+const split = route => route.split("/").filter(Boolean)

@@ -2,6 +2,7 @@ import DataLoader from "dataloader"
 import * as layoutRepo from "repos/layout"
 import * as positionRepo from "repos/position"
 import * as moduleRepo from "repos/module"
+import * as pageRepo from "repos/page"
 
 export default pg => {
   const layout = new DataLoader(ids => layoutRepo.listByIds(ids, pg))
@@ -18,6 +19,10 @@ export default pg => {
     ids => layoutRepo.listByModuleIds(ids, pg),
     "moduleId"
   )
+  const trailByPage = new DataLoaderHasMany(
+    ids => pageRepo.trailByPageIds(ids, pg),
+    "pageId"
+  )
 
   return {
     layout,
@@ -25,6 +30,7 @@ export default pg => {
     position,
     positionsByLayout,
     modulesByPage,
+    trailByPage,
   }
 }
 
