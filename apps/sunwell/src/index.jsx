@@ -58,7 +58,7 @@ ReactDOM.render(
 // Real world use case: get data from one API then from second API then combine to a single object and display it in the UI
 //
 // Dependent queries
-// - Once one query will be executed, a set of queries which needs to be executed afterwards might be specified.
+// - Once one query will be executed, a set of queries which needs to be executed afterwards might be specified. (invalidation)
 //
 // Current:
 // - Engine functions

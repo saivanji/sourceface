@@ -30,6 +30,15 @@ export default () => {
   const [isEditing, editOn, editOff] = useBooleanState(false)
   const page = result.data?.page
 
+  // TODO: replace params of route instead of passign route as link.
+  // TODO: improve
+  const breadcrumbs = !page
+    ? []
+    : [
+        ...page.trail.map(x => ({ title: x.title, to: "/e" + x.route })),
+        { title: page.title, to: "/e/" + path },
+      ]
+
   return (
     <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
       <When
@@ -47,10 +56,7 @@ export default () => {
           />
         ) : (
           <Shell
-            path={[
-              { title: "Content", link: "/e" },
-              { title: page?.title, link: "." },
-            ]}
+            path={[{ title: "Content", to: "/e" }, ...breadcrumbs]}
             actions={<button onClick={editOn}>Edit</button>}
           >
             <Modules layout={page?.layout} modules={page?.modules} />
