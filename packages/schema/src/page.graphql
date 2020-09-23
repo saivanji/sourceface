@@ -5,7 +5,8 @@ type Page {
   title: String!
   layout: Layout!
   modules: [Module!]!
-  # parents or hierarchy: [Page!]!
+  # TODO: will not be a list of pages, since we need path of every item instead of route
+  # parents or hierarchy or path: [Page!]!
 }
 
 # extend type Mutation {
