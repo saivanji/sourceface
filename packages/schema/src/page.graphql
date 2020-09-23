@@ -3,10 +3,9 @@ type Page {
   createdAt: DateTime!
   route: String!
   title: String!
+  trail: [Page!]!
   layout: Layout!
   modules: [Module!]!
-  # TODO: will not be a list of pages, since we need path of every item instead of route
-  # parents or hierarchy or path: [Page!]!
 }
 
 # extend type Mutation {

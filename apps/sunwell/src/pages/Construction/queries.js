@@ -3,6 +3,10 @@ export const root = `
     page(path: $path) {
       id
       title
+      trail {
+        id
+        route
+      }
       layout {
         id
         positions {
