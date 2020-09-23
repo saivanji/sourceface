@@ -5,7 +5,7 @@ type Page {
   title: String!
   layout: Layout!
   modules: [Module!]!
-  # parents: [Page!]!
+  # parents or hierarchy: [Page!]!
 }
 
 # extend type Mutation {
@@ -14,6 +14,7 @@ type Page {
 
 extend type Query {
   # TODO: path might be optional in case default page needs to be returned
+  # TODO: have Path scalar type for validating path?
   page(path: String!): Page!
   #@authenticated
 }

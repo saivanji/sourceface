@@ -2,7 +2,7 @@ import { times } from "ramda"
 
 export default db =>
   db.tx(async t => {
-    const [orders, order] = await t.many(
+    const [orders, orderCreation, orderEdition] = await t.many(
       `
       INSERT INTO layouts (id) VALUES
       ${times(() => "(nextval('layouts_id_seq'))", 2).join(",")}
@@ -11,6 +11,7 @@ export default db =>
 
     return {
       orders,
-      order,
+      orderCreation,
+      orderEdition,
     }
   })

@@ -6,7 +6,12 @@ export default (db, pgp, { layouts }) =>
     )
 
     await t.none(
-      "INSERT INTO pages (route, title, layout_id) VALUES ('/orders/:orderId', 'Order', $1)",
-      [layouts.order.id]
+      "INSERT INTO pages (route, title, layout_id) VALUES ('/orders/create', 'Order creation', $1)",
+      [layouts.orderCreation.id]
+    )
+
+    await t.none(
+      "INSERT INTO pages (route, title, layout_id) VALUES ('/orders/:id', 'Order edition', $1)",
+      [layouts.orderEdition.id]
     )
   })

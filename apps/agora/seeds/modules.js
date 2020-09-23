@@ -1,6 +1,15 @@
 export default (db, pgp, { layouts }) =>
   db.tx(async t => {
     const ordersLayoutId = layouts.orders.id
+    const orderCreationLayoutId = layouts.orderCreation.id
+
+    await createModule(
+      orderCreationLayoutId,
+      "text",
+      createTextConfig("Order creation"),
+      [0, 0, 4, 1],
+      t
+    )
 
     await createModule(
       ordersLayoutId,
