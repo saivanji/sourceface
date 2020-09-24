@@ -1,3 +1,4 @@
+// TODO: will not work as well
 export const findPageIdByModule = (moduleId, cache) => {
   return cache.inspectFields("Query").reduce((result, x) => {
     if (x.fieldName !== "page" || result) {
@@ -21,6 +22,8 @@ export const findPageIdByModule = (moduleId, cache) => {
  * across multiple pages it's safe to assume that layoutId belongs only
  * to a found pageId.
  */
+// TODO: Not working anymore since we fetch page by path right now
+// Do we need to return pageId or path?
 export const findPageIdByLayout = (layoutId, cache) => {
   return cache.inspectFields("Query").reduce((result, x) => {
     if (x.fieldName !== "page" || result) {
@@ -34,6 +37,7 @@ export const findPageIdByLayout = (layoutId, cache) => {
       layoutInPage(layoutId, pageLink, cache) ||
       layoutInModules(layoutId, moduleLinks, cache)
     ) {
+      // hint, `cache.resolve(pageLink, "id")`
       return x.arguments.pageId
     }
 

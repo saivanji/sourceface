@@ -42,6 +42,7 @@ ReactDOM.render(
 //    - TODO: rethink permissions, might need to set only on module level.
 //  - In top right are probably display spinner icon indicating that something is saving
 //  - Have multiple selections of modules?
+//  - Have ability to duplicate the module(useful for example when creating form inputs)
 //
 // Cache logged in user information in the local storage in order not to display global loader when application is loaded.
 //
@@ -51,16 +52,35 @@ ReactDOM.render(
 // Modules state
 // - 2 way binding vs 1 way binding, what's better? probably 2 way. Most likely it will be done similar to redux with global state
 //
+// Validations
+// - Have ability to create validation schemas to validate the data
+// - yup under the hood
+//
 // Pipelines
 // - It will be a separate feature in the same row with Sources or Pages which will allow to combine multiple actions into one. Also will have another prefix in "funcs" of the engine's scope - "pipelines".
-// Alternative of that feature - is custom JS. So user can define it's own functions to use in modules.
+// Alternative of that feature - is custom JS. So user can define it's own functions to use in modules.(JS might not be a good fit since pipelining is pretty common situtation, and it's not a great idea to make user write JS code all the time)
+// Whether pipelines are defined globally(resuable) or locally(inline in the place we use engine code)
 // Pipelines can be defined sequentially or asynchronously(like Promise.all)
 // Real world use case: get data from one API then from second API then combine to a single object and display it in the UI
 //
 // Dependent queries
 // - Once one query will be executed, a set of queries which needs to be executed afterwards might be specified. (invalidation)
 //
+// Consider having slots. One slot(position in back-end) might have multiple modules. Only one module might be visible in a slot at a time using a condition. For example when rows in a table are selected - display delete button, otherwise another module. Or depending on user role - display different module.
+//
 // Current:
+// - Implement form support
+//   // TODO: how to higlight invalid inputs when "core.validate" is used? Referencing input by usage of validation schema might not work,
+//   since the same schema might be used in another module and will be highlighted accidentally.
+//   // TODO: should Validations be created globally or locally?
+//   - Inline pipelines
+//     - -> core.validate data: state.orderForm, schema: schemas.order
+//     - -> queries.createOrder data: state.orderForm
+//     - -> core.navigate to: '/orders'
+//   - Global Validation schemas conception
+//   - Global state support
+//   - Defining value and change handler on the input(by default will be used internal ones)
+//   - Defining validation schema for the input field(will use schema defined globally)
 // - Multiple pages support
 // - Find various simple real world use-cases
 //

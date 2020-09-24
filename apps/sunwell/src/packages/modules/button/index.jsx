@@ -12,7 +12,7 @@ import * as yup from "yup"
 
 export const Root = function ButtonModule({ config }) {
   return (
-    <Compute input={[config.action]}>
+    <Compute input={[config.action].filter(Boolean)}>
       {({ data: [onClick] }) => (
         <Button
           shouldFitContainer={config.shouldFitContainer}

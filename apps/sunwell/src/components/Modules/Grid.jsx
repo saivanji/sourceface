@@ -9,6 +9,7 @@ export default function Grid({ isEditable, units, onChange, renderItem }) {
    */
   const handleChange = ({ layout, ...event }) =>
     onChange({
+      // TODO: consider having better name "slots"?
       units: layout,
       ...event,
     })

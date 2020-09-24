@@ -45,6 +45,13 @@ export function Container({
       // }
       // TODO: for custom defined JS functions
       // scripts: {}
+      //
+      // state: {
+      //   get: (key) => {},
+      //   set: (path, value) => {}
+      // }
+      //
+      // schemas: {}
     }
   }
 
