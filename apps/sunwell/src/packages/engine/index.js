@@ -32,7 +32,7 @@
 //
 // TODO: should we replace named arguments by position arguments for simplicity?
 
-export const evaluate = (expression, scope = {}, { namespaces = {} } = {}) => {
+export const evaluate = (input, scope, options) => {
   /**
    * Making sure syntax is correct.
    * TODO: accept valid list of namespaces
@@ -41,7 +41,32 @@ export const evaluate = (expression, scope = {}, { namespaces = {} } = {}) => {
     throw "Syntax error"
   }
 
-  const [variable, args] = parse(expression, namespaces)
+  /**
+   * Checking whether input is a function.
+   */
+  const parsed = input.split("->")
+
+  if (parsed.length === 1) {
+    return evaluateExpression(input, scope, options)
+  }
+
+  return args => {
+    const argsScope = parsed[0]
+      .split(",")
+      .map(x => x.trim())
+      .filter(Boolean)
+      .reduce((acc, param) => ({ ...acc, [param]: args[param] }), {})
+
+    return evaluateExpression(parsed[1], { ...scope, ...argsScope }, options)
+  }
+}
+
+const evaluateExpression = (
+  expression,
+  scope = {},
+  { namespaces = {} } = {}
+) => {
+  const [variable, args] = parseExpression(expression, namespaces)
 
   /**
    * No arguments means that variable is the expression that contains literal or
@@ -56,7 +81,7 @@ export const evaluate = (expression, scope = {}, { namespaces = {} } = {}) => {
 
 const validNamespaces = ["@", "~", "$"]
 
-const parse = (expression, namespaces) => {
+const parseExpression = (expression, namespaces) => {
   const [variable, ...rest] = expression.trim().split(" ")
 
   const args =

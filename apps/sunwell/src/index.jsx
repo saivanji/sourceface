@@ -61,7 +61,6 @@ ReactDOM.render(
 // - Once one query will be executed, a set of queries which needs to be executed afterwards might be specified. (invalidation)
 //
 // Current:
-// - Engine functions
 // - Multiple pages support
 // - Button module(implement navigation to another page)
 // - Find various simple real world use-cases

@@ -148,6 +148,59 @@ test("evaluates successfully function call with arguments with extra spaces in b
   ).toBe(10)
 })
 
+test("evaluates successfully function definitions without parameters", () => {
+  const fn = evaluate("-> exec x: 1, y: 2", { exec: ({ x, y }) => x + y })
+
+  expect(typeof fn).toBe("function")
+  expect(fn()).toBe(3)
+})
+
+test("evaluates successfully function definitions without parameters and extra spaces", () => {
+  const fn = evaluate("   -> exec x: 1, y: 2", { exec: ({ x, y }) => x + y })
+
+  expect(typeof fn).toBe("function")
+  expect(fn()).toBe(3)
+})
+
+test("evaluates successfully function definitions with single parameter", () => {
+  const fn = evaluate("x -> exec x, y: 2", { exec: ({ x, y }) => x + y })
+
+  expect(typeof fn).toBe("function")
+  expect(fn({ x: 3 })).toBe(5)
+})
+
+test("evaluates successfully function definitions with single parameter and extra spaces", () => {
+  const fn = evaluate("    x      -> exec x, y: 2", {
+    exec: ({ x, y }) => x + y,
+  })
+
+  expect(typeof fn).toBe("function")
+  expect(fn({ x: 3 })).toBe(5)
+})
+
+test("evaluates successfully function definitions with multiple parameters", () => {
+  const fn = evaluate("x, y -> exec x, y", { exec: ({ x, y }) => x + y })
+
+  expect(typeof fn).toBe("function")
+  expect(fn({ x: 3, y: 4 })).toBe(7)
+})
+
+test("evaluates successfully function definitions with multiple parameters and extra spaces", () => {
+  const fn = evaluate("    x,      y       -> exec x, y", {
+    exec: ({ x, y }) => x + y,
+  })
+
+  expect(typeof fn).toBe("function")
+  expect(fn({ x: 3, y: 4 })).toBe(7)
+})
+
+test("evaluates successfully function definitions with single parameter and result function fails", () => {
+  const fn = evaluate("x -> exec x, y", { exec: ({ x, y }) => [x, y] })
+
+  expect(typeof fn).toBe("function")
+  expect(() => fn({ x: 3, y: 4 })).toThrow("Variable is not defined")
+})
+
 test("fails on syntax errors", () => {
   expect(() => evaluate("error[]")).toThrow("Syntax error")
 })
