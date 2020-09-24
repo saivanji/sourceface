@@ -3,7 +3,7 @@
 import React from "react"
 import { DndProvider } from "react-dnd"
 import { TouchBackend } from "react-dnd-touch-backend"
-import { useParams } from "react-router-dom"
+import { useParams, useHistory } from "react-router-dom"
 import { useQuery } from "urql"
 import { useBooleanState } from "hooks/index"
 import { Shell, Editor, Modules, When } from "components/index"
@@ -22,12 +22,15 @@ import * as queries from "./queries"
 
 // TODO: handle error on back-end requests
 export default () => {
+  const history = useHistory()
   const { path } = useParams()
   const [result] = useQuery({
     query: queries.root,
     variables: { path },
   })
   const [isEditing, editOn, editOff] = useBooleanState(false)
+
+  const navigate = to => history.push(`/e${to}`)
   const page = result.data?.page
 
   // TODO: replace params of route instead of passign route as link.
@@ -47,6 +50,7 @@ export default () => {
         queries={result.data?.commands}
         modules={page?.modules}
         stock={stock.dict}
+        options={{ navigate }}
       >
         {isEditing ? (
           <Editor

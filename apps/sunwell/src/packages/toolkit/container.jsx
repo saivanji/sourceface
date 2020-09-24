@@ -4,7 +4,13 @@ import { mergeRight, assocPath } from "ramda"
 const rootContext = createContext({})
 const identityContext = createContext({})
 
-export function Container({ children, queries, modules, stock }) {
+export function Container({
+  children,
+  queries,
+  modules,
+  stock,
+  options: { navigate } = {},
+}) {
   /**
    * Transforming modules list to the dictionary for the performance reasons of
    * accessing the module by it's id.
@@ -29,7 +35,7 @@ export function Container({ children, queries, modules, stock }) {
       queries: createQueriesScope(queries),
       modules: createModulesScope(id, modules, state, stock),
       //
-      core: createCoreScope(),
+      core: createCoreScope({ navigate }),
       local: createLocalScope(dict[id], state, stock),
       // TODO: for example in case when we have editable cell or action cell in the table
       // parent: {}
@@ -120,9 +126,9 @@ const createLocalScope = (module, state, stock) => {
   )
 }
 
-const createCoreScope = () => {
+const createCoreScope = ({ navigate }) => {
   return {
-    navigate: () => {},
+    navigate: ({ to }) => navigate(to),
     notify: () => {},
   }
 }

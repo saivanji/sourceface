@@ -62,7 +62,6 @@ ReactDOM.render(
 //
 // Current:
 // - Multiple pages support
-// - Button module(implement navigation to another page)
 // - Find various simple real world use-cases
 //
 // - Modules moving from one grid to another within nested grid doesn't work
