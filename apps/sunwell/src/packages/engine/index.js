@@ -32,6 +32,10 @@
 //
 // TODO: should we replace named arguments by position arguments for simplicity?
 
+// TODO: implement arguments spread
+// `foo.bar ...form` is equal to:
+// `foo.bar x: form.x, y: form.y`
+
 export const evaluate = (input, scope, options) => {
   /**
    * Making sure syntax is correct.

@@ -69,7 +69,25 @@ ReactDOM.render(
 // Consider having slots. One slot(position in back-end) might have multiple modules. Only one module might be visible in a slot at a time using a condition. For example when rows in a table are selected - display delete button, otherwise another module. Or depending on user role - display different module.
 //
 // Current:
+// - Pipelines
+// - Cache update after queries application
 // - Implement form support
+//    - alternative form implementation:
+//      - Forms are created within separate page. User will need to provide field names, for each name - validation rules and module name
+//      - Modules will need to implement public interface with the following:
+//        - value.
+//        - setValidationMessage(onValidationFailure/validationFailed).
+//      - When clicking submit button, `forms.name.validate` function will be called, in case of failed validation will call `setValidationMessage` for every invalid field.
+//
+//    - alternative form implementation 2
+//      - Validation rules are provided for every module(with regexp)
+//      - Modules will need to implement public interface:
+//        - value
+//        - validate
+//        or
+//        - readValue. in case of success - gives value, otherwise throws and shows validation message internally
+//      - When clicking submit button, `core.call fn: 'validate/readValue', [module1, module2, module3]` or `core.validate [module1, module2, module3]` is called, in case of failure `module.validate()` is called for every module
+//
 //   // TODO: how to higlight invalid inputs when "core.validate" is used? Referencing input by usage of validation schema might not work,
 //   since the same schema might be used in another module and will be highlighted accidentally.
 //   // TODO: should Validations be created globally or locally?
