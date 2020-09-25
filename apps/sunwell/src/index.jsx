@@ -71,6 +71,7 @@ ReactDOM.render(
 // Current:
 // - Pipelines
 // - Cache update after queries application
+//   When creating a query, it is possible to optionally define how cache will be updated after it will be executed successfully.
 // - Implement form support
 //    - alternative form implementation:
 //      - Forms are created within separate page. User will need to provide field names, for each name - validation rules and module name
@@ -86,7 +87,10 @@ ReactDOM.render(
 //        - validate
 //        or
 //        - readValue. in case of success - gives value, otherwise throws and shows validation message internally
-//      - When clicking submit button, `core.call fn: 'validate/readValue', [module1, module2, module3]` or `core.validate [module1, module2, module3]` is called, in case of failure `module.validate()` is called for every module
+//      - When clicking submit button, `core.call fn: 'validate/readValue', [module1, module2, module3]` or `core.validate [module1, module2, module3]` is called, which will call `readValue` for every module and on success will return data object(TODO: how to map modules to arguments object to the next function in the pipe? probably by passing named object to `core.call`, which is created in the "scope" section of button module. It is possible to create nested object(TODO: implement module custom variables feature?)).
+//      pipes:
+//      `core.map data: form, fn: 'read'`(`map` either accepts object or list, will return the same data structure with a result as given)
+//      `...form -> queries.createOrder ...form` or `queries.createOrder`
 //
 //   // TODO: how to higlight invalid inputs when "core.validate" is used? Referencing input by usage of validation schema might not work,
 //   since the same schema might be used in another module and will be highlighted accidentally.

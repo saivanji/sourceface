@@ -35,6 +35,11 @@
 // TODO: implement arguments spread
 // `foo.bar ...form` is equal to:
 // `foo.bar x: form.x, y: form.y`
+// TODO: implement arguments spread when defining a function
+
+// TODO: separate function calls from regular values as it's done in js?
+
+// TODO: implement position arguments for function as in js?
 
 export const evaluate = (input, scope, options) => {
   /**
