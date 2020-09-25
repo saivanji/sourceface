@@ -3,7 +3,10 @@ import styles from "./index.scss"
 
 export default ({ error, ...props }) => (
   <>
-    <input type="text" className={styles.root} {...props} />
+    <div className={styles.root}>
+      <input type="text" className={styles.input} {...props} />
+      <span className={styles.plus}>+</span>
+    </div>
     {error && <span className={styles.error}>{error}</span>}
   </>
 )

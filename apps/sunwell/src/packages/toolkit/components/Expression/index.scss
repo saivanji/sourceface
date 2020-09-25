@@ -1,11 +1,41 @@
 @import "~@sourceface/style/index.scss";
 
 .root {
+  position: relative;
+  &:hover {
+    .plus {
+      opacity: 1;
+    }
+  }
+}
+
+.input {
   border: 0;
   background-color: $color-gray-200;
   padding: $value-1 $value-2;
   border-radius: $rounded-sm;
   border: 1px solid $color-gray-500;
+}
+
+.plus {
+  top: 0;
+  bottom: 0;
+  opacity: 0;
+  margin: auto 0;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  right: $value-2;
+  width: $value-4;
+  height: $value-4;
+  border-radius: $rounded-sm;
+  background: $color-gray-300;
+  border: 1px solid $color-gray-400;
+  &:hover {
+    background: $color-gray-400;
+  }
 }
 
 .error {
