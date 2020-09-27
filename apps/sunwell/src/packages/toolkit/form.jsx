@@ -26,7 +26,7 @@ export function Field({ name, component: Component, ...props }) {
       onChange={event => {
         try {
           const { value } = event.target
-          validationSchema.fields[name].validateSync(value)
+          validationSchema.fields[name]?.validateSync(value)
           setError(null)
           onConfigChange(name, value)
         } catch (err) {

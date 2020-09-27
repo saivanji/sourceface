@@ -32,6 +32,10 @@ export const Root = function TableModule({ config, local: { limit, offset } }) {
     return <div>No items</div>
   }
 
+  // TODO:
+  // const [[rows, count, page], isLoading] = useComputation([config.items, config.count, config.currentPage])
+  // const onRowClick = useLazyComputation([config.rowAction])
+
   return (
     <Compute input={[config.items, config.count, config.currentPage]}>
       {({ data: [rows, count, page] }) => (

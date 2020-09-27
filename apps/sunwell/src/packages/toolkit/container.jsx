@@ -4,13 +4,7 @@ import { mergeRight, assocPath } from "ramda"
 const rootContext = createContext({})
 const identityContext = createContext({})
 
-export function Container({
-  children,
-  queries,
-  modules,
-  stock,
-  options: { navigate } = {},
-}) {
+export function Container({ children, queries, modules, stock }) {
   /**
    * Transforming modules list to the dictionary for the performance reasons of
    * accessing the module by it's id.
@@ -29,14 +23,16 @@ export function Container({
     setState(assocPath([id, key], value))
   }
 
+  // TODO: move scope creation completely to the app? since it's might not be aware of a specific business details(scope data) and it's responsibility is perform state/scope handling
   function getScope(id) {
     return {
       // TODO: think of how to memoize?
       queries: createQueriesScope(queries),
-      modules: createModulesScope(id, modules, state, stock),
+      modules: createModulesScope(id, modules, state, assignState, stock),
       //
-      core: createCoreScope({ navigate }),
-      local: createLocalScope(dict[id], state, stock),
+      core: createCoreScope(),
+      local: createLocalScope(dict[id], state, assignState, stock),
+      custom: {},
       // TODO: for example in case when we have editable cell or action cell in the table
       // parent: {}
       // TODO: for global page info
@@ -71,6 +67,7 @@ export function Identifier({ children, id }) {
 }
 
 export const useIdentity = function Identity() {
+  // TODO: get execution data here
   const { id } = useContext(identityContext)
 
   return id
@@ -94,6 +91,13 @@ export const useContainer = function Container() {
   return useContext(rootContext)
 }
 
+const createCoreScope = () => {
+  return {
+    navigate: ({ to }) => ({ type: "navigate", payload: { to } }),
+    notify: () => {},
+  }
+}
+
 const createQueriesScope = queries =>
   queries.reduce(
     (acc, command) => ({
@@ -109,9 +113,9 @@ const createQueriesScope = queries =>
     {}
   )
 
-const createModulesScope = (id, modules, state, stock) =>
+const createModulesScope = (id, modules, state, assignState, stock) =>
   modules.reduce((acc, module) => {
-    const local = createLocalScope(module, state, stock)
+    const local = createLocalScope(module, state, assignState, stock)
 
     if (!local || module.id === id) {
       return acc
@@ -123,21 +127,19 @@ const createModulesScope = (id, modules, state, stock) =>
     }
   }, {})
 
-const createLocalScope = (module, state, stock) => {
+const createLocalScope = (module, state, assignState, stock) => {
   const { type, config } = module
   const { createLocalVariables, initialState } = stock[type]
+  const transition = (key, value) => assignState(module.id, key, value)
 
   return (
     createLocalVariables &&
-    createLocalVariables(config, mergeRight(initialState, state[module.id]))
+    createLocalVariables(
+      config,
+      mergeRight(initialState, state[module.id]),
+      transition
+    )
   )
-}
-
-const createCoreScope = ({ navigate }) => {
-  return {
-    navigate: ({ to }) => navigate(to),
-    notify: () => {},
-  }
 }
 
 /**

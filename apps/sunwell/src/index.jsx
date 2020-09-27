@@ -37,6 +37,7 @@ ReactDOM.render(
 // Performance optimizations
 // Investigate race conditions with optimistic updates and debouncing. Additionally in the context of mutations
 // Editor design(keep in mind mobile first approach)
+//  - Consider having page editing in the in-place modal like drop down(and also all similar features, like query editing and so on?) instead of modals
 //  - Permissions will be defined in editor for every command(because they're related to the commands)?
 //    - Creating groups will be near users but assigning command to a group will be in command "permissions" tab
 //    - TODO: rethink permissions, might need to set only on module level.
@@ -72,6 +73,11 @@ ReactDOM.render(
 // - Pipelines
 // - Cache update after queries application
 //   When creating a query, it is possible to optionally define how cache will be updated after it will be executed successfully.
+// - Implement custom variables support:
+//   1. As bindings.  Just have a blueprint of what key corresponds to what value in the scope. For example:
+//     - custom.form.foo -> modules.foo
+//     - custom-form.bar -> modules.bar
+//   2. As custom object. Every function in the engine scope returns object which describes what should be done after, it could be query call, redirect, notification display and so on
 // - Implement form support
 //    - alternative form implementation:
 //      - Forms are created within separate page. User will need to provide field names, for each name - validation rules and module name

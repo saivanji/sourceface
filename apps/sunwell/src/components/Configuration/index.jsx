@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import JSONView from "react-json-view"
+import JSONTree from "react-json-tree"
 import { Tabs } from "@sourceface/components"
 import { useScope } from "packages/toolkit"
 import * as stock from "packages/modules"
@@ -85,12 +85,23 @@ function Scope({ moduleId }) {
   const scope = useScope(moduleId)
 
   return (
-    <JSONView
-      src={scope}
-      name={null}
-      enableClipboard={false}
-      displayObjectSize={false}
-      displayDataTypes={false}
+    <JSONTree
+      hideRoot
+      invertTheme
+      data={scope}
+      labelRenderer={path => (
+        <strong>
+          {path[0]}
+          {path.length === 1 && path[0] === "custom" && (
+            <button
+              style={{ marginLeft: 10, cursor: "pointer" }}
+              onClick={() => window.prompt("Enter path and value")}
+            >
+              +
+            </button>
+          )}
+        </strong>
+      )}
     />
   )
 }

@@ -4,6 +4,12 @@ import * as engine from "packages/engine"
 import * as template from "packages/template"
 import { useScope, useIdentity } from "./container"
 
+// TODO: completely refactor the way we perform evaluation.
+// - change the way we execute queries(use external cache)
+//   - should query execution be in the app side(probably in a separate package, query fetching(not with urql) + cache) and that module will just accept the list of execution functions?
+//   Responsibility of that part is code evaluation for modules. It's completely not aware of queries, it's caching and other business logic details
+// - add support for executing redirects/navigation
+
 // TODO: rename commands to queries completely
 
 /**
@@ -32,9 +38,14 @@ export function Compute({ type = "expression", input, children }) {
   })
 }
 
+export const useComputation = () => {}
+
+export const useLazyComputation = () => {}
+
 // export function Effect({ expression }) {}
 
 // TODO: in case expression return value has no commands, do not send request to server
+// TODO: completely change interface
 const useEvaluation = input => {
   const id = useIdentity()
   const scope = useScope(id)

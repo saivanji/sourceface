@@ -38,6 +38,7 @@
 // TODO: implement arguments spread when defining a function
 
 // TODO: separate function calls from regular values as it's done in js?
+// `do core.navigate to: '/orders'`
 
 // TODO: implement position arguments for function as in js?
 
