@@ -7,22 +7,20 @@ import {
   Select,
   Checkbox,
 } from "@sourceface/components"
-import { Form, Field, Expression, Compute } from "packages/toolkit"
+import { Form, Field, Expression, useComputation } from "packages/toolkit"
 import * as yup from "yup"
 
 export const Root = function ButtonModule({ config }) {
+  const [onClick] = useComputation(config.action)
+
   return (
-    <Compute input={[config.action].filter(Boolean)}>
-      {({ data: [onClick] }) => (
-        <Button
-          shouldFitContainer={config.shouldFitContainer}
-          size={config.size}
-          onClick={onClick}
-        >
-          {config.text}
-        </Button>
-      )}
-    </Compute>
+    <Button
+      shouldFitContainer={config.shouldFitContainer}
+      size={config.size}
+      onClick={onClick}
+    >
+      {config.text}
+    </Button>
   )
 }
 

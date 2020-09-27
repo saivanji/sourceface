@@ -42,6 +42,8 @@
 
 // TODO: implement position arguments for function as in js?
 
+// TODO: should return `undefined` when input is ``?
+
 export const evaluate = (input, scope, options) => {
   /**
    * Making sure syntax is correct.
@@ -94,13 +96,13 @@ const validNamespaces = ["@", "~", "$"]
 const parseExpression = (expression, namespaces) => {
   const [variable, ...rest] = expression.trim().split(" ")
 
-  const args =
-    rest.length &&
-    rest
-      .join("")
-      .split(",")
-      .map(arg => parseArgument(arg, namespaces))
-      .reduce((acc, arg) => ({ ...acc, ...arg }), {})
+  const args = rest.length
+    ? rest
+        .join("")
+        .split(",")
+        .map(arg => parseArgument(arg, namespaces))
+        .reduce((acc, arg) => ({ ...acc, ...arg }), {})
+    : undefined
 
   return [replaceNamespaces(variable, namespaces), args]
 }

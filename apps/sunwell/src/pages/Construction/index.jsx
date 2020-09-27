@@ -10,6 +10,7 @@ import { Shell, Editor, Modules, When } from "components/index"
 import { Container } from "packages/toolkit"
 import * as stock from "packages/modules"
 import * as queries from "./queries"
+import command from "./command"
 
 // TODO: think about real use case
 
@@ -30,7 +31,10 @@ export default () => {
   })
   const [isEditing, editOn, editOff] = useBooleanState(false)
 
-  const navigate = to => history.push(`/e${to}`)
+  const effects = {
+    navigate: ({ to }) => history.push(`/e${to}`),
+    command,
+  }
   const page = result.data?.page
 
   // TODO: replace params of route instead of passign route as link.
@@ -50,7 +54,7 @@ export default () => {
         queries={result.data?.commands}
         modules={page?.modules}
         stock={stock.dict}
-        options={{ navigate }}
+        effects={effects}
       >
         {isEditing ? (
           <Editor

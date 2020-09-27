@@ -2,11 +2,13 @@ import React from "react"
 import * as yup from "yup"
 import * as system from "@sourceface/style"
 import { Row, Label, Input, Select } from "@sourceface/components"
-import { Compute, Form, Field } from "packages/toolkit"
+import { useTemplate, Form, Field } from "packages/toolkit"
 import styles from "./index.scss"
 
 // every module should have correspoding loader(depending on type)
 export const Root = function TextModule({ config }) {
+  const text = useTemplate(config.text)
+
   return (
     <span
       className={styles.root}
@@ -19,9 +21,7 @@ export const Root = function TextModule({ config }) {
         color: config.color,
       }}
     >
-      <Compute type="template" input={config.text}>
-        {({ data }) => data}
-      </Compute>
+      {text}
     </span>
   )
 }

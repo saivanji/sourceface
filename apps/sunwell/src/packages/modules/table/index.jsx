@@ -11,11 +11,11 @@ import {
   Checkbox,
 } from "@sourceface/components"
 import {
-  Compute,
   Form,
   Field,
   Expression,
   useTransition,
+  useAsyncComputation,
 } from "packages/toolkit"
 import styles from "./index.scss"
 
@@ -25,78 +25,85 @@ import styles from "./index.scss"
 
 // TODO: consider implementing hooks api instead of Compute
 
-export const Root = function TableModule({ config, local: { limit, offset } }) {
+export const Root = function TableModule({
+  config,
+  state,
+  local: { limit, offset, ...rest },
+}) {
   const changePage = useTransition("page")
 
+  // TODO: use after hooks application and replace `config.items` by `rows` since
+  // we won't fetch anything if input is empty.
   if (!config.items) {
     return <div>No items</div>
   }
 
-  // TODO:
-  // const [[rows, count, page], isLoading] = useComputation([config.items, config.count, config.currentPage])
-  // const onRowClick = useLazyComputation([config.rowAction])
+  // TODO: page is not changing, the change is reflected only after edit mode is toggled.
+  const [[rows, count, page], isLoading] = useAsyncComputation(
+    config.items,
+    config.count,
+    config.currentPage
+  )
 
-  return (
-    <Compute input={[config.items, config.count, config.currentPage]}>
-      {({ data: [rows, count, page] }) => (
-        <Table className={styles.root}>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>Id</Table.Th>
-              <Table.Th>Date</Table.Th>
-              <Table.Th>Customer</Table.Th>
-              <Table.Th>Address</Table.Th>
-              <Table.Th>Delivery type</Table.Th>
-              <Table.Th>Status</Table.Th>
-              <Table.Th>Payment type</Table.Th>
-              <Table.Th>Amount</Table.Th>
+  return !rows ? (
+    "Loading..."
+  ) : (
+    <Table className={styles.root}>
+      <Table.Thead>
+        <Table.Tr>
+          <Table.Th>Id</Table.Th>
+          <Table.Th>Date</Table.Th>
+          <Table.Th>Customer</Table.Th>
+          <Table.Th>Address</Table.Th>
+          <Table.Th>Delivery type</Table.Th>
+          <Table.Th>Status</Table.Th>
+          <Table.Th>Payment type</Table.Th>
+          <Table.Th>Amount</Table.Th>
+        </Table.Tr>
+      </Table.Thead>
+      <Table.Tbody>
+        {rows &&
+          // TODO: fix "createQuery" function to provide variables dynamically
+          rows.map(row => (
+            <Table.Tr key={row.id}>
+              <Table.Td>{row.id}</Table.Td>
+              <Table.Td>
+                {moment(row.created_at).format("DD MMM YY, HH:mm")}
+              </Table.Td>
+              <Table.Td>{row.customer_name}</Table.Td>
+              <Table.Td>{row.address}</Table.Td>
+              <Table.Td>{row.delivery_type}</Table.Td>
+              <Table.Td>{row.status}</Table.Td>
+              <Table.Td>{row.payment_type}</Table.Td>
+              <Table.Td>
+                {row.amount} {row.currency}
+              </Table.Td>
             </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>
-            {rows &&
-              // TODO: fix "createQuery" function to provide variables dynamically
-              rows.map(row => (
-                <Table.Tr key={row.id}>
-                  <Table.Td>{row.id}</Table.Td>
-                  <Table.Td>
-                    {moment(row.created_at).format("DD MMM YY, HH:mm")}
-                  </Table.Td>
-                  <Table.Td>{row.customer_name}</Table.Td>
-                  <Table.Td>{row.address}</Table.Td>
-                  <Table.Td>{row.delivery_type}</Table.Td>
-                  <Table.Td>{row.status}</Table.Td>
-                  <Table.Td>{row.payment_type}</Table.Td>
-                  <Table.Td>
-                    {row.amount} {row.currency}
-                  </Table.Td>
-                </Table.Tr>
-              ))}
-          </Table.Tbody>
-          {config.pagination && limit !== 0 && (
-            <Table.Tfoot>
-              <Table.Tr>
-                <Table.Td colSpan={8}>
-                  <div className={styles.footer}>
-                    <div className={styles.paginationInfo}>
-                      Showing <span>{offset + 1}</span> to{" "}
-                      <span>{limit * (page + 1)}</span> of <span>{count}</span>{" "}
-                      results
-                    </div>
-                    <Pagination
-                      className={styles.pagination}
-                      pageCount={Math.ceil(count / limit)}
-                      selectedPage={page}
-                      pageSurroundings={1}
-                      onPageClick={changePage}
-                    />
-                  </div>
-                </Table.Td>
-              </Table.Tr>
-            </Table.Tfoot>
-          )}
-        </Table>
+          ))}
+      </Table.Tbody>
+      {config.pagination && limit !== 0 && (
+        <Table.Tfoot>
+          <Table.Tr>
+            <Table.Td colSpan={8}>
+              <div className={styles.footer}>
+                <div className={styles.paginationInfo}>
+                  Showing <span>{offset + 1}</span> to{" "}
+                  <span>{limit * (page + 1)}</span> of <span>{count}</span>{" "}
+                  results
+                </div>
+                <Pagination
+                  className={styles.pagination}
+                  pageCount={Math.ceil(count / limit)}
+                  selectedPage={page}
+                  pageSurroundings={1}
+                  onPageClick={changePage}
+                />
+              </div>
+            </Table.Td>
+          </Table.Tr>
+        </Table.Tfoot>
       )}
-    </Compute>
+    </Table>
   )
 }
 

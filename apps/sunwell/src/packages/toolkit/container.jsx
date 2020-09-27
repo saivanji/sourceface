@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useState } from "react"
 import { mergeRight, assocPath } from "ramda"
+import { Effect } from "./computation"
 
 const rootContext = createContext({})
 const identityContext = createContext({})
 
-export function Container({ children, queries, modules, stock }) {
+export function Container({ children, queries, modules, stock, effects }) {
   /**
    * Transforming modules list to the dictionary for the performance reasons of
    * accessing the module by it's id.
@@ -52,7 +53,7 @@ export function Container({ children, queries, modules, stock }) {
   }
 
   return (
-    <rootContext.Provider value={{ readState, assignState, getScope }}>
+    <rootContext.Provider value={{ readState, assignState, getScope, effects }}>
       {children}
     </rootContext.Provider>
   )
@@ -67,7 +68,6 @@ export function Identifier({ children, id }) {
 }
 
 export const useIdentity = function Identity() {
-  // TODO: get execution data here
   const { id } = useContext(identityContext)
 
   return id
@@ -91,9 +91,14 @@ export const useContainer = function Container() {
   return useContext(rootContext)
 }
 
+// TODO: for now there is no benefits of using Effect instances inside of a functions and we can replace them by
+// direct effect calls. But they will be useful in the future when we'll need to group effects(for single graphql calls)
+// or when we'll need to pass effect results as arguments to other functions between evaluations(probably useful with pipelines).
+// it's not possible to pass effect across evaluations since it will be executed right after evaluation is done.
+
 const createCoreScope = () => {
   return {
-    navigate: ({ to }) => ({ type: "navigate", payload: { to } }),
+    navigate: payload => new Effect("navigate", payload),
     notify: () => {},
   }
 }
@@ -102,13 +107,11 @@ const createQueriesScope = queries =>
   queries.reduce(
     (acc, command) => ({
       ...acc,
-      [command.id]: args => ({
-        type: "command",
-        payload: {
+      [command.id]: args =>
+        new Effect("command", {
           commandId: command.id,
           args,
-        },
-      }),
+        }),
     }),
     {}
   )
