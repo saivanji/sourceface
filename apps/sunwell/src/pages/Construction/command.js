@@ -34,8 +34,9 @@ export default async ({ commandId, args }) => {
 }
 
 /**
- * Simplest form of caching. Storing executed queries by it's arguments. Useful
- * unless we need to perform custom cache update(for example after deletion or creation).
+ * Simplest form of caching. Storing queries results by it's arguments. Useful
+ * unless we need to perform custom cache update(for example after entry deletion or
+ * creation).
  */
 class Cache {
   constructor() {
