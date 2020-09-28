@@ -1,6 +1,12 @@
 import { readCommand } from "./queries"
 
 export default async ({ commandId, args }) => {
+  const cached = cache.get(commandId, args)
+
+  if (cached) {
+    return cached
+  }
+
   const res = await fetch("http://localhost:5001/graphql", {
     method: "POST",
     headers: {
@@ -20,7 +26,33 @@ export default async ({ commandId, args }) => {
     throw "Failed to fetch command"
   }
 
-  return (await res.json()).data.readCommand
+  const data = (await res.json()).data.readCommand
+
+  cache.set(commandId, args, data)
+
+  return data
 }
 
-let cache = {}
+/**
+ * Simplest form of caching. Storing executed queries by it's arguments. Useful
+ * unless we need to perform custom cache update(for example after deletion or creation).
+ */
+class Cache {
+  constructor() {
+    this.store = {}
+  }
+
+  selector(commandId, args) {
+    return JSON.stringify({ commandId, args })
+  }
+
+  get(commandId, args) {
+    return this.store[this.selector(commandId, args)]
+  }
+
+  set(commandId, args, data) {
+    this.store[this.selector(commandId, args)] = data
+  }
+}
+
+let cache = new Cache()
