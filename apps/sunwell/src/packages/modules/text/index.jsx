@@ -7,7 +7,7 @@ import styles from "./index.scss"
 
 // every module should have correspoding loader(depending on type)
 export const Root = function TextModule({ config }) {
-  const text = useTemplate(config.text)
+  const [text] = useTemplate(config.text)
 
   return (
     <span

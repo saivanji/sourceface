@@ -23,29 +23,21 @@ import styles from "./index.scss"
 
 // TODO: implement actions. on clicking button - execute query. or open another page
 
-// TODO: consider implementing hooks api instead of Compute
-
-export const Root = function TableModule({
-  config,
-  state,
-  local: { limit, offset, ...rest },
-}) {
+export const Root = function TableModule({ config, local: { limit, offset } }) {
   const changePage = useTransition("page")
 
-  // TODO: use after hooks application and replace `config.items` by `rows` since
-  // we won't fetch anything if input is empty.
-  if (!config.items) {
-    return <div>No items</div>
-  }
-
   // TODO: page is not changing, the change is reflected only after edit mode is toggled.
-  const [[rows, count, page], isLoading] = useAsyncComputation(
+  const [[rows, count, page], loading, pristine] = useAsyncComputation(
     config.items,
     config.count,
     config.currentPage
   )
 
-  return !rows ? (
+  if (!config.items) {
+    return <div>No items</div>
+  }
+
+  return pristine ? (
     "Loading..."
   ) : (
     <Table className={styles.root}>
@@ -62,24 +54,22 @@ export const Root = function TableModule({
         </Table.Tr>
       </Table.Thead>
       <Table.Tbody>
-        {rows &&
-          // TODO: fix "createQuery" function to provide variables dynamically
-          rows.map(row => (
-            <Table.Tr key={row.id}>
-              <Table.Td>{row.id}</Table.Td>
-              <Table.Td>
-                {moment(row.created_at).format("DD MMM YY, HH:mm")}
-              </Table.Td>
-              <Table.Td>{row.customer_name}</Table.Td>
-              <Table.Td>{row.address}</Table.Td>
-              <Table.Td>{row.delivery_type}</Table.Td>
-              <Table.Td>{row.status}</Table.Td>
-              <Table.Td>{row.payment_type}</Table.Td>
-              <Table.Td>
-                {row.amount} {row.currency}
-              </Table.Td>
-            </Table.Tr>
-          ))}
+        {rows.map(row => (
+          <Table.Tr key={row.id}>
+            <Table.Td>{row.id}</Table.Td>
+            <Table.Td>
+              {moment(row.created_at).format("DD MMM YY, HH:mm")}
+            </Table.Td>
+            <Table.Td>{row.customer_name}</Table.Td>
+            <Table.Td>{row.address}</Table.Td>
+            <Table.Td>{row.delivery_type}</Table.Td>
+            <Table.Td>{row.status}</Table.Td>
+            <Table.Td>{row.payment_type}</Table.Td>
+            <Table.Td>
+              {row.amount} {row.currency}
+            </Table.Td>
+          </Table.Tr>
+        ))}
       </Table.Tbody>
       {config.pagination && limit !== 0 && (
         <Table.Tfoot>

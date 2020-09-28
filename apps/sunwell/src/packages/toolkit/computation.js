@@ -15,35 +15,48 @@ export const useComputation = (...expressions) => {
   const id = useIdentity()
   const scope = useScope(id)
 
-  return evaluateMany(expressions, scope, effects)
+  return evaluateMany(expressions, scope).map(value =>
+    applyEffect(value, effects)
+  )
 }
 
 export const useAsyncComputation = (...expressions) => {
-  const [result, setResult] = useState({ data: [], isLoading: true })
+  const [result, setResult] = useState({
+    data: [],
+    loading: false,
+    pristine: true,
+  })
   const { effects } = useContainer()
   const id = useIdentity()
   const scope = useScope(id)
+  const evaluated = evaluateMany(expressions, scope)
 
-  // TODO: recalculate when scope changed
+  /*
+   * Calling only when evaluated result was changed.
+   */
   useEffect(() => {
-    const output = evaluateMany(expressions, scope, effects)
-    const process = async () => {
-      setResult(result => ({ ...result, isLoading: true }))
-      const fetched = await Promise.all(output)
-      setResult(result => ({ ...result, data: fetched, isLoading: false }))
-    }
-    process()
-  }, expressions)
+    const output = evaluated.map(value => applyEffect(value, effects))
 
-  return [result.data, result.isLoading]
+    ;(async () => {
+      setResult(result => ({ ...result, loading: true }))
+      const fetched = await Promise.all(output)
+      setResult(result => ({
+        ...result,
+        data: fetched,
+        loading: false,
+        pristine: false,
+      }))
+    })()
+  }, [JSON.stringify(evaluated)])
+
+  return [result.data, result.loading, result.pristine]
 }
 
 export const useTemplate = str => {
   const expressions = template.parse(str)
+  const [results, loading] = useAsyncComputation(...expressions)
 
-  const [results, isLoading] = useAsyncComputation(...expressions)
-
-  return [template.replace(str, i => results[i]), isLoading]
+  return [template.replace(str, i => results[i]), loading]
 }
 
 export class Effect {
@@ -57,7 +70,7 @@ export class Effect {
 
 const evaluateOptions = { namespaces: { local: "~" } }
 
-const evaluateMany = (expressions, scope, effects) =>
+const evaluateMany = (expressions, scope) =>
   expressions.map(expression => {
     /**
      * In case expression not defined, returning "undefined" as a result. That's
@@ -67,14 +80,12 @@ const evaluateMany = (expressions, scope, effects) =>
       return undefined
     }
 
-    const result = engine.evaluate(expression, scope, evaluateOptions)
-
-    if (typeof result === "function") {
-      return args => applyEffect(result(args), effects)
-    }
-
-    return applyEffect(result, effects)
+    return engine.evaluate(expression, scope, evaluateOptions)
   })
 
 const applyEffect = (value, effects) =>
-  value instanceof Effect ? effects[value.type](value.payload) : value
+  typeof value === "function"
+    ? (...args) => applyEffect(value(...args), effects)
+    : value instanceof Effect
+    ? effects[value.type](value.payload)
+    : value
