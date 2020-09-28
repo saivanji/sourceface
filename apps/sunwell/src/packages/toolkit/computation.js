@@ -38,9 +38,9 @@ export const useAsyncComputation = (...expressions) => {
     const output = evaluated.map(value => applyEffect(value, effects))
 
     /**
-     * When everything is cached no need to change "loading" variable and execute promises.
+     * When everything is sync no need to change "loading" variable and execute promises.
      */
-    if (isCached(output)) {
+    if (isSync(output)) {
       setResult(result => ({ ...result, data: output, pristine: false }))
     } else {
       setResult(result => ({ ...result, loading: true }))
@@ -97,4 +97,4 @@ const applyEffect = (value, effects) =>
     ? effects[value.type](value.payload)
     : value
 
-const isCached = items => !items.some(x => x instanceof Promise)
+const isSync = items => !items.some(x => x instanceof Promise)
