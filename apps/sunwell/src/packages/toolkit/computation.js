@@ -3,11 +3,6 @@ import * as engine from "packages/engine"
 import * as template from "packages/template"
 import { useContainer, useScope, useIdentity } from "./container"
 
-// TODO: completely refactor the way we perform evaluation.
-// - change the way we execute queries(use external cache)
-//   - should query execution be in the app side(probably in a separate package, query fetching(not with urql) + cache) and that module will just accept the list of execution functions?
-//   Responsibility of that part is code evaluation for modules. It's completely not aware of queries, it's caching and other business logic details
-
 // TODO: rename commands to queries completely
 
 export const useComputation = (...expressions) => {
@@ -34,19 +29,31 @@ export const useAsyncComputation = (...expressions) => {
   /*
    * Calling only when evaluated result was changed.
    */
+  // TODO: getting "Can't perform a React state update on an unmounted component" error when component
+  // is unmounted and mounted again. see "promise-hook" library for a fix.
+  // TODO: module is displaying loader when entering edit mode. because entering edit mode causes that
+  // component to completely re-mount, which make "pristine" to become "true" by default and therefore
+  // affect spinner.
   useEffect(() => {
     const output = evaluated.map(value => applyEffect(value, effects))
 
-    ;(async () => {
+    /**
+     * When everything is cached no need to change "loading" variable and execute promises.
+     */
+    if (isCached(output)) {
+      setResult(result => ({ ...result, data: output, pristine: false }))
+    } else {
       setResult(result => ({ ...result, loading: true }))
-      const fetched = await Promise.all(output)
-      setResult(result => ({
-        ...result,
-        data: fetched,
-        loading: false,
-        pristine: false,
-      }))
-    })()
+      ;(async () => {
+        const fetched = await Promise.all(output)
+        setResult(result => ({
+          ...result,
+          data: fetched,
+          loading: false,
+          pristine: false,
+        }))
+      })()
+    }
   }, [JSON.stringify(evaluated)])
 
   return [result.data, result.loading, result.pristine]
@@ -89,3 +96,5 @@ const applyEffect = (value, effects) =>
     : value instanceof Effect
     ? effects[value.type](value.payload)
     : value
+
+const isCached = items => !items.some(x => x instanceof Promise)
