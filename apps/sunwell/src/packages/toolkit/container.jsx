@@ -91,8 +91,7 @@ export const useContainer = function Container() {
   return useContext(rootContext)
 }
 
-// TODO: for now there is no benefits of using Effect instances inside of a functions and we can replace them by
-// direct effect calls. But they will be useful in the future when we'll need to group effects(for single graphql calls)
+// TODO: Benefit of sugin Effect instead of direct function calls is that makes evaluation result serializable and therefore allows to call useEffect only if evaluation result was changed. In the future, they will be useful when we'll need to group effects(for single graphql calls)
 // or when we'll need to pass effect results as arguments to other functions between evaluations(probably useful with pipelines).
 // it's not possible to pass effect across evaluations since it will be executed right after evaluation is done.
 
