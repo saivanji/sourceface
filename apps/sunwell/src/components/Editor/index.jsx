@@ -71,9 +71,7 @@ const useChange = (selectedId, onModuleRemove) => {
   const handleModuleUpdate = (key, value) =>
     updateModule({ moduleId: selectedId, key, value })
 
-  const handleBindPush = binds =>
-    !console.log(selectedId, binds) &&
-    pushBinds({ moduleId: selectedId, binds })
+  const handleBindPush = binds => pushBinds({ moduleId: selectedId, binds })
 
   const handleModuleRemove = async () => {
     await removeModule({ moduleId: selectedId })

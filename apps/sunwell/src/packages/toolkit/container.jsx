@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from "react"
 import { mergeRight, assocPath } from "ramda"
-import { Effect } from "./computation"
+import { Bind, Effect, overScope } from "./computation"
 
 const rootContext = createContext({})
 const identityContext = createContext({})
@@ -26,6 +26,8 @@ export function Container({ children, queries, modules, stock, effects }) {
 
   // TODO: move scope creation completely to the app? since it's might not be aware of a specific business details(scope data) and it's responsibility is perform state/scope handling
   function getScope(id) {
+    const { binds } = dict[id]
+
     return {
       // TODO: think of how to memoize?
       queries: createQueriesScope(queries),
@@ -33,7 +35,7 @@ export function Container({ children, queries, modules, stock, effects }) {
       //
       core: createCoreScope(),
       local: createLocalScope(dict[id], state, assignState, stock),
-      binds: {},
+      binds: binds && overScope(binds, value => new Bind(value)),
       // TODO: for example in case when we have editable cell or action cell in the table
       // parent: {}
       // TODO: for global page info

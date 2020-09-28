@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { isPlainObject } from "is-plain-object"
 import * as engine from "packages/engine"
 import * as template from "packages/template"
 import { useContainer, useScope, useIdentity } from "./container"
@@ -75,10 +76,38 @@ export class Effect {
   }
 }
 
+export class Bind {
+  constructor(value) {
+    this.value = value
+  }
+}
+
+export const overScope = (scope, fn) => {
+  let result = {}
+
+  for (let key of Object.keys(scope)) {
+    const value = scope[key]
+    /**
+     * "value" should be plain object so we make sure map only leaves in a scope.
+     */
+    result[key] = isPlainObject(value) ? overScope(value, fn) : fn(value)
+  }
+
+  return result
+}
+
 const evaluateOptions = { namespaces: { local: "~" } }
 
-const evaluateMany = (expressions, scope) =>
-  expressions.map(expression => {
+// TODO: revisit implementation of binding evaluation.
+const evaluateMany = (expressions, scope) => {
+  // TODO: how to use other bounded variables inside of a bind?
+  const evaluatedScope = overScope(scope, item =>
+    item instanceof Bind
+      ? engine.evaluate(item.value, scope, evaluateOptions)
+      : item
+  )
+
+  return expressions.map(expression => {
     /**
      * In case expression not defined, returning "undefined" as a result. That's
      * needed for the cases when provided empty data from the config.
@@ -87,8 +116,9 @@ const evaluateMany = (expressions, scope) =>
       return undefined
     }
 
-    return engine.evaluate(expression, scope, evaluateOptions)
+    return engine.evaluate(expression, evaluatedScope, evaluateOptions)
   })
+}
 
 const applyEffect = (value, effects) =>
   typeof value === "function"
