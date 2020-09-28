@@ -73,6 +73,7 @@ ReactDOM.render(
 // - Pipelines
 // - Cache update after queries application
 //   When creating a query, it is possible to optionally define how cache will be updated after it will be executed successfully.
+//   - Can be defined item Type returned. and change - link/unlink. There would be no action defined such as "create", "delete" or "update"
 // - Implement custom variables support:
 //   1. As bindings.  Just have a blueprint of what key corresponds to what value in the scope. For example:
 //     - custom.form.foo -> modules.foo
