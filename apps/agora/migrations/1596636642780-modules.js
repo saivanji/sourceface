@@ -9,6 +9,7 @@ export const up = () =>
         created_at timestamp NOT NULL DEFAULT NOW(),
         position_id integer UNIQUE NOT NULL REFERENCES positions(id) ON DELETE CASCADE,
         type module NOT NULL,
+        binds json,
         config json NOT NULL
       )
     `)

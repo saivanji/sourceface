@@ -27,3 +27,9 @@ export const removeModule = `
     removeModule(moduleId: $moduleId)
   }
 `
+
+export const pushBinds = `
+  mutation($moduleId: Int!, $binds: JSONObject!) {
+    pushBinds(moduleId: $moduleId, binds: $binds)
+  }
+`

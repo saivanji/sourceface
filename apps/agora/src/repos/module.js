@@ -1,8 +1,12 @@
+import { prop } from "ramda"
+
 export const one = (moduleId, pg) => pg.one(sql.one, [moduleId])
 export const create = (type, config, positionId, pg) =>
   pg.one(sql.create, [type, config, positionId])
 export const updateConfig = (moduleId, config, pg) =>
   pg.one(sql.updateConfig, [moduleId, config])
+export const updateBinds = (moduleId, binds, pg) =>
+  pg.one(sql.updateBinds, [moduleId, binds], prop("binds"))
 export const listByPageIds = (pageIds, pg) =>
   pg.manyOrNone(sql.listByPageIds, [pageIds])
 
@@ -14,9 +18,14 @@ const sql = {
     INSERT INTO modules (type, config, position_id) VALUES ($1, $2, $3)
     RETURNING *
   `,
+  // TODO: return config instead of complete module?
   updateConfig: `
     UPDATE modules SET config = $2 WHERE id = $1
     RETURNING *
+  `,
+  updateBinds: `
+    UPDATE modules SET binds = $2 WHERE id = $1
+    RETURNING binds
   `,
   listByPageIds: `
     WITH recursive cte AS (

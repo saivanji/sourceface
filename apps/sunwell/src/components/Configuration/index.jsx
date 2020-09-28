@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import { assocPath, trim } from "ramda"
 import JSONTree from "react-json-tree"
 import { Tabs } from "@sourceface/components"
 import { useScope } from "packages/toolkit"
@@ -9,6 +10,7 @@ export default function Configuration({
   modules,
   onUpdate,
   onRemove,
+  onBindsPush,
 }) {
   const [selected, setSelected] = useState("configuration")
 
@@ -32,7 +34,9 @@ export default function Configuration({
             component={Component}
           />
         ) : (
-          selected === "scope" && <Scope moduleId={module.id} />
+          selected === "scope" && (
+            <Scope moduleId={module.id} onBindsPush={onBindsPush} />
+          )
         )}
       </Tabs>
     </>
@@ -81,8 +85,22 @@ function Base({ module, onUpdate, onRemove, component: Component }) {
   )
 }
 
-function Scope({ moduleId }) {
+function Scope({ moduleId, onBindsPush }) {
   const scope = useScope(moduleId)
+
+  const handleBindsPush = () => {
+    const input = window.prompt("Enter path and value")
+
+    if (!input) {
+      return
+    }
+
+    const [pathStr, value] = input.split(":").map(trim)
+    const path = pathStr.split(".")
+    const binds = assocPath(path, value, {})
+
+    onBindsPush(binds)
+  }
 
   return (
     <JSONTree
@@ -92,10 +110,10 @@ function Scope({ moduleId }) {
       labelRenderer={path => (
         <strong>
           {path[0]}
-          {path.length === 1 && path[0] === "custom" && (
+          {path.length === 1 && path[0] === "binds" && (
             <button
               style={{ marginLeft: 10, cursor: "pointer" }}
-              onClick={() => window.prompt("Enter path and value")}
+              onClick={handleBindsPush}
             >
               +
             </button>

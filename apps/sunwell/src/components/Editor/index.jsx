@@ -6,17 +6,20 @@ import Configuration from "../Configuration"
 import Stock from "../Stock"
 import Modules from "../Modules"
 import View from "./View"
-import * as mutatations from "schema/mutations"
+import * as mutations from "schema/mutations"
 import { toPositionsRequest } from "./utils"
 
 export default function Editor({ layout, modules, onClose }) {
   const [selectedId, setSelectedId] = useState(null)
   const removeSelection = () => setSelectedId(null)
 
-  const { isChanging, updateModule, removeModule, changeGrid } = useChange(
-    selectedId,
-    removeSelection
-  )
+  const {
+    isChanging,
+    updateModule,
+    removeModule,
+    pushBinds,
+    changeGrid,
+  } = useChange(selectedId, removeSelection)
 
   return (
     <View
@@ -28,6 +31,7 @@ export default function Editor({ layout, modules, onClose }) {
             selectedId={selectedId}
             onUpdate={updateModule}
             onRemove={removeModule}
+            onBindsPush={pushBinds}
           />
         ) : (
           <Stock />
@@ -49,20 +53,27 @@ export default function Editor({ layout, modules, onClose }) {
 }
 
 const useChange = (selectedId, onModuleRemove) => {
-  const [, createModule] = useMutation(mutatations.createModule)
+  const [, createModule] = useMutation(mutations.createModule)
   const [{ fetching: isRemovingModule }, removeModule] = useMutation(
-    mutatations.removeModule
+    mutations.removeModule
   )
   const [{ fetching: isUpdatingModule }, updateModule] = useMutation(
-    mutatations.updateModule
+    mutations.updateModule
   )
-  const [{ fetching: isUpdatingGrid }, updatePositions] = useMutation(
-    mutatations.updatePositions
+  const [{ fetching: isUpdatingPositions }, updatePositions] = useMutation(
+    mutations.updatePositions
+  )
+  const [{ fetching: isPushingBinds }, pushBinds] = useMutation(
+    mutations.pushBinds
   )
 
   // TODO: implement debouncing
   const handleModuleUpdate = (key, value) =>
     updateModule({ moduleId: selectedId, key, value })
+
+  const handleBindPush = binds =>
+    !console.log(selectedId, binds) &&
+    pushBinds({ moduleId: selectedId, binds })
 
   const handleModuleRemove = async () => {
     await removeModule({ moduleId: selectedId })
@@ -105,9 +116,14 @@ const useChange = (selectedId, onModuleRemove) => {
   }
 
   return {
-    isChanging: isUpdatingGrid || isUpdatingModule || isRemovingModule,
+    isChanging:
+      isUpdatingPositions ||
+      isUpdatingModule ||
+      isRemovingModule ||
+      isPushingBinds,
     updateModule: handleModuleUpdate,
     removeModule: handleModuleRemove,
+    pushBinds: handleBindPush,
     changeGrid: handleGridChange,
   }
 }

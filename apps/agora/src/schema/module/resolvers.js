@@ -1,3 +1,4 @@
+import { mergeDeepRight } from "ramda"
 import * as moduleRepo from "repos/module"
 import * as positionRepo from "repos/position"
 
@@ -12,6 +13,8 @@ const createModule = async (
   })
 }
 
+// TODO: rename to pushConfig and return config as a response. Have similar logic as
+// in pushBinds, since in future people might need to update nested fields in config.
 const updateModule = async (parent, { moduleId, key, value }, { pg }) => {
   return await pg.task(async t => {
     const module = await moduleRepo.one(moduleId, t)
@@ -39,6 +42,18 @@ const removeModule = async (parent, { moduleId }, { pg }) => {
   return true
 }
 
+const pushBinds = async (parent, { moduleId, binds }, { pg }) => {
+  return pg.task(async t => {
+    const module = await moduleRepo.one(moduleId, t)
+
+    return await moduleRepo.updateBinds(
+      moduleId,
+      mergeDeepRight(module.binds, binds),
+      t
+    )
+  })
+}
+
 const layouts = (parent, args, ctx) =>
   ctx.loaders.layoutsByModule.load(parent.id)
 
@@ -47,6 +62,7 @@ export default {
     createModule,
     updateModule,
     removeModule,
+    pushBinds,
   },
   Module: {
     layouts,

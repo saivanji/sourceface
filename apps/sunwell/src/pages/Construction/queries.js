@@ -21,9 +21,10 @@ export const root = `
       }
       modules {
         id
+        positionId
         type
         config
-        positionId
+        binds
         layouts {
           id
           positions {
