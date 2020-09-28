@@ -7,9 +7,11 @@ import styles from "./index.scss"
 
 // every module should have correspoding loader(depending on type)
 export const Root = function TextModule({ config }) {
-  const [text] = useTemplate(config.text)
+  const [text, , pristine] = useTemplate(config.text)
 
-  return (
+  return pristine ? (
+    "Loading..."
+  ) : (
     <span
       className={styles.root}
       style={{

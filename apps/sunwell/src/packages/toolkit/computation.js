@@ -54,9 +54,9 @@ export const useAsyncComputation = (...expressions) => {
 
 export const useTemplate = str => {
   const expressions = template.parse(str)
-  const [results, loading] = useAsyncComputation(...expressions)
+  const [results, loading, pristine] = useAsyncComputation(...expressions)
 
-  return [template.replace(str, i => results[i]), loading]
+  return [template.replace(str, i => results[i]), loading, pristine]
 }
 
 export class Effect {
