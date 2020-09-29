@@ -1,11 +1,19 @@
 import React, { createContext, useContext, useState } from "react"
-import { mergeRight, assocPath } from "ramda"
-import { Bind, Effect, overScope } from "./computation"
+import { mergeRight, assocPath, keys, mapObjIndexed } from "ramda"
+import { Bind, Action, overScope } from "./computation"
 
 const rootContext = createContext({})
 const identityContext = createContext({})
 
-export function Container({ children, queries, modules, stock, effects }) {
+export function Container({
+  children,
+  queries,
+  modules,
+  stock,
+  actions: { navigate, executeCommand },
+}) {
+  const coreActions = mergeRight(internalActions, { navigate })
+
   /**
    * Transforming modules list to the dictionary for the performance reasons of
    * accessing the module by it's id.
@@ -30,10 +38,10 @@ export function Container({ children, queries, modules, stock, effects }) {
 
     return {
       // TODO: think of how to memoize?
-      queries: createQueriesScope(queries),
+      queries: createQueriesScope(queries, executeCommand),
       modules: createModulesScope(id, modules, state, assignState, stock),
       //
-      core: createCoreScope(),
+      core: createCoreScope(coreActions),
       local: createLocalScope(dict[id], state, assignState, stock),
       binds: binds && overScope(binds, value => new Bind(value)),
       // TODO: for example in case when we have editable cell or action cell in the table
@@ -55,7 +63,13 @@ export function Container({ children, queries, modules, stock, effects }) {
   }
 
   return (
-    <rootContext.Provider value={{ readState, assignState, getScope, effects }}>
+    <rootContext.Provider
+      value={{
+        readState,
+        assignState,
+        getScope,
+      }}
+    >
       {children}
     </rootContext.Provider>
   )
@@ -93,23 +107,18 @@ export const useContainer = function Container() {
   return useContext(rootContext)
 }
 
-// TODO: Benefit of sugin Effect instead of direct function calls is that makes evaluation result serializable and therefore allows to call useEffect only if evaluation result was changed. In the future, they will be useful when we'll need to group effects(for single graphql calls)
-// or when we'll need to pass effect results as arguments to other functions between evaluations(probably useful with pipelines).
-// it's not possible to pass effect across evaluations since it will be executed right after evaluation is done.
+// TODO: Benefit of using Action instead of direct function calls is that makes evaluation result serializable and therefore allows to call useEffect only if evaluation result was changed. In the future, they will be useful when we'll need to group actions(for single graphql calls)
+// or when we'll need to pass action results as arguments to other functions between evaluations(probably useful with pipelines).
+// it's not possible to pass action across evaluations since it will be executed right after evaluation is done.
 
-const createCoreScope = () => {
-  return {
-    navigate: payload => new Effect("navigate", payload),
-    notify: () => {},
-  }
-}
+const createCoreScope = actions => mapObjIndexed(purify, actions)
 
-const createQueriesScope = queries =>
+const createQueriesScope = (queries, executeCommand) =>
   queries.reduce(
     (acc, command) => ({
       ...acc,
       [command.id]: args =>
-        new Effect("command", {
+        new Action(executeCommand, {
           commandId: command.id,
           args,
         }),
@@ -138,10 +147,13 @@ const createLocalScope = (module, state, assignState, stock) => {
 
   return (
     createLocalVariables &&
-    createLocalVariables(
-      config,
-      mergeRight(initialState, state[module.id]),
-      transition
+    // TODO: does not work
+    purifyScope(
+      createLocalVariables(
+        config,
+        mergeRight(initialState, state[module.id]),
+        transition
+      )
     )
   )
 }
@@ -151,3 +163,26 @@ const createLocalScope = (module, state, assignState, stock) => {
  */
 const toDict = list =>
   list.reduce((acc, item) => ({ ...acc, [item.id]: item }), {})
+
+const purify = fn => args => new Action(fn, args)
+
+/**
+ * Purifies functions in a scope so it can be safely used in evaluation.
+ */
+const purifyScope = scope =>
+  overScope(scope, value =>
+    typeof value === "function" ? purify(value) : value
+  )
+
+const internalActions = {
+  map: ({ data, fn }) => {
+    // TODO: might be array
+    let result = {}
+
+    for (let key of keys(data)) {
+      result[key] = data[key][fn]()
+    }
+
+    return result
+  },
+}

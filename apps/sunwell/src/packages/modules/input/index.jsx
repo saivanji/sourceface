@@ -65,7 +65,8 @@ export const Configuration = function InputModuleConfiguration({
 
 export const createLocalVariables = (config, state, transition) => ({
   value: state.value,
-  // alternative name is "release"?
+  // TODO: alternative name is "release"?
+  // TODO: return "Action" type, or better wrap in Action(purify) internally.
   justify: () => {
     transition("isJustified", true)
 

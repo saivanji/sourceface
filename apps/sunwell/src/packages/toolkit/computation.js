@@ -2,18 +2,15 @@ import { useEffect, useState } from "react"
 import { isPlainObject } from "is-plain-object"
 import * as engine from "packages/engine"
 import * as template from "packages/template"
-import { useContainer, useScope, useIdentity } from "./container"
+import { useScope, useIdentity } from "./container"
 
 // TODO: rename commands to queries completely
 
 export const useComputation = (...expressions) => {
-  const { effects } = useContainer()
   const id = useIdentity()
   const scope = useScope(id)
 
-  return evaluateMany(expressions, scope).map(value =>
-    applyEffect(value, effects)
-  )
+  return evaluateMany(expressions, scope).map(applyAction)
 }
 
 export const useAsyncComputation = (...expressions) => {
@@ -22,7 +19,6 @@ export const useAsyncComputation = (...expressions) => {
     loading: false,
     pristine: true,
   })
-  const { effects } = useContainer()
   const id = useIdentity()
   const scope = useScope(id)
   const evaluated = evaluateMany(expressions, scope)
@@ -36,7 +32,7 @@ export const useAsyncComputation = (...expressions) => {
   // component to completely re-mount, which make "pristine" to become "true" by default and therefore
   // affect spinner.
   useEffect(() => {
-    const output = evaluated.map(value => applyEffect(value, effects))
+    const output = evaluated.map(applyAction)
 
     /**
      * When everything is sync no need to change "loading" variable and execute promises.
@@ -67,12 +63,16 @@ export const useTemplate = str => {
   return [template.replace(str, i => results[i]), loading, pristine]
 }
 
-export class Effect {
-  // TODO: use "group" field to mark that this effect might be groupped with others and then given
-  // to effect function. Will be useful for calling many graphql queries in one request.
-  constructor(type, payload) {
-    this.type = type
+export class Action {
+  // TODO: use "group" field to mark that this action might be groupped with others and then given
+  // to action function. Will be useful for calling many graphql queries in one request.
+  constructor(fn, payload) {
+    this.fn = fn
     this.payload = payload
+  }
+
+  apply() {
+    return this.fn(this.payload)
   }
 }
 
@@ -99,6 +99,12 @@ export const overScope = (scope, fn) => {
 const evaluateOptions = { namespaces: { local: "~" } }
 
 // TODO: revisit implementation of binding evaluation.
+/**
+ * It is important to note that evaluation process should be pure and side-effect free
+ * as well as return serializable results. That will allow to perform evaluation on every
+ * render and apply async operations with "useEffect" hook when result was changed. Therefore
+ * every function appeared in the scope should return "Action" object.
+ */
 const evaluateMany = (expressions, scope) => {
   // TODO: how to use other bounded variables inside of a bind?
   const evaluatedScope = overScope(scope, item =>
@@ -120,11 +126,11 @@ const evaluateMany = (expressions, scope) => {
   })
 }
 
-const applyEffect = (value, effects) =>
+const applyAction = value =>
   typeof value === "function"
-    ? (...args) => applyEffect(value(...args), effects)
-    : value instanceof Effect
-    ? effects[value.type](value.payload)
+    ? (...args) => applyAction(value(...args))
+    : value instanceof Action
+    ? value.apply()
     : value
 
 const isSync = items => !items.some(x => x instanceof Promise)

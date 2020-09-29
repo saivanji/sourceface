@@ -10,7 +10,7 @@ import { Shell, Editor, Modules, When } from "components/index"
 import { Container } from "packages/toolkit"
 import * as stock from "packages/modules"
 import * as queries from "./queries"
-import command from "./command"
+import executeCommand from "./command"
 
 // TODO: think about real use case
 
@@ -31,9 +31,9 @@ export default () => {
   })
   const [isEditing, editOn, editOff] = useBooleanState(false)
 
-  const effects = {
+  const actions = {
     navigate: ({ to }) => history.push(`/e${to}`),
-    command,
+    executeCommand,
   }
   const page = result.data?.page
 
@@ -54,7 +54,7 @@ export default () => {
         queries={result.data?.commands}
         modules={page?.modules}
         stock={stock.dict}
-        effects={effects}
+        actions={actions}
       >
         {isEditing ? (
           <Editor
