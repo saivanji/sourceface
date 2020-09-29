@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from "react"
 import { mergeRight, assocPath, keys, mapObjIndexed } from "ramda"
-import { Bind, Action, overScope } from "./computation"
+import { Bind, Action, overScope, applyAction } from "./computation"
 
 const rootContext = createContext({})
 const identityContext = createContext({})
@@ -147,7 +147,6 @@ const createLocalScope = (module, state, assignState, stock) => {
 
   return (
     createLocalVariables &&
-    // TODO: does not work
     purifyScope(
       createLocalVariables(
         config,
@@ -175,12 +174,17 @@ const purifyScope = scope =>
   )
 
 const internalActions = {
-  map: ({ data, fn }) => {
+  map: ({ data, funcName }) => {
     // TODO: might be array
     let result = {}
 
     for (let key of keys(data)) {
-      result[key] = data[key][fn]()
+      // TODO: find a way to applyAction automatically.
+      /**
+       * Since all functions in a scope return Action, we have to apply it
+       * in order to make it work.
+       */
+      result[key] = applyAction(data[key][funcName]())
     }
 
     return result

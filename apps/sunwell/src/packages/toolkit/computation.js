@@ -96,9 +96,15 @@ export const overScope = (scope, fn) => {
   return result
 }
 
+export const applyAction = value =>
+  typeof value === "function"
+    ? (...args) => applyAction(value(...args))
+    : value instanceof Action
+    ? value.apply()
+    : value
+
 const evaluateOptions = { namespaces: { local: "~" } }
 
-// TODO: revisit implementation of binding evaluation.
 /**
  * It is important to note that evaluation process should be pure and side-effect free
  * as well as return serializable results. That will allow to perform evaluation on every
@@ -125,12 +131,5 @@ const evaluateMany = (expressions, scope) => {
     return engine.evaluate(expression, evaluatedScope, evaluateOptions)
   })
 }
-
-const applyAction = value =>
-  typeof value === "function"
-    ? (...args) => applyAction(value(...args))
-    : value instanceof Action
-    ? value.apply()
-    : value
 
 const isSync = items => !items.some(x => x instanceof Promise)
