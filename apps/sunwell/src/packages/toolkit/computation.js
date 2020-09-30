@@ -10,29 +10,30 @@ export const useComputation = (...expressions) => {
   const id = useIdentity()
   const scope = useScope(id)
 
-  return evaluateMany(expressions, scope).map(pipe)
+  return evaluateMany(expressions, scope).map(x => pipe(x, applyAction))
 }
 
 export const useAsyncComputation = (...expressions) => {
-  const [result, setResult] = useState({
-    data: [],
-    loading: false,
-    pristine: true,
-  })
   const id = useIdentity()
   const scope = useScope(id)
   const evaluated = evaluateMany(expressions, scope)
+  const isReady = hasActions(evaluated)
+
+  const [result, setResult] = useState({
+    data: isReady ? [] : evaluated.map(x => pipe(x)),
+    loading: false,
+    pristine: isReady,
+  })
 
   /*
    * Calling only when evaluated result was changed.
    */
-  // TODO: getting "Can't perform a React state update on an unmounted component" error when component
-  // is unmounted and mounted again. see "promise-hook" library for a fix.
-  // TODO: module is displaying loader when entering edit mode. because entering edit mode causes that
-  // component to completely re-mount, which make "pristine" to become "true" by default and therefore
-  // affect spinner.
   useEffect(() => {
-    const output = evaluated.map(pipe)
+    if (!isReady) {
+      return
+    }
+
+    const output = evaluated.map(x => pipe(x, applyActionAsync))
 
     setResult(result => ({ ...result, loading: true }))
     ;(async () => {
@@ -96,6 +97,8 @@ export const applyAction = value =>
     ? value.apply()
     : value
 
+const applyActionAsync = async value => applyAction(await value)
+
 const evaluateOptions = { namespaces: { local: "~" } }
 
 /**
@@ -112,21 +115,24 @@ const evaluateMany = (expressions, scope) => {
       : item
   )
 
-  return expressions.map((expression = []) =>
-    expression.map(x => engine.evaluate(x, evaluatedScope, evaluateOptions))
+  return expressions.map((pipes = []) =>
+    pipes.map(x => engine.evaluate(x, evaluatedScope, evaluateOptions))
   )
 }
 
-const rollup = async (items, prev) => {
+const hasActions = items => items.some(x => x.some(y => y instanceof Action))
+
+const rollup = (items, prev, fn) => {
   if (!items.length) {
     return prev
   }
 
   const [head, ...tail] = items
 
-  return await rollup(
+  return rollup(
     tail,
-    applyAction(typeof head === "function" ? await head({ prev }) : head)
+    fn(typeof head === "function" ? head({ prev }) : head),
+    fn
   )
 }
 
@@ -135,8 +141,7 @@ const rollup = async (items, prev) => {
  * - Pipe function
  * - Pipe values
  */
-const pipe = ([head, ...tail]) =>
+const pipe = ([head, ...tail], fn = x => x) =>
   typeof head === "function"
-    ? // TODO: might not work when used in sync useComputation since function returns promise
-      async (...args) => await rollup(tail, applyAction(await head(...args)))
-    : rollup(tail, applyAction(head))
+    ? (...args) => rollup(tail, fn(head(...args)), fn)
+    : rollup(tail, fn(head), fn)

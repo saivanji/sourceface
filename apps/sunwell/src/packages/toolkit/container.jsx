@@ -118,6 +118,7 @@ const createQueriesScope = (queries, executeCommand) =>
     (acc, command) => ({
       ...acc,
       [command.id]: args =>
+        executeCommand.cache(command.id, args) ||
         new Action(executeCommand, {
           commandId: command.id,
           args,
