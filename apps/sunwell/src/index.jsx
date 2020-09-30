@@ -44,7 +44,7 @@ ReactDOM.render(
 //  - In top right are probably display spinner icon indicating that something is saving
 //  - Have multiple selections of modules?
 //  - Have ability to duplicate the module(useful for example when creating form inputs)
-//  - Have frame mode in any view including desktop. Where content is located inside a frame having width of selected viewport and background is having different appearance from the content area.
+//  - Have frame mode in any view including desktop. Where content is located inside a frame having width of selected viewport and background is having different appearance from the content area. That frame width is freely resizable.
 //
 // Cache logged in user information in the local storage in order not to display global loader when application is loaded.
 //
