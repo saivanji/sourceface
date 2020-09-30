@@ -130,11 +130,6 @@ const evaluateMany = (expressions, scope) => {
       return undefined
     }
 
-    /**
-     * User can have 2 ways to pipe(first item type in the pipe determines whether we return function or value?):
-     * - Pipe function
-     * - Pipe values
-     */
     return expression.map(x =>
       engine.evaluate(x, evaluatedScope, evaluateOptions)
     )
@@ -190,6 +185,11 @@ const asyncRollup = async (items, prev) => {
 
 // TODO: pipe will be used for both sync and async actions and will accept
 // rollup function which can vary depending on whether it's sync or async
+/**
+ * User can have 2 ways to pipe(first item type in the pipe determines whether we return function or value):
+ * - Pipe function
+ * - Pipe values
+ */
 const pipe = ([head, ...tail]) =>
   typeof head === "function"
     ? (...args) => rollup(tail, applyAction(head(...args)))
