@@ -73,9 +73,8 @@ export const createLocalVariables = (config, state, transition) => ({
     if (config.validation && !validate(config.validation, state.value)) {
       // TODO: transition({validationError: message}) in order to be able set multiple state fields at once
       transition("validationError", config.validationMessage)
-      return
 
-      // throw new Error(config.validationMessage)
+      throw new Error(config.validationMessage)
     }
 
     return state.value

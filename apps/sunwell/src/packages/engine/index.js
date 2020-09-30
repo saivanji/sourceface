@@ -44,6 +44,17 @@
 
 // TODO: should return `undefined` when input is ``?
 
+// TODO: implement ability to define empty function such as:
+// `->`
+// `x ->`
+
+// TODO: implement ability to call multiple fields/functions:
+// `do binds.form.*.justify` will call justify for all form members and return object with results
+// `binds.form.*.value` will return object with form values
+//
+// can have multiple paths:
+// `binds.form.*.*.value`
+
 export const evaluate = (input, scope, options) => {
   /**
    * Making sure syntax is correct.

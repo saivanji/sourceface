@@ -88,7 +88,7 @@ export const defaultConfig = {
 export const validationSchema = yup.object().shape({
   text: yup.string().required(),
   size: yup.string().required(),
-  action: yup.string(),
+  action: yup.array().of(yup.string()),
   shouldFitContainer: yup.boolean().required(),
 })
 

@@ -10,7 +10,7 @@ export const useComputation = (...expressions) => {
   const id = useIdentity()
   const scope = useScope(id)
 
-  return evaluateMany(expressions, scope).map(applyAction)
+  return evaluateMany(expressions, scope).map(pipe)
 }
 
 export const useAsyncComputation = (...expressions) => {
@@ -21,7 +21,7 @@ export const useAsyncComputation = (...expressions) => {
   })
   const id = useIdentity()
   const scope = useScope(id)
-  const evaluated = evaluateMany(expressions, scope)
+  const evaluated = _evaluateMany(expressions, scope)
 
   /*
    * Calling only when evaluated result was changed.
@@ -123,13 +123,63 @@ const evaluateMany = (expressions, scope) => {
     /**
      * In case expression not defined, returning "undefined" as a result. That's
      * needed for the cases when provided empty data from the config.
+     * TODO: probably in the future will be removed when empty evaluation will be
+     * implemented in engine. Or set default value of `expression` as empty array?
      */
     if (!expression) {
       return undefined
     }
 
+    /**
+     * User can have 2 ways to pipe(first item type in the pipe determines whether we return function or value?):
+     * - Pipe function
+     * - Pipe values
+     */
+    return expression.map(x =>
+      engine.evaluate(x, evaluatedScope, evaluateOptions)
+    )
+  })
+}
+
+// TODO: fallback
+const _evaluateMany = (expressions, scope) => {
+  const evaluatedScope = overScope(scope, item =>
+    item instanceof Bind
+      ? engine.evaluate(item.value, scope, evaluateOptions)
+      : item
+  )
+
+  return expressions.map(expression => {
+    if (!expression) {
+      return undefined
+    }
+
+    if (expression instanceof Array) {
+      return engine.evaluate(expression[0], evaluatedScope, evaluateOptions)
+    }
+
+    // from template
     return engine.evaluate(expression, evaluatedScope, evaluateOptions)
   })
 }
 
 const isSync = items => !items.some(x => x instanceof Promise)
+
+// TODO: use pipe/asyncPipe instead of applyAction in useComputation/useAsyncComputation
+
+// TODO: syncRollup
+const rollup = (items, initial) =>
+  items.reduce(
+    (prev, value) =>
+      applyAction(typeof value === "function" ? value({ prev }) : value),
+    initial
+  )
+
+// TODO: pipe will be used for both sync and async actions and will accept
+// rollup function which can vary depending on whether it's sync or async
+const pipe = ([head, ...tail]) =>
+  typeof head === "function"
+    ? (...args) => rollup(tail, applyAction(head(...args)))
+    : rollup(tail, applyAction(head))
+
+const asyncPipe = items => {}

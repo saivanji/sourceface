@@ -11,7 +11,8 @@ export function Form({ children, config, validationSchema, onConfigChange }) {
   )
 }
 
-// TODO: use Option view component here
+// TODO: use Option view component here(most likely Option component is not needed. Check Option component
+// definition for further info)
 export function Field({ name, component: Component, ...props }) {
   const { config, validationSchema, onConfigChange } = useContext(context)
   const [error, setError] = useState(null)
@@ -25,7 +26,14 @@ export function Field({ name, component: Component, ...props }) {
       value={error?.value ?? value}
       onChange={event => {
         try {
-          const { value } = event.target
+          /**
+           * In case event is SyntheticEvent then extract value, otherwise treat first
+           * argument as value.
+           */
+          const value =
+            event.constructor.name === "SyntheticEvent"
+              ? event.target.value
+              : event
           validationSchema.fields[name]?.validateSync(value)
           setError(null)
           onConfigChange(name, value)

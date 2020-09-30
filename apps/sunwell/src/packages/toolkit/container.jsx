@@ -174,7 +174,9 @@ const purifyScope = scope =>
   )
 
 const internalActions = {
-  map: ({ data, funcName }) => {
+  // TODO: have that syntax sugar in engine instead?
+  // `binds.form.*.justify`
+  map: ({ data, fn }) => {
     // TODO: might be array
     let result = {}
 
@@ -184,7 +186,7 @@ const internalActions = {
        * Since all functions in a scope return Action, we have to apply it
        * in order to make it work.
        */
-      result[key] = applyAction(data[key][funcName]())
+      result[key] = applyAction(data[key][fn]())
     }
 
     return result
