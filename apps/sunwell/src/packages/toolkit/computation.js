@@ -175,6 +175,19 @@ const rollup = (items, initial) =>
     initial
   )
 
+const asyncRollup = async (items, prev) => {
+  if (!items.length) {
+    return prev
+  }
+
+  const [head, ...tail] = items
+
+  return await asyncRollup(
+    tail,
+    typeof head === "function" ? head({ prev }) : head
+  )
+}
+
 // TODO: pipe will be used for both sync and async actions and will accept
 // rollup function which can vary depending on whether it's sync or async
 const pipe = ([head, ...tail]) =>
