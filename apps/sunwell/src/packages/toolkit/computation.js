@@ -21,7 +21,7 @@ export const useAsyncComputation = (...expressions) => {
   })
   const id = useIdentity()
   const scope = useScope(id)
-  const evaluated = _evaluateMany(expressions, scope)
+  const evaluated = evaluateMany(expressions, scope)
 
   /*
    * Calling only when evaluated result was changed.
@@ -32,32 +32,25 @@ export const useAsyncComputation = (...expressions) => {
   // component to completely re-mount, which make "pristine" to become "true" by default and therefore
   // affect spinner.
   useEffect(() => {
-    const output = evaluated.map(applyAction)
+    const output = evaluated.map(pipe)
 
-    /**
-     * When everything is sync no need to change "loading" variable and execute promises.
-     */
-    if (isSync(output)) {
-      setResult(result => ({ ...result, data: output, pristine: false }))
-    } else {
-      setResult(result => ({ ...result, loading: true }))
-      ;(async () => {
-        const fetched = await Promise.all(output)
-        setResult(result => ({
-          ...result,
-          data: fetched,
-          loading: false,
-          pristine: false,
-        }))
-      })()
-    }
+    setResult(result => ({ ...result, loading: true }))
+    ;(async () => {
+      const fetched = await Promise.all(output)
+      setResult(result => ({
+        ...result,
+        data: fetched,
+        loading: false,
+        pristine: false,
+      }))
+    })()
   }, [JSON.stringify(evaluated)])
 
   return [result.data, result.loading, result.pristine]
 }
 
 export const useTemplate = str => {
-  const expressions = template.parse(str)
+  const expressions = template.parse(str).map(x => [x])
   const [results, loading, pristine] = useAsyncComputation(...expressions)
 
   return [template.replace(str, i => results[i]), loading, pristine]
@@ -119,72 +112,24 @@ const evaluateMany = (expressions, scope) => {
       : item
   )
 
-  return expressions.map(expression => {
-    /**
-     * In case expression not defined, returning "undefined" as a result. That's
-     * needed for the cases when provided empty data from the config.
-     * TODO: probably in the future will be removed when empty evaluation will be
-     * implemented in engine. Or set default value of `expression` as empty array?
-     */
-    if (!expression) {
-      return undefined
-    }
-
-    return expression.map(x =>
-      engine.evaluate(x, evaluatedScope, evaluateOptions)
-    )
-  })
+  return expressions.map((expression = []) =>
+    expression.map(x => engine.evaluate(x, evaluatedScope, evaluateOptions))
+  )
 }
 
-// TODO: fallback
-const _evaluateMany = (expressions, scope) => {
-  const evaluatedScope = overScope(scope, item =>
-    item instanceof Bind
-      ? engine.evaluate(item.value, scope, evaluateOptions)
-      : item
-  )
-
-  return expressions.map(expression => {
-    if (!expression) {
-      return undefined
-    }
-
-    if (expression instanceof Array) {
-      return engine.evaluate(expression[0], evaluatedScope, evaluateOptions)
-    }
-
-    // from template
-    return engine.evaluate(expression, evaluatedScope, evaluateOptions)
-  })
-}
-
-const isSync = items => !items.some(x => x instanceof Promise)
-
-// TODO: use pipe/asyncPipe instead of applyAction in useComputation/useAsyncComputation
-
-// TODO: syncRollup
-const rollup = (items, initial) =>
-  items.reduce(
-    (prev, value) =>
-      applyAction(typeof value === "function" ? value({ prev }) : value),
-    initial
-  )
-
-const asyncRollup = async (items, prev) => {
+const rollup = async (items, prev) => {
   if (!items.length) {
     return prev
   }
 
   const [head, ...tail] = items
 
-  return await asyncRollup(
+  return await rollup(
     tail,
-    typeof head === "function" ? head({ prev }) : head
+    applyAction(typeof head === "function" ? await head({ prev }) : head)
   )
 }
 
-// TODO: pipe will be used for both sync and async actions and will accept
-// rollup function which can vary depending on whether it's sync or async
 /**
  * User can have 2 ways to pipe(first item type in the pipe determines whether we return function or value):
  * - Pipe function
@@ -192,7 +137,6 @@ const asyncRollup = async (items, prev) => {
  */
 const pipe = ([head, ...tail]) =>
   typeof head === "function"
-    ? (...args) => rollup(tail, applyAction(head(...args)))
+    ? // TODO: might not work when used in sync useComputation since function returns promise
+      async (...args) => await rollup(tail, applyAction(await head(...args)))
     : rollup(tail, applyAction(head))
-
-const asyncPipe = items => {}
