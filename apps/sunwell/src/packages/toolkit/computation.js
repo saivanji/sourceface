@@ -17,19 +17,20 @@ export const useAsyncComputation = (...expressions) => {
   const id = useIdentity()
   const scope = useScope(id)
   const evaluated = evaluateMany(expressions, scope)
-  const isReady = hasActions(evaluated)
+  const identifier = JSON.stringify(evaluated)
+  const shouldFetch = hasActions(evaluated)
 
   const [result, setResult] = useState({
-    data: isReady ? [] : evaluated.map(x => pipe(x)),
+    data: [],
     loading: false,
-    pristine: isReady,
+    pristine: true,
   })
 
   /*
    * Calling only when evaluated result was changed.
    */
   useEffect(() => {
-    if (!isReady) {
+    if (!shouldFetch) {
       return
     }
 
@@ -45,7 +46,14 @@ export const useAsyncComputation = (...expressions) => {
         pristine: false,
       }))
     })()
-  }, [JSON.stringify(evaluated)])
+  }, [identifier])
+
+  // TODO: when table changes page from 3(cached) to 4(not cached) for short time data from
+  // page 2 will appear since it was last fetched in the state. Set cached data to state in case
+  // identifiers are different.
+  if (!shouldFetch) {
+    return [evaluated.map(x => pipe(x)), false, false]
+  }
 
   return [result.data, result.loading, result.pristine]
 }

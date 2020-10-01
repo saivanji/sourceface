@@ -19,6 +19,13 @@ export const up = () =>
         config json NOT NULL
       )
     `)
+    await t.none(`
+      CREATE TABLE commands_invalidations(
+        command_id integer NOT NULL REFERENCES commands(id) ON DELETE CASCADE,
+        invalidation_id integer NOT NULL REFERENCES commands(id) ON DELETE CASCADE,
+        UNIQUE (command_id, invalidation_id)
+      )
+    `)
   })
 
 export const down = () =>
