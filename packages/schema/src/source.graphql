@@ -27,7 +27,7 @@ type Command {
   createdAt: DateTime!
   # source: Source!
   config: CommandConfig!
-  invalidations: [Command!]!
+  stale: [Command!]!
 }
 
 extend type Query {

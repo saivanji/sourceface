@@ -2,6 +2,7 @@ import React from "react"
 import * as yup from "yup"
 import moment from "moment"
 import {
+  Await,
   Table,
   Pagination,
   Row,
@@ -40,60 +41,62 @@ export const Root = function TableModule({ config, local: { limit, offset } }) {
   return pristine ? (
     "Loading..."
   ) : (
-    <Table className={styles.root}>
-      <Table.Thead>
-        <Table.Tr>
-          <Table.Th>Id</Table.Th>
-          <Table.Th>Date</Table.Th>
-          <Table.Th>Customer</Table.Th>
-          <Table.Th>Address</Table.Th>
-          <Table.Th>Delivery type</Table.Th>
-          <Table.Th>Status</Table.Th>
-          <Table.Th>Payment type</Table.Th>
-          <Table.Th>Amount</Table.Th>
-        </Table.Tr>
-      </Table.Thead>
-      <Table.Tbody>
-        {rows.map(row => (
-          <Table.Tr key={row.id}>
-            <Table.Td>{row.id}</Table.Td>
-            <Table.Td>
-              {moment(row.created_at).format("DD MMM YY, HH:mm")}
-            </Table.Td>
-            <Table.Td>{row.customer_name}</Table.Td>
-            <Table.Td>{row.address}</Table.Td>
-            <Table.Td>{row.delivery_type}</Table.Td>
-            <Table.Td>{row.status}</Table.Td>
-            <Table.Td>{row.payment_type}</Table.Td>
-            <Table.Td>
-              {row.amount} {row.currency}
-            </Table.Td>
-          </Table.Tr>
-        ))}
-      </Table.Tbody>
-      {config.pagination && limit !== 0 && (
-        <Table.Tfoot>
+    <Await isAwaiting={loading} className={styles.root}>
+      <Table>
+        <Table.Thead>
           <Table.Tr>
-            <Table.Td colSpan={8}>
-              <div className={styles.footer}>
-                <div className={styles.paginationInfo}>
-                  Showing <span>{offset + 1}</span> to{" "}
-                  <span>{limit * (page + 1)}</span> of <span>{count}</span>{" "}
-                  results
-                </div>
-                <Pagination
-                  className={styles.pagination}
-                  pageCount={Math.ceil(count / limit)}
-                  selectedPage={page}
-                  pageSurroundings={1}
-                  onPageClick={changePage}
-                />
-              </div>
-            </Table.Td>
+            <Table.Th>Id</Table.Th>
+            <Table.Th>Date</Table.Th>
+            <Table.Th>Customer</Table.Th>
+            <Table.Th>Address</Table.Th>
+            <Table.Th>Delivery type</Table.Th>
+            <Table.Th>Status</Table.Th>
+            <Table.Th>Payment type</Table.Th>
+            <Table.Th>Amount</Table.Th>
           </Table.Tr>
-        </Table.Tfoot>
-      )}
-    </Table>
+        </Table.Thead>
+        <Table.Tbody>
+          {rows.map(row => (
+            <Table.Tr key={row.id}>
+              <Table.Td>{row.id}</Table.Td>
+              <Table.Td>
+                {moment(row.created_at).format("DD MMM YY, HH:mm")}
+              </Table.Td>
+              <Table.Td>{row.customer_name}</Table.Td>
+              <Table.Td>{row.address}</Table.Td>
+              <Table.Td>{row.delivery_type}</Table.Td>
+              <Table.Td>{row.status}</Table.Td>
+              <Table.Td>{row.payment_type}</Table.Td>
+              <Table.Td>
+                {row.amount} {row.currency}
+              </Table.Td>
+            </Table.Tr>
+          ))}
+        </Table.Tbody>
+        {config.pagination && limit !== 0 && (
+          <Table.Tfoot>
+            <Table.Tr>
+              <Table.Td colSpan={8}>
+                <div className={styles.footer}>
+                  <div className={styles.paginationInfo}>
+                    Showing <span>{offset + 1}</span> to{" "}
+                    <span>{limit * (page + 1)}</span> of <span>{count}</span>{" "}
+                    results
+                  </div>
+                  <Pagination
+                    className={styles.pagination}
+                    pageCount={Math.ceil(count / limit)}
+                    selectedPage={page}
+                    pageSurroundings={1}
+                    onPageClick={changePage}
+                  />
+                </div>
+              </Table.Td>
+            </Table.Tr>
+          </Table.Tfoot>
+        )}
+      </Table>
+    </Await>
   )
 }
 

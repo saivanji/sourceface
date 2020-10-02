@@ -20,10 +20,10 @@ export const up = () =>
       )
     `)
     await t.none(`
-      CREATE TABLE commands_invalidations(
+      CREATE TABLE stale_commands(
         command_id integer NOT NULL REFERENCES commands(id) ON DELETE CASCADE,
-        invalidation_id integer NOT NULL REFERENCES commands(id) ON DELETE CASCADE,
-        UNIQUE (command_id, invalidation_id)
+        stale_id integer NOT NULL REFERENCES commands(id) ON DELETE CASCADE,
+        UNIQUE (command_id, stale_id)
       )
     `)
   })
