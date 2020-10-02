@@ -48,8 +48,9 @@
 // `->`
 // `x ->`
 
-// TODO: implement ability to call multiple fields/functions:
+// TODO: implement ability to call multiple fields/functions(use re-throw technique from "core.map"):
 // `do binds.form.*.justify` will call justify for all form members and return object with results
+// `do modules.form_*.justify` will call justify for modules which starts with "form_" and return object with results
 // `binds.form.*.value` will return object with form values
 //
 // can have multiple paths:

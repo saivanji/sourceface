@@ -63,17 +63,6 @@ export const useAsyncComputation = (...expressions) => {
   return [result.data, result.loading, result.pristine]
 }
 
-const applyAll = (evaluated, onComplete, onStale) => {
-  let canceled = false
-  const output = evaluated.map(x => pipe(x, applyActionAsync, onStale))
-
-  Promise.all(output).then(data => !canceled && onComplete(data))
-
-  return () => {
-    canceled = true
-  }
-}
-
 export const useTemplate = str => {
   const expressions = template.parse(str).map(x => [x])
   const [results, loading, pristine] = useAsyncComputation(...expressions)
@@ -120,6 +109,17 @@ export const applyAction = (value, onStale) =>
     : value instanceof Action
     ? value.apply(onStale)
     : value
+
+const applyAll = (evaluated, onComplete, onStale) => {
+  let canceled = false
+  const output = evaluated.map(x => pipe(x, applyActionAsync, onStale))
+
+  Promise.all(output).then(data => !canceled && onComplete(data))
+
+  return () => {
+    canceled = true
+  }
+}
 
 const applyActionAsync = async (value, onStale) =>
   applyAction(await value, onStale)

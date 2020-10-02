@@ -180,6 +180,7 @@ const internalActions = {
   map: ({ data, fn }) => {
     // TODO: might be array
     let result = {}
+    let errors = {}
 
     for (let key of keys(data)) {
       // TODO: find a way to applyAction automatically.
@@ -187,7 +188,15 @@ const internalActions = {
        * Since all functions in a scope return Action, we have to apply it
        * in order to make it work.
        */
-      result[key] = applyAction(data[key][fn]())
+      try {
+        result[key] = applyAction(data[key][fn]())
+      } catch (err) {
+        errors[key] = err
+      }
+    }
+
+    if (keys(errors).length) {
+      throw errors
     }
 
     return result

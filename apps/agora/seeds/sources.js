@@ -17,7 +17,7 @@ export default db =>
     await t.none(
       `
       INSERT INTO commands (id, source_id, config)
-      VALUES ('listOrders', $1, $2), ('countOrders', $1, $3)
+      VALUES ('listOrders', $1, $2), ('createOrder', $1, $3), ('countOrders', $1, $4)
       `,
       [
         id,
@@ -25,6 +25,14 @@ export default db =>
           value:
             "SELECT * FROM orders WHERE customer_name LIKE '{{search}}%' LIMIT {{limit}} OFFSET {{offset}}",
           result: "many",
+        },
+        {
+          value: `
+            INSERT INTO orders (customer_name, address, delivery_type, status, payment_type, amount, currency)
+            VALUES ({{customer_name}}, {{address}}, {{delivery_type}}, {{status}}, {{payment_type}}, {{amount}}, {{currency}})
+            RETURNING *
+          `,
+          result: "single",
         },
         {
           value: "SELECT count(id)::integer FROM orders",

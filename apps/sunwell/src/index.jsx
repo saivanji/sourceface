@@ -24,6 +24,8 @@ ReactDOM.render(
 )
 
 // TODO:
+// Input module configuration
+// - validation is performed via regex. user can provide custom regex, or configure validation by choosing required, type(number only), limit, email and other settings and we will create corresponding regex for that(find a library)
 // Table module configuration
 // - Total count and current page are required and by default will have internal variables as values
 // - Scope variables circular dependencies
@@ -67,6 +69,9 @@ ReactDOM.render(
 //
 // Dependent queries
 // - Once one query will be executed, a set of queries which needs to be executed afterwards might be specified. (invalidation)
+//
+// Queries presets
+// - When creating new query, user can choose predefined preset depending on source type. For example user need to add createOrder query, he choose "INSERT" preset and asked to enter creation fields, which will generate insert query
 //
 // Consider having slots. One slot(position in back-end) might have multiple modules. Only one module might be visible in a slot at a time using a condition. For example when rows in a table are selected - display delete button, otherwise another module. Or depending on user role - display different module.
 //

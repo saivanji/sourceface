@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { assocPath, trim } from "ramda"
 import JSONTree from "react-json-tree"
-import { Tabs } from "@sourceface/components"
+import { Tabs, Input } from "@sourceface/components"
 import { useScope } from "packages/toolkit"
 import * as stock from "packages/modules"
 
@@ -66,6 +66,18 @@ function TabHead({ selected, onSelect }) {
 function Base({ module, onUpdate, onRemove, component: Component }) {
   return (
     <>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          paddingBottom: 16,
+          marginBottom: 16,
+          borderBottom: "1px solid #ccc",
+        }}
+      >
+        <Input placeholder="Module name" value="input5" />
+        <span>module type</span>
+      </div>
       <Component
         key={module.id}
         config={module.config}
