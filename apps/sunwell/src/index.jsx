@@ -136,3 +136,4 @@ ReactDOM.render(
 //   - Module names with creation
 //   - Implement multiple regex validations
 //   - Implement select module
+//   - Implement modals support and global area(in top left side with bookmark box contained them and list appearing on hover)
