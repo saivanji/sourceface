@@ -9,8 +9,8 @@ import { useBooleanState } from "hooks/index"
 import { Shell, Editor, Modules, When } from "components/index"
 import { Container } from "packages/toolkit"
 import * as stock from "packages/modules"
+import executeCommand from "packages/query"
 import * as queries from "./queries"
-import executeCommand from "./command"
 
 // TODO: think about real use case
 

@@ -42,9 +42,3 @@ export const root = `
     }
   }
 `
-
-export const readCommand = `
-  query($commandId: String!, $args: JSONObject) {
-    readCommand(commandId: $commandId, args: $args)
-  }
-`

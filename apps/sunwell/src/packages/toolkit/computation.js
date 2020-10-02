@@ -14,17 +14,18 @@ export const useComputation = (...expressions) => {
 }
 
 export const useAsyncComputation = (...expressions) => {
-  const id = useIdentity()
-  const scope = useScope(id)
-  const evaluated = evaluateMany(expressions, scope)
-  const identifier = JSON.stringify(evaluated)
-  const shouldFetch = hasActions(evaluated)
-
   const [result, setResult] = useState({
     data: [],
     loading: false,
     pristine: true,
+    stale: false,
   })
+
+  const id = useIdentity()
+  const scope = useScope(id)
+  const evaluated = evaluateMany(expressions, scope)
+  const identifier = JSON.stringify(evaluated)
+  const shouldFetch = result.stale || hasActions(evaluated)
 
   /*
    * Calling only when evaluated result was changed.
@@ -34,18 +35,22 @@ export const useAsyncComputation = (...expressions) => {
       return
     }
 
-    const output = evaluated.map(x => pipe(x, applyActionAsync))
-
     setResult(result => ({ ...result, loading: true }))
-    ;(async () => {
-      const fetched = await Promise.all(output)
-      setResult(result => ({
-        ...result,
-        data: fetched,
-        loading: false,
-        pristine: false,
-      }))
-    })()
+
+    return applyAll(
+      evaluated,
+      data =>
+        setResult(result => ({
+          ...result,
+          data,
+          loading: false,
+          pristine: false,
+          stale: false,
+        })),
+      // TODO: when multiple items became stale, that function will be called multiple
+      // times.
+      () => setResult(result => ({ ...result, stale: true }))
+    )
   }, [identifier])
 
   // TODO: when table changes page from 3(cached) to 4(not cached) for short time data from
@@ -56,6 +61,12 @@ export const useAsyncComputation = (...expressions) => {
   }
 
   return [result.data, result.loading, result.pristine]
+}
+
+const applyAll = (evaluated, onComplete, onStale) => {
+  const output = evaluated.map(x => pipe(x, applyActionAsync, onStale))
+
+  Promise.all(output).then(onComplete)
 }
 
 export const useTemplate = str => {
@@ -73,8 +84,8 @@ export class Action {
     this.payload = payload
   }
 
-  apply() {
-    return this.fn(this.payload)
+  apply(onStale) {
+    return this.fn(this.payload, onStale)
   }
 }
 
@@ -98,14 +109,15 @@ export const overScope = (scope, fn) => {
   return result
 }
 
-export const applyAction = value =>
+export const applyAction = (value, onStale) =>
   typeof value === "function"
-    ? (...args) => applyAction(value(...args))
+    ? (...args) => applyAction(value(...args), onStale)
     : value instanceof Action
-    ? value.apply()
+    ? value.apply(onStale)
     : value
 
-const applyActionAsync = async value => applyAction(await value)
+const applyActionAsync = async (value, onStale) =>
+  applyAction(await value, onStale)
 
 const evaluateOptions = { namespaces: { local: "~" } }
 
@@ -130,7 +142,7 @@ const evaluateMany = (expressions, scope) => {
 
 const hasActions = items => items.some(x => x.some(y => y instanceof Action))
 
-const rollup = (items, prev, fn) => {
+const rollup = (items, prev, fn, onStale) => {
   if (!items.length) {
     return prev
   }
@@ -139,7 +151,7 @@ const rollup = (items, prev, fn) => {
 
   return rollup(
     tail,
-    fn(typeof head === "function" ? head({ prev }) : head),
+    fn(typeof head === "function" ? head({ prev }) : head, onStale),
     fn
   )
 }
@@ -149,7 +161,7 @@ const rollup = (items, prev, fn) => {
  * - Pipe function
  * - Pipe values
  */
-const pipe = ([head, ...tail], fn = x => x) =>
+const pipe = ([head, ...tail], fn = x => x, onStale) =>
   typeof head === "function"
-    ? (...args) => rollup(tail, fn(head(...args)), fn)
-    : rollup(tail, fn(head), fn)
+    ? (...args) => rollup(tail, fn(head(...args), onStale), fn, onStale)
+    : rollup(tail, fn(head, onStale), fn, onStale)
