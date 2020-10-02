@@ -51,7 +51,7 @@ export const useAsyncComputation = (...expressions) => {
       // times.
       () => setResult(result => ({ ...result, stale: true }))
     )
-  }, [identifier])
+  }, [identifier, shouldFetch])
 
   // TODO: when table changes page from 3(cached) to 4(not cached) for short time data from
   // page 2 will appear since it was last fetched in the state. Set cached data to state in case
@@ -64,9 +64,14 @@ export const useAsyncComputation = (...expressions) => {
 }
 
 const applyAll = (evaluated, onComplete, onStale) => {
+  let canceled = false
   const output = evaluated.map(x => pipe(x, applyActionAsync, onStale))
 
-  Promise.all(output).then(onComplete)
+  Promise.all(output).then(data => !canceled && onComplete(data))
+
+  return () => {
+    canceled = true
+  }
 }
 
 export const useTemplate = str => {
