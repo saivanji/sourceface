@@ -90,7 +90,7 @@ const evaluateExpression = (
   scope = {},
   { namespaces = {} } = {}
 ) => {
-  const [variable, args] = parseExpression(expression, namespaces)
+  const [variable, args] = parseExpression(expression, scope, namespaces)
 
   /**
    * No arguments means that variable is the expression that contains literal or
@@ -105,18 +105,40 @@ const evaluateExpression = (
 
 const validNamespaces = ["@", "~", "$"]
 
-const parseExpression = (expression, namespaces) => {
+const parseExpression = (expression, scope, namespaces) => {
   const [variable, ...rest] = expression.trim().split(" ")
-
-  const args = rest.length
-    ? rest
-        .join("")
-        .split(",")
-        .map(arg => parseArgument(arg, namespaces))
-        .reduce((acc, arg) => ({ ...acc, ...arg }), {})
-    : undefined
+  const args = rest.length ? parseArgs(rest, scope, namespaces) : undefined
 
   return [replaceNamespaces(variable, namespaces), args]
+}
+
+const parseArgs = (argsString, scope, namespaces) =>
+  argsString
+    .join("")
+    .split(",")
+    .map(arg =>
+      arg.indexOf("...") === 0
+        ? parseSpread(arg, scope, namespaces)
+        : [parseArgument(arg, namespaces)]
+    )
+    /**
+     * Merging argument groups to a single object
+     */
+    .reduce(
+      (acc, group) => ({
+        ...acc,
+        ...group.reduce((acc, arg) => ({ ...acc, ...arg }), {}),
+      }),
+      {}
+    )
+
+const parseSpread = (spreadString, scope, namespaces) => {
+  const name = replaceNamespaces(spreadString.slice(3), namespaces)
+
+  return Object.keys(look(name, scope)).reduce(
+    (acc, key) => [...acc, { [key]: `${name}.${key}` }],
+    []
+  )
 }
 
 const replaceNamespaces = (input, namespaces) => {
