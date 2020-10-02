@@ -125,3 +125,11 @@ ReactDOM.render(
 // - Grid size is not updated when parent module is resized
 //
 // - Improve ux of modules editing
+//
+//
+// - Engine:
+//   - arguments application rest spread
+//   - do in function calls
+//   - pattern object path selection
+// - Modules
+//   - Module names with creation
