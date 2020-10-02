@@ -55,6 +55,10 @@
 //
 // can have multiple paths:
 // `binds.form.*.*.value`
+//
+// can have template at the end:
+// `modules.form_*`
+// `modules.*` even though that doesn't make much sense since it's equal to `modules`
 
 export const evaluate = (input, scope, options) => {
   /**
