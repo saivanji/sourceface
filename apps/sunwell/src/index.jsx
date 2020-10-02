@@ -128,8 +128,11 @@ ReactDOM.render(
 //
 //
 // - Engine:
-//   - arguments application rest spread
 //   - do in function calls
 //   - pattern object path selection
+// - Queries
+//   - Implement cache invalidation
 // - Modules
 //   - Module names with creation
+//   - Implement multiple regex validations
+//   - Implement select module

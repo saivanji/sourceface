@@ -22,14 +22,17 @@ export default db =>
       [
         id,
         {
-          value:
-            "SELECT * FROM orders WHERE customer_name LIKE '{{search}}%' LIMIT {{limit}} OFFSET {{offset}}",
+          value: `
+            SELECT * FROM orders WHERE customer_name LIKE '{{search}}%'
+            ORDER BY created_at DESC
+            LIMIT {{limit}} OFFSET {{offset}}
+          `,
           result: "many",
         },
         {
           value: `
             INSERT INTO orders (customer_name, address, delivery_type, status, payment_type, amount, currency)
-            VALUES ({{customer_name}}, {{address}}, {{delivery_type}}, {{status}}, {{payment_type}}, {{amount}}, {{currency}})
+            VALUES ('{{customer_name}}', '{{address}}', '{{delivery_type}}', '{{status}}', {{payment_type}}, {{amount}}, {{currency}})
             RETURNING *
           `,
           result: "single",
