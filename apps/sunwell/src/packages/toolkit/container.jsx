@@ -201,4 +201,14 @@ const internalActions = {
 
     return result
   },
+  // TODO: returns undefined instead of actual args when function is returned as variable from the expression. Works
+  // well when we define function inside of the expression.
+  //
+  // it will be solved when we'll allow to return functions(implement "do foo" in engine). Right now it's considered as a
+  // function call
+  debug: args => {
+    // TODO: will print results to a notification or something instead of console.log
+    console.log(args)
+    return args
+  },
 }
