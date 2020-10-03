@@ -1,4 +1,5 @@
 import DataLoader from "dataloader"
+import * as commandRepo from "repos/command"
 import * as layoutRepo from "repos/layout"
 import * as positionRepo from "repos/position"
 import * as moduleRepo from "repos/module"
@@ -23,6 +24,10 @@ export default pg => {
     ids => pageRepo.trailByPageIds(ids, pg),
     "pageId"
   )
+  const staleByCommand = new DataLoaderHasMany(
+    ids => commandRepo.staleByCommandIds(ids, pg),
+    "commandId"
+  )
 
   return {
     layout,
@@ -31,6 +36,7 @@ export default pg => {
     positionsByLayout,
     modulesByPage,
     trailByPage,
+    staleByCommand,
   }
 }
 

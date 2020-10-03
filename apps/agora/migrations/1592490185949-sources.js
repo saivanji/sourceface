@@ -21,8 +21,8 @@ export const up = () =>
     `)
     await t.none(`
       CREATE TABLE stale_commands(
-        command_id integer NOT NULL REFERENCES commands(id) ON DELETE CASCADE,
-        stale_id integer NOT NULL REFERENCES commands(id) ON DELETE CASCADE,
+        command_id text NOT NULL REFERENCES commands(id) ON DELETE CASCADE,
+        stale_id text NOT NULL REFERENCES commands(id) ON DELETE CASCADE,
         UNIQUE (command_id, stale_id)
       )
     `)

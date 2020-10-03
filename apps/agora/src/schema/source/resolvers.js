@@ -14,6 +14,8 @@ const executeCommand = async (
   return await connections[command.sourceId].execute(command.config, args)
 }
 
+const stale = (parent, args, ctx) => ctx.loaders.staleByCommand.load(parent.id)
+
 export default {
   Query: {
     commands,
@@ -21,5 +23,8 @@ export default {
   },
   Mutation: {
     writeCommand: executeCommand,
+  },
+  Command: {
+    stale,
   },
 }

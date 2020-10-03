@@ -126,6 +126,8 @@ ReactDOM.render(
 //
 // - Improve ux of modules editing
 //
+// - Cache in local storage all data fetched during initial app load in order to speed up page loading process. Then fetch that data in background after app loaded.
+//
 //
 // - Engine:
 //   - do in function calls

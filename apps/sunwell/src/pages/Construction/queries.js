@@ -39,6 +39,9 @@ export const root = `
     }
     commands {
       id
+      stale {
+        id
+      }
     }
   }
 `
