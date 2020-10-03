@@ -128,6 +128,8 @@ ReactDOM.render(
 //
 // - Cache in local storage all data fetched during initial app load in order to speed up page loading process. Then fetch that data in background after app loaded.
 //
+// - Consider using pg-bouncer
+//
 //
 // - Engine:
 //   - do in function calls

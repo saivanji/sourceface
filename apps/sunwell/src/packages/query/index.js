@@ -1,4 +1,4 @@
-const executeCommand = async ({ commandId, args }, onStale) => {
+const executeCommand = async (commandId, args, staleIds, onStale) => {
   const cached = cache.get(commandId, args)
 
   if (cached) {
@@ -34,13 +34,12 @@ const executeCommand = async ({ commandId, args }, onStale) => {
 
   const json = await res.json()
   const data = json.data.readCommand
-  // const { data, invalidations } = json.data.readCommand
 
   cache.set(commandId, args, data, onStale)
 
-  // for (let invalidation of invalidations) {
-  //   cache.invalidate(invalidation.id)
-  // }
+  for (let staleId of staleIds) {
+    cache.invalidate(staleId)
+  }
 
   return data
 }
@@ -83,7 +82,7 @@ class Cache {
   }
 
   stringify(args) {
-    return JSON.stringify(args)
+    return JSON.stringify(args) || ""
   }
 
   addListener(commandId, onStale) {
@@ -98,6 +97,7 @@ class Cache {
 }
 
 let cache = new Cache()
+window.cache = cache
 
 const readCommand = `
   query($commandId: String!, $args: JSONObject) {

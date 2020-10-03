@@ -9,17 +9,12 @@ import { useBooleanState } from "hooks/index"
 import { Shell, Editor, Modules, When } from "components/index"
 import { Container } from "packages/toolkit"
 import * as stock from "packages/modules"
-import executeCommand from "packages/query"
 import * as queries from "./queries"
+import createActions from "./createActions"
 
 // TODO: think about real use case
 
 // TODO: have single name for manage, content and construction
-
-/* <div className={styles.panel}> */
-/*   <span className={styles.title}>Orders</span> */
-/*   <Button className={styles.newOrder}>New order</Button> */
-/* </div> */
 
 // TODO: handle error on back-end requests
 export default () => {
@@ -31,11 +26,8 @@ export default () => {
   })
   const [isEditing, editOn, editOff] = useBooleanState(false)
 
-  const actions = {
-    navigate: ({ to }) => history.push(`/e${to}`),
-    executeCommand,
-  }
   const page = result.data?.page
+  const actions = createActions(history, result.data?.commands)
 
   // TODO: replace params of route instead of passign route as link.
   // TODO: improve
