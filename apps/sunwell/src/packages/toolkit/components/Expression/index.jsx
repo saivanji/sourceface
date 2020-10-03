@@ -3,6 +3,8 @@ import { insert, update } from "ramda"
 import styles from "./index.scss"
 
 // TODO: when created new item in a pipeline, have "acc/result/prev ->" as a placeholder
+// TODO: have type of "function" or "value". in case of function there will be "->" in the beginning which
+// user could not delete?
 export default ({ error, value: pipes, onChange }) => {
   const create = index => {
     onChange(insert(index + 1, "prev -> 1", pipes))
