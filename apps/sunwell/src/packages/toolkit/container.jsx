@@ -118,10 +118,14 @@ const createQueriesScope = (queries, executeCommand) =>
     (acc, command) => ({
       ...acc,
       [command.id]: args =>
-        new Action(executeCommand, {
-          commandId: command.id,
-          args,
-        }),
+        new Action(
+          executeCommand,
+          {
+            commandId: command.id,
+            args,
+          },
+          !!executeCommand.readCache(command.id, args)
+        ),
     }),
     {}
   )
@@ -163,11 +167,13 @@ const createLocalScope = (module, state, assignState, stock) => {
 const toDict = list =>
   list.reduce((acc, item) => ({ ...acc, [item.id]: item }), {})
 
-const purify = fn => args => new Action(fn, args)
-
 /**
- * Purifies functions in a scope so it can be safely used in evaluation.
+ * Purifies function so it can be easily used in evaluation. It's important
+ * since evaluation stage is happening on every render and it should be side-effect
+ * free.
  */
+const purify = fn => args => new Action(fn, args, true)
+
 const purifyScope = scope =>
   overScope(scope, value =>
     typeof value === "function" ? purify(value) : value

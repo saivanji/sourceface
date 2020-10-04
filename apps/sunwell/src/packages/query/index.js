@@ -1,4 +1,8 @@
-export default async (commandId, args, staleIds, onStale) => {
+// TODO: when we call 2 the same query function at the same time, it will produce 2 corresponding
+// graphq requests. Instead of that, make a request only for a first call, and the second call should
+// subscribe on data changes and be resolved once cache will be populated by a first item.
+
+export const execute = (commandId, args, staleIds, onStale) => {
   const cached = cache.get(commandId, args)
 
   if (cached) {
@@ -13,7 +17,7 @@ export default async (commandId, args, staleIds, onStale) => {
   /**
    * Returning Promise only if cache is empty and we need to fetch.
    */
-  const res = await fetch("http://localhost:5001/graphql", {
+  return fetch("http://localhost:5001/graphql", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -27,22 +31,27 @@ export default async (commandId, args, staleIds, onStale) => {
       },
     }),
   })
+    .then(res => {
+      if (!res.ok) {
+        throw "Failed to fetch command"
+      }
 
-  if (!res.ok) {
-    throw "Failed to fetch command"
-  }
+      return res.json()
+    })
+    .then(json => {
+      const data = json.data.readCommand
 
-  const json = await res.json()
-  const data = json.data.readCommand
+      cache.set(commandId, args, data, onStale)
 
-  cache.set(commandId, args, data, onStale)
+      for (let staleId of staleIds) {
+        cache.invalidate(staleId)
+      }
 
-  for (let staleId of staleIds) {
-    cache.invalidate(staleId)
-  }
-
-  return data
+      return data
+    })
 }
+
+export const readCache = (commandId, args) => cache.get(commandId, args)
 
 /**
  * Simplest form of caching. Storing queries results by it's arguments.

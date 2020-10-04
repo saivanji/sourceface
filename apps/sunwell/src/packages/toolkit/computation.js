@@ -10,7 +10,7 @@ export const useFunction = (...expressions) => {
   const id = useIdentity()
   const scope = useScope(id)
 
-  return evaluateMany(expressions, scope).map(pipeFunction)
+  return evaluateMany(expressions, scope).map(rollupFunction)
 }
 
 export const useValue = (...expressions) => {
@@ -44,17 +44,19 @@ export const useValue = (...expressions) => {
       }))
 
     setResult(result => ({ ...result, loading: true }))
-    Promise.all(evaluated.map(x => pipeValue(x, reload))).then(populate)
+    Promise.all(evaluated.map(pipe => rollupValue(pipe, reload))).then(populate)
 
     return () => {
       canceled = true
     }
   }, [identifier, result.stale])
 
-  // TODO: there is a short blink on component mount(first render) when evaluation data is
-  // cached. It's happening because we apply actions in this case asynchronously and it takes
-  // extremely short time. Think, how to return cached data on a first render while subscribing on
-  // invalidation at the same time.
+  if (result.pristine && isSyncEvaluation(evaluated)) {
+    /**
+     * No need to subscribe on invalidation since we always subscribe to it in "useEffect".
+     */
+    return [evaluated.map(pipe => rollupValue(pipe)), false, false]
+  }
 
   return [result.data, result.loading, result.pristine]
 }
@@ -66,14 +68,13 @@ export const useTemplate = str => {
   return [template.replace(str, i => results[i]), loading, pristine]
 }
 
-// TODO: experiment, can Action be either sync or async? or always async consideres as side effect?
-// TODO: should all functions in the scope return Actions, even they do pure computation? if yes, why?
 export class Action {
   // TODO: use "group" field to mark that this action might be groupped with others and then given
   // to action function. Will be useful for calling many graphql queries in one request.
-  constructor(fn, payload) {
+  constructor(fn, payload, isSync) {
     this.fn = fn
     this.payload = payload
+    this.isSync = isSync
   }
 
   apply(onStale) {
@@ -124,30 +125,33 @@ const evaluateMany = (expressions, scope) => {
       : item
   )
 
-  return expressions.map((pipes = []) =>
-    pipes.map(x => engine.evaluate(x, evaluatedScope, evaluateOptions))
+  return expressions.map((pipe = []) =>
+    pipe.map(stage => engine.evaluate(stage, evaluatedScope, evaluateOptions))
   )
 }
 
-const rollup = async (items, prev, onStale) => {
+const processStage = (stage, args) =>
+  typeof stage === "function" ? stage(args) : stage
+
+const rollupValue = (items, onStale, prev) => {
   if (!items.length) {
     return prev
   }
 
   const [head, ...tail] = items
+  const applied = applyAction(processStage(head, { prev }), onStale)
 
-  return rollup(
-    tail,
-    await applyAction(
-      typeof head === "function" ? head({ prev }) : head,
-      onStale
-    ),
-    onStale
-  )
+  if (applied instanceof Promise) {
+    return applied.then(data => rollupValue(tail, onStale, data))
+  }
+
+  return rollupValue(tail, onStale, applied)
 }
 
-const pipeValue = async ([head, ...tail], onStale) =>
-  rollup(tail, await applyAction(head, onStale), onStale)
+const rollupFunction = ([head, ...tail]) => args =>
+  rollupValue([processStage(head, args), ...tail])
 
-const pipeFunction = ([head, ...tail]) => (...args) =>
-  pipeValue([head(...args), ...tail])
+const isSyncEvaluation = data =>
+  data.every(pipe =>
+    pipe.every(stage => !(stage instanceof Action) || stage.isSync)
+  )
