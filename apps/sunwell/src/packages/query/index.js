@@ -1,4 +1,4 @@
-const executeCommand = async (commandId, args, staleIds, onStale) => {
+export default async (commandId, args, staleIds, onStale) => {
   const cached = cache.get(commandId, args)
 
   if (cached) {
@@ -97,14 +97,9 @@ class Cache {
 }
 
 let cache = new Cache()
-window.cache = cache
 
 const readCommand = `
   query($commandId: String!, $args: JSONObject) {
     readCommand(commandId: $commandId, args: $args)
   }
 `
-
-executeCommand.cache = cache.get.bind(cache)
-
-export default executeCommand
