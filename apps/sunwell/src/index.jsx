@@ -47,6 +47,7 @@ ReactDOM.render(
 //  - Have multiple selections of modules?
 //  - Have ability to duplicate the module(useful for example when creating form inputs)
 //  - Have frame mode in any view including desktop. Where content is located inside a frame having width of selected viewport and background is having different appearance from the content area. That frame width is freely resizable.
+//  - Should edit mode be triggered from global area(header or something), instead of page area(right now it's in the right side of breadcrumbs). Since we'll have pages and queries management in the editor and it's not related to the specific page.
 //
 // Cache logged in user information in the local storage in order not to display global loader when application is loaded.
 //
@@ -134,10 +135,8 @@ ReactDOM.render(
 // - Engine:
 //   - do in function calls
 //   - pattern object path selection
-// - Queries
-//   - Implement cache invalidation
 // - Modules
 //   - Module names with creation
 //   - Implement multiple regex validations
-//   - Implement select module
+//   - Implement select field module
 //   - Implement modals support and global area(in top left side with bookmark box contained them and list appearing on hover)
