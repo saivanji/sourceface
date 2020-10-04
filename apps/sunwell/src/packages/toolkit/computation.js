@@ -10,7 +10,7 @@ export const useFunction = (...expressions) => {
   const id = useIdentity()
   const scope = useScope(id)
 
-  return evaluateMany(expressions, scope).map(x => pipeFunction(x))
+  return evaluateMany(expressions, scope).map(pipeFunction)
 }
 
 export const useValue = (...expressions) => {
@@ -30,22 +30,25 @@ export const useValue = (...expressions) => {
    * Calling only when evaluated result was changed.
    */
   useEffect(() => {
-    setResult(result => ({ ...result, loading: true }))
+    let canceled = false
+    const reload = () =>
+      !canceled && setResult(result => ({ ...result, stale: true }))
+    const populate = data =>
+      !canceled &&
+      setResult(result => ({
+        ...result,
+        data,
+        loading: false,
+        pristine: false,
+        stale: false,
+      }))
 
-    return applyAll(
-      evaluated,
-      data =>
-        setResult(result => ({
-          ...result,
-          data,
-          loading: false,
-          pristine: false,
-          stale: false,
-        })),
-      // TODO: when multiple items became stale, that function will be called multiple
-      // times.
-      () => setResult(result => ({ ...result, stale: true }))
-    )
+    setResult(result => ({ ...result, loading: true }))
+    Promise.all(evaluated.map(x => pipeValue(x, reload))).then(populate)
+
+    return () => {
+      canceled = true
+    }
   }, [identifier, result.stale])
 
   // TODO: there is a short blink on component mount(first render) when evaluation data is
@@ -105,17 +108,6 @@ export const applyAction = (value, onStale) =>
     ? value.apply(onStale)
     : value
 
-const applyAll = (evaluated, onComplete, onStale) => {
-  let canceled = false
-  const output = evaluated.map(x => pipeValue(x, () => !canceled && onStale()))
-
-  Promise.all(output).then(data => !canceled && onComplete(data))
-
-  return () => {
-    canceled = true
-  }
-}
-
 const evaluateOptions = { namespaces: { local: "~" } }
 
 /**
@@ -157,5 +149,5 @@ const rollup = async (items, prev, onStale) => {
 const pipeValue = async ([head, ...tail], onStale) =>
   rollup(tail, await applyAction(head, onStale), onStale)
 
-const pipeFunction = ([head, ...tail], onStale) => (...args) =>
-  pipeValue([head(...args), ...tail], onStale)
+const pipeFunction = ([head, ...tail]) => (...args) =>
+  pipeValue([head(...args), ...tail])

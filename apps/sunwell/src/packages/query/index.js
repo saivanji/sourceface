@@ -65,7 +65,10 @@ class Cache {
       ...commands,
       [this.stringify(args)]: data,
     }
-    this.addListener(commandId, onStale)
+
+    if (onStale) {
+      this.addListener(commandId, onStale)
+    }
   }
 
   invalidate(commandId) {
@@ -76,7 +79,7 @@ class Cache {
   }
 
   notify(commandId) {
-    for (let listener of this.listeners[commandId]) {
+    for (let listener of this.listeners[commandId] || []) {
       listener()
     }
   }
