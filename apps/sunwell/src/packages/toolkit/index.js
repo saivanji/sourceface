@@ -7,4 +7,4 @@ export {
 } from "./container"
 export { Form, Field } from "./form"
 export { Expression, Template } from "./components"
-export { useComputation, useAsyncComputation, useTemplate } from "./computation"
+export { useFunction, useValue, useTemplate } from "./computation"

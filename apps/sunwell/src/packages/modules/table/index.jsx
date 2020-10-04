@@ -16,7 +16,7 @@ import {
   Field,
   Expression,
   useTransition,
-  useAsyncComputation,
+  useValue,
 } from "packages/toolkit"
 import styles from "./index.scss"
 
@@ -28,7 +28,7 @@ export const Root = function TableModule({ config, local: { limit, offset } }) {
   const changePage = useTransition("page")
 
   // TODO: page is not changing, the change is reflected only after edit mode is toggled.
-  const [[rows, count, page], loading, pristine] = useAsyncComputation(
+  const [[rows, count, page], loading, pristine] = useValue(
     config.items,
     config.count,
     config.currentPage

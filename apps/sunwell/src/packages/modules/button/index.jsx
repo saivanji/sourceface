@@ -7,11 +7,11 @@ import {
   Select,
   Checkbox,
 } from "@sourceface/components"
-import { Form, Field, Expression, useComputation } from "packages/toolkit"
+import { Form, Field, Expression, useFunction } from "packages/toolkit"
 import * as yup from "yup"
 
 export const Root = function ButtonModule({ config }) {
-  const [onClick] = useComputation(config.action)
+  const [onClick] = useFunction(config.action)
 
   return (
     <Button

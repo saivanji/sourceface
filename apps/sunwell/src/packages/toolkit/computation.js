@@ -9,22 +9,19 @@ import { useScope, useIdentity } from "./container"
 // TODO: since we pass applyAction (not async) it might be a reason that async functions in a pipe
 // applied synchronously.
 //
-// TODO: rename to "useFunction"
-export const useComputation = (...expressions) => {
+export const useFunction = (...expressions) => {
   const id = useIdentity()
   const scope = useScope(id)
 
   return evaluateMany(expressions, scope).map(x => pipe(x, applyAction))
 }
 
-// TODO: rename to "useValue"
-
 // TODO: the major problem is when we get cached data we still need to be subscribed on cache changes. With
 // current setup that's not possible since "onStale" function is passed at a point when we apply Action and
 // we get cached data, we don't have actions in evaluated data and therefore not applying them. We're using such
 // approach in order to avoid triggering "loading" variable and therefore displaying spinner at short amount of
 // time in case when it's not needed.
-export const useAsyncComputation = (...expressions) => {
+export const useValue = (...expressions) => {
   const [result, setResult] = useState({
     data: [],
     loading: false,
@@ -78,7 +75,7 @@ export const useAsyncComputation = (...expressions) => {
 
 export const useTemplate = str => {
   const expressions = template.parse(str).map(x => [x])
-  const [results, loading, pristine] = useAsyncComputation(...expressions)
+  const [results, loading, pristine] = useValue(...expressions)
 
   return [template.replace(str, i => results[i]), loading, pristine]
 }
