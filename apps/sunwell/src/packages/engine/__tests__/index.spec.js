@@ -296,6 +296,24 @@ test("evaluates successfully multiple wildcards function calls in the middle of 
   ).toBe({ a: { x: 14, y: 15 }, b: { z: 17 } })
 })
 
+test("evaluates successfully wildcards in function arguments", () => {
+  expect(
+    evaluate("do foo x: bar.baz_*.y", {
+      foo: ({ x }) => x.a + 3,
+      bar: {
+        baz_a: {
+          y: 5,
+          z: 7,
+        },
+        baz_b: {
+          y: 4,
+          z: 2,
+        },
+      },
+    })
+  ).toBe(8)
+})
+
 test("evaluates successfully function definitions without parameters", () => {
   const fn = evaluate("-> do exec x: 1, y: 2", { exec: ({ x, y }) => x + y })
 
