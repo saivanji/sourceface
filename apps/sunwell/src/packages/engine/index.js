@@ -89,32 +89,31 @@ export const evaluate = (input, scope, options) => {
   }
 }
 
+// TODO change name since function calls are not expressions.
 const evaluateExpression = (
   expression,
   scope = {},
   { namespaces = {} } = {}
 ) => {
-  const [variable, args] = parseExpression(expression, scope, namespaces)
+  const trimmed = expression.trim()
+  const isCall = trimmed.indexOf("do") === 0
+  const [raw, ...rest] = isCall ? trimmed.slice(3).split(" ") : [trimmed]
+
+  const variable = replaceNamespaces(raw, namespaces)
+  const args = rest.length ? parseArgs(rest, scope, namespaces) : {}
 
   /**
    * No arguments means that variable is the expression that contains literal or
    * a function call without arguments. Therefore we can directly evaluate it.
    */
-  if (!args) {
-    return evaluateVariable(variable, scope, true)
+  if (!isCall) {
+    return evaluateVariable(variable, scope)
   }
 
   return applyFunc(variable, args, scope)
 }
 
 const validNamespaces = ["@", "~", "$"]
-
-const parseExpression = (expression, scope, namespaces) => {
-  const [variable, ...rest] = expression.trim().split(" ")
-  const args = rest.length ? parseArgs(rest, scope, namespaces) : undefined
-
-  return [replaceNamespaces(variable, namespaces), args]
-}
 
 const parseArgs = (argsString, scope, namespaces) =>
   argsString
@@ -206,7 +205,7 @@ const evaluateArgs = (args, scope) =>
   Object.keys(args).reduce(
     (acc, key) => ({
       ...acc,
-      [key]: evaluateVariable(args[key], scope, false),
+      [key]: evaluateVariable(args[key], scope),
     }),
     {}
   )
@@ -215,7 +214,7 @@ const evaluateArgs = (args, scope) =>
  * Evaluates literal or a function call without arguments.
  * TODO: think about name, since string and number are not variables.
  */
-const evaluateVariable = (expression, scope, passFunc = false) => {
+const evaluateVariable = (expression, scope) => {
   try {
     /**
      * In case expression contains numbers or strings, using JSON.parse.
@@ -233,14 +232,6 @@ const evaluateVariable = (expression, scope, passFunc = false) => {
 
     if (typeof value === "undefined") {
       throw "Variable is not defined"
-    }
-
-    if (typeof value === "function") {
-      if (!passFunc) {
-        throw "Can not accept function as argument"
-      }
-
-      return value()
     }
 
     return value

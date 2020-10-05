@@ -14,7 +14,7 @@ export default (db, pgp, { layouts }) =>
     await createModule(
       ordersLayoutId,
       "text",
-      createTextConfig("Orders list ({{ queries.countOrders }})"),
+      createTextConfig("Orders list ({{ do queries.countOrders }})"),
       [0, 0, 4, 1],
       t
     )
@@ -35,7 +35,7 @@ export default (db, pgp, { layouts }) =>
       {
         text: "Create new order",
         size: "regular",
-        action: "-> core.navigate to: '/orders/create'",
+        action: "-> do core.navigate to: '/orders/create'",
         shouldFitContainer: true,
       },
       [8, 1, 2, 1],
@@ -46,8 +46,8 @@ export default (db, pgp, { layouts }) =>
       ordersLayoutId,
       "table",
       {
-        items: `queries.listOrders ~limit, ~offset, search: modules.${searchModuleId}.value`,
-        count: "queries.countOrders",
+        items: `do queries.listOrders ~limit, ~offset, search: modules.${searchModuleId}.value`,
+        count: "do queries.countOrders",
         currentPage: "~page",
         limit: "10",
         pagination: true,
