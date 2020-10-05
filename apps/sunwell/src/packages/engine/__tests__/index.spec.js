@@ -212,6 +212,41 @@ test("evaluates successfully function call with arguments with extra spaces in b
   ).toBe(10)
 })
 
+test("evaluates successfully wildcard object path with value at the end", () => {
+  expect(
+    evaluate("foo.*.bar", { foo: { x: { bar: 4 }, y: { bar: 5 } } })
+  ).toBe({ x: 4, y: 5 })
+})
+
+test("evaluates successfully multiple wildcard object path with value at the end", () => {
+  expect(
+    evaluate("foo.*.*.bar", {
+      foo: { a: { x: { bar: 4 }, y: { bar: 5 } }, b: { z: { bar: 7 } } },
+    })
+  ).toBe({ a: { x: 4, y: 5 }, b: { z: 7 } })
+})
+
+test("evaluates successfully partial wildcard object path with value at the end", () => {
+  expect(
+    evaluate("foo.bar_*.baz", { foo: { bar_x: { baz: 4 }, bar_y: { baz: 5 } } })
+  ).toBe({ x: 4, y: 5 })
+})
+
+test("evaluates successfully trailing wildcard object path", () => {
+  expect(evaluate("foo.bar.*", { foo: { bar: { x: 1, y: 3 } } })).toBe({
+    x: 1,
+    y: 3,
+  })
+})
+test("evaluates successfully trailing partial wildcard object path", () => {
+  expect(
+    evaluate("foo.bar.baz_*", { foo: { bar: { baz_x: 1, baz_y: 3 } } })
+  ).toBe({
+    x: 1,
+    y: 3,
+  })
+})
+
 test("evaluates successfully function definitions without parameters", () => {
   const fn = evaluate("-> do exec x: 1, y: 2", { exec: ({ x, y }) => x + y })
 
