@@ -212,39 +212,88 @@ test("evaluates successfully function call with arguments with extra spaces in b
   ).toBe(10)
 })
 
-test("evaluates successfully wildcard object path with value at the end", () => {
+test("evaluates successfully wildcard in the beginning of object path", () => {
   expect(
-    evaluate("foo.*.bar", { foo: { x: { bar: 4 }, y: { bar: 5 } } })
+    evaluate("*.foo.bar", {
+      x: { foo: { bar: 5 } },
+      y: { foo: { bar: 7 } },
+      z: { foo: 9 },
+    })
+  ).toBe({ x: 5, y: 7 })
+})
+
+test("evaluates successfully wildcard in the middle of object path", () => {
+  expect(
+    evaluate("foo.*.bar", {
+      foo: { x: { bar: 4 }, y: { bar: 5 }, z: { baz: 9 } },
+    })
   ).toBe({ x: 4, y: 5 })
 })
 
-test("evaluates successfully multiple wildcard object path with value at the end", () => {
+test("evaluates successfully multiple wildcards in the middle of object path", () => {
   expect(
     evaluate("foo.*.*.bar", {
-      foo: { a: { x: { bar: 4 }, y: { bar: 5 } }, b: { z: { bar: 7 } } },
+      foo: {
+        a: { x: { bar: 4 }, y: { bar: 5 } },
+        b: { z: { bar: 7 } },
+        c: { baz: 10 },
+      },
     })
   ).toBe({ a: { x: 4, y: 5 }, b: { z: 7 } })
 })
 
-test("evaluates successfully partial wildcard object path with value at the end", () => {
+test("evaluates successfully partial wildcard in the middle of object path", () => {
   expect(
-    evaluate("foo.bar_*.baz", { foo: { bar_x: { baz: 4 }, bar_y: { baz: 5 } } })
+    evaluate("foo.bar_*.baz", {
+      foo: { bar_x: { baz: 4 }, bar_y: { baz: 5 }, bar_z: 5, x: { baz: 3 } },
+    })
   ).toBe({ x: 4, y: 5 })
 })
 
-test("evaluates successfully trailing wildcard object path", () => {
-  expect(evaluate("foo.bar.*", { foo: { bar: { x: 1, y: 3 } } })).toBe({
-    x: 1,
-    y: 3,
-  })
-})
-test("evaluates successfully trailing partial wildcard object path", () => {
+test("evaluates successfully wildcard in the end of object path", () => {
   expect(
-    evaluate("foo.bar.baz_*", { foo: { bar: { baz_x: 1, baz_y: 3 } } })
+    evaluate("foo.bar.*", { foo: { bar: { x: 1, y: 3, z: { a: 1 } } } })
   ).toBe({
     x: 1,
     y: 3,
+    z: { a: 1 },
   })
+})
+
+test("evaluates successfully partial wildcard in the end of object path", () => {
+  expect(
+    evaluate("foo.bar.baz_*", {
+      foo: { bar: { baz_x: 1, baz_y: 3, baz_z: { a: 1 }, z: 5 } },
+    })
+  ).toBe({
+    x: 1,
+    y: 3,
+    z: { a: 1 },
+  })
+})
+
+test("evaluates successfully wildcard on all properties of object path", () => {
+  expect(evaluate("*.*.*", { foo: { bar: { x: 1, y: 5 } } })).toBe({
+    foo: { bar: { x: 1, y: 5 } },
+  })
+})
+
+test("evaluates successfully single wildcard", () => {
+  expect(evaluate("*", { foo: { bar: { x: 1, y: 5 } } })).toBe({
+    foo: { bar: { x: 1, y: 5 } },
+  })
+})
+
+test("evaluates successfully multiple wildcards function calls in the middle of object path", () => {
+  expect(
+    evaluate("do foo.*.*.bar n: 10", {
+      foo: {
+        a: { x: { bar: ({ n }) => n + 4 }, y: { bar: ({ n }) => n + 5 } },
+        b: { z: { bar: ({ n }) => n + 7 } },
+        c: { baz: 10 },
+      },
+    })
+  ).toBe({ a: { x: 14, y: 15 }, b: { z: 17 } })
 })
 
 test("evaluates successfully function definitions without parameters", () => {
