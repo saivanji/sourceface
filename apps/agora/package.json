@@ -3,14 +3,13 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "test": "jest",
     "start": "nodemon --exec 'babel-node ./server.js'",
     "format": "prettier --write \"src/**/*.js\"",
     "lint": "prettier --check \"src/**/*.js\" && eslint \"src/**/*.js\"",
     "build": "babel ./server.js --out-dir ./build",
-    "test": "jest",
-    "seed": "babel-node ./seeds/index.js",
-    "seed:make": "",
-    "seed:apply": "",
+    "seed:dump": "node ./seed dump",
+    "seed:restore": "node ./seed restore",
     "migrate:create": "migrate create",
     "migrate:list": "migrate list --store='./setup/migrationStore' --compiler='js:@babel/register'",
     "migrate:up": "migrate up --store='./setup/migrationStore' --compiler='js:@babel/register'",
@@ -58,7 +57,8 @@
     "jest": "^25.3.0",
     "migrate": "^1.6.2",
     "nodemon": "1.18.11",
-    "prettier": "^2.0.5"
+    "prettier": "^2.0.5",
+    "yargs": "^16.0.3"
   },
   "scarfSettings": {
     "enabled": false
