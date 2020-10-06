@@ -1,5 +1,5 @@
 import * as positionRepo from "repos/position"
-import { transformPositions, createPositionType } from "./utils"
+import { transformPositions, createPositionType } from "utils/index"
 
 const updatePositions = (parent, { positions }, { pg }) =>
   /**

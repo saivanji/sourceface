@@ -18,6 +18,11 @@ const sql = {
     INSERT INTO modules (type, config, position_id) VALUES ($1, $2, $3)
     RETURNING *
   `,
+  _create: `
+    INSERT INTO modules (id, type, config, position_id)
+    SELECT $1 || '_' || max(cast(regexp_replace(id, $1 || '_(.*)', '\\1') AS integer)) + 1 AS id,
+    $2 AS type, $3 AS position_id FROM modules WHERE id LIKE $1 || '_%'
+  `,
   // TODO: return config instead of complete module?
   updateConfig: `
     UPDATE modules SET config = $2 WHERE id = $1
