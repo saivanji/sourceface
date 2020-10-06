@@ -178,24 +178,99 @@ const parseArgument = (arg, namespaces) => {
 }
 
 const applyFunc = (variable, args, scope) => {
-  const fn = look(variable, scope)
+  const evaluated = evaluateArgs(args, scope)
 
-  if (typeof fn !== "function") {
-    throw "Can not call non function type"
-  }
+  return look(variable, scope, fn => {
+    console.log(fn)
+    if (typeof fn === "undefined") {
+      throw "Variable is not defined"
+    }
 
-  return fn(evaluateArgs(args, scope))
+    if (typeof fn !== "function") {
+      throw "Can not call non function type"
+    }
+
+    return fn(evaluated)
+  })
 }
 
 /**
  * Looks for a variable in a scope.
  */
-const look = (variable, scope) => {
-  const path = variable.split(".")
+const look = (variable, scope, apply) => {
+  const path = variable.split(".").filter(Boolean)
   let result = scope
 
-  for (let key of path) {
-    result = result[key]
+  for (let [i, selector] of path.entries()) {
+    const wildcardAt = selector.indexOf("*")
+
+    /**
+     * Looking for wildcard fields.
+     */
+    if (wildcardAt !== -1) {
+      const context = get(path.slice(0, i), scope)
+
+      return (
+        context &&
+        over(
+          value => look(path.slice(i + 1).join("."), value, apply),
+          selector,
+          context
+        )
+      )
+    }
+
+    const value = result && result[selector]
+
+    /**
+     * Applying functions when we're in a leaf.
+     */
+    // TODO: why it's working when added "value" to a condition?
+    if (i === path.length - 1 && apply) {
+      return apply(value)
+    }
+
+    result = value
+  }
+
+  return result
+}
+
+const over = (fn, selector, obj) => {
+  let result
+
+  for (let key of Object.keys(obj)) {
+    const nextKey = match(key, selector)
+    const value = nextKey && fn(obj[key])
+
+    if (typeof value !== "undefined" && nextKey) {
+      /**
+       * Assigning empty object to result only when we have something to write and
+       * result is empty. This let's to avoid returning empty object in when all
+       * values are undefined.
+       */
+      result = result || {}
+      result[nextKey] = value
+    }
+  }
+
+  return result
+}
+
+const match = (key, selector) => {
+  const wildcardAt = selector.indexOf("*")
+
+  const before = selector.slice(0, wildcardAt)
+  const after = selector.slice(wildcardAt + 1)
+
+  let result = key
+
+  if (before) {
+    result = result.slice(before.length)
+  }
+
+  if (after) {
+    result = result.slice(0, -after.length)
   }
 
   return result
@@ -236,6 +311,16 @@ const evaluateVariable = (expression, scope) => {
 
     return value
   }
+}
+
+const get = (path, obj) => {
+  let result = obj
+
+  for (let key of path) {
+    result = result && result[key]
+  }
+
+  return result
 }
 
 class SyntaxError extends Error {}

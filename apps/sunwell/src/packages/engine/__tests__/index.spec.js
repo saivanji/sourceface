@@ -219,7 +219,7 @@ test("evaluates successfully wildcard in the beginning of object path", () => {
       y: { foo: { bar: 7 } },
       z: { foo: 9 },
     })
-  ).toBe({ x: 5, y: 7 })
+  ).toEqual({ x: 5, y: 7 })
 })
 
 test("evaluates successfully wildcard in the middle of object path", () => {
@@ -227,7 +227,7 @@ test("evaluates successfully wildcard in the middle of object path", () => {
     evaluate("foo.*.bar", {
       foo: { x: { bar: 4 }, y: { bar: 5 }, z: { baz: 9 } },
     })
-  ).toBe({ x: 4, y: 5 })
+  ).toEqual({ x: 4, y: 5 })
 })
 
 test("evaluates successfully multiple wildcards in the middle of object path", () => {
@@ -239,21 +239,42 @@ test("evaluates successfully multiple wildcards in the middle of object path", (
         c: { baz: 10 },
       },
     })
-  ).toBe({ a: { x: 4, y: 5 }, b: { z: 7 } })
+  ).toEqual({ a: { x: 4, y: 5 }, b: { z: 7 } })
 })
 
-test("evaluates successfully partial wildcard in the middle of object path", () => {
+test("evaluates successfully leading partial wildcard in the middle of object path", () => {
   expect(
     evaluate("foo.bar_*.baz", {
       foo: { bar_x: { baz: 4 }, bar_y: { baz: 5 }, bar_z: 5, x: { baz: 3 } },
     })
-  ).toBe({ x: 4, y: 5 })
+  ).toEqual({ x: 4, y: 5 })
+})
+
+test("evaluates successfully trailing partial wildcard in the middle of object path", () => {
+  expect(
+    evaluate("foo.*_bar.baz", {
+      foo: { x_bar: { baz: 4 }, y_bar: { baz: 5 }, z_bar: 5, x: { baz: 3 } },
+    })
+  ).toEqual({ x: 4, y: 5 })
+})
+
+test("evaluates successfully surrounded partial wildcard in the middle of object path", () => {
+  expect(
+    evaluate("foo.a_*_bar.baz", {
+      foo: {
+        a_x_bar: { baz: 4 },
+        a_y_bar: { baz: 5 },
+        a_z_bar: 5,
+        x: { baz: 3 },
+      },
+    })
+  ).toEqual({ x: 4, y: 5 })
 })
 
 test("evaluates successfully wildcard in the end of object path", () => {
   expect(
     evaluate("foo.bar.*", { foo: { bar: { x: 1, y: 3, z: { a: 1 } } } })
-  ).toBe({
+  ).toEqual({
     x: 1,
     y: 3,
     z: { a: 1 },
@@ -265,7 +286,7 @@ test("evaluates successfully partial wildcard in the end of object path", () => 
     evaluate("foo.bar.baz_*", {
       foo: { bar: { baz_x: 1, baz_y: 3, baz_z: { a: 1 }, z: 5 } },
     })
-  ).toBe({
+  ).toEqual({
     x: 1,
     y: 3,
     z: { a: 1 },
@@ -273,13 +294,13 @@ test("evaluates successfully partial wildcard in the end of object path", () => 
 })
 
 test("evaluates successfully wildcard on all properties of object path", () => {
-  expect(evaluate("*.*.*", { foo: { bar: { x: 1, y: 5 } } })).toBe({
+  expect(evaluate("*.*.*", { foo: { bar: { x: 1, y: 5 } } })).toEqual({
     foo: { bar: { x: 1, y: 5 } },
   })
 })
 
 test("evaluates successfully single wildcard", () => {
-  expect(evaluate("*", { foo: { bar: { x: 1, y: 5 } } })).toBe({
+  expect(evaluate("*", { foo: { bar: { x: 1, y: 5 } } })).toEqual({
     foo: { bar: { x: 1, y: 5 } },
   })
 })
@@ -293,7 +314,7 @@ test("evaluates successfully multiple wildcards function calls in the middle of 
         c: { baz: 10 },
       },
     })
-  ).toBe({ a: { x: 14, y: 15 }, b: { z: 17 } })
+  ).toEqual({ a: { x: 14, y: 15 }, b: { z: 17 } })
 })
 
 test("evaluates successfully wildcards in function arguments", () => {
@@ -377,6 +398,38 @@ test("fails on syntax errors", () => {
 
 test("fails when variable not exist", () => {
   expect(() => evaluate("x")).toThrow("Variable is not defined")
+})
+
+test("fails when variable not exist during function call", () => {
+  expect(() => evaluate("do x")).toThrow("Variable is not defined")
+})
+
+test("fails when variable not exist while accessing nested object prop during function call", () => {
+  expect(() => evaluate("do x.y.z")).toThrow("Variable is not defined")
+})
+
+test("fails when variable not exist while accessing wildcard nested object prop during function call", () => {
+  expect(() => evaluate("do x.y.*.*.z.foo")).toThrow("Variable is not defined")
+})
+
+test("fails when variable not exist while accessing nested object prop", () => {
+  expect(() => evaluate("x.y.z")).toThrow("Variable is not defined")
+})
+
+test("fails when variable not exist while accessing wildcard nested object prop", () => {
+  expect(() => evaluate("x.y.z.*.*.foo.bar")).toThrow("Variable is not defined")
+})
+
+test("fails when object property not exist", () => {
+  expect(() => evaluate("x.y.z", { x: { foo: 1 } })).toThrow(
+    "Variable is not defined"
+  )
+})
+
+test("fails when wildcard object property not exist", () => {
+  expect(() => evaluate("x.*.z", { x: { foo: 1 } })).toThrow(
+    "Variable is not defined"
+  )
 })
 
 test("fails to call a function when variable has wrong type", () => {

@@ -132,6 +132,8 @@ ReactDOM.render(
 //
 // - Consider using pg-bouncer
 //
+// - Tests:
+//   Consider writing module tests instead of e2e or all-in snapshot tests?
 //
 // - Engine:
 //   - pattern object path selection
