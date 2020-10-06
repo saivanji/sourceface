@@ -137,6 +137,8 @@ ReactDOM.render(
 //
 // - Engine:
 //   - pattern object path selection
+//   - rewrite evaluation algorithm to be able parse code to AST. code -> AST. AST -> code.
+//   - Keep AST in database. That will let to rename modules names and assign permissions with query calls.
 // - Modules
 //   - Module names with creation
 //   - Implement multiple regex validations
