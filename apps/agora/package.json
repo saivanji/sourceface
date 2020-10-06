@@ -9,6 +9,8 @@
     "build": "babel ./server.js --out-dir ./build",
     "test": "jest",
     "seed": "babel-node ./seeds/index.js",
+    "seed:make": "",
+    "seed:apply": "",
     "migrate:create": "migrate create",
     "migrate:list": "migrate list --store='./setup/migrationStore' --compiler='js:@babel/register'",
     "migrate:up": "migrate up --store='./setup/migrationStore' --compiler='js:@babel/register'",

@@ -7,7 +7,7 @@ enum ModuleType {
 }
 
 type Module {
-  id: Int!
+  id: String!
   positionId: Int!
   createdAt: DateTime!
   type: ModuleType

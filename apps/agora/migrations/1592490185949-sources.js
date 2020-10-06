@@ -5,7 +5,7 @@ export const up = () =>
     `)
     await t.none(`
       CREATE TABLE sources(
-        id text UNIQUE NOT NULL,
+        id text PRIMARY KEY CHECK (id <> ''),
         created_at timestamp NOT NULL DEFAULT NOW(),
         type source NOT NULL,
         config json NOT NULL
@@ -13,7 +13,7 @@ export const up = () =>
     `)
     await t.none(`
       CREATE TABLE commands(
-        id text UNIQUE NOT NULL,
+        id text PRIMARY KEY CHECK (id <> ''),
         created_at timestamp NOT NULL DEFAULT NOW(),
         source_id text NOT NULL REFERENCES sources(id) ON DELETE CASCADE,
         config json NOT NULL
@@ -30,6 +30,9 @@ export const up = () =>
 
 export const down = () =>
   global.pg.tx(async t => {
+    await t.none(`
+      DROP TABLE stale_commands
+    `)
     await t.none(`
       DROP TABLE commands
     `)

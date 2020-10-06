@@ -5,7 +5,7 @@ export const up = () =>
     `)
     await t.none(`
       CREATE TABLE modules(
-        id serial PRIMARY KEY,
+        id text PRIMARY KEY CHECK (id <> ''),
         created_at timestamp NOT NULL DEFAULT NOW(),
         position_id integer UNIQUE NOT NULL REFERENCES positions(id) ON DELETE CASCADE,
         type module NOT NULL,
@@ -13,10 +13,12 @@ export const up = () =>
         config json NOT NULL
       )
     `)
-    // for the case when module may have child layouts (tabs, sections and so on)
+    /**
+     * For the case when module may have child layouts (tabs, sections and so on).
+     */
     await t.none(`
       CREATE TABLE modules_layouts(
-        module_id integer NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
+        module_id text NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
         layout_id integer UNIQUE NOT NULL REFERENCES layouts(id) ON DELETE CASCADE
       )
     `)
