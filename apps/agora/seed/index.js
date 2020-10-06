@@ -1,21 +1,20 @@
 const path = require("path")
-const { exec } = require("child_process")
+const { execSync } = require("child_process")
 
 const { DATABASE_URL } = process.env
 
 const generatePath = name => path.resolve(__dirname, name)
 
-const run = (command, message) =>
-  exec(command, (error, stdout, stderr) => {
-    if (error || stderr) {
-      console.log(error || stderr)
-
-      process.exit(1)
-      return
-    }
-
-    console.log(message)
+const run = (command, message) => {
+  execSync(command, {
+    stdio:
+      /**
+       * Disabling "stdout" forwarding.
+       */
+      ["pipe", "ignore", "pipe"],
   })
+  console.log(message)
+}
 
 require("yargs")
   .command(
