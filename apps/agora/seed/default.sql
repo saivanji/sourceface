@@ -130,7 +130,7 @@ ALTER TABLE public.migrations OWNER TO admin;
 --
 
 CREATE TABLE public.modules (
-    id integer NOT NULL,
+    id text NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL,
     position_id integer NOT NULL,
     type public.module NOT NULL,
@@ -141,33 +141,13 @@ CREATE TABLE public.modules (
 
 ALTER TABLE public.modules OWNER TO admin;
 
---
--- Name: modules_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
---
-
-CREATE SEQUENCE public.modules_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.modules_id_seq OWNER TO admin;
-
---
--- Name: modules_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
---
-
-ALTER SEQUENCE public.modules_id_seq OWNED BY public.modules.id;
-
 
 --
 -- Name: modules_layouts; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.modules_layouts (
-    module_id integer NOT NULL,
+    module_id text NOT NULL,
     layout_id integer NOT NULL
 );
 
@@ -280,13 +260,6 @@ ALTER TABLE ONLY public.layouts ALTER COLUMN id SET DEFAULT nextval('public.layo
 
 
 --
--- Name: modules id; Type: DEFAULT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.modules ALTER COLUMN id SET DEFAULT nextval('public.modules_id_seq'::regclass);
-
-
---
 -- Name: pages id; Type: DEFAULT; Schema: public; Owner: admin
 --
 
@@ -372,13 +345,6 @@ COPY public.modules (id, created_at, position_id, type, config, binds) FROM stdi
 15	2020-09-24 20:55:56.541161	15	input	{"placeholder":"Address","validation":"^.+$","validationMessage":"Address is required"}	\N
 16	2020-09-24 20:56:54.89946	16	input	{"placeholder":"Delivery type","validation":"^.+$","validationMessage":"Delivery type is required"}	\N
 \.
-
-
---
--- Name: modules_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
---
-
-SELECT pg_catalog.setval('public.modules_id_seq', 24, true);
 
 
 --
