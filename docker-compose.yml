@@ -90,7 +90,7 @@ services:
       - style_node_modules:/var/www/node_modules
 
   postgres:
-    image: postgres:9.5
+    image: postgres:13
     ports:
       - "5432:5432"
     environment:
@@ -98,7 +98,7 @@ services:
       POSTGRES_PASSWORD: admin
 
   postgres_test:
-    image: postgres:9.5
+    image: postgres:13
     ports:
       - "5434:5432"
     environment:
@@ -106,7 +106,7 @@ services:
       POSTGRES_PASSWORD: admin
 
   postgres_mock:
-    image: postgres:9.5
+    image: postgres:13
     ports:
       - "5433:5432"
     environment:

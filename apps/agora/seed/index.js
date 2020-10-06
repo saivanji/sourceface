@@ -43,9 +43,11 @@ require("yargs")
       })
     },
     argv => {
-      // TODO: drop schema completely before seeding
       run(
-        `psql ${DATABASE_URL} < ${generatePath(argv.name)}.sql`,
+        `
+        echo "DROP SCHEMA public CASCADE; CREATE SCHEMA public;" | psql ${DATABASE_URL} &&
+        psql ${DATABASE_URL} < ${generatePath(argv.name)}.sql
+        `,
         `"${argv.name}" seed was applied successfully`
       )
     }
