@@ -70,7 +70,7 @@ export const evaluate = (input, scope, options) => {
   }
 
   /**
-   * Checking whether input is a function.
+   * Checking whether input is a function definition.
    */
   const parsed = input.split("->")
 
