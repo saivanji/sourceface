@@ -181,7 +181,7 @@ const applyFunc = (variable, args, scope) => {
   const evaluated = evaluateArgs(args, scope)
 
   return look(variable, scope, fn => {
-    console.log(fn)
+    // console.log(fn)
     if (typeof fn === "undefined") {
       throw "Variable is not defined"
     }
