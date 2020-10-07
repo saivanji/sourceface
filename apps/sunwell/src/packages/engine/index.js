@@ -32,6 +32,9 @@
 //
 // TODO: should we replace named arguments by position arguments for simplicity?
 
+// TODO: implement position parameters/args
+// `(a, b), x, y -> do foo (a, b), bar: x, baz: y`
+
 // TODO: implement arguments spread
 // `foo.bar ...form` is equal to:
 // `foo.bar x: form.x, y: form.y`
