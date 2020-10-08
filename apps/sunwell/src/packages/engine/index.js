@@ -1,3 +1,9 @@
+// here would be a function which contains all phases of compilation(3 for now)
+//
+//
+//
+//
+//
 // front end and back end will have templating with evaluating
 
 // TODO: most likely templating feature should not be part of a library at all?
