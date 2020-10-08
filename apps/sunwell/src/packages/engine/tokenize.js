@@ -7,6 +7,10 @@ export default input => {
   let result = []
 
   while ((item = lexer.next())) {
+    if (item.type === "error") {
+      throw new LexicalError("Unexpected input")
+    }
+
     if (item.type !== "Space") {
       result.push({
         type:
@@ -21,12 +25,19 @@ export default input => {
   return result
 }
 
+export class LexicalError extends Error {}
+
 const lexer = moo.compile({
   Numeric: /[0-9]+/,
   String: /'.*?'|".*?"/,
   Punctuator: /->|,|\.\.\.|\.|:|\*|~/,
   Space: / +/,
   Identifier: /[a-zA-Z0-9]+/,
+  /**
+   * Passing fake error type to prevent moo from throwing it's own errors and throw
+   * LexicalError instead.
+   */
+  error: moo.error,
 })
 
 /**

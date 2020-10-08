@@ -1,4 +1,4 @@
-import tokenize from "../tokenize"
+import tokenize, { LexicalError } from "../tokenize"
 
 test("tokenizes numeric", () => {
   expect(tokenize("4")).toEqual([{ type: "Numeric", value: "4" }])
@@ -77,6 +77,8 @@ test("tokenizes syntactically wrong code", () => {
   ])
 })
 
-// test("fails to tokenize unknown symbols", () => {
-//   expect(() => tokenize("[]##test"))
-// })
+test("fails to tokenize unknown symbols", () => {
+  expect(() => tokenize("[]##test")).toThrow(
+    new LexicalError("Unexpected input")
+  )
+})
