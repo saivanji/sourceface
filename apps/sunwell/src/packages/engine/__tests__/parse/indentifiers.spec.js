@@ -1,12 +1,12 @@
-import { parse } from "../../struct"
+import parse from "../../parse"
 
-test("parses identifier", () => {
-  expect(parse("foo")).toEqual({ type: "Identifier", name: ["foo"] })
+test("parses member", () => {
+  expect(parse("foo")).toEqual({ type: "Member", name: ["foo"] })
 })
 
-test("parses nested identifier", () => {
+test("parses nested member", () => {
   expect(parse("foo.bar.baz")).toEqual({
-    type: "Identifier",
+    type: "Member",
     name: ["foo", "bar", "baz"],
   })
 })

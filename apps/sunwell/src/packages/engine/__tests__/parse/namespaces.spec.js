@@ -1,11 +1,11 @@
-import { parse } from "../../struct"
+import parse from "../../parse"
 
 test("parses namespaced constant", () => {
   expect(
     parse("~baz", {
       namespaces: { "foo.bar": "~" },
     })
-  ).toEqual({ type: "Identifier", name: ["foo", "bar", "baz"] })
+  ).toEqual({ type: "Member", name: ["foo", "bar", "baz"] })
 })
 
 test("parses namespaced nested constant", () => {
@@ -13,7 +13,7 @@ test("parses namespaced nested constant", () => {
     parse("~a.b.c", {
       namespaces: { "foo.bar": "~" },
     })
-  ).toEqual({ type: "Identifier", name: ["foo", "bar", "a", "b", "c"] })
+  ).toEqual({ type: "Member", name: ["foo", "bar", "a", "b", "c"] })
 })
 
 test("parses namespaced nested constant with wildcard", () => {
@@ -21,7 +21,7 @@ test("parses namespaced nested constant with wildcard", () => {
     parse("~a.*.c", {
       namespaces: { "foo.bar": "~" },
     })
-  ).toEqual({ type: "Identifier", name: ["foo", "bar", "a", "*", "c"] })
+  ).toEqual({ type: "Member", name: ["foo", "bar", "a", "*", "c"] })
 })
 
 test("parses namespaced nested function call", () => {
@@ -32,7 +32,7 @@ test("parses namespaced nested function call", () => {
   ).toEqual({
     type: "Call",
     callee: {
-      type: "Identifier",
+      type: "Member",
       name: ["foo", "bar", "baz"],
     },
   })
@@ -45,7 +45,7 @@ test("parses namespaced nested function call", () => {
     })
   ).toEqual({
     type: "Call",
-    callee: { type: "Identifier", name: ["foo", "bar", "a", "b", "c"] },
+    callee: { type: "Member", name: ["foo", "bar", "a", "b", "c"] },
   })
 })
 
@@ -57,7 +57,7 @@ test("parses function call with namespaces argument", () => {
   ).toEqual({
     type: "Call",
     callee: {
-      type: "Identifier",
+      type: "Member",
       name: ["a", "b", "c"],
     },
     args: [
@@ -65,7 +65,7 @@ test("parses function call with namespaces argument", () => {
         type: "key",
         name: "x",
         value: {
-          type: "Identifier",
+          type: "Member",
           name: ["foo", "bar", "baz"],
         },
       },
@@ -81,7 +81,7 @@ test("parses nested function call with namespaces argument", () => {
   ).toEqual({
     type: "Call",
     callee: {
-      type: "Identifier",
+      type: "Member",
       name: ["a", "b", "c"],
     },
     args: [
@@ -89,7 +89,7 @@ test("parses nested function call with namespaces argument", () => {
         type: "key",
         name: "x",
         value: {
-          type: "Identifier",
+          type: "Member",
           name: ["foo", "bar", "baz", "x"],
         },
       },

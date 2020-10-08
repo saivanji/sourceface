@@ -1,17 +1,17 @@
-import { evaluate } from "../"
+import interpret from "../../interpret"
 
 test("evaluates numbers", () => {
-  expect(evaluate("5")).toBe(5)
+  expect(interpret("5")).toBe(5)
 })
 
 test("evaluates strings with single quotes", () => {
-  expect(evaluate("'hello'")).toBe("hello")
+  expect(interpret("'hello'")).toBe("hello")
 })
 
 test("evaluates strings with double quotes", () => {
-  expect(evaluate('"hello"')).toBe("hello")
+  expect(interpret('"hello"')).toBe("hello")
 })
 
 test("evaluates successfully with extra leading and trailing spaces", () => {
-  expect(evaluate("    4      ")).toBe(4)
+  expect(interpret("    4      ")).toBe(4)
 })

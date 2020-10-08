@@ -1,5 +1,5 @@
-import { evaluate } from "../"
+import interpret from "../../interpret"
 
 test("fails on syntax errors", () => {
-  expect(() => evaluate("error[]")).toThrow("Syntax error")
+  expect(() => interpret("error[]")).toThrow("Syntax error")
 })

@@ -1,10 +1,10 @@
-import { parse } from "../../struct"
+import parse from "../../parse"
 
 test("parses function call with shorthand arguments", () => {
   expect(parse("do foo x, y")).toEqual({
     type: "Call",
     callee: {
-      type: "Identifier",
+      type: "Member",
       name: ["foo"],
     },
     args: [
@@ -12,7 +12,7 @@ test("parses function call with shorthand arguments", () => {
         type: "key",
         name: "x",
         value: {
-          type: "Identifier",
+          type: "Member",
           name: ["x"],
         },
       },
@@ -20,7 +20,7 @@ test("parses function call with shorthand arguments", () => {
         type: "key",
         name: "y",
         value: {
-          type: "Identifier",
+          type: "Member",
           name: ["y"],
         },
       },
@@ -32,7 +32,7 @@ test("parses function call with nested shorthand arguments", () => {
   expect(parse("do foo a.x, b.y")).toEqual({
     type: "Call",
     callee: {
-      type: "Identifier",
+      type: "Member",
       name: ["foo"],
     },
     args: [
@@ -40,7 +40,7 @@ test("parses function call with nested shorthand arguments", () => {
         type: "key",
         name: "x",
         value: {
-          type: "Identifier",
+          type: "Member",
           name: ["a", "x"],
         },
       },
@@ -48,7 +48,7 @@ test("parses function call with nested shorthand arguments", () => {
         type: "key",
         name: "y",
         value: {
-          type: "Identifier",
+          type: "Member",
           name: ["b", "y"],
         },
       },

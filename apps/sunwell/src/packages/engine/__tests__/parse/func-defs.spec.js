@@ -1,4 +1,4 @@
-import { parse } from "../../struct"
+import parse from "../../parse"
 
 test("parses successfully function definition returning literal", () => {
   expect(parse("-> 5")).toEqual({
@@ -10,7 +10,7 @@ test("parses successfully function definition returning literal", () => {
 test("parses successfully function definition returning constant", () => {
   expect(parse("-> foo")).toEqual({
     type: "Definition",
-    body: { type: "Identifier", name: ["foo"] },
+    body: { type: "Member", name: ["foo"] },
   })
 })
 
@@ -19,7 +19,7 @@ test("parses successfully function definition without parameters", () => {
     type: "Definition",
     body: {
       type: "Call",
-      callee: { type: "Identifier", name: ["foo"] },
+      callee: { type: "Member", name: ["foo"] },
       args: [
         {
           type: "key",
@@ -47,7 +47,7 @@ test("parses successfully function definitions without parameters and extra spac
     type: "Definition",
     body: {
       type: "Call",
-      callee: { type: "Identifier", name: ["foo"] },
+      callee: { type: "Member", name: ["foo"] },
       args: [
         {
           type: "key",
@@ -76,12 +76,12 @@ test("parses successfully function definitions with single parameter", () => {
     params: ["x"],
     body: {
       type: "Call",
-      callee: { type: "Identifier", name: ["foo"] },
+      callee: { type: "Member", name: ["foo"] },
       args: [
         {
           type: "key",
           name: "x",
-          value: { type: "Identifier", name: ["x"] },
+          value: { type: "Member", name: ["x"] },
         },
         {
           type: "key",
@@ -102,12 +102,12 @@ test("parses successfully function definitions with single parameter and extra s
     params: ["x"],
     body: {
       type: "Call",
-      callee: { type: "Identifier", name: ["foo"] },
+      callee: { type: "Member", name: ["foo"] },
       args: [
         {
           type: "key",
           name: "x",
-          value: { type: "Identifier", name: ["x"] },
+          value: { type: "Member", name: ["x"] },
         },
         {
           type: "key",
@@ -128,13 +128,13 @@ test("parses successfully function definitions with multiple parameters", () => 
     params: ["x", "y"],
     body: {
       type: "Call",
-      callee: { type: "Identifier", name: ["foo"] },
+      callee: { type: "Member", name: ["foo"] },
       args: [
         {
           type: "key",
           name: "x",
           value: {
-            type: "Identifier",
+            type: "Member",
             name: ["x"],
           },
         },
@@ -142,7 +142,7 @@ test("parses successfully function definitions with multiple parameters", () => 
           type: "key",
           name: "y",
           value: {
-            type: "Identifier",
+            type: "Member",
             name: ["y"],
           },
         },
@@ -157,13 +157,13 @@ test("parses successfully function definitions with multiple parameters and extr
     params: ["x", "y"],
     body: {
       type: "Call",
-      callee: { type: "Identifier", name: ["foo"] },
+      callee: { type: "Member", name: ["foo"] },
       args: [
         {
           type: "key",
           name: "x",
           value: {
-            type: "Identifier",
+            type: "Member",
             name: ["x"],
           },
         },
@@ -171,7 +171,7 @@ test("parses successfully function definitions with multiple parameters and extr
           type: "key",
           name: "y",
           value: {
-            type: "Identifier",
+            type: "Member",
             name: ["y"],
           },
         },

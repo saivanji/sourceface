@@ -1,14 +1,17 @@
-import { evaluate } from "../../"
+import interpret from "../../interpret"
 
 test("evaluates function call with spread arguments applied", () => {
   expect(
-    evaluate("do foo ...bar", { foo: ({ x, y }) => x + y, bar: { x: 1, y: 2 } })
+    interpret("do foo ...bar", {
+      foo: ({ x, y }) => x + y,
+      bar: { x: 1, y: 2 },
+    })
   ).toBe(3)
 })
 
 test("evaluates function call with multiple spread arguments applied", () => {
   expect(
-    evaluate("do foo ...bar, ...baz", {
+    interpret("do foo ...bar, ...baz", {
       foo: ({ x, y }) => x + y,
       bar: { x: 1 },
       baz: { y: 2 },
@@ -18,7 +21,7 @@ test("evaluates function call with multiple spread arguments applied", () => {
 
 test("evaluates function call with multiple spread and regular arguments applied", () => {
   expect(
-    evaluate("do foo ...bar, z: 5, ...baz", {
+    interpret("do foo ...bar, z: 5, ...baz", {
       foo: ({ x, y, z }) => x + y + z,
       bar: { x: 1 },
       baz: { y: 2 },
@@ -28,7 +31,7 @@ test("evaluates function call with multiple spread and regular arguments applied
 
 test("evaluates function call with spread arguments applied and spaces around", () => {
   expect(
-    evaluate("do foo    ...bar    ", {
+    interpret("do foo    ...bar    ", {
       foo: ({ x, y }) => x + y,
       bar: { x: 1, y: 2 },
     })
@@ -37,7 +40,7 @@ test("evaluates function call with spread arguments applied and spaces around", 
 
 test("evaluates function call with spread namespaced path arguments applied", () => {
   expect(
-    evaluate(
+    interpret(
       "do exec ...~bar.baz",
       { exec: ({ x, y }) => x + y, foo: { bar: { baz: { x: 1, y: 2 } } } },
       { namespaces: { foo: "~" } }
@@ -47,7 +50,7 @@ test("evaluates function call with spread namespaced path arguments applied", ()
 
 test("evaluates function call with spread namespaced arguments applied", () => {
   expect(
-    evaluate(
+    interpret(
       "do exec ...~baz",
       { exec: ({ x, y }) => x + y, foo: { bar: { baz: { x: 1, y: 2 } } } },
       { namespaces: { "foo.bar": "~" } }

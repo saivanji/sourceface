@@ -1,8 +1,8 @@
-import { evaluate } from "../"
+import interpret from "../../interpret"
 
 test("evaluates variables when namespace is set", () => {
   expect(
-    evaluate(
+    interpret(
       "~x",
       { foo: { bar: { x: 4 } } },
       { namespaces: { "foo.bar": "~" } }
@@ -12,7 +12,7 @@ test("evaluates variables when namespace is set", () => {
 
 test("evaluates function call when namespace is set", () => {
   expect(
-    evaluate(
+    interpret(
       "do ~exec",
       { foo: { bar: { exec: () => 4 } } },
       { namespaces: { "foo.bar": "~" } }
@@ -22,7 +22,7 @@ test("evaluates function call when namespace is set", () => {
 
 test("evaluates function call with variable arguments when namespace is set", () => {
   expect(
-    evaluate(
+    interpret(
       "do exec x: ~a, y: b",
       {
         exec: ({ x, y }) => x + y,
@@ -40,7 +40,7 @@ test("evaluates function call with variable arguments when namespace is set", ()
 
 test("evaluates function call with shorthand variable arguments when namespace is set", () => {
   expect(
-    evaluate(
+    interpret(
       "do exec ~x, y",
       { exec: ({ x, y }) => x + y, foo: { bar: { x: 8 } }, y: 2 },
       { namespaces: { "foo.bar": "~" } }
@@ -50,7 +50,7 @@ test("evaluates function call with shorthand variable arguments when namespace i
 
 test("evaluates function call with nested shorthand variable arguments when namespace is set", () => {
   expect(
-    evaluate(
+    interpret(
       "do exec ~baz.x, bar.y",
       {
         exec: ({ x, y }) => x + y,
@@ -71,7 +71,7 @@ test("evaluates function call with nested shorthand variable arguments when name
 })
 
 test("fails when namespace is not defined", () => {
-  expect(() => evaluate("~x", { foo: { bar: { x: 4 } } })).toThrow(
+  expect(() => interpret("~x", { foo: { bar: { x: 4 } } })).toThrow(
     "Namespace is not defined"
   )
 })

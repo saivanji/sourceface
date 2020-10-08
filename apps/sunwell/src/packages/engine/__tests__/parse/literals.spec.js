@@ -1,4 +1,4 @@
-import { parse } from "../../struct"
+import parse from "../../parse"
 
 test("parses number", () => {
   expect(parse("4")).toEqual({ type: "Literal", value: 4 })
