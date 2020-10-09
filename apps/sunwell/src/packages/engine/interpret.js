@@ -1,1 +1,1 @@
-export default structure => {}
+export default tree => {}

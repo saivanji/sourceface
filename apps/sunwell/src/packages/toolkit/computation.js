@@ -4,6 +4,8 @@ import * as engine from "packages/engine"
 import * as template from "packages/template"
 import { useScope, useIdentity } from "./container"
 
+// TODO: move pipelining to a separate package?
+
 // TODO: rename commands to queries completely
 
 export const useFunction = (...expressions) => {

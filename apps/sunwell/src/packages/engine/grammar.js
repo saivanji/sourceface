@@ -1,5 +1,7 @@
 import { Call, Member } from "./semantics"
 
+// TODO: have Program type which will always be root of a tree?
+
 export default {
   Definition: [
     {
