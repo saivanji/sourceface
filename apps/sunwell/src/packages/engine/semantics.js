@@ -1,7 +1,4 @@
 // TODO: instead of parent, have more specific name such as structure, member and so on?
-// TODO: consider having definition of the object/array(set/list)? `x: 1, y: 2` and array `[1, 2]` function args can be either object or array.
-// they are higher abstractions which can be given as args to funcs or at the root of a program(could not be given as keys for themselves/no nesting)
-// TODO: implement destructuring feature for sets and lists params definition
 
 export const Definition = {
   params: (parent, param) => ({

@@ -1,7 +1,7 @@
 // here would be a function which contains all phases of compilation(3 for now)
 //
 //
-//
+// TODO: get rid of function definitions in favor of function calls with scope
 //
 //
 // front end and back end will have templating with evaluating
