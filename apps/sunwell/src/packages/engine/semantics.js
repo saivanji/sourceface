@@ -1,5 +1,5 @@
 // TODO: instead of parent, have more specific name such as structure, member and so on?
-// TODO: consider having definition of the object/array? `x: 1, y: 2` and array `[1, 2]` function args can be either object or array
+// TODO: consider having definition of the object/array(set/list)? `x: 1, y: 2` and array `[1, 2]` function args can be either object or array
 
 export const Definition = {
   params: (parent, param) => ({
