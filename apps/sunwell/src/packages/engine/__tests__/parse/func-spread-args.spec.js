@@ -101,7 +101,7 @@ test("parses function call with spread arguments applied and spaces around", () 
 test("parses function call with spread namespaced arguments applied", () => {
   expect(
     parse("do foo ...~c", {
-      namespaces: { "a.b": "~" },
+      namespaces: { "~": "a.b" },
     })
   ).toEqual({
     type: "Call",
@@ -124,7 +124,7 @@ test("parses function call with spread namespaced arguments applied", () => {
 test("parses function call with spread namespaced path arguments applied", () => {
   expect(
     parse("do foo ...~b.c", {
-      namespaces: { a: "~" },
+      namespaces: { "~": "a" },
     })
   ).toEqual({
     type: "Call",

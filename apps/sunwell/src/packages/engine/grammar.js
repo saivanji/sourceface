@@ -1,6 +1,6 @@
-// TODO: next step after grammar is semantics
-// import semantics here
-const grammar = {
+import { Call, Member } from "./semantics"
+
+export default {
   Definition: [
     {
       type: "repeat",
@@ -29,13 +29,13 @@ const grammar = {
     },
     {
       type: "structure",
+      fn: Call.callee,
       name: "Member",
-      fn: (parent, callee) => ({ ...parent, callee }),
     },
     {
       type: "repeat",
       optional: true,
-      fn: (parent, arg) => ({ ...parent, args: [...parent.args, arg] }),
+      fn: Call.args,
       separator: { type: "token", name: "Punctuator", value: "," },
       item: {
         type: "or",
@@ -43,17 +43,13 @@ const grammar = {
           [
             {
               type: "token",
-              fn: (parent, identifier) => ({
-                ...parent,
-                type: "key",
-                name: identifier.value,
-              }),
+              fn: Call.key,
               name: "Identifier",
             },
             { type: "token", name: "Punctuator", value: ":" },
             {
               type: "or",
-              fn: (parent, value) => ({ ...parent, value }),
+              fn: Call.value,
               items: [
                 { type: "structure", name: "Member" },
                 { type: "structure", name: "Literal" },
@@ -62,19 +58,14 @@ const grammar = {
           ],
           {
             type: "structure",
-            fn: (parent, value) => ({
-              ...parent,
-              type: "key",
-              name: value.name.slice(-1),
-              value,
-            }),
+            fn: Call.shorthand,
             name: "Member",
           },
           [
             { type: "token", name: "Punctuator", value: "..." },
             {
               type: "structure",
-              fn: (parent, value) => ({ ...parent, type: "spread", value }),
+              fn: Call.spread,
               name: "Member",
             },
           ],
@@ -85,18 +76,27 @@ const grammar = {
   Member: [
     {
       type: "token",
+      fn: Member.prefix,
       optional: true,
       name: "Punctuator",
-      value: "~",
+      value: ["~", "#"],
     },
     {
       type: "repeat",
       separator: { type: "token", name: "Punctuator", value: "." },
       item: {
         type: "or",
+        fn: Member.node,
         items: [
-          { type: "token", name: "Identifier" },
-          { type: "token", name: "Punctuator", value: "*" },
+          {
+            type: "token",
+            name: "Identifier",
+          },
+          {
+            type: "token",
+            name: "Punctuator",
+            value: "*",
+          },
         ],
       },
     },
