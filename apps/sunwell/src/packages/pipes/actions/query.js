@@ -51,3 +51,6 @@ export function View({ data }) {
     </>
   )
 }
+
+// TODO: suggest next step depending what we already have in data
+export const suggest = () => {}
