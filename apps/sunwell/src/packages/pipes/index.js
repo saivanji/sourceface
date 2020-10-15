@@ -4,7 +4,7 @@ import { Action } from "./components"
 
 export const Pipe = ({ value, onChange }) => {
   return (
-    <Action>
+    <Action type="query" name="list">
       <actions.query.View />
     </Action>
   )

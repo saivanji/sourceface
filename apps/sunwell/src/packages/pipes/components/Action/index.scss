@@ -1,13 +1,25 @@
 @import "~@sourceface/style/index.scss";
 
 .root {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
   padding: $value-1 $value-2;
   border-radius: $rounded-sm;
   box-shadow: $shadow-base;
   background-color: $color-white;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $value-1;
+  margin-bottom: $value-2;
+  border-bottom: 1px solid $color-gray-300;
+}
+
+.body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   > * {
     margin: $value-1;
     &:last-child {
