@@ -1,0 +1,36 @@
+@import "~@sourceface/style/index.scss";
+
+.root {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: $value-1 $value-2;
+  border-radius: $rounded-sm;
+  box-shadow: $shadow-base;
+  background-color: $color-white;
+  > * {
+    margin: $value-1;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+  &:hover .add {
+    opacity: 1;
+  }
+}
+
+.add {
+  opacity: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  width: $value-4;
+  height: $value-4;
+  border-radius: $rounded-sm;
+  background: $color-gray-300;
+  border: 1px solid $color-gray-400;
+  &:hover {
+    background: $color-gray-400;
+  }
+}

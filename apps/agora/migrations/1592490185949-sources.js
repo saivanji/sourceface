@@ -11,6 +11,7 @@ export const up = () =>
         config json NOT NULL
       )
     `)
+    // TODO: make id as integer and add "name" field.
     await t.none(`
       CREATE TABLE commands(
         id text PRIMARY KEY CHECK (id <> ''),

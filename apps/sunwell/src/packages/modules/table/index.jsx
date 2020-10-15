@@ -18,6 +18,7 @@ import {
   useTransition,
   useValue,
 } from "packages/toolkit"
+import { Pipe } from "packages/pipes"
 import styles from "./index.scss"
 
 // TODO: filters might be displayed in place of a column(filtered column will have gray rounded bg and "i" icon. When user will hover it - will display applied filters)
@@ -56,7 +57,7 @@ export const Root = function TableModule({ config, local: { limit, offset } }) {
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
-          {rows.map(row => (
+          {rows.map((row) => (
             <Table.Tr key={row.id}>
               <Table.Td>{row.id}</Table.Td>
               <Table.Td>
@@ -113,6 +114,11 @@ export const Configuration = function TableModuleConfiguration({
       validationSchema={validationSchema}
     >
       <Section title="Basic">
+        <Row>
+          <Label title="Data">
+            <Pipe />
+          </Label>
+        </Row>
         <Row>
           <Label title="Data">
             <Field name="items" component={Expression} />

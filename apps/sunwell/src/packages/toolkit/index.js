@@ -6,5 +6,5 @@ export {
   useTransition,
 } from "./container"
 export { Form, Field } from "./form"
-export { Expression, Template } from "./components"
+export { Expression } from "./components"
 export { useFunction, useValue, useTemplate } from "./computation"
