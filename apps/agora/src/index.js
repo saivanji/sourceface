@@ -58,7 +58,7 @@ const app = express()
 
   app.post(
     GRAPHQL_ENDPOINT,
-    graphqlHTTP(req => ({
+    graphqlHTTP((req) => ({
       schema,
       context: Object.assign(req, {
         pg,
