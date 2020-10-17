@@ -1,5 +1,5 @@
 import React from "react"
-import { Text, Value } from "../components"
+import { Action, Text, Value } from "../components"
 
 // TODO: rename to `runQuery`
 
@@ -21,6 +21,10 @@ import { Text, Value } from "../components"
 // "call `justify` `for`/`for every` `form_*`"
 
 // TODO: get module value as variable
+
+// TODO: add "variable" type to get local or external module variable. support concatenation only there?
+
+// TODO: make pipelines on a separate nested side view. or even displaying in the right/left side additionally to the main view.
 
 const data = {
   query_id: 4,
@@ -58,20 +62,21 @@ const data = {
 
 export function View({ data }) {
   return (
-    <>
-      <Text>Run</Text>
-      <Value color="blue">listOrders</Value>
-      <Text>with</Text>
-      <Value color="gray">limit</Value>
-      <Text>as</Text>
-      <Value color="gray">5</Value>
-      <Text>and</Text>
-      <Value color="gray">offset</Value>
-      <Text>as</Text>
-      <Value color="gray">7</Value>
-    </>
+    <Action secondary="arguments">
+      <Text>Execute</Text>
+      <Value color="gray">listOrders</Value>
+      <Text>query</Text>
+    </Action>
   )
 }
+// <Text>with</Text>
+// <Value color="gray">limit</Value>
+// <Text>as</Text>
+// <Value color="beige">5</Value>
+// <Text>and</Text>
+// <Value color="gray">offset</Value>
+// <Text>as</Text>
+// <Value color="beige">7</Value>
 
 export const execute = (data, { queries, modules }) => {}
 

@@ -1,25 +1,19 @@
 @import "~@sourceface/style/index.scss";
 
 .root {
-  padding: $value-1 $value-2;
   border-radius: $rounded-sm;
-  box-shadow: $shadow-base;
+  border: 1px solid $color-gray-400;
   background-color: $color-white;
-}
-
-.head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: $value-1;
-  margin-bottom: $value-2;
-  border-bottom: 1px solid $color-gray-300;
+  &:hover svg {
+    opacity: 1;
+  }
 }
 
 .body {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  padding: $value-1;
   > * {
     margin: $value-1;
     &:last-child {
@@ -29,6 +23,41 @@
   &:hover .add {
     opacity: 1;
   }
+}
+
+.show {
+  position: relative;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.5rem;
+  background-color: $color-gray-100;
+  border-top: 1px solid $color-gray-400;
+  border-bottom-left-radius: $rounded-sm;
+  border-bottom-right-radius: $rounded-sm;
+}
+
+.expanded {
+  position: relative;
+  border-top: 1px solid $color-gray-400;
+  padding: $value-1 $value-2;
+}
+
+.show svg,
+.expanded svg {
+  position: absolute;
+  cursor: pointer;
+  opacity: 0;
+  border: 1px solid $color-gray-400;
+  background-color: $color-gray-100;
+  border-radius: $rounded-sm;
+  padding: $value-1;
+  bottom: $value-2;
+  right: $value-2;
+  width: $value-6;
+  height: $value-6;
 }
 
 .add {

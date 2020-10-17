@@ -9,4 +9,5 @@ export default ({ children, color }) => (
 const colors = {
   blue: styles.blue,
   gray: styles.gray,
+  beige: styles.beige,
 }
