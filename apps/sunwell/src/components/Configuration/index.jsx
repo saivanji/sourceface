@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { assocPath, trim } from "ramda"
-import JSONTree from "react-json-tree"
-import { Tabs, Input } from "@sourceface/components"
+// import JSONTree from "react-json-tree"
+import { Input } from "@sourceface/components"
 import { useScope } from "packages/toolkit"
 import * as stock from "packages/modules"
 
@@ -10,55 +10,25 @@ export default function Configuration({
   modules,
   onUpdate,
   onRemove,
-  onBindsPush,
+  // onBindsPush,
 }) {
-  const [selected, setSelected] = useState("configuration")
+  // const [selected, setSelected] = useState("configuration")
 
   if (!modules) {
     return "Loading..."
   }
 
   // TODO: crash, when module is deleted(explore git history for the additional scope on how that was solved before)
-  const module = modules.find(x => x.id === selectedId)
+  const module = modules.find((x) => x.id === selectedId)
   const Component = stock.dict[module.type].Configuration
 
   return (
-    <>
-      <TabHead selected={selected} onSelect={setSelected} />
-      <Tabs>
-        {selected === "configuration" ? (
-          <Base
-            module={module}
-            onUpdate={onUpdate}
-            onRemove={onRemove}
-            component={Component}
-          />
-        ) : (
-          selected === "scope" && (
-            <Scope moduleId={module.id} onBindsPush={onBindsPush} />
-          )
-        )}
-      </Tabs>
-    </>
-  )
-}
-
-function TabHead({ selected, onSelect }) {
-  return (
-    <Tabs.Header>
-      <Tabs.Tab
-        onClick={() => onSelect("configuration")}
-        isSelected={selected === "configuration"}
-      >
-        Configuration
-      </Tabs.Tab>
-      <Tabs.Tab
-        onClick={() => onSelect("scope")}
-        isSelected={selected === "scope"}
-      >
-        Scope
-      </Tabs.Tab>
-    </Tabs.Header>
+    <Base
+      module={module}
+      onUpdate={onUpdate}
+      onRemove={onRemove}
+      component={Component}
+    />
   )
 }
 
@@ -119,7 +89,7 @@ function Scope({ moduleId, onBindsPush }) {
       hideRoot
       invertTheme
       data={scope}
-      labelRenderer={path => (
+      labelRenderer={(path) => (
         <strong>
           {path[0]}
           {path.length === 1 && path[0] === "binds" && (

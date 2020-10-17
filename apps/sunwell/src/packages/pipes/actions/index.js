@@ -1,3 +1,3 @@
-import * as query from "./query"
+import * as runQuery from "./runQuery"
 
-export { query }
+export { runQuery }

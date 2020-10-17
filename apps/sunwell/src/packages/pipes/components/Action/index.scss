@@ -4,22 +4,54 @@
   border-radius: $rounded-sm;
   border: 1px solid $color-gray-400;
   background-color: $color-white;
-  &:hover svg {
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  padding: $value-1 $value-2 0;
+  &:hover .moreIcon {
     opacity: 1;
   }
 }
 
-.body {
+.moreIcon {
+  margin-left: auto;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.moreIcon,
+.typeIcon {
+  width: $value-3;
+  height: $value-3;
+}
+
+.name {
+  font-size: $font-size-xs;
+  color: $color-gray-700;
+  margin-left: $value-2;
+}
+
+.text {
+  display: inline-flex;
+  font-weight: 600;
+}
+
+.group {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  padding: $value-1;
-  > * {
+  > *:not(.group) {
     margin: $value-1;
     &:last-child {
       margin-right: 0;
     }
   }
+}
+
+.body {
+  padding: 0 $value-1 $value-1;
   &:hover .add {
     opacity: 1;
   }
@@ -33,20 +65,27 @@
   align-items: center;
   cursor: pointer;
   font-size: 0.5rem;
+  margin-top: $value-1;
   background-color: $color-gray-100;
   border-top: 1px solid $color-gray-400;
   border-bottom-left-radius: $rounded-sm;
   border-bottom-right-radius: $rounded-sm;
+  &:hover .bottomIcon {
+    opacity: 1;
+  }
 }
 
 .expanded {
   position: relative;
   border-top: 1px solid $color-gray-400;
   padding: $value-1 $value-2;
+  &:hover .topIcon {
+    opacity: 1;
+  }
 }
 
-.show svg,
-.expanded svg {
+.topIcon,
+.bottomIcon {
   position: absolute;
   cursor: pointer;
   opacity: 0;

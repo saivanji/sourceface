@@ -1,29 +1,50 @@
-import React, { useState } from "react"
+import React, { useState, Children } from "react"
+import cx from "classnames"
 import styles from "./index.scss"
 import BottomArrow from "assets/chev-b.svg"
 import TopArrow from "assets/chev-t.svg"
+import Guide from "assets/guide.svg"
+import More from "assets/more.svg"
 
 export default function Action({ children, secondary }) {
   const [isOpened, setOpened] = useState(false)
 
   return (
     <div className={styles.root}>
-      <div className={styles.body}>
-        {children}
+      <div className={styles.head}>
+        <Guide className={styles.typeIcon} />
+        <span className={styles.name}>Unnamed</span>
+        <More className={styles.moreIcon} />
+      </div>
+      <div className={cx(styles.body, styles.group)}>
+        {wrapText(children)}
         <span className={styles.add}>+</span>
       </div>
       {secondary && !isOpened ? (
         <div className={styles.show} onClick={() => setOpened(true)}>
           ---
-          <BottomArrow />
+          <BottomArrow className={styles.bottomIcon} />
         </div>
       ) : (
         isOpened && (
           <div className={styles.expanded}>
-            arguments <TopArrow onClick={() => setOpened(false)} />
+            {secondary}{" "}
+            <TopArrow
+              className={styles.topIcon}
+              onClick={() => setOpened(false)}
+            />
           </div>
         )
       )}
     </div>
   )
 }
+
+Action.Group = function ActionGroup({ children }) {
+  return <div className={styles.group}>{wrapText(children)}</div>
+}
+
+const wrapText = (children) =>
+  Children.map(children, (node) =>
+    typeof node === "string" ? <span className={styles.text}>{node}</span> : node
+  )
