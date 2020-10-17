@@ -1,0 +1,44 @@
+@import "~@sourceface/style/index.scss";
+
+.root {
+  font-family: "monospace";
+  display: inline-flex;
+  align-items: center;
+  font-size: $font-size-xs;
+  border-radius: $rounded-sm;
+  padding: $value-1 $value-2;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: $value-1 0;
+  padding-left: -($value-1);
+  margin-top: -($value-1);
+  margin-left: -($value-1);
+  margin-bottom: -($value-1);
+  margin-right: $value-1;
+  width: $value-3;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.15);
+  }
+  svg {
+    width: 100%;
+  }
+}
+
+.blue {
+  background-color: $color-blue-300;
+  color: $color-blue-900;
+}
+
+.gray {
+  background-color: $color-gray-300;
+  color: $color-gray-900;
+}
+
+.beige {
+  background-color: beige;
+  color: $color-gray-900;
+}

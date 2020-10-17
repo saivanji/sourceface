@@ -44,9 +44,6 @@
   align-items: center;
   > *:not(.group) {
     margin: $value-1;
-    &:last-child {
-      margin-right: 0;
-    }
   }
 }
 

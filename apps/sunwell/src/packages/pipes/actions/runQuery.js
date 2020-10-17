@@ -1,5 +1,6 @@
 import React from "react"
-import { Action, Value } from "../components"
+import { Action, Snippet } from "../components"
+import { Value } from "../inputs"
 
 // TODO: when adding a new action, user will choose from multiple sub categories. For some modules will be the only one option(query, redirect),
 // for others - many(module - for every module, from specific module)
@@ -18,52 +19,30 @@ import { Action, Value } from "../components"
 
 // TODO: add "variable" action type(to be a replacement for Template) to get local or external module variable. support concatenation only there?
 
-const definition = {
-  query_id: 4,
-  args: [
-    {
-      type: "group",
-      value: {
-        type: "action",
-        action_id: 7,
-      },
-    },
-    {
-      type: "key",
-      key: "limit",
-      value: {
-        type: "literal",
-        data: 5,
-      },
-    },
-    {
-      type: "key",
-      key: "offset",
-      value: {
-        type: "local",
-        name: "offset",
-      },
-    },
-  ],
-}
+// TODO: have groupped autosuggest for all variables and have a switch only with literal?
 
 export function View({ definition }) {
+  // TODO: get queries from context
+
   return (
     <Action>
       Execute
-      <Value color="gray">listOrders</Value>
-      query with
-      <Action.Group>
-        <Value color="gray">limit</Value>
-        as
-        <Value color="beige">5</Value>
-      </Action.Group>
-      and
-      <Action.Group>
-        <Value color="gray">offset</Value>
-        as
-        <Value color="beige">11</Value>
-      </Action.Group>
+      <Snippet color="gray">{definition.query_id}</Snippet>
+      query
+      {!!definition.args.length && "with "}
+      {!!definition.args.length &&
+        definition.args.map((arg, i) =>
+          arg.type === "key" ? (
+            <Action.Group key={i}>
+              <Snippet color="gray">{arg.key}</Snippet>
+              as
+              <Value {...arg.value} />
+              {i !== definition.args.length - 1 && " and "}
+            </Action.Group>
+          ) : (
+            <Value {...arg.value} />
+          )
+        )}
     </Action>
   )
 }
