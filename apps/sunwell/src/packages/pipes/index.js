@@ -29,14 +29,14 @@ const definition = {
         data: 8,
       },
     },
-    // {
-    //   type: "key",
-    //   key: "offset",
-    //   value: {
-    //     type: "local",
-    //     name: "offset",
-    //   },
-    // },
+    {
+      type: "key",
+      key: "offset",
+      value: {
+        type: "local",
+        name: "offset",
+      },
+    },
   ],
 }
 

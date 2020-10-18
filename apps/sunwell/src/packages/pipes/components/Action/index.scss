@@ -111,3 +111,17 @@
     background: $color-gray-400;
   }
 }
+
+.sectionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: $font-size-xs;
+  background-color: $color-gray-300;
+  padding: $value-1 $value-2;
+  margin: -#{$value-1} -#{$value-2} $value-1;
+}
+
+.sectionBody {
+  padding: $value-1 0;
+}

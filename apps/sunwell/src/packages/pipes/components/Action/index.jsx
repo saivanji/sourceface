@@ -6,7 +6,7 @@ import TopArrow from "assets/chev-t.svg"
 import Guide from "assets/guide.svg"
 import More from "assets/more.svg"
 
-export default function Action({ children, secondary }) {
+export default function Action({ children, secondary, add = false }) {
   const [isOpened, setOpened] = useState(false)
 
   return (
@@ -18,7 +18,7 @@ export default function Action({ children, secondary }) {
       </div>
       <div className={cx(styles.body, styles.group)}>
         {wrapText(children)}
-        <span className={styles.add}>+</span>
+        {add && <span className={styles.add}>+</span>}
       </div>
       {secondary && !isOpened ? (
         <div className={styles.show} onClick={() => setOpened(true)}>
@@ -44,7 +44,31 @@ Action.Group = function ActionGroup({ children }) {
   return <div className={styles.group}>{wrapText(children)}</div>
 }
 
+Action.Section = function ActionSection({ title, children }) {
+  return (
+    <div className={styles.section}>
+      <div className={styles.sectionHead}>
+        <span className={styles.sectionTitle}>{title}</span>
+      </div>
+      <div className={styles.sectionBody}>{children}</div>
+    </div>
+  )
+}
+
+Action.SectionRow = function ActionSectionRow({ left, right }) {
+  return (
+    <div className={styles.sectionRow}>
+      {left}
+      {right}
+    </div>
+  )
+}
+
 const wrapText = (children) =>
   Children.map(children, (node) =>
-    typeof node === "string" ? <span className={styles.text}>{node}</span> : node
+    typeof node === "string" ? (
+      <span className={styles.text}>{node}</span>
+    ) : (
+      node
+    )
   )

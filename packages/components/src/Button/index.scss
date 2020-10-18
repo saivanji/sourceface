@@ -5,29 +5,32 @@
   appearance: none;
   font-weight: 600;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
   border-radius: $rounded-base;
   font-size: $font-size-sm;
-  color: $color-white;
-  background-color: $color-blue-500;
   line-height: $leading-5;
-  box-shadow: $shadow-base;
   &.full {
     width: 100%;
+    justify-content: center;
   }
   &:focus {
     outline: 0;
-    box-shadow: 0 0 0 3px $color-blue-200;
-  }
-  &:hover {
-    background-color: $color-blue-600;
   }
   &:active {
     box-shadow: none;
-    background-color: $color-blue-700;
   }
   &.small {
     font-size: $font-size-xs;
     padding: $value-1 $value-2;
+    .icon {
+      display: inline-flex;
+      width: $value-3;
+      margin-right: $value-1;
+      svg {
+        width: 100%;
+      }
+    }
   }
   &.regular {
     font-size: $font-size-sm;
@@ -36,5 +39,33 @@
   &.large {
     font-size: $font-size-base;
     padding: $value-3 $value-4;
+  }
+  // Appearance 
+  &.primary {
+    color: $color-white;
+    background-color: $color-blue-500;
+    box-shadow: $shadow-base;
+    &:focus {
+      box-shadow: 0 0 0 3px $color-blue-200;
+    }
+    &:hover {
+      background-color: $color-blue-600;
+    }
+    &:active {
+      background-color: $color-blue-700;
+    }
+  }
+  &.link {
+    color: $color-gray-800;
+    background-color: $color-gray-100;
+    &:focus {
+      box-shadow: 0 0 0 3px $color-gray-400;
+    }
+    &:hover {
+      background-color: $color-gray-200;
+    }
+    &:active {
+      background-color: $color-gray-300;
+    }
   }
 }

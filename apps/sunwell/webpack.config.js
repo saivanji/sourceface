@@ -72,6 +72,10 @@ module.exports = {
     extensions: [".jsx", ".js"],
     modules: [path.resolve(__dirname, "src"), "node_modules"],
     mainFields: ["browser", "main"],
+    /**
+     * Resolving symlinks to their symlinked location. Needed for being able to import peer dependencies.
+     */
+    symlinks: false,
   },
   plugins: [
     new HtmlPlugin({

@@ -1,5 +1,5 @@
 import React from "react"
-import { Action, Snippet } from "../components"
+import { Action, Snippet, Arguments } from "../components"
 import { Value } from "../inputs"
 
 // TODO: when adding a new action, user will choose from multiple sub categories. For some modules will be the only one option(query, redirect),
@@ -25,28 +25,29 @@ export function View({ definition }) {
   // TODO: get queries from context
 
   return (
-    <Action>
+    <Action secondary={<Arguments />}>
       Execute
       <Snippet color="gray">{definition.query_id}</Snippet>
       query
-      {!!definition.args.length && "with "}
-      {!!definition.args.length &&
-        definition.args.map((arg, i) =>
-          arg.type === "key" ? (
-            <Action.Group key={i}>
-              <Snippet color="gray">{arg.key}</Snippet>
-              as
-              <Value {...arg.value} />
-              {i !== definition.args.length - 1 && " and "}
-            </Action.Group>
-          ) : (
-            <Value {...arg.value} />
-          )
-        )}
     </Action>
   )
 }
 
 export const execute = (definition, { queries, modules }) => {}
 
-export const suggest = (definition) => {}
+export const add = (definition) => {}
+
+//       {!!definition.args.length && "with "}
+//       {!!definition.args.length &&
+//         definition.args.map((arg, i) =>
+//           arg.type === "key" ? (
+//             <Action.Group key={i}>
+//               <Snippet color="gray">{arg.key}</Snippet>
+//               as
+//               <Value value={arg.value} />
+//               {i !== definition.args.length - 1 && " and "}
+//             </Action.Group>
+//           ) : (
+//             <Value value={arg.value} />
+//           )
+//         )}

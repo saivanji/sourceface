@@ -2,15 +2,17 @@
 import React from "react"
 import { Snippet } from "../../components"
 import Pen from "assets/pen.svg"
+import Parentheses from "assets/parentheses.svg"
 
-export default function Value({ type, data }) {
-  if (type === "literal") {
-    return (
-      <Snippet icon={<Pen />} color="beige">
-        {data}
-      </Snippet>
-    )
+export default function Value({ value }) {
+  const literalView = { icon: <Pen />, color: "beige" }
+  const variableView = { icon: <Parentheses />, color: "blue" }
+
+  switch (value.type) {
+    case "literal":
+      return <Snippet {...literalView}>{value.data}</Snippet>
+
+    case "local":
+      return <Snippet {...variableView}>{value.name}</Snippet>
   }
-
-  return <Snippet></Snippet>
 }
