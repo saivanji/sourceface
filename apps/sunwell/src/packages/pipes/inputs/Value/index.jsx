@@ -4,7 +4,7 @@ import { Snippet } from "../../components"
 import Pen from "assets/pen.svg"
 import Parentheses from "assets/parentheses.svg"
 
-export default function Value({ autoFocus, value, onChange }) {
+export default function Value({ autoFocus, value, onChange, onDestroy }) {
   const literalView = { icon: <Pen />, color: "beige" }
   const variableView = { icon: <Parentheses />, color: "blue" }
 
@@ -15,7 +15,8 @@ export default function Value({ autoFocus, value, onChange }) {
           {...literalView}
           autoFocus={autoFocus}
           value={value.data}
-          onChange={(data) => onChange({ ...value, data })}
+          onChange={(data) => onChange && onChange({ ...value, data })}
+          onDestroy={onDestroy}
         />
       )
 
@@ -25,7 +26,8 @@ export default function Value({ autoFocus, value, onChange }) {
           {...variableView}
           autoFocus={autoFocus}
           value={value.name}
-          onChange={(name) => onChange({ ...value, name })}
+          onChange={(name) => onChange && onChange({ ...value, name })}
+          onDestroy={onDestroy}
         />
       )
   }
