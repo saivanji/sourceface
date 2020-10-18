@@ -7,6 +7,12 @@
   font-size: $font-size-xs;
   border-radius: $rounded-sm;
   padding: $value-1 $value-2;
+  input {
+    border: 0;
+    padding: 0;
+    outline: none;
+    background-color: transparent;
+  }
 }
 
 .icon {

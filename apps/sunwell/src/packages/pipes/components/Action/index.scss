@@ -125,3 +125,9 @@
 .sectionBody {
   padding: $value-1 0;
 }
+
+.sectionRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

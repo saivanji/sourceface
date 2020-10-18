@@ -55,11 +55,10 @@ Action.Section = function ActionSection({ title, children }) {
   )
 }
 
-Action.SectionRow = function ActionSectionRow({ left, right }) {
+Action.SectionRow = function ActionSectionRow({ children }) {
   return (
     <div className={styles.sectionRow}>
-      {left}
-      {right}
+      {children}
     </div>
   )
 }

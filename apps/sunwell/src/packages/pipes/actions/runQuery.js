@@ -27,7 +27,7 @@ export function View({ definition }) {
   return (
     <Action secondary={<Arguments />}>
       Execute
-      <Snippet color="gray">{definition.query_id}</Snippet>
+      <Snippet color="gray" value={definition.query_id} />
       query
     </Action>
   )
