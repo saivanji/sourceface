@@ -1,0 +1,17 @@
+type Action {
+  id: Int!
+  createdAt: DateTime!
+  name: String
+  type: ActionType!
+  config: JSONObject!
+}
+
+enum ActionType {
+  runQuery
+}
+
+extend type Mutation {
+  createAction(moduleId: Int!, type: ActionType!): Action!
+  renameAction(actionId: Int!, name: String!): Action!
+  alterActionConfig(actionId: Int!, key: String!, value: JSON!): JSONObject!
+}

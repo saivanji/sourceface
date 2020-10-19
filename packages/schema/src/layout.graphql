@@ -1,3 +1,7 @@
+# Consider removing Layout and Position entity completely, since it might be stored as JSON type for the
+# page table and also inside of a config in case of modules nesting. Keeping such data in relational table
+# doesn't make sence since we don't need make queries and joins with it.
+
 type Layout {
   id: Int!
   createdAt: DateTime!

@@ -1,19 +1,20 @@
+type Module {
+  id: String!
+  positionId: Int!
+  createdAt: DateTime!
+  type: ModuleType!
+  binds: JSONObject
+  config: JSONObject!
+  actions: [Action]!
+  layouts: [Layout!]!
+}
+
 enum ModuleType {
   button
   container
   input
   table
   text
-}
-
-type Module {
-  id: String!
-  positionId: Int!
-  createdAt: DateTime!
-  type: ModuleType
-  binds: JSONObject
-  config: JSONObject!
-  layouts: [Layout!]!
 }
 
 extend type Mutation {
@@ -24,6 +25,7 @@ extend type Mutation {
   ): Module!
   # TODO: rename to pushConfig and mutation should return JSONObject instead? Have similar logic as
   # pushBinds since in future people might need to update nested fields in the config.
+  # alterModuleConfig - alternative mutation name
   updateModule(moduleId: Int!, key: String!, value: JSON!): Module!
   # TODO: make sure all related child layouts are removed as well
   removeModule(moduleId: Int!): Boolean
