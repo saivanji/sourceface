@@ -6,6 +6,7 @@
     "start": "webpack-dev-server",
     "build": "webpack",
     "test": "jest",
+    "flow": "flow",
     "format": "prettier --write \"src/**/*.{js,jsx}\"",
     "check": "prettier --check \"src/**/*.{js,jsx}\" && eslint \"src/**/*.{js,jsx}\""
   },
@@ -44,6 +45,7 @@
     "@babel/core": "^7.10.2",
     "@babel/plugin-transform-runtime": "^7.10.3",
     "@babel/preset-env": "^7.10.2",
+    "@babel/preset-flow": "^7.12.1",
     "@babel/preset-react": "^7.10.1",
     "@sourceface/config": "0.0.24",
     "@svgr/webpack": "^5.4.0",
@@ -52,6 +54,7 @@
     "copy-webpack-plugin": "^5.1.1",
     "css-loader": "^3.5.3",
     "eslint": "^7.1.0",
+    "flow-bin": "^0.136.0",
     "html-webpack-plugin": "^4.3.0",
     "jest": "^26.4.2",
     "mini-css-extract-plugin": "^0.9.0",
