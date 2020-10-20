@@ -44,6 +44,7 @@ export const Pipe = ({ value, onChange }) => {
   return (
     <Link>
       <actions.runQuery.View definition={definition} />
+      <actions.redirect.View />
     </Link>
   )
 }
