@@ -17,6 +17,7 @@ export const execute = (commandId, args, staleIds, onStale) => {
   /**
    * Returning Promise only if cache is empty and we need to fetch.
    */
+  // TODO: use fetch polyfill?
   return fetch("http://localhost:5001/graphql", {
     method: "POST",
     headers: {
@@ -31,14 +32,14 @@ export const execute = (commandId, args, staleIds, onStale) => {
       },
     }),
   })
-    .then(res => {
+    .then((res) => {
       if (!res.ok) {
         throw "Failed to fetch command"
       }
 
       return res.json()
     })
-    .then(json => {
+    .then((json) => {
       const data = json.data.readCommand
 
       cache.set(commandId, args, data, onStale)
