@@ -11,7 +11,7 @@ enum ActionType {
 }
 
 extend type Mutation {
-  createAction(moduleId: Int!, type: ActionType!): Action!
+  createAction(moduleId: Int!, type: ActionType!, config: JSONObject!): Action!
   renameAction(actionId: Int!, name: String!): Action!
-  alterActionConfig(actionId: Int!, key: String!, value: JSON!): JSONObject!
+  alterActionConfig(actionId: Int!, key: String!, value: JSON!): Action!
 }

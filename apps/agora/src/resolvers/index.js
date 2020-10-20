@@ -1,3 +1,4 @@
+export { default as action } from "./action"
 export { default as base } from "./base"
 export { default as layout } from "./layout"
 export { default as module } from "./module"

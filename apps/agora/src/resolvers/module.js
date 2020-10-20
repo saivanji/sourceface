@@ -7,7 +7,7 @@ const createModule = async (
   { type, config, position: { layoutId, ...position } },
   { pg }
 ) => {
-  return pg.tx(async t => {
+  return pg.tx(async (t) => {
     const { id: positionId } = await positionRepo.create(layoutId, position, t)
     return await moduleRepo.create(type, config, positionId, t)
   })
@@ -16,7 +16,7 @@ const createModule = async (
 // TODO: rename to pushConfig and return config as a response. Have similar logic as
 // in pushBinds, since in future people might need to update nested fields in config.
 const updateModule = async (parent, { moduleId, key, value }, { pg }) => {
-  return await pg.task(async t => {
+  return await pg.task(async (t) => {
     const module = await moduleRepo.one(moduleId, t)
 
     // TODO: perform validation of config input data depending on module type
@@ -43,7 +43,7 @@ const removeModule = async (parent, { moduleId }, { pg }) => {
 }
 
 const pushBinds = async (parent, { moduleId, binds }, { pg }) => {
-  return pg.task(async t => {
+  return pg.task(async (t) => {
     const module = await moduleRepo.one(moduleId, t)
 
     return await moduleRepo.updateBinds(
@@ -53,6 +53,9 @@ const pushBinds = async (parent, { moduleId, binds }, { pg }) => {
     )
   })
 }
+
+const actions = (parent, args, ctx) =>
+  ctx.loaders.actionsByModule.load(parent.id)
 
 const layouts = (parent, args, ctx) =>
   ctx.loaders.layoutsByModule.load(parent.id)
@@ -65,6 +68,7 @@ export default {
     pushBinds,
   },
   Module: {
+    actions,
     layouts,
   },
 }

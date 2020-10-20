@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.5.22
+-- Dumped from database version 9.6.19
 -- Dumped by pg_dump version 9.6.19
 
 SET statement_timeout = 0;
@@ -38,6 +38,17 @@ COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
 --
+-- Name: action; Type: TYPE; Schema: public; Owner: admin
+--
+
+CREATE TYPE public.action AS ENUM (
+    'runQuery'
+);
+
+
+ALTER TYPE public.action OWNER TO admin;
+
+--
 -- Name: module; Type: TYPE; Schema: public; Owner: admin
 --
 
@@ -66,6 +77,44 @@ ALTER TYPE public.source OWNER TO admin;
 SET default_tablespace = '';
 
 SET default_with_oids = false;
+
+--
+-- Name: actions; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.actions (
+    id integer NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    module_id text NOT NULL,
+    name text,
+    type public.action NOT NULL,
+    config json NOT NULL,
+    CONSTRAINT actions_name_check CHECK ((name <> ''::text))
+);
+
+
+ALTER TABLE public.actions OWNER TO admin;
+
+--
+-- Name: actions_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
+--
+
+CREATE SEQUENCE public.actions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.actions_id_seq OWNER TO admin;
+
+--
+-- Name: actions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
+--
+
+ALTER SEQUENCE public.actions_id_seq OWNED BY public.actions.id;
+
 
 --
 -- Name: commands; Type: TABLE; Schema: public; Owner: admin
@@ -140,7 +189,6 @@ CREATE TABLE public.modules (
 
 
 ALTER TABLE public.modules OWNER TO admin;
-
 
 --
 -- Name: modules_layouts; Type: TABLE; Schema: public; Owner: admin
@@ -253,6 +301,13 @@ CREATE TABLE public.stale_commands (
 ALTER TABLE public.stale_commands OWNER TO admin;
 
 --
+-- Name: actions id; Type: DEFAULT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.actions ALTER COLUMN id SET DEFAULT nextval('public.actions_id_seq'::regclass);
+
+
+--
 -- Name: layouts id; Type: DEFAULT; Schema: public; Owner: admin
 --
 
@@ -271,6 +326,22 @@ ALTER TABLE ONLY public.pages ALTER COLUMN id SET DEFAULT nextval('public.pages_
 --
 
 ALTER TABLE ONLY public.positions ALTER COLUMN id SET DEFAULT nextval('public.positions_id_seq'::regclass);
+
+
+--
+-- Data for Name: actions; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+COPY public.actions (id, created_at, module_id, name, type, config) FROM stdin;
+1	2020-10-20 09:34:29.12166	5	\N	runQuery	{}
+\.
+
+
+--
+-- Name: actions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
+--
+
+SELECT pg_catalog.setval('public.actions_id_seq', 1, true);
 
 
 --
@@ -319,7 +390,7 @@ SELECT pg_catalog.setval('public.layouts_id_seq', 15, true);
 --
 
 COPY public.migrations (data) FROM stdin;
-{"lastRun": "1596636642780-modules.js", "migrations": [{"title": "1592490185949-sources.js", "timestamp": 1600809575000}, {"title": "1596634213008-layouts.js", "timestamp": 1600809575026}, {"title": "1596634748394-pages.js", "timestamp": 1600809575058}, {"title": "1596636642780-modules.js", "timestamp": 1600809575097}]}
+{"lastRun": "1603133152443-actions.js", "migrations": [{"title": "1592490185949-sources.js", "timestamp": 1600809575000}, {"title": "1596634213008-layouts.js", "timestamp": 1600809575026}, {"title": "1596634748394-pages.js", "timestamp": 1600809575058}, {"title": "1596636642780-modules.js", "timestamp": 1600809575097}, {"title": "1603133152443-actions.js", "timestamp": 1603186443117}]}
 \.
 
 
@@ -433,6 +504,14 @@ createOrder	countOrders
 
 
 --
+-- Name: actions actions_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.actions
+    ADD CONSTRAINT actions_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: commands commands_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -518,6 +597,14 @@ ALTER TABLE ONLY public.sources
 
 ALTER TABLE ONLY public.stale_commands
     ADD CONSTRAINT stale_commands_command_id_stale_id_key UNIQUE (command_id, stale_id);
+
+
+--
+-- Name: actions actions_module_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.actions
+    ADD CONSTRAINT actions_module_id_fkey FOREIGN KEY (module_id) REFERENCES public.modules(id) ON DELETE CASCADE;
 
 
 --

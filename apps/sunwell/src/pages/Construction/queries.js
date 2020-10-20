@@ -25,6 +25,12 @@ export const root = `
         type
         config
         binds
+        actions {
+          id
+          type
+          name
+          config
+        }
         layouts {
           id
           positions {
