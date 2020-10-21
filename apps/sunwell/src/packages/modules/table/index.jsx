@@ -18,6 +18,7 @@ import {
   useTransition,
   useValue,
 } from "packages/toolkit"
+// TODO: import from toolkit
 import Actions from "packages/actions"
 import styles from "./index.scss"
 
@@ -116,7 +117,7 @@ export const Configuration = function TableModuleConfiguration({
       <Section title="Basic">
         <Row>
           <Label title="Data">
-            <Actions ids={config.data} />
+            <Field name="data" component={Actions} />
           </Label>
         </Row>
         <Row>

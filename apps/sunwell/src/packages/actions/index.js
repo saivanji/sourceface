@@ -1,6 +1,6 @@
 import React from "react"
 import * as stock from "./stock"
-import { Link } from "./components"
+import { Link, Pipe } from "./components"
 
 const definition = {
   query_id: "listOrders",
@@ -42,8 +42,10 @@ const definition = {
 export default ({ value, onChange }) => {
   return (
     <Link>
-      <stock.runQuery.View definition={definition} />
-      <stock.redirect.View />
+      <Pipe>
+        <stock.runQuery.View definition={definition} />
+        <stock.redirect.View />
+      </Pipe>
     </Link>
   )
 }

@@ -1,0 +1,14 @@
+@import "~@sourceface/style/index.scss";
+
+.action:not(:last-of-type):after {
+  content: "";
+  display: block;
+  margin: 0 auto;
+  width: 1px;
+  height: $value-2;
+  background-color: $color-gray-400;
+}
+
+.add {
+  margin-top: $value-2;
+}

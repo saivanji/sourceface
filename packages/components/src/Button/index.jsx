@@ -8,6 +8,7 @@ export default function Button({
   size = "regular",
   type = "button",
   appearance = "primary",
+  // TODO: rename to shouldFit
   shouldFitContainer = false,
   className,
   ...props
