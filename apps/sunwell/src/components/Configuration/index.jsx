@@ -1,8 +1,5 @@
-import React, { useState } from "react"
-import { assocPath, trim } from "ramda"
-// import JSONTree from "react-json-tree"
+import React from "react"
 import { Input } from "@sourceface/components"
-import { useScope } from "packages/toolkit"
 import * as stock from "packages/modules"
 
 export default function Configuration({
@@ -10,10 +7,7 @@ export default function Configuration({
   modules,
   onUpdate,
   onRemove,
-  // onBindsPush,
 }) {
-  // const [selected, setSelected] = useState("configuration")
-
   if (!modules) {
     return "Loading..."
   }
@@ -22,18 +16,6 @@ export default function Configuration({
   const module = modules.find((x) => x.id === selectedId)
   const Component = stock.dict[module.type].Configuration
 
-  return (
-    <Base
-      module={module}
-      onUpdate={onUpdate}
-      onRemove={onRemove}
-      component={Component}
-    />
-  )
-}
-
-// TODO: why use "key"?
-function Base({ module, onUpdate, onRemove, component: Component }) {
   return (
     <>
       <div
@@ -66,44 +48,3 @@ function Base({ module, onUpdate, onRemove, component: Component }) {
     </>
   )
 }
-
-function Scope({ moduleId, onBindsPush }) {
-  const scope = useScope(moduleId)
-
-  const handleBindsPush = () => {
-    const input = window.prompt("Enter path and value")
-
-    if (!input) {
-      return
-    }
-
-    const [pathStr, value] = input.split(":").map(trim)
-    const path = pathStr.split(".")
-    const binds = assocPath(path, value, {})
-
-    onBindsPush(binds)
-  }
-
-  return (
-    <JSONTree
-      hideRoot
-      invertTheme
-      data={scope}
-      labelRenderer={(path) => (
-        <strong>
-          {path[0]}
-          {path.length === 1 && path[0] === "binds" && (
-            <button
-              style={{ marginLeft: 10, cursor: "pointer" }}
-              onClick={handleBindsPush}
-            >
-              +
-            </button>
-          )}
-        </strong>
-      )}
-    />
-  )
-}
-
-// TODO: should be no distincion from the input point of view between readable and writable. For the user everything is an expression

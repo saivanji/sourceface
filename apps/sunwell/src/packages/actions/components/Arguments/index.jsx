@@ -1,8 +1,8 @@
 import React, { useState } from "react"
 import { Button } from "@sourceface/components"
 import Add from "assets/add.svg"
-import { Value } from "../../inputs"
 import Action from "../Action"
+import Value from "../Value"
 import Snippet from "../Snippet"
 import styles from "./index.scss"
 

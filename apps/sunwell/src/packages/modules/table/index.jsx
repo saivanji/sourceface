@@ -18,7 +18,7 @@ import {
   useTransition,
   useValue,
 } from "packages/toolkit"
-import { Pipe } from "packages/pipes"
+import Actions from "packages/actions"
 import styles from "./index.scss"
 
 // TODO: filters might be displayed in place of a column(filtered column will have gray rounded bg and "i" icon. When user will hover it - will display applied filters)
@@ -116,7 +116,7 @@ export const Configuration = function TableModuleConfiguration({
       <Section title="Basic">
         <Row>
           <Label title="Data">
-            <Pipe />
+            <Actions ids={config.data} />
           </Label>
         </Row>
         <Row>

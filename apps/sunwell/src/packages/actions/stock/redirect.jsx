@@ -1,6 +1,5 @@
 import React from "react"
-import { Action } from "../components"
-import { Value } from "../inputs"
+import { Action, Value } from "../components"
 
 export function View({ definition }) {
   return (

@@ -1,6 +1,5 @@
-// TODO: rename to actions
 import React from "react"
-import * as actions from "./actions"
+import * as stock from "./stock"
 import { Link } from "./components"
 
 const definition = {
@@ -40,11 +39,11 @@ const definition = {
   ],
 }
 
-export const Pipe = ({ value, onChange }) => {
+export default ({ value, onChange }) => {
   return (
     <Link>
-      <actions.runQuery.View definition={definition} />
-      <actions.redirect.View />
+      <stock.runQuery.View definition={definition} />
+      <stock.redirect.View />
     </Link>
   )
 }
