@@ -15,17 +15,6 @@
   }
 }
 
-.icon {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  margin-right: $value-1;
-  width: $value-3;
-  svg {
-    width: 100%;
-  }
-}
-
 .blue {
   background-color: $color-blue-300;
   color: $color-blue-900;

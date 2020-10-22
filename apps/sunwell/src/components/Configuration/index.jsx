@@ -27,8 +27,8 @@ export default function Configuration({
           borderBottom: "1px solid #ccc",
         }}
       >
-        <Input placeholder="Module name" value="input5" />
-        <span>module type</span>
+        <Input size="compact" placeholder="Module name" value="input5" />
+        <span>{module.type}</span>
       </div>
       <Component
         key={module.id}

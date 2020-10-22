@@ -9,7 +9,7 @@ import React, {
 import cx from "classnames"
 import styles from "./index.scss"
 
-const Context = createContext("dropdown")
+const context = createContext()
 
 export default function Dropdown({ children, className, ...props }) {
   const [isOpened, setOpened] = useState(false)
@@ -19,16 +19,16 @@ export default function Dropdown({ children, className, ...props }) {
   const menuRef = useRef()
 
   return (
-    <Context.Provider value={{ isOpened, toggle, close, buttonRef, menuRef }}>
+    <context.Provider value={{ isOpened, toggle, close, buttonRef, menuRef }}>
       <div {...props} className={cx(styles.root, className)}>
         {children}
       </div>
-    </Context.Provider>
+    </context.Provider>
   )
 }
 
 Dropdown.Trigger = function Trigger({ children, className, ...props }) {
-  const { toggle, buttonRef } = useContext(Context)
+  const { toggle, buttonRef } = useContext(context)
 
   return (
     <div {...props} className={className} ref={buttonRef} onClick={toggle}>
@@ -44,7 +44,7 @@ Dropdown.Menu = function Menu({
   className,
   ...props
 }) {
-  const { isOpened, close, buttonRef, menuRef } = useContext(Context)
+  const { isOpened, close, buttonRef, menuRef } = useContext(context)
   const onClickOutside = useCallback(
     event =>
       menuRef.current &&
@@ -79,7 +79,7 @@ Dropdown.Menu = function Menu({
 // TODO implement Title component
 
 Dropdown.Item = function Item({ children, onClick, className, ...props }) {
-  const { close } = useContext(Context)
+  const { close } = useContext(context)
 
   return (
     <div

@@ -1,6 +1,7 @@
 import React from "react"
 import * as stock from "./stock"
-import { Link, Pipe } from "./components"
+import { Creation, Link, Pipe } from "./components"
+import Autocomplete from "./components/Autocomplete"
 
 const definition = {
   query_id: "listOrders",
@@ -40,7 +41,16 @@ const definition = {
 }
 
 export default ({ value, onChange }) => {
-  return (
+  return !value || !value.length ? (
+    <>
+      <Autocomplete>
+        <Autocomplete.Trigger>
+          <Creation />
+        </Autocomplete.Trigger>
+        <Autocomplete.Body />
+      </Autocomplete>
+    </>
+  ) : (
     <Link>
       <Pipe>
         <stock.runQuery.View definition={definition} />

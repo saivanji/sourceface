@@ -3,9 +3,8 @@ import cx from "classnames"
 import AutosizeInput from "react-input-autosize"
 import styles from "./index.scss"
 
-export default ({ icon, color, autoFocus, value, onChange, onDestroy }) => (
+export default ({ color, autoFocus, value, onChange, onDestroy }) => (
   <span className={cx(styles.root, colors[color])}>
-    {icon && <span className={styles.icon}>{icon}</span>}
     <AutosizeInput
       autoFocus={autoFocus}
       type="text"

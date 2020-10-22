@@ -1,0 +1,42 @@
+@import "~@sourceface/style/index.scss";
+
+.root {
+  position: relative;
+}
+
+.body {
+  position: absolute;
+  left: 0;
+  top: calc(100% + #{$value-2});
+  width: $value-56;
+  border-radius: $rounded-base;
+  background-color: $color-gray-900;
+}
+
+.input {
+  background-color: transparent;
+  width: 100%;
+  border: 0;
+  color: $color-gray-200;
+  border-bottom: 1px solid $color-gray-800;
+  padding: $value-2 $value-3;
+  &:focus {
+    outline: none;
+  }
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+  padding: $value-1 0;
+}
+
+.item {
+  width: 100%;
+  cursor: pointer;
+  color: $color-gray-200;
+  padding: $value-1 $value-3;
+  &:hover {
+    background-color: $color-gray-800;
+  }
+}

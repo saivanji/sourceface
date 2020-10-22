@@ -8,10 +8,10 @@
   cursor: pointer;
   border-radius: $rounded-sm;
   border: 1px solid $color-gray-400;
-  background-color: $color-gray-200;
+  background-color: $color-gray-100;
   padding: $value-1 $value-2;
   &.opened {
-    background-color: $color-gray-400;
+    background-color: $color-gray-300;
   }
 }
 

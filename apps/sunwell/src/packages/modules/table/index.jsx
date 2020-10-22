@@ -11,13 +11,7 @@ import {
   Input,
   Checkbox,
 } from "@sourceface/components"
-import {
-  Form,
-  Field,
-  Expression,
-  useTransition,
-  useValue,
-} from "packages/toolkit"
+import { Form, Field, useTransition, useValue } from "packages/toolkit"
 // TODO: import from toolkit
 import Actions from "packages/actions"
 import styles from "./index.scss"
@@ -122,7 +116,7 @@ export const Configuration = function TableModuleConfiguration({
         </Row>
         <Row>
           <Label title="Data">
-            <Field name="items" component={Expression} />
+            <Field name="items" component={Actions} />
           </Label>
         </Row>
       </Section>
@@ -134,12 +128,12 @@ export const Configuration = function TableModuleConfiguration({
           <>
             <Row>
               <Label title="Total count">
-                <Field name="count" component={Expression} />
+                <Field name="count" component={Actions} />
               </Label>
             </Row>
             <Row>
               <Label title="Current page">
-                <Field name="currentPage" type="text" component={Expression} />
+                <Field name="currentPage" type="text" component={Actions} />
               </Label>
             </Row>
             <Row>

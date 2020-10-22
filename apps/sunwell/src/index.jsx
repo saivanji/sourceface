@@ -24,6 +24,8 @@ ReactDOM.render(
 )
 
 // TODO:
+// consider implementing auto upgrade feature
+//
 // Input module configuration
 // - validation is performed via regex. user can provide custom regex, or configure validation by choosing required, type(number only), limit, email and other settings and we will create corresponding regex for that(find a library)
 // Table module configuration
