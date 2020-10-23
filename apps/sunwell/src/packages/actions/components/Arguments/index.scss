@@ -1,5 +1,10 @@
 @import "~@sourceface/style/index.scss";
 
+.creators {
+  display: flex;
+  align-items: center;
+}
+
 .creators > * {
   margin-right: $value-2;
   &:last-child {
