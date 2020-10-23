@@ -2,6 +2,7 @@ import React from "react"
 import * as stock from "./stock"
 import { Creation, Link, Pipe } from "./components"
 import Autocomplete from "./components/Autocomplete"
+import Toggle from "./components/Toggle"
 
 const definition = {
   query_id: "listOrders",
@@ -42,14 +43,17 @@ const definition = {
 
 export default ({ value, onChange }) => {
   return !value || !value.length ? (
-    <>
-      <Autocomplete>
-        <Autocomplete.Trigger>
-          <Creation />
-        </Autocomplete.Trigger>
-        <Autocomplete.Body />
-      </Autocomplete>
-    </>
+    <Toggle trigger={<Creation />}>
+      {(close) => (
+        <Autocomplete>
+          <Autocomplete.Item onClick={close}>Test 1</Autocomplete.Item>
+          <Autocomplete.Item>Test 2</Autocomplete.Item>
+          <Autocomplete.Item>Test 3</Autocomplete.Item>
+          <Autocomplete.Item>Test 4</Autocomplete.Item>
+          <Autocomplete.Item>Test 5</Autocomplete.Item>
+        </Autocomplete>
+      )}
+    </Toggle>
   ) : (
     <Link>
       <Pipe>

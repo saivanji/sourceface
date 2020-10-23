@@ -1,13 +1,6 @@
 @import "~@sourceface/style/index.scss";
 
 .root {
-  position: relative;
-}
-
-.body {
-  position: absolute;
-  left: 0;
-  top: calc(100% + #{$value-2});
   width: $value-56;
   border-radius: $rounded-base;
   background-color: $color-gray-900;

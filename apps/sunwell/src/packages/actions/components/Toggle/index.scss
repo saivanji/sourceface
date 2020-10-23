@@ -1,0 +1,25 @@
+@import "~@sourceface/style/index.scss";
+
+.root {
+  position: relative;
+}
+
+.body {
+  position: absolute;
+  &.bottom-left,
+  &.bottom-right {
+    top: calc(100% + #{$value-2});
+  }
+  &.top-left,
+  &.top-right {
+    bottom: calc(100% + #{$value-2});
+  }
+  &.bottom-left,
+  &.top-left {
+    left: 0;
+  }
+  &.bottom-right,
+  &.top-right {
+    right: 0;
+  }
+}
