@@ -4,25 +4,27 @@
   font-family: "monospace";
   display: inline-flex;
   align-items: center;
+  cursor: pointer;
+  user-select: none;
   font-size: $font-size-xs;
   border-radius: $rounded-sm;
   padding: $value-1 $value-2;
-  input {
-    border: 0;
-    padding: 0;
-    outline: none;
-    background-color: transparent;
+}
+
+.gray {
+  background-color: $color-gray-300;
+  color: $color-gray-900;
+  &:hover {
+    background-color: $color-gray-400;
   }
 }
 
 .blue {
   background-color: $color-blue-300;
   color: $color-blue-900;
-}
-
-.gray {
-  background-color: $color-gray-300;
-  color: $color-gray-900;
+  &:hover {
+    background-color: $color-blue-400;
+  }
 }
 
 .beige {

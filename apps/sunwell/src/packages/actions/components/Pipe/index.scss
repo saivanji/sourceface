@@ -1,6 +1,6 @@
 @import "~@sourceface/style/index.scss";
 
-.action:not(:last-of-type):after {
+.action:not(:last-child):after {
   content: "";
   display: block;
   margin: 0 auto;
@@ -10,5 +10,30 @@
 }
 
 .add {
+  margin-top: $value-2;
+}
+
+.link {
+  user-select: none;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  cursor: pointer;
+  border-radius: $rounded-sm;
+  border: 1px solid $color-gray-400;
+  background-color: $color-gray-100;
+  padding: $value-1 $value-2;
+  &.opened {
+    background-color: $color-gray-300;
+  }
+}
+
+.actionsIcon {
+  width: $value-4;
+  height: $value-4;
+  margin-right: $value-2;
+}
+
+.list {
   margin-top: $value-2;
 }

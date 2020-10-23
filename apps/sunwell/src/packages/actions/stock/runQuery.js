@@ -1,5 +1,5 @@
 import React from "react"
-import { Action, Snippet, Arguments } from "../components"
+import { Action, Static, Arguments } from "../components"
 
 // TODO: when adding a new action, user will choose from multiple sub categories. For some modules will be the only one option(query, redirect),
 // for others - many(module - for every module, from specific module)
@@ -26,7 +26,7 @@ export function View({ definition }) {
   return (
     <Action secondary={<Arguments />}>
       Execute
-      <Snippet color="gray" value={definition.query_id} />
+      <Static value={definition.query_id} creationTitle="Add query" />
       query
     </Action>
   )

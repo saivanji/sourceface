@@ -6,6 +6,7 @@
 
 .body {
   position: absolute;
+  z-index: 100;
   &.bottom-left,
   &.bottom-right {
     top: calc(100% + #{$value-2});

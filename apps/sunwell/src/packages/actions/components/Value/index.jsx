@@ -1,6 +1,6 @@
-// TODO: either have blue(variable + type icon) or beige(literal) color
 import React from "react"
-import { Snippet } from "../../components"
+import { Toggle, Autocomplete } from "@sourceface/components"
+import Snippet from "../Snippet"
 
 // TODO: use + [action] in combination with dropdown
 // TODO: do not have switch for literal/variable, adding literal will be implemented by displaying
@@ -9,27 +9,25 @@ import { Snippet } from "../../components"
 // TODO: remove icons, have only colors for variable types/literals. Display icons in dropdown instead.
 // TODO: use dropdown with similar appearance when adding a new action.
 export default function Value({ autoFocus, value, onChange, onDestroy }) {
-  switch (value.type) {
-    case "literal":
-      return (
-        <Snippet
-          color="beige"
-          autoFocus={autoFocus}
-          value={value.data}
-          onChange={(data) => onChange && onChange({ ...value, data })}
-          onDestroy={onDestroy}
-        />
-      )
+  const trigger = !value ? (
+    <Placeholder>Add value</Placeholder>
+  ) : value.type === "literal" ? (
+    <Snippet color="beige">{value.data}</Snippet>
+  ) : (
+    <Snippet color="blue">{value.name}</Snippet>
+  )
 
-    case "local":
-      return (
-        <Snippet
-          color="blue"
-          autoFocus={autoFocus}
-          value={value.name}
-          onChange={(name) => onChange && onChange({ ...value, name })}
-          onDestroy={onDestroy}
-        />
-      )
-  }
+  return (
+    <Toggle trigger={trigger}>
+      {(close) => (
+        <Autocomplete>
+          <Autocomplete.Item>Test 1</Autocomplete.Item>
+          <Autocomplete.Item>Test 2</Autocomplete.Item>
+          <Autocomplete.Item>Test 3</Autocomplete.Item>
+          <Autocomplete.Item>Test 4</Autocomplete.Item>
+          <Autocomplete.Item>Test 5</Autocomplete.Item>
+        </Autocomplete>
+      )}
+    </Toggle>
+  )
 }
