@@ -5,11 +5,13 @@ export default (history, commands) => ({
   executeCommand: executeCommand(commands),
 })
 
-const navigate = history => ({ to }) => history.push(`/e${to}`)
+const navigate = (history) => ({ to }) => history.push(`/e${to}`)
 
-const executeCommand = commands => {
+const executeCommand = (commands) => {
   const fn = ({ commandId, args }, onStale) => {
-    const staleIds = commands.find(x => x.id === commandId).stale.map(x => x.id)
+    const staleIds = commands
+      .find((x) => x.id === commandId)
+      .stale.map((x) => x.id)
 
     return query.execute(commandId, args, staleIds, onStale)
   }
