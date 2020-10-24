@@ -5,11 +5,11 @@ import { Button, Toggle, Autocomplete } from "@sourceface/components"
 import Link from "assets/link.svg"
 import Add from "assets/add.svg"
 
-export default ({ children, value, onChange }) => {
+export default ({ children, stock, value, onChange }) => {
   const [isOpened, setOpened] = useState(false)
 
   return !value || !value.length ? (
-    <Creation />
+    <Creation stock={stock} />
   ) : (
     <>
       <span
@@ -29,14 +29,14 @@ export default ({ children, value, onChange }) => {
               )
             })}
           </div>
-          <Creation className={styles.add} />
+          <Creation className={styles.add} stock={stock} />
         </>
       )}
     </>
   )
 }
 
-function Creation({ className }) {
+function Creation({ className, stock }) {
   const trigger = (
     <Button
       className={className}
@@ -53,11 +53,11 @@ function Creation({ className }) {
     <Toggle trigger={trigger}>
       {(close) => (
         <Autocomplete>
-          <Autocomplete.Item onClick={close}>Test 1</Autocomplete.Item>
-          <Autocomplete.Item>Test 2</Autocomplete.Item>
-          <Autocomplete.Item>Test 3</Autocomplete.Item>
-          <Autocomplete.Item>Test 4</Autocomplete.Item>
-          <Autocomplete.Item>Test 5</Autocomplete.Item>
+          {stock.list.map((item) => (
+            <Autocomplete.Item key={item.type} onClick={close}>
+              {item.type}
+            </Autocomplete.Item>
+          ))}
         </Autocomplete>
       )}
     </Toggle>

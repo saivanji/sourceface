@@ -9,7 +9,5 @@ import * as input from "./input"
 import * as table from "./table"
 import * as text from "./text"
 
-const stock = { button, container, input, table, text }
-
-export const dict = transformModules(stock)
+export const dict = transformModules({ button, container, input, table, text })
 export const list = values(dict)

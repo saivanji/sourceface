@@ -41,9 +41,9 @@ const definition = {
 
 export default ({ value, onChange }) => {
   return (
-    <Pipe value={value}>
-      <stock.runQuery.View definition={definition} />
-      <stock.redirect.View />
+    <Pipe stock={stock} value={value}>
+      <stock.dict.runQuery.View definition={definition} />
+      <stock.dict.redirect.View />
     </Pipe>
   )
 }
