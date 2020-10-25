@@ -1,7 +1,6 @@
 import React from "react"
 import cx from "classnames"
-import * as stock from "packages/modules"
-import { Identifier, useContainer } from "packages/toolkit"
+import * as factory from "packages/factory"
 import Grid from "./Grid"
 import styles from "./index.scss"
 import { createLayer } from "./utils"
@@ -26,53 +25,40 @@ function Frame({
   /**
    * Passing down event and previous layer.
    */
-  const handleChange = event => onChange(event, layer)
-  const components = {
-    Frame,
-  }
-  const { readState, getScope } = useContainer()
+  const handleChange = (event) => onChange(event, layer)
 
   return (
     <Grid
       units={layer.units}
       isEditable={isEditing}
       onChange={handleChange}
-      renderItem={module => {
+      renderItem={(module) => {
         const isSelected = isEditing && selectedId === module.id
-        const Component = stock.dict[module.type].Root
-        // TODO: getLocalScope
-        const scope = getScope(module.id)
-        const state = readState(module.id)
 
         return (
-          <Identifier key={module.id} id={module.id}>
-            <div
-              onClick={e => {
-                if (onModuleClick) {
-                  /**
-                   * Propagating click events in order to be able to click on nested module
-                   */
-                  e.stopPropagation()
-                  onModuleClick(module.id)
-                }
-              }}
-              className={cx(
-                styles.module,
-                isEditing && styles.editing,
-                isSelected && styles.selected
-              )}
-            >
-              <Component
-                config={module.config}
-                state={state}
-                local={scope.local}
-                layers={module.layers}
-                components={components}
-                isEditing={isEditing}
-                onConfigChange={onConfigChange}
-              />
-            </div>
-          </Identifier>
+          <div
+            onClick={(e) => {
+              if (onModuleClick) {
+                /**
+                 * Propagating click events in order to be able to click on nested module
+                 */
+                e.stopPropagation()
+                onModuleClick(module.id)
+              }
+            }}
+            className={cx(
+              styles.module,
+              isEditing && styles.editing,
+              isSelected && styles.selected
+            )}
+          >
+            <factory.Module
+              module={module}
+              frame={Frame}
+              isEditing={isEditing}
+              onConfigChange={onConfigChange}
+            />
+          </div>
         )
       }}
     />

@@ -2,14 +2,14 @@ import React from "react"
 import * as yup from "yup"
 import * as system from "@sourceface/style"
 import { Row, Label, Input, Select } from "@sourceface/components"
-import { useTemplate, Form, Field } from "packages/toolkit"
+import { Form, Field } from "../../configuration"
 import styles from "./index.scss"
 
 // every module should have correspoding loader(depending on type)
 export const Root = function TextModule({ config }) {
-  const [text, , pristine] = useTemplate(config.text)
+  // const [text, , pristine] = useTemplate(config.text)
 
-  return pristine ? (
+  return false ? (
     "Loading..."
   ) : (
     <span
@@ -23,7 +23,7 @@ export const Root = function TextModule({ config }) {
         color: config.color,
       }}
     >
-      {text}
+      {"text"}
     </span>
   )
 }
@@ -117,7 +117,7 @@ const options = {
 const optionsProps = Object.keys({ ...options }).reduce(
   (acc, name) => ({
     ...acc,
-    [name]: Object.keys(options[name]).map(key => ({
+    [name]: Object.keys(options[name]).map((key) => ({
       value: key,
       title: options[name][key],
     })),

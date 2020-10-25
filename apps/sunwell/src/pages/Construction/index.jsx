@@ -8,6 +8,7 @@ import { useQuery } from "urql"
 import { useBooleanState } from "hooks/index"
 import { Shell, Editor, Modules, When } from "components/index"
 import { Container } from "packages/toolkit"
+import * as factory from "packages/factory"
 import * as stock from "packages/modules"
 import * as queries from "./queries"
 import createActions from "./createActions"
@@ -34,7 +35,7 @@ export default () => {
   const breadcrumbs = !page
     ? []
     : [
-        ...page.trail.map(x => ({ title: x.title, to: "/e" + x.route })),
+        ...page.trail.map((x) => ({ title: x.title, to: "/e" + x.route })),
         { title: page.title, to: "/e/" + path },
       ]
 
@@ -42,26 +43,33 @@ export default () => {
     <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
       <When
         cond={!!page}
-        component={Container}
         queries={result.data?.commands}
-        modules={page?.modules}
-        stock={stock.dict}
-        actions={actions}
+        modules={result.data?.page.modules}
+        component={factory.Container}
       >
-        {isEditing ? (
-          <Editor
-            layout={page?.layout}
-            modules={page?.modules}
-            onClose={editOff}
-          />
-        ) : (
-          <Shell
-            path={[{ title: "Content", to: "/e" }, ...breadcrumbs]}
-            actions={<button onClick={editOn}>Edit</button>}
-          >
-            <Modules layout={page?.layout} modules={page?.modules} />
-          </Shell>
-        )}
+        <When
+          cond={!!page}
+          component={Container}
+          queries={result.data?.commands}
+          modules={page?.modules}
+          stock={stock.dict}
+          actions={actions}
+        >
+          {isEditing ? (
+            <Editor
+              layout={page?.layout}
+              modules={page?.modules}
+              onClose={editOff}
+            />
+          ) : (
+            <Shell
+              path={[{ title: "Content", to: "/e" }, ...breadcrumbs]}
+              actions={<button onClick={editOn}>Edit</button>}
+            >
+              <Modules layout={page?.layout} modules={page?.modules} />
+            </Shell>
+          )}
+        </When>
       </When>
     </DndProvider>
   )

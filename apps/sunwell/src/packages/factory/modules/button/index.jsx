@@ -7,8 +7,9 @@ import {
   Select,
   Checkbox,
 } from "@sourceface/components"
-import { Form, Field, Expression, useFunction } from "packages/toolkit"
 import * as yup from "yup"
+import { Form, Field, Pipe } from "../../configuration"
+import { useFunction } from "../../execution"
 
 export const Root = function ButtonModule({ config }) {
   const [onClick] = useFunction(config.action)
@@ -46,7 +47,7 @@ export const Configuration = function ButtonModuleConfiguration({
       </Row>
       <Row>
         <Label title="Action">
-          <Field name="action" component={Expression} />
+          <Field name="action" component={Pipe} />
         </Label>
       </Row>
       <Row>
@@ -71,7 +72,7 @@ const options = {
 const optionsProps = Object.keys(options).reduce(
   (acc, name) => ({
     ...acc,
-    [name]: Object.keys(options[name]).map(key => ({
+    [name]: Object.keys(options[name]).map((key) => ({
       value: key,
       title: options[name][key],
     })),

@@ -1,12 +1,12 @@
 import React from "react"
-import { useDrag } from "react-dnd"
-import { SORTABLE_OUTER } from "../../packages/grid"
 import cx from "classnames"
-import * as stock from "packages/modules"
+import { useDrag } from "react-dnd"
+import { SORTABLE_OUTER } from "packages/grid"
+import * as factory from "packages/factory"
 import styles from "./index.scss"
 
 export default function Stock() {
-  return stock.list.map(module => (
+  return factory.modules.map((module) => (
     <div key={module.type} className={styles.item}>
       <Card module={module} />
     </div>
@@ -23,7 +23,7 @@ function Card({ module }) {
         moduleType: module.type,
       },
     },
-    collect: monitor => ({
+    collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
   })

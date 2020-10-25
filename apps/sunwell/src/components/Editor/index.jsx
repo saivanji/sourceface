@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { SORTABLE_INNER, SORTABLE_OUTER } from "packages/grid"
 import { useMutation } from "urql"
-import * as stock from "packages/modules"
+import { getDefaultConfig } from "packages/factory"
 import Configuration from "../Configuration"
 import Stock from "../Stock"
 import Modules from "../Modules"
@@ -12,6 +12,8 @@ import { toPositionsRequest } from "./utils"
 export default function Editor({ layout, modules, onClose }) {
   const [selectedId, setSelectedId] = useState(null)
   const removeSelection = () => setSelectedId(null)
+
+  const selectedModule = selectedId && modules?.find((x) => x.id === selectedId)
 
   const {
     isChanging,
@@ -25,10 +27,9 @@ export default function Editor({ layout, modules, onClose }) {
     <View
       isSaving={isChanging}
       right={
-        selectedId ? (
+        selectedModule ? (
           <Configuration
-            modules={modules}
-            selectedId={selectedId}
+            module={selectedModule}
             onUpdate={updateModule}
             onRemove={removeModule}
             onBindsPush={pushBinds}
@@ -71,7 +72,7 @@ const useChange = (selectedId, onModuleRemove) => {
   const handleModuleUpdate = (key, value) =>
     updateModule({ moduleId: selectedId, key, value })
 
-  const handleBindPush = binds => pushBinds({ moduleId: selectedId, binds })
+  const handleBindPush = (binds) => pushBinds({ moduleId: selectedId, binds })
 
   const handleModuleRemove = async () => {
     await removeModule({ moduleId: selectedId })
@@ -105,7 +106,7 @@ const useChange = (selectedId, onModuleRemove) => {
 
       createModule({
         type: moduleType,
-        config: stock.dict[moduleType].defaultConfig,
+        config: getDefaultConfig(moduleType),
         position,
         positions: toPositionsRequest(prevLayer, filtered),
       })

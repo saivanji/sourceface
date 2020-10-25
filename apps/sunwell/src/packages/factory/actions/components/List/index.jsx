@@ -1,15 +1,15 @@
 import React, { useState } from "react"
 import cx from "classnames"
-import styles from "./index.scss"
 import { Button, Toggle, Autocomplete } from "@sourceface/components"
 import Link from "assets/link.svg"
 import Add from "assets/add.svg"
+import styles from "./index.scss"
 
-export default ({ children, stock, value, onChange }) => {
+export default ({ children, available, value, onChange }) => {
   const [isOpened, setOpened] = useState(false)
 
   return !value || !value.length ? (
-    <Creation stock={stock} />
+    <Creation available={available} />
   ) : (
     <>
       <span
@@ -29,14 +29,14 @@ export default ({ children, stock, value, onChange }) => {
               )
             })}
           </div>
-          <Creation className={styles.add} stock={stock} />
+          <Creation className={styles.add} available={available} />
         </>
       )}
     </>
   )
 }
 
-function Creation({ className, stock }) {
+function Creation({ className, available }) {
   const trigger = (
     <Button
       className={className}
@@ -53,7 +53,7 @@ function Creation({ className, stock }) {
     <Toggle trigger={trigger}>
       {(close) => (
         <Autocomplete>
-          {stock.list.map((item) => (
+          {available.map((item) => (
             <Autocomplete.Item key={item.type} onClick={close}>
               {item.type}
             </Autocomplete.Item>

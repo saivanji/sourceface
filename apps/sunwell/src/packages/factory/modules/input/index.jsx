@@ -1,7 +1,8 @@
 import React from "react"
-import { Row, Label, Input } from "@sourceface/components"
-import { Form, Field, useTransition } from "packages/toolkit"
 import * as yup from "yup"
+import { Row, Label, Input } from "@sourceface/components"
+import { Form, Field } from "../../configuration"
+import { useTransition } from "../../container"
 
 export const Root = function InputModule({
   config,
@@ -12,7 +13,7 @@ export const Root = function InputModule({
   const transitionValue = useTransition("value")
   const transitionValidationError = useTransition("validationError")
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { value: currentValue } = e.target
     const error =
       config.validation &&

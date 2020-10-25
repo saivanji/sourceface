@@ -1,6 +1,6 @@
 export { default as Action } from "./Action"
 export { default as Arguments } from "./Arguments"
-export { default as Pipe } from "./Pipe"
+export { default as List } from "./List"
 export { default as Placeholder } from "./Placeholder"
 export { default as Snippet } from "./Snippet"
 export { default as Static } from "./Static"

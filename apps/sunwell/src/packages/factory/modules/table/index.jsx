@@ -11,9 +11,9 @@ import {
   Input,
   Checkbox,
 } from "@sourceface/components"
-import { Form, Field, useTransition, useValue } from "packages/toolkit"
-// TODO: import from toolkit
-import Actions from "packages/actions"
+import { Form, Field, Pipe } from "../../configuration"
+import { useTransition } from "../../container"
+import { useValue } from "../../execution"
 import styles from "./index.scss"
 
 // TODO: filters might be displayed in place of a column(filtered column will have gray rounded bg and "i" icon. When user will hover it - will display applied filters)
@@ -111,12 +111,12 @@ export const Configuration = function TableModuleConfiguration({
       <Section title="Basic">
         <Row>
           <Label title="Data">
-            <Field name="data" component={Actions} />
+            <Field name="data" component={Pipe} />
           </Label>
         </Row>
         <Row>
           <Label title="Data">
-            <Field name="items" component={Actions} />
+            <Field name="items" component={Pipe} />
           </Label>
         </Row>
       </Section>
@@ -128,12 +128,12 @@ export const Configuration = function TableModuleConfiguration({
           <>
             <Row>
               <Label title="Total count">
-                <Field name="count" component={Actions} />
+                <Field name="count" component={Pipe} />
               </Label>
             </Row>
             <Row>
               <Label title="Current page">
-                <Field name="currentPage" type="text" component={Actions} />
+                <Field name="currentPage" type="text" component={Pipe} />
               </Label>
             </Row>
             <Row>

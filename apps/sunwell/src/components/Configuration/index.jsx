@@ -1,21 +1,14 @@
 import React from "react"
 import { Input } from "@sourceface/components"
-import * as stock from "packages/modules"
+import * as factory from "packages/factory"
 
 export default function Configuration({
-  selectedId,
-  modules,
+  module,
   onUpdate,
   onRemove,
+  onActionCreate,
+  onActionUpdate,
 }) {
-  if (!modules) {
-    return "Loading..."
-  }
-
-  // TODO: crash, when module is deleted(explore git history for the additional scope on how that was solved before)
-  const module = modules.find((x) => x.id === selectedId)
-  const Component = stock.dict[module.type].Configuration
-
   return (
     <>
       <div
@@ -30,10 +23,12 @@ export default function Configuration({
         <Input size="compact" placeholder="Module name" value="input5" />
         <span>{module.type}</span>
       </div>
-      <Component
+      <factory.Configuration
         key={module.id}
-        config={module.config}
+        module={module}
         onConfigChange={onUpdate}
+        onActionUpdate={onActionUpdate}
+        onActionCreate={onActionCreate}
       />
       <button
         type="button"
