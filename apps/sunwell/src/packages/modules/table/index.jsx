@@ -96,16 +96,9 @@ export const Root = function TableModule({ config, scope: { limit, offset } }) {
 
 // TODO: apply progressive disclosure technique for pagination and
 // other optional stuff. (probably with accordion for the section?)
-export const Configuration = function TableModuleConfiguration({
-  config,
-  onConfigChange,
-}) {
+export const Configuration = function TableModuleConfiguration({ config }) {
   return (
-    <Form
-      config={config}
-      onConfigChange={onConfigChange}
-      validationSchema={validationSchema}
-    >
+    <Form validationSchema={validationSchema}>
       <Section title="Basic">
         <Row>
           <Label title="Data">

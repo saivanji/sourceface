@@ -34,16 +34,9 @@ export const Root = function InputModule({
   )
 }
 
-export const Configuration = function InputModuleConfiguration({
-  config,
-  onConfigChange,
-}) {
+export const Configuration = function InputModuleConfiguration() {
   return (
-    <Form
-      config={config}
-      onConfigChange={onConfigChange}
-      validationSchema={validationSchema}
-    >
+    <Form validationSchema={validationSchema}>
       <Row>
         <Label title="Placeholder">
           <Field name="placeholder" type="text" component={Input} />

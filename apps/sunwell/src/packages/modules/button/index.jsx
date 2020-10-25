@@ -24,16 +24,9 @@ export const Root = function ButtonModule({ config }) {
   )
 }
 
-export const Configuration = function ButtonModuleConfiguration({
-  config,
-  onConfigChange,
-}) {
+export const Configuration = function ButtonModuleConfiguration() {
   return (
-    <Form
-      config={config}
-      onConfigChange={onConfigChange}
-      validationSchema={validationSchema}
-    >
+    <Form validationSchema={validationSchema}>
       <Row>
         <Label title="Text">
           <Field name="text" type="text" component={Input} />

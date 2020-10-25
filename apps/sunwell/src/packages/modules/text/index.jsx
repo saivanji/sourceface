@@ -28,16 +28,9 @@ export const Root = function TextModule({ config }) {
   )
 }
 
-export const Configuration = function TextModuleConfiguration({
-  config,
-  onConfigChange,
-}) {
+export const Configuration = function TextModuleConfiguration() {
   return (
-    <Form
-      config={config}
-      onConfigChange={onConfigChange}
-      validationSchema={validationSchema}
-    >
+    <Form validationSchema={validationSchema}>
       <Row>
         <Label title="Text">
           <Field name="text" type="text" component={Input} />
