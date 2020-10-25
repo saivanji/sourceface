@@ -44,46 +44,53 @@ const definition = {
   ],
 }
 
-export default ({ value, onChange }) => {
+// TODO: when removing action from pipe, remove it from config first and then remove action itself so there
+// would be no data inconsistency
+export default ({ value = [], onChange }) => {
   const [isOpened, setOpened] = useState(false)
+  const { module, onActionCreate } = useConfiguration()
   const { stock } = useContainer()
 
-  const items = [
-    <stock.actions.dict.runQuery.View definition={definition} />,
-    <stock.actions.dict.redirect.View />,
-  ]
+  const create = async (type) => {
+    const action = await onActionCreate(type)
+    onChange([...value, action.id])
+  }
+
+  const actions = value.map((id) => module.actions.find((x) => x.id === id))
 
   return !value || !value.length ? (
-    <Creation />
+    <Creation onCreate={create} />
   ) : (
     <>
       <span
         onClick={() => setOpened((value) => !value)}
         className={cx(styles.link, isOpened && styles.opened)}
       >
-        <Link className={styles.actionsIcon} />3 actions assigned
+        <Link className={styles.actionsIcon} />
+        {actions.length} actions assigned
       </span>
       {isOpened && (
         <>
           <div className={styles.list}>
-            {items.map((item, i) => {
+            {actions.map((action) => {
+              const Component = stock.actions.dict[action.type].View
+
               return (
-                <div className={styles.action} key={i}>
-                  {item}
+                <div key={action.id} className={styles.action}>
+                  <Component config={action.config} />
                 </div>
               )
             })}
           </div>
-          <Creation className={styles.add} />
+          <Creation className={styles.add} onCreate={create} />
         </>
       )}
     </>
   )
 }
 
-function Creation({ className }) {
+function Creation({ className, onCreate }) {
   const { stock } = useContainer()
-  const { onActionCreate } = useConfiguration()
 
   const trigger = (
     <Button
@@ -105,7 +112,7 @@ function Creation({ className }) {
             <Autocomplete.Item
               key={item.type}
               onClick={() => {
-                onActionCreate(item.type)
+                onCreate(item.type)
                 close()
               }}
             >

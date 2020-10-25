@@ -69,8 +69,9 @@ const useChange = (selectedId, onModuleRemove) => {
   )
 
   // TODO: implement debouncing
-  const handleModuleUpdate = (key, value) =>
+  const handleModuleUpdate = (key, value) => {
     updateModule({ moduleId: selectedId, key, value })
+  }
 
   const handleModuleRemove = async () => {
     await removeModule({ moduleId: selectedId })
@@ -112,8 +113,15 @@ const useChange = (selectedId, onModuleRemove) => {
     }
   }
 
-  const handleActionCreate = (type) =>
-    createAction({ moduleId: selectedId, type, config: {} })
+  const handleActionCreate = async (type) => {
+    const { data } = await createAction({
+      moduleId: selectedId,
+      type,
+      config: {},
+    })
+
+    return data.createAction
+  }
 
   return {
     isChanging:
