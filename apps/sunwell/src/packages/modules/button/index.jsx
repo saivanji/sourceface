@@ -8,8 +8,7 @@ import {
   Checkbox,
 } from "@sourceface/components"
 import * as yup from "yup"
-import { Form, Field, Pipe } from "../../configuration"
-import { useFunction } from "../../execution"
+import { Form, Field, Pipe, useFunction } from "packages/factory"
 
 export const Root = function ButtonModule({ config }) {
   const [onClick] = useFunction(config.action)

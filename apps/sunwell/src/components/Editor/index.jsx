@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { SORTABLE_INNER, SORTABLE_OUTER } from "packages/grid"
 import { useMutation } from "urql"
-import { getDefaultConfig } from "packages/factory"
+import { dict } from "packages/modules"
 import Configuration from "../Configuration"
 import Stock from "../Stock"
 import Modules from "../Modules"
@@ -106,7 +106,7 @@ const useChange = (selectedId, onModuleRemove) => {
 
       createModule({
         type: moduleType,
-        config: getDefaultConfig(moduleType),
+        config: dict[moduleType].defaultConfig,
         position,
         positions: toPositionsRequest(prevLayer, filtered),
       })

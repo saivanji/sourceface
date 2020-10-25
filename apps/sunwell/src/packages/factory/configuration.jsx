@@ -1,17 +1,17 @@
 import React, { createContext, useContext, useState } from "react"
 import { ValidationError } from "yup"
-import * as actions from "./actions"
-import * as modules from "./modules"
+import { useContainer } from "./container"
 
 const context = createContext({})
 
-export default function Configuration({
+export function Configuration({
   module,
   onConfigChange,
   onActionUpdate,
   onActionCreate,
 }) {
-  const Component = modules.dict[module.type].Configuration
+  const { stock } = useContainer()
+  const Component = stock.modules.dict[module.type].Configuration
 
   return (
     <context.Provider
@@ -75,51 +75,5 @@ export function Field({ name, component: Component, ...props }) {
         }
       }}
     />
-  )
-}
-
-const definition = {
-  query_id: "listOrders",
-  args: [
-    // {
-    //   type: "group",
-    //   value: {
-    //     type: "action",
-    //     action_id: 7,
-    //   },
-    // },
-    {
-      type: "key",
-      key: "limit",
-      value: {
-        type: "literal",
-        data: 5,
-      },
-    },
-    {
-      type: "key",
-      key: "offset",
-      value: {
-        type: "literal",
-        data: 8,
-      },
-    },
-    {
-      type: "key",
-      key: "offset",
-      value: {
-        type: "local",
-        name: "offset",
-      },
-    },
-  ],
-}
-
-export function Pipe({ value, onChange }) {
-  return (
-    <Pipe available={actions.list} value={value}>
-      <actions.dict.runQuery.View definition={definition} />
-      <actions.dict.redirect.View />
-    </Pipe>
   )
 }

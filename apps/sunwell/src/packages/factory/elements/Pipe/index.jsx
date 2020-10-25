@@ -3,13 +3,57 @@ import cx from "classnames"
 import { Button, Toggle, Autocomplete } from "@sourceface/components"
 import Link from "assets/link.svg"
 import Add from "assets/add.svg"
+import { useContainer } from "../../container"
 import styles from "./index.scss"
 
-export default ({ children, available, value, onChange }) => {
+const definition = {
+  query_id: "listOrders",
+  args: [
+    // {
+    //   type: "group",
+    //   value: {
+    //     type: "action",
+    //     action_id: 7,
+    //   },
+    // },
+    {
+      type: "key",
+      key: "limit",
+      value: {
+        type: "literal",
+        data: 5,
+      },
+    },
+    {
+      type: "key",
+      key: "offset",
+      value: {
+        type: "literal",
+        data: 8,
+      },
+    },
+    {
+      type: "key",
+      key: "offset",
+      value: {
+        type: "local",
+        name: "offset",
+      },
+    },
+  ],
+}
+
+export default ({ value, onChange }) => {
   const [isOpened, setOpened] = useState(false)
+  const { stock } = useContainer()
+
+  const items = [
+    <stock.actions.dict.runQuery.View definition={definition} />,
+    <stock.actions.dict.redirect.View />,
+  ]
 
   return !value || !value.length ? (
-    <Creation available={available} />
+    <Creation />
   ) : (
     <>
       <span
@@ -21,7 +65,7 @@ export default ({ children, available, value, onChange }) => {
       {isOpened && (
         <>
           <div className={styles.list}>
-            {React.Children.map(children, (item, i) => {
+            {items.map((item, i) => {
               return (
                 <div className={styles.action} key={i}>
                   {item}
@@ -29,14 +73,15 @@ export default ({ children, available, value, onChange }) => {
               )
             })}
           </div>
-          <Creation className={styles.add} available={available} />
+          <Creation className={styles.add} />
         </>
       )}
     </>
   )
 }
 
-function Creation({ className, available }) {
+function Creation({ className }) {
+  const { stock } = useContainer()
   const trigger = (
     <Button
       className={className}
@@ -53,7 +98,7 @@ function Creation({ className, available }) {
     <Toggle trigger={trigger}>
       {(close) => (
         <Autocomplete>
-          {available.map((item) => (
+          {stock.actions.list.map((item) => (
             <Autocomplete.Item key={item.type} onClick={close}>
               {item.type}
             </Autocomplete.Item>

@@ -11,16 +11,14 @@ import {
   Input,
   Checkbox,
 } from "@sourceface/components"
-import { Form, Field, Pipe } from "../../configuration"
-import { useTransition } from "../../container"
-import { useValue } from "../../execution"
+import { Form, Field, Pipe, useTransition, useValue } from "packages/factory"
 import styles from "./index.scss"
 
 // TODO: filters might be displayed in place of a column(filtered column will have gray rounded bg and "i" icon. When user will hover it - will display applied filters)
 
 // TODO: implement actions. on clicking button - execute query. or open another page
 
-export const Root = function TableModule({ config, local: { limit, offset } }) {
+export const Root = function TableModule({ config, scope: { limit, offset } }) {
   const changePage = useTransition("page")
 
   // TODO: page is not changing, the change is reflected only after edit mode is toggled.

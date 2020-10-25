@@ -1,5 +1,5 @@
 import React from "react"
-import { Action, Value } from "../components"
+import { Action, Value } from "./components"
 
 // TODO: use actual page names instead of paths and provide params similar way we provide arguments to a function
 export function View({ definition }) {

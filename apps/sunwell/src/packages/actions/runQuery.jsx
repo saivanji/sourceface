@@ -1,5 +1,5 @@
 import React from "react"
-import { Action, Static, Arguments } from "../components"
+import { Action, Static, Arguments } from "./components"
 
 // TODO: when adding a new action, user will choose from multiple sub categories. For some modules will be the only one option(query, redirect),
 // for others - many(module - for every module, from specific module)

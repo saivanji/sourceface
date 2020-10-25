@@ -1,34 +1,38 @@
-// TODO: have identifier and context here
 import React, { createContext, useContext } from "react"
-import * as modules from "./modules"
+import { useContainer } from "./container"
 
 const context = createContext({})
 
-export default function Module({
-  module,
-  isEditing,
-  frame: Frame,
-  onConfigChange,
-}) {
-  return <div />
+export function Module({ module, isEditing, frame: Frame, onConfigChange }) {
+  const { stock } = useContainer()
 
-  const Component = modules.dict[module.type].Root
-  const { readState, getScope } = useContainer()
-  // TODO: getLocalScope
-  const scope = getScope(module.id)
+  const Component = stock.modules.dict[module.type].Root
+  const { readState, modulesScope } = useContainer()
+  const scope = modulesScope[module.id]
   const state = readState(module.id)
 
   return (
-    <Component
-      config={module.config}
-      state={state}
-      local={scope.local}
-      layers={module.layers}
-      components={{ Frame }}
-      isEditing={isEditing}
-      onConfigChange={onConfigChange}
-    />
+    <context.Provider value={module}>
+      <Component
+        config={module.config}
+        state={state}
+        scope={scope}
+        layers={module.layers}
+        components={{ Frame }}
+        isEditing={isEditing}
+        onConfigChange={onConfigChange}
+      />
+    </context.Provider>
   )
 }
 
-export const useModule = () => {}
+export const useModule = () => {
+  return useContext(context)
+}
+
+export const useTransition = function StateTransition(key) {
+  const { assignState } = useContainer()
+  const { id } = useModule()
+
+  return (value) => assignState(id, key, value)
+}

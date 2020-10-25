@@ -1,3 +1,7 @@
-export const useFunction = () => {}
+export const useFunction = () => {
+  return [() => {}]
+}
 
-export const useValue = () => {}
+export const useValue = () => {
+  return [[[], [], [], []], false, false]
+}

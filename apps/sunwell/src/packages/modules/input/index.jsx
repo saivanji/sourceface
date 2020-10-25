@@ -1,8 +1,7 @@
 import React from "react"
 import * as yup from "yup"
 import { Row, Label, Input } from "@sourceface/components"
-import { Form, Field } from "../../configuration"
-import { useTransition } from "../../container"
+import { Form, Field, useTransition } from "packages/factory"
 
 export const Root = function InputModule({
   config,

@@ -2,11 +2,11 @@ import React from "react"
 import cx from "classnames"
 import { useDrag } from "react-dnd"
 import { SORTABLE_OUTER } from "packages/grid"
-import * as factory from "packages/factory"
+import { list } from "packages/modules"
 import styles from "./index.scss"
 
 export default function Stock() {
-  return factory.modules.map((module) => (
+  return list.map((module) => (
     <div key={module.type} className={styles.item}>
       <Card module={module} />
     </div>

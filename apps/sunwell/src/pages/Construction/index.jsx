@@ -7,11 +7,11 @@ import { useParams, useHistory } from "react-router-dom"
 import { useQuery } from "urql"
 import { useBooleanState } from "hooks/index"
 import { Shell, Editor, Modules, When } from "components/index"
-import { Container } from "packages/toolkit"
 import * as factory from "packages/factory"
-import * as stock from "packages/modules"
+import * as modulesStock from "packages/modules"
+import * as actionsStock from "packages/actions"
 import * as queries from "./queries"
-import createActions from "./createActions"
+import createEffects from "./createEffects"
 
 // TODO: think about real use case
 
@@ -28,7 +28,8 @@ export default () => {
   const [isEditing, editOn, editOff] = useBooleanState(false)
 
   const page = result.data?.page
-  const actions = createActions(history, result.data?.commands)
+  const effects = createEffects(history, result.data?.commands)
+  const stock = { modules: modulesStock, actions: actionsStock }
 
   // TODO: replace params of route instead of passign route as link.
   // TODO: improve
@@ -43,33 +44,26 @@ export default () => {
     <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
       <When
         cond={!!page}
+        component={factory.Container}
         queries={result.data?.commands}
         modules={result.data?.page.modules}
-        component={factory.Container}
+        effects={effects}
+        stock={stock}
       >
-        <When
-          cond={!!page}
-          component={Container}
-          queries={result.data?.commands}
-          modules={page?.modules}
-          stock={stock.dict}
-          actions={actions}
-        >
-          {isEditing ? (
-            <Editor
-              layout={page?.layout}
-              modules={page?.modules}
-              onClose={editOff}
-            />
-          ) : (
-            <Shell
-              path={[{ title: "Content", to: "/e" }, ...breadcrumbs]}
-              actions={<button onClick={editOn}>Edit</button>}
-            >
-              <Modules layout={page?.layout} modules={page?.modules} />
-            </Shell>
-          )}
-        </When>
+        {isEditing ? (
+          <Editor
+            layout={page?.layout}
+            modules={page?.modules}
+            onClose={editOff}
+          />
+        ) : (
+          <Shell
+            path={[{ title: "Content", to: "/e" }, ...breadcrumbs]}
+            actions={<button onClick={editOn}>Edit</button>}
+          >
+            <Modules layout={page?.layout} modules={page?.modules} />
+          </Shell>
+        )}
       </When>
     </DndProvider>
   )

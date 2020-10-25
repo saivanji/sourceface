@@ -2,7 +2,7 @@ import React from "react"
 import * as yup from "yup"
 import * as system from "@sourceface/style"
 import { Row, Label, Input, Select } from "@sourceface/components"
-import { Form, Field } from "../../configuration"
+import { Form, Field } from "packages/factory"
 import styles from "./index.scss"
 
 // every module should have correspoding loader(depending on type)
