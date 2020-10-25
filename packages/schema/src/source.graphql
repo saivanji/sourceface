@@ -18,13 +18,15 @@ type PostgresCommandConfig {
 # type Source {
 #   id: String!
 #   createdAt: DateTime!
+#   name: String!
 #   type: SourceType!
 #   config: SourceConfig!
 # }
 
 type Command {
-  id: String!
+  id: Int!
   createdAt: DateTime!
+  name: String!
   # source: Source!
   config: CommandConfig!
   stale: [Command!]!
@@ -32,9 +34,9 @@ type Command {
 
 extend type Query {
   commands: [Command!]!
-  readCommand(commandId: String!, args: JSONObject): JSON
+  readCommand(commandId: Int!, args: JSONObject): JSON
 }
 
 extend type Mutation {
-  writeCommand(commandId: String!, args: JSONObject): JSON
+  writeCommand(commandId: Int!, args: JSONObject): JSON
 }

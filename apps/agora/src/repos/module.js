@@ -5,8 +5,6 @@ export const create = (type, config, positionId, pg) =>
   pg.one(sql.create, [type, config, positionId])
 export const updateConfig = (moduleId, config, pg) =>
   pg.one(sql.updateConfig, [moduleId, config])
-export const updateBinds = (moduleId, binds, pg) =>
-  pg.one(sql.updateBinds, [moduleId, binds], prop("binds"))
 export const listByPageIds = (pageIds, pg) =>
   pg.manyOrNone(sql.listByPageIds, [pageIds])
 
@@ -27,10 +25,6 @@ const sql = {
   updateConfig: `
     UPDATE modules SET config = $2 WHERE id = $1
     RETURNING *
-  `,
-  updateBinds: `
-    UPDATE modules SET binds = $2 WHERE id = $1
-    RETURNING binds
   `,
   listByPageIds: `
     WITH recursive cte AS (

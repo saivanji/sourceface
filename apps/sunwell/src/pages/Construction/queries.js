@@ -21,10 +21,10 @@ export const root = `
       }
       modules {
         id
+        name
         positionId
         type
         config
-        binds
         actions {
           id
           type

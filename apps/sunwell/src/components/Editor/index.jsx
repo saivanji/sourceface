@@ -19,8 +19,8 @@ export default function Editor({ layout, modules, onClose }) {
     isChanging,
     updateModule,
     removeModule,
-    pushBinds,
     changeGrid,
+    createAction,
   } = useChange(selectedId, removeSelection)
 
   return (
@@ -32,7 +32,7 @@ export default function Editor({ layout, modules, onClose }) {
             module={selectedModule}
             onUpdate={updateModule}
             onRemove={removeModule}
-            onBindsPush={pushBinds}
+            onActionCreate={createAction}
           />
         ) : (
           <Stock />
@@ -64,15 +64,13 @@ const useChange = (selectedId, onModuleRemove) => {
   const [{ fetching: isUpdatingPositions }, updatePositions] = useMutation(
     mutations.updatePositions
   )
-  const [{ fetching: isPushingBinds }, pushBinds] = useMutation(
-    mutations.pushBinds
+  const [{ fetching: isCreatingAction }, createAction] = useMutation(
+    mutations.createAction
   )
 
   // TODO: implement debouncing
   const handleModuleUpdate = (key, value) =>
     updateModule({ moduleId: selectedId, key, value })
-
-  const handleBindPush = (binds) => pushBinds({ moduleId: selectedId, binds })
 
   const handleModuleRemove = async () => {
     await removeModule({ moduleId: selectedId })
@@ -114,15 +112,18 @@ const useChange = (selectedId, onModuleRemove) => {
     }
   }
 
+  const handleActionCreate = (type) =>
+    createAction({ moduleId: selectedId, type, config: {} })
+
   return {
     isChanging:
       isUpdatingPositions ||
       isUpdatingModule ||
       isRemovingModule ||
-      isPushingBinds,
+      isCreatingAction,
     updateModule: handleModuleUpdate,
     removeModule: handleModuleRemove,
-    pushBinds: handleBindPush,
     changeGrid: handleGridChange,
+    createAction: handleActionCreate,
   }
 }

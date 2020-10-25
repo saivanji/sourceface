@@ -33,3 +33,13 @@ export const pushBinds = `
     pushBinds(moduleId: $moduleId, binds: $binds)
   }
 `
+
+export const createAction = `
+  mutation(
+    $moduleId: Int!
+    $type: ActionType!
+    $config: JSONObject!
+  ) {
+    createAction(moduleId: $moduleId, type: $type, config: $config) @populate
+  }
+`

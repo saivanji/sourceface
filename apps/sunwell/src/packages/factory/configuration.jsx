@@ -77,3 +77,7 @@ export function Field({ name, component: Component, ...props }) {
     />
   )
 }
+
+export const useConfiguration = () => {
+  return useContext(context)
+}

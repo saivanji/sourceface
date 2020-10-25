@@ -1,9 +1,9 @@
 type Module {
-  id: String!
+  id: Int!
   positionId: Int!
   createdAt: DateTime!
+  name: String!
   type: ModuleType!
-  binds: JSONObject
   config: JSONObject!
   actions: [Action]!
   layouts: [Layout!]!
@@ -29,5 +29,4 @@ extend type Mutation {
   updateModule(moduleId: Int!, key: String!, value: JSON!): Module!
   # TODO: make sure all related child layouts are removed as well
   removeModule(moduleId: Int!): Boolean
-  pushBinds(moduleId: Int!, binds: JSONObject!): JSONObject!
 }

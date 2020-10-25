@@ -1,4 +1,3 @@
-import { mergeDeepRight } from "ramda"
 import * as moduleRepo from "repos/module"
 import * as positionRepo from "repos/position"
 
@@ -42,18 +41,6 @@ const removeModule = async (parent, { moduleId }, { pg }) => {
   return true
 }
 
-const pushBinds = async (parent, { moduleId, binds }, { pg }) => {
-  return pg.task(async (t) => {
-    const module = await moduleRepo.one(moduleId, t)
-
-    return await moduleRepo.updateBinds(
-      moduleId,
-      mergeDeepRight(module.binds, binds),
-      t
-    )
-  })
-}
-
 const actions = (parent, args, ctx) =>
   ctx.loaders.actionsByModule.load(parent.id)
 
@@ -65,7 +52,6 @@ export default {
     createModule,
     updateModule,
     removeModule,
-    pushBinds,
   },
   Module: {
     actions,

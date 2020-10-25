@@ -20,7 +20,7 @@ export default function Configuration({
           borderBottom: "1px solid #ccc",
         }}
       >
-        <Input size="compact" placeholder="Module name" value="input5" />
+        <Input size="compact" placeholder="Module name" value={module.name} />
         <span>{module.type}</span>
       </div>
       <factory.Configuration

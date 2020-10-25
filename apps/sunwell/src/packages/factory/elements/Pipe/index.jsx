@@ -4,6 +4,7 @@ import { Button, Toggle, Autocomplete } from "@sourceface/components"
 import Link from "assets/link.svg"
 import Add from "assets/add.svg"
 import { useContainer } from "../../container"
+import { useConfiguration } from "../../configuration"
 import styles from "./index.scss"
 
 const definition = {
@@ -82,6 +83,8 @@ export default ({ value, onChange }) => {
 
 function Creation({ className }) {
   const { stock } = useContainer()
+  const { onActionCreate } = useConfiguration()
+
   const trigger = (
     <Button
       className={className}
@@ -99,7 +102,13 @@ function Creation({ className }) {
       {(close) => (
         <Autocomplete>
           {stock.actions.list.map((item) => (
-            <Autocomplete.Item key={item.type} onClick={close}>
+            <Autocomplete.Item
+              key={item.type}
+              onClick={() => {
+                onActionCreate(item.type)
+                close()
+              }}
+            >
               {item.type}
             </Autocomplete.Item>
           ))}

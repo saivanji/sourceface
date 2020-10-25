@@ -85,7 +85,7 @@ SET default_with_oids = false;
 CREATE TABLE public.actions (
     id integer NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL,
-    module_id text NOT NULL,
+    module_id integer NOT NULL,
     name text,
     type public.action NOT NULL,
     config json NOT NULL,
@@ -121,14 +121,37 @@ ALTER SEQUENCE public.actions_id_seq OWNED BY public.actions.id;
 --
 
 CREATE TABLE public.commands (
-    id text NOT NULL,
+    id integer NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL,
-    source_id text NOT NULL,
-    config json NOT NULL
+    name text NOT NULL,
+    source_id integer NOT NULL,
+    config json NOT NULL,
+    CONSTRAINT commands_name_check CHECK ((name <> ''::text))
 );
 
 
 ALTER TABLE public.commands OWNER TO admin;
+
+--
+-- Name: commands_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
+--
+
+CREATE SEQUENCE public.commands_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.commands_id_seq OWNER TO admin;
+
+--
+-- Name: commands_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
+--
+
+ALTER SEQUENCE public.commands_id_seq OWNED BY public.commands.id;
+
 
 --
 -- Name: layouts; Type: TABLE; Schema: public; Owner: admin
@@ -179,23 +202,45 @@ ALTER TABLE public.migrations OWNER TO admin;
 --
 
 CREATE TABLE public.modules (
-    id text NOT NULL,
+    id integer NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL,
     position_id integer NOT NULL,
     type public.module NOT NULL,
     config json NOT NULL,
-    binds json
+    name text NOT NULL,
+    CONSTRAINT modules_name_check CHECK ((name <> ''::text))
 );
 
 
 ALTER TABLE public.modules OWNER TO admin;
 
 --
+-- Name: modules_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
+--
+
+CREATE SEQUENCE public.modules_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.modules_id_seq OWNER TO admin;
+
+--
+-- Name: modules_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
+--
+
+ALTER SEQUENCE public.modules_id_seq OWNED BY public.modules.id;
+
+
+--
 -- Name: modules_layouts; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.modules_layouts (
-    module_id text NOT NULL,
+    module_id integer NOT NULL,
     layout_id integer NOT NULL
 );
 
@@ -279,22 +324,45 @@ ALTER SEQUENCE public.positions_id_seq OWNED BY public.positions.id;
 --
 
 CREATE TABLE public.sources (
-    id text NOT NULL,
+    id integer NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL,
+    name text NOT NULL,
     type public.source NOT NULL,
-    config json NOT NULL
+    config json NOT NULL,
+    CONSTRAINT sources_name_check CHECK ((name <> ''::text))
 );
 
 
 ALTER TABLE public.sources OWNER TO admin;
 
 --
+-- Name: sources_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
+--
+
+CREATE SEQUENCE public.sources_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.sources_id_seq OWNER TO admin;
+
+--
+-- Name: sources_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
+--
+
+ALTER SEQUENCE public.sources_id_seq OWNED BY public.sources.id;
+
+
+--
 -- Name: stale_commands; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.stale_commands (
-    command_id text NOT NULL,
-    stale_id text NOT NULL
+    command_id integer NOT NULL,
+    stale_id integer NOT NULL
 );
 
 
@@ -308,10 +376,24 @@ ALTER TABLE ONLY public.actions ALTER COLUMN id SET DEFAULT nextval('public.acti
 
 
 --
+-- Name: commands id; Type: DEFAULT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.commands ALTER COLUMN id SET DEFAULT nextval('public.commands_id_seq'::regclass);
+
+
+--
 -- Name: layouts id; Type: DEFAULT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.layouts ALTER COLUMN id SET DEFAULT nextval('public.layouts_id_seq'::regclass);
+
+
+--
+-- Name: modules id; Type: DEFAULT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.modules ALTER COLUMN id SET DEFAULT nextval('public.modules_id_seq'::regclass);
 
 
 --
@@ -329,11 +411,17 @@ ALTER TABLE ONLY public.positions ALTER COLUMN id SET DEFAULT nextval('public.po
 
 
 --
+-- Name: sources id; Type: DEFAULT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.sources ALTER COLUMN id SET DEFAULT nextval('public.sources_id_seq'::regclass);
+
+
+--
 -- Data for Name: actions; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
 COPY public.actions (id, created_at, module_id, name, type, config) FROM stdin;
-1	2020-10-20 09:34:29.12166	5	\N	runQuery	{}
 \.
 
 
@@ -341,18 +429,25 @@ COPY public.actions (id, created_at, module_id, name, type, config) FROM stdin;
 -- Name: actions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.actions_id_seq', 1, true);
+SELECT pg_catalog.setval('public.actions_id_seq', 1, false);
 
 
 --
 -- Data for Name: commands; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-COPY public.commands (id, created_at, source_id, config) FROM stdin;
-countOrders	2020-09-22 21:19:35.950308	pg	{"value":"SELECT count(id)::integer FROM orders","result":"single","compute":"result => result.count"}
-createOrder	2020-10-02 18:56:11.256497	pg	{ "value": "INSERT INTO orders (customer_name, address, delivery_type, status, payment_type, amount, currency) VALUES ('{{customer_name}}', '{{address}}', '{{delivery_type}}', '{{status}}', '{{payment_type}}', {{amount}}, '{{currency}}') RETURNING *", "result": "single"}
-listOrders	2020-09-22 21:19:35.950308	pg	{"value": "SELECT * FROM orders WHERE customer_name LIKE '{{search}}%' ORDER BY created_at DESC LIMIT {{limit}} OFFSET {{offset}}", "result": "many"}
+COPY public.commands (id, created_at, name, source_id, config) FROM stdin;
+7	2020-10-25 15:41:01.204099	listOrders	1	{"value": "SELECT * FROM orders WHERE customer_name LIKE '{{search}}%' ORDER BY created_at DESC LIMIT {{limit}} OFFSET {{offset}}", "result": "many"}
+8	2020-10-25 15:41:01.204099	createOrder	1	{"value": "INSERT INTO orders (customer_name, address, delivery_type, status, payment_type, amount, currency) VALUES ('{{customer_name}}', '{{address}}', '{{delivery_type}}', '{{status}}', '{{payment_type}}', {{amount}}, '{{currency}}') RETURNING *", "result": "single"}
+9	2020-10-25 15:41:01.204099	countOrders	1	{"value":"SELECT count(id)::integer FROM orders","result":"single","compute":"result => result.count"}
 \.
+
+
+--
+-- Name: commands_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
+--
+
+SELECT pg_catalog.setval('public.commands_id_seq', 9, true);
 
 
 --
@@ -360,21 +455,9 @@ listOrders	2020-09-22 21:19:35.950308	pg	{"value": "SELECT * FROM orders WHERE c
 --
 
 COPY public.layouts (id, created_at) FROM stdin;
-1	2020-09-22 21:19:35.95544
-2	2020-09-22 21:19:35.95544
-3	2020-09-22 21:19:35.960813
-4	2020-09-22 21:19:35.960813
-5	2020-09-22 21:19:35.960813
-6	2020-09-22 21:25:49.376417
-7	2020-09-22 21:25:49.376417
-8	2020-09-22 21:25:49.376417
-9	2020-09-22 21:25:49.376417
-10	2020-09-22 21:25:49.376417
-11	2020-09-22 21:41:22.207006
-12	2020-09-22 21:41:22.207006
-13	2020-09-22 21:41:22.207006
-14	2020-09-22 21:41:22.207006
-15	2020-09-22 21:41:22.207006
+1	2020-10-25 15:41:38.951719
+2	2020-10-25 15:43:15.198872
+3	2020-10-25 15:43:15.198872
 \.
 
 
@@ -382,7 +465,7 @@ COPY public.layouts (id, created_at) FROM stdin;
 -- Name: layouts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.layouts_id_seq', 15, true);
+SELECT pg_catalog.setval('public.layouts_id_seq', 1, false);
 
 
 --
@@ -390,7 +473,7 @@ SELECT pg_catalog.setval('public.layouts_id_seq', 15, true);
 --
 
 COPY public.migrations (data) FROM stdin;
-{"lastRun": "1603133152443-actions.js", "migrations": [{"title": "1592490185949-sources.js", "timestamp": 1600809575000}, {"title": "1596634213008-layouts.js", "timestamp": 1600809575026}, {"title": "1596634748394-pages.js", "timestamp": 1600809575058}, {"title": "1596636642780-modules.js", "timestamp": 1600809575097}, {"title": "1603133152443-actions.js", "timestamp": 1603186443117}]}
+{"lastRun": "1603133152443-actions.js", "migrations": [{"title": "1592490185949-sources.js", "timestamp": 1603640013218}, {"title": "1596634213008-layouts.js", "timestamp": 1603640013260}, {"title": "1596634748394-pages.js", "timestamp": 1603640013296}, {"title": "1596636642780-modules.js", "timestamp": 1603640013335}, {"title": "1603133152443-actions.js", "timestamp": 1603640013361}]}
 \.
 
 
@@ -398,24 +481,16 @@ COPY public.migrations (data) FROM stdin;
 -- Data for Name: modules; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-COPY public.modules (id, created_at, position_id, type, config, binds) FROM stdin;
-1	2020-09-22 21:19:35.960813	1	text	{"text":"Order creation","fontSize":"2xl","fontWeight":"semibold","alignmentX":"left","alignmentY":"baseline","decoration":"none","color":"#000"}	\N
-3	2020-09-22 21:19:35.960813	3	input	{"placeholder":"Search for orders"}	\N
-11	2020-09-22 21:19:35.960813	11	container	{"layoutId":5}	\N
-12	2020-09-22 21:19:35.960813	12	container	{"layoutId":4}	\N
-13	2020-09-22 21:19:35.960813	13	container	{"layoutId":3}	\N
-2	2020-09-22 21:19:35.960813	2	text	{"text":"Orders list ({{ do queries.countOrders }})","fontSize":"2xl","fontWeight":"semibold","alignmentX":"left","alignmentY":"baseline","decoration":"none","color":"#000"}	\N
-4	2020-09-22 21:19:35.960813	4	button	{"text":"Create new order","size":"regular","action":["-> do core.navigate to: '/orders/create'"],"shouldFitContainer":true}	\N
-18	2020-09-24 21:03:39.974907	18	input	{"placeholder":"Payment type","validation":"^.+$","validationMessage":"Payment type is required"}	\N
-5	2020-09-22 21:19:35.960813	5	table	{"items":["binds.orders"],"count":["do queries.countOrders"],"currentPage":["~page"],"limit":"10","pagination":true}	{"orders":"do queries.listOrders ~limit, ~offset, search: modules.3.value"}
-21	2020-09-24 21:08:21.785715	21	button	{"text":"Create order","size":"regular","shouldFitContainer":false,"action":["-> do core.map data: binds.form, fn: 'justify'","prev -> do queries.createOrder ...prev","prev -> do core.navigate to: '/orders'"]}	{"form":{"customer_name":"modules.14","address":"modules.15","delivery_type":"modules.16","status":"modules.17","payment_type":"modules.18","amount":"modules.19","currency":"modules.23"}}
-17	2020-09-24 21:02:57.096208	17	input	{"placeholder":"Status","validation":"^.+$","validationMessage":"Status is required"}	\N
-23	2020-10-02 13:20:25.413223	23	input	{"validationMessage":"Currency is required","placeholder":"Currency","validation":"^.+$"}	\N
-19	2020-09-24 21:04:06.307147	19	input	{"placeholder":"Amount","validation":"^[0-9]+\\\\.[0-9]+$","validationMessage":"Amount is required"}	\N
-14	2020-09-24 20:55:45.399457	14	input	{"placeholder":"Customer name","validation":"^.+$","validationMessage":"Customer name is required"}	\N
-15	2020-09-24 20:55:56.541161	15	input	{"placeholder":"Address","validation":"^.+$","validationMessage":"Address is required"}	\N
-16	2020-09-24 20:56:54.89946	16	input	{"placeholder":"Delivery type","validation":"^.+$","validationMessage":"Delivery type is required"}	\N
+COPY public.modules (id, created_at, position_id, type, config, name) FROM stdin;
+1	2020-10-25 15:50:07.253689	1	table	{"limit":"10","pagination":true}	table_1
 \.
+
+
+--
+-- Name: modules_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
+--
+
+SELECT pg_catalog.setval('public.modules_id_seq', 1, true);
 
 
 --
@@ -423,9 +498,6 @@ COPY public.modules (id, created_at, position_id, type, config, binds) FROM stdi
 --
 
 COPY public.modules_layouts (module_id, layout_id) FROM stdin;
-11	5
-12	4
-13	3
 \.
 
 
@@ -434,15 +506,9 @@ COPY public.modules_layouts (module_id, layout_id) FROM stdin;
 --
 
 COPY public.pages (id, created_at, route, layout_id, title) FROM stdin;
-1	2020-09-22 21:19:35.958246	/orders	1	Orders
-5	2020-09-22 21:26:04.201303	/orders/create/a	3	a
-6	2020-09-22 21:26:04.201303	/orders/create/a/b	4	b
-7	2020-09-22 21:26:04.201303	/orders/create/a/b/c	5	c
-8	2020-09-22 21:26:04.201303	/orders/edit	6	Edit order
-9	2020-09-22 21:26:04.201303	/users	7	Users
-2	2020-09-22 21:19:35.958246	/orders/create	2	Order creation
-11	2020-09-22 21:42:30.673472	/:entity/create	9	Entity creation
-10	2020-09-22 21:42:30.673472	/orders/:id	8	Order
+1	2020-10-25 15:42:32.357993	/orders	1	Orders
+2	2020-10-25 15:44:09.912236	/orders/create	2	Create order
+3	2020-10-25 15:44:09.912236	/orders/:id	3	Order
 \.
 
 
@@ -450,7 +516,7 @@ COPY public.pages (id, created_at, route, layout_id, title) FROM stdin;
 -- Name: pages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.pages_id_seq', 11, true);
+SELECT pg_catalog.setval('public.pages_id_seq', 3, true);
 
 
 --
@@ -458,22 +524,7 @@ SELECT pg_catalog.setval('public.pages_id_seq', 11, true);
 --
 
 COPY public.positions (id, created_at, layout_id, "position") FROM stdin;
-1	2020-09-22 21:19:35.960813	2	{"x":0,"y":0,"w":4,"h":1}
-2	2020-09-22 21:19:35.960813	1	{"x":0,"y":0,"w":4,"h":1}
-3	2020-09-22 21:19:35.960813	1	{"x":0,"y":1,"w":3,"h":1}
-4	2020-09-22 21:19:35.960813	1	{"x":8,"y":1,"w":2,"h":1}
-11	2020-09-22 21:19:35.960813	4	{"x":1,"y":1,"w":5,"h":5}
-12	2020-09-22 21:19:35.960813	3	{"x":1,"y":3,"w":8,"h":6}
-13	2020-09-22 21:19:35.960813	1	{"x":0,"y":16,"w":10,"h":8}
-5	2020-09-22 21:19:35.960813	1	{"x":0,"y":2,"w":10,"h":11}
-14	2020-09-24 20:55:45.399457	2	{"x":0,"y":1,"w":4,"h":1}
-15	2020-09-24 20:55:56.541161	2	{"x":0,"y":2,"w":4,"h":1}
-16	2020-09-24 20:56:54.89946	2	{"x":0,"y":3,"w":4,"h":1}
-17	2020-09-24 21:02:57.096208	2	{"x":0,"y":4,"w":4,"h":1}
-18	2020-09-24 21:03:39.974907	2	{"x":0,"y":5,"w":4,"h":1}
-19	2020-09-24 21:04:06.307147	2	{"x":0,"y":6,"w":4,"h":1}
-23	2020-10-02 13:20:25.413223	2	{"x":0,"y":7,"w":4,"h":1}
-21	2020-09-24 21:08:21.785715	2	{"x":0,"y":8,"w":3,"h":1}
+1	2020-10-25 15:48:17.106124	1	{"x":0,"y":0,"w":10,"h":11}
 \.
 
 
@@ -481,16 +532,23 @@ COPY public.positions (id, created_at, layout_id, "position") FROM stdin;
 -- Name: positions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.positions_id_seq', 24, true);
+SELECT pg_catalog.setval('public.positions_id_seq', 1, true);
 
 
 --
 -- Data for Name: sources; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-COPY public.sources (id, created_at, type, config) FROM stdin;
-pg	2020-09-22 21:19:35.950308	postgres	{"connection":"postgresql://admin:admin@postgres_mock:5432/postgres"}
+COPY public.sources (id, created_at, name, type, config) FROM stdin;
+1	2020-10-25 15:37:08.613742	pg	postgres	{"connection":"postgresql://admin:admin@postgres_mock:5432/postgres"}
 \.
+
+
+--
+-- Name: sources_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
+--
+
+SELECT pg_catalog.setval('public.sources_id_seq', 1, true);
 
 
 --
@@ -498,8 +556,6 @@ pg	2020-09-22 21:19:35.950308	postgres	{"connection":"postgresql://admin:admin@p
 --
 
 COPY public.stale_commands (command_id, stale_id) FROM stdin;
-createOrder	listOrders
-createOrder	countOrders
 \.
 
 
@@ -512,11 +568,11 @@ ALTER TABLE ONLY public.actions
 
 
 --
--- Name: commands commands_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
+-- Name: commands commands_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.commands
-    ADD CONSTRAINT commands_id_key UNIQUE (id);
+    ADD CONSTRAINT commands_pkey PRIMARY KEY (id);
 
 
 --
@@ -584,11 +640,11 @@ ALTER TABLE ONLY public.positions
 
 
 --
--- Name: sources sources_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
+-- Name: sources sources_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.sources
-    ADD CONSTRAINT sources_id_key UNIQUE (id);
+    ADD CONSTRAINT sources_pkey PRIMARY KEY (id);
 
 
 --

@@ -1,36 +1,37 @@
 export const up = () =>
-  global.pg.tx(async t => {
+  global.pg.tx(async (t) => {
     await t.none(`
       CREATE TYPE source AS ENUM ('postgres')
     `)
     await t.none(`
       CREATE TABLE sources(
-        id text PRIMARY KEY CHECK (id <> ''),
+        id serial PRIMARY KEY,
         created_at timestamp NOT NULL DEFAULT NOW(),
+        name text NOT NULL CHECK (name <> ''),
         type source NOT NULL,
         config json NOT NULL
       )
     `)
-    // TODO: make id as integer and add "name" field.
     await t.none(`
       CREATE TABLE commands(
-        id text PRIMARY KEY CHECK (id <> ''),
+        id serial PRIMARY KEY,
         created_at timestamp NOT NULL DEFAULT NOW(),
-        source_id text NOT NULL REFERENCES sources(id) ON DELETE CASCADE,
+        name text NOT NULL CHECK (name <> ''),
+        source_id integer NOT NULL REFERENCES sources(id) ON DELETE CASCADE,
         config json NOT NULL
       )
     `)
     await t.none(`
       CREATE TABLE stale_commands(
-        command_id text NOT NULL REFERENCES commands(id) ON DELETE CASCADE,
-        stale_id text NOT NULL REFERENCES commands(id) ON DELETE CASCADE,
+        command_id integer NOT NULL REFERENCES commands(id) ON DELETE CASCADE,
+        stale_id integer NOT NULL REFERENCES commands(id) ON DELETE CASCADE,
         UNIQUE (command_id, stale_id)
       )
     `)
   })
 
 export const down = () =>
-  global.pg.tx(async t => {
+  global.pg.tx(async (t) => {
     await t.none(`
       DROP TABLE stale_commands
     `)

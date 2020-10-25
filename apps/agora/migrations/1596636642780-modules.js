@@ -1,15 +1,15 @@
 export const up = () =>
-  global.pg.tx(async t => {
+  global.pg.tx(async (t) => {
     await t.none(`
       CREATE TYPE module AS ENUM ('button', 'container', 'input', 'table', 'text')
     `)
     await t.none(`
       CREATE TABLE modules(
-        id text PRIMARY KEY CHECK (id <> ''),
+        id serial PRIMARY KEY,
         created_at timestamp NOT NULL DEFAULT NOW(),
+        name text NOT NULL CHECK (name <> ''),
         position_id integer UNIQUE NOT NULL REFERENCES positions(id) ON DELETE CASCADE,
         type module NOT NULL,
-        binds json,
         config json NOT NULL
       )
     `)
@@ -18,14 +18,14 @@ export const up = () =>
      */
     await t.none(`
       CREATE TABLE modules_layouts(
-        module_id text NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
+        module_id integer NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
         layout_id integer UNIQUE NOT NULL REFERENCES layouts(id) ON DELETE CASCADE
       )
     `)
   })
 
 export const down = () =>
-  global.pg.tx(async t => {
+  global.pg.tx(async (t) => {
     await t.none(`
       DROP TABLE modules_layouts
     `)
