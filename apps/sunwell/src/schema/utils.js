@@ -7,7 +7,7 @@ export const findPageIdByModule = (moduleId, cache) => {
 
     const moduleIds = cache
       .resolve(cache.resolve("Query", "page", x.arguments), "modules")
-      .map(x => cache.resolve(x, "id"))
+      .map((x) => cache.resolve(x, "id"))
 
     if (moduleIds.includes(moduleId)) {
       return x.arguments.pageId
@@ -44,6 +44,9 @@ export const findPageIdByLayout = (layoutId, cache) => {
     return result
   }, null)
 }
+
+// TODO: implement
+export const findModuleIdByAction = (actionId, cache) => {}
 
 export const layoutInModules = (layoutId, moduleLinks, cache) =>
   moduleLinks.reduce((result, moduleLink) => {

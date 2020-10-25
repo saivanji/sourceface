@@ -10,18 +10,18 @@
   display: flex;
   align-items: center;
   padding: $value-1 $value-2 0;
-  &:hover .moreIcon {
+  &:hover .deleteIcon {
     opacity: 1;
   }
 }
 
-.moreIcon {
+.deleteIcon {
   margin-left: auto;
   cursor: pointer;
   opacity: 0;
 }
 
-.moreIcon,
+.deleteIcon,
 .typeIcon {
   width: $value-3;
   height: $value-3;

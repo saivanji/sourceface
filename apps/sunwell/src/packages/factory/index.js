@@ -1,5 +1,5 @@
 export { Container, useContainer } from "./container"
 export { useValue, useFunction } from "./execution"
-export { Configuration, Form, Field } from "./configuration"
+export { Configuration, Form, Field, useConfiguration } from "./configuration"
 export { Module, useModule, useTransition } from "./module"
 export { Pipe } from "./elements"

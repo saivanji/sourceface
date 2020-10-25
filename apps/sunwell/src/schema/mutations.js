@@ -43,3 +43,19 @@ export const createAction = `
     createAction(moduleId: $moduleId, type: $type, config: $config) @populate
   }
 `
+
+export const removeAction = `
+  mutation($actionId: Int!) {
+    removeAction(actionId: $actionId)
+  }
+`
+
+export const changeActionConfig = `
+  mutation(
+    $actionId: Int!
+    $key: String!
+    $value: JSON!
+  ) {
+    changeActionConfig(actionId: $actionId, key: $key, value: $value) @populate
+  }
+`

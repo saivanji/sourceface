@@ -3,6 +3,8 @@ export const create = (moduleId, type, config, pg) =>
   pg.one(sql.create, [moduleId, type, config])
 export const rename = (actionId, name, pg) =>
   pg.one(sql.rename, [actionId, name])
+export const remove = (actionId, pg) =>
+  pg.none(sql.remove, [actionId])
 export const updateConfig = (actionId, config, pg) =>
   pg.one(sql.updateConfig, [actionId, config])
 export const listByModuleIds = (moduleIds, pg) =>
@@ -20,8 +22,11 @@ const sql = {
     UPDATE actions SET name = $2 WHERE id = $1
     RETURNING *
   `,
+  remove: `
+    DELETE FROM actions WHERE id = $1
+  `,
   updateConfig: `
-    UDPATE actions SET config = $2 WHERE id = $1
+    UPDATE actions SET config = $2 WHERE id = $1
     RETURNING *
   `,
   listByModuleIds: `

@@ -21,6 +21,8 @@ export default function Editor({ layout, modules, onClose }) {
     removeModule,
     changeGrid,
     createAction,
+    changeActionConfig,
+    removeAction,
   } = useChange(selectedId, removeSelection)
 
   return (
@@ -33,6 +35,8 @@ export default function Editor({ layout, modules, onClose }) {
             onUpdate={updateModule}
             onRemove={removeModule}
             onActionCreate={createAction}
+            onActionConfigChange={changeActionConfig}
+            onActionRemove={removeAction}
           />
         ) : (
           <Stock />
@@ -67,10 +71,17 @@ const useChange = (selectedId, onModuleRemove) => {
   const [{ fetching: isCreatingAction }, createAction] = useMutation(
     mutations.createAction
   )
+  const [
+    { fetching: isChangingActionConfig },
+    changeActionConfig,
+  ] = useMutation(mutations.changeActionConfig)
+  const [{ fetching: isRemovingAction }, removeAction] = useMutation(
+    mutations.removeAction
+  )
 
   // TODO: implement debouncing
-  const handleModuleUpdate = (key, value) => {
-    updateModule({ moduleId: selectedId, key, value })
+  const handleModuleUpdate = async (key, value) => {
+    await updateModule({ moduleId: selectedId, key, value })
   }
 
   const handleModuleRemove = async () => {
@@ -123,15 +134,27 @@ const useChange = (selectedId, onModuleRemove) => {
     return data.createAction
   }
 
+  const handleActionConfigChange = async (actionId, key, value) => {
+    await changeActionConfig({ actionId, key, value })
+  }
+
+  const handleActionRemove = async (actionId) => {
+    await removeAction({ actionId })
+  }
+
   return {
     isChanging:
       isUpdatingPositions ||
       isUpdatingModule ||
       isRemovingModule ||
-      isCreatingAction,
+      isCreatingAction ||
+      isChangingActionConfig ||
+      isRemovingAction,
     updateModule: handleModuleUpdate,
     removeModule: handleModuleRemove,
     changeGrid: handleGridChange,
     createAction: handleActionCreate,
+    changeActionConfig: handleActionConfigChange,
+    removeAction: handleActionRemove,
   }
 }

@@ -20,13 +20,21 @@ import { Action, Static, Arguments } from "./components"
 
 // TODO: have groupped autosuggest for all variables and have a switch only with literal?
 
-export function View({ config }) {
+export function Root({ queries, config, onConfigChange }) {
   // TODO: get queries from context
+
+  const query = config.query_id && queries.find((x) => x.id === config.query_id)
+  const suggestions = queries.map((item) => ({ title: item.name, data: item }))
 
   return (
     <Action secondary={<Arguments />}>
       Execute
-      <Static value={config.query_id} creationTitle="Add query" />
+      <Static
+        creationTitle="Add query"
+        value={query?.name}
+        onChange={(query) => onConfigChange("query_id", query.id)}
+        suggestions={suggestions}
+      />
       query
     </Action>
   )

@@ -4,7 +4,7 @@ import styles from "./index.scss"
 import BottomArrow from "assets/chev-b.svg"
 import TopArrow from "assets/chev-t.svg"
 import Guide from "assets/guide.svg"
-import More from "assets/more.svg"
+import Delete from "assets/delete.svg"
 
 export default function Action({ children, secondary, add = false }) {
   const [isOpened, setOpened] = useState(false)
@@ -14,7 +14,7 @@ export default function Action({ children, secondary, add = false }) {
       <div className={styles.head}>
         <Guide className={styles.typeIcon} />
         <span className={styles.name}>Unnamed</span>
-        <More className={styles.moreIcon} />
+        <Delete onClick={() => {}} className={styles.deleteIcon} />
       </div>
       <div className={cx(styles.body, styles.group)}>
         {wrapText(children)}
@@ -56,11 +56,7 @@ Action.Section = function ActionSection({ title, children }) {
 }
 
 Action.SectionRow = function ActionSectionRow({ children }) {
-  return (
-    <div className={styles.sectionRow}>
-      {children}
-    </div>
-  )
+  return <div className={styles.sectionRow}>{children}</div>
 }
 
 const wrapText = (children) =>

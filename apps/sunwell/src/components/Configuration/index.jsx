@@ -7,7 +7,8 @@ export default function Configuration({
   onUpdate,
   onRemove,
   onActionCreate,
-  onActionUpdate,
+  onActionConfigChange,
+  onActionRemove,
 }) {
   return (
     <>
@@ -27,8 +28,9 @@ export default function Configuration({
         key={module.id}
         module={module}
         onConfigChange={onUpdate}
-        onActionUpdate={onActionUpdate}
+        onActionConfigChange={onActionConfigChange}
         onActionCreate={onActionCreate}
+        onActionRemove={onActionRemove}
       />
       <button
         type="button"

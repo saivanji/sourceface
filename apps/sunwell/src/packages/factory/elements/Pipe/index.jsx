@@ -48,15 +48,28 @@ const definition = {
 // would be no data inconsistency
 export default ({ value = [], onChange }) => {
   const [isOpened, setOpened] = useState(false)
-  const { module, onActionCreate } = useConfiguration()
-  const { stock } = useContainer()
+  const {
+    module,
+    onActionCreate,
+    onActionRemove,
+    onActionConfigChange,
+  } = useConfiguration()
 
   const create = async (type) => {
     const action = await onActionCreate(type)
     onChange([...value, action.id])
   }
+  const remove = (id) => {
+    onActionRemove(id)
+    onChange(value.filter((x) => x.id !== id))
+  }
 
-  const actions = value.map((id) => module.actions.find((x) => x.id === id))
+  /**
+   * Matching actions by config ids and filtering out wrong links.
+   */
+  const actions = value
+    .map((id) => module.actions.find((x) => x.id === id))
+    .filter(Boolean)
 
   return !value || !value.length ? (
     <Creation onCreate={create} />
@@ -72,20 +85,35 @@ export default ({ value = [], onChange }) => {
       {isOpened && (
         <>
           <div className={styles.list}>
-            {actions.map((action) => {
-              const Component = stock.actions.dict[action.type].View
-
-              return (
-                <div key={action.id} className={styles.action}>
-                  <Component config={action.config} />
-                </div>
-              )
-            })}
+            {actions.map((action) => (
+              <Action
+                key={action.id}
+                {...action}
+                onRemove={remove}
+                onConfigChange={onActionConfigChange}
+              />
+            ))}
           </div>
           <Creation className={styles.add} onCreate={create} />
         </>
       )}
     </>
+  )
+}
+
+function Action({ id, config, type, onConfigChange, onRemove }) {
+  const { stock, queries } = useContainer()
+
+  const Component = stock.actions.dict[type].Root
+
+  return (
+    <div key={id} className={styles.action}>
+      <Component
+        queries={queries}
+        config={config}
+        onConfigChange={(key, value) => onConfigChange(id, key, value)}
+      />
+    </div>
   )
 }
 

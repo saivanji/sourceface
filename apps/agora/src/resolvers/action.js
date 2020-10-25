@@ -6,12 +6,23 @@ const createAction = async (parent, { moduleId, type, config }, { pg }) =>
 const renameAction = async (parent, { actionId, name }, { pg }) =>
   await actionRepo.rename(actionId, name, pg)
 
-const alterActionConfig = async (parent, { actionId, key, value }, { pg }) => {
-  const action = await actionRepo.one(actionId, pg)
+const removeAction = async (parent, { actionId }, { pg }) => {
+  await actionRepo.remove(actionId, pg)
+  return true
+}
 
-  return await actionRepo.updateConfig(actionId, {
-    ...action.config,
-    [key]: value,
+const changeActionConfig = async (parent, { actionId, key, value }, { pg }) => {
+  return await pg.task(async (t) => {
+    const action = await actionRepo.one(actionId, t)
+
+    return await actionRepo.updateConfig(
+      actionId,
+      {
+        ...action.config,
+        [key]: value,
+      },
+      t
+    )
   })
 }
 
@@ -19,6 +30,7 @@ export default {
   Mutation: {
     createAction,
     renameAction,
-    alterActionConfig,
+    removeAction,
+    changeActionConfig,
   },
 }

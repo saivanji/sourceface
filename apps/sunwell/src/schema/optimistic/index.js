@@ -1,4 +1,5 @@
-export { default as pushBinds } from "./pushBinds"
+export { default as changeActionConfig } from "./changeActionConfig"
+export { default as removeAction } from "./removeAction"
 export { default as removeModule } from "./removeModule"
 export { default as updateModule } from "./removeModule"
 export { default as updatePositions } from "./updatePositions"

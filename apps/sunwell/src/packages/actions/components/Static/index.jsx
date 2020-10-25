@@ -3,7 +3,7 @@ import { Toggle, Autocomplete } from "@sourceface/components"
 import Placeholder from "../Placeholder"
 import Snippet from "../Snippet"
 
-export default ({ value, onChange, creationTitle }) => {
+export default ({ value, onChange, creationTitle, suggestions = [] }) => {
   const trigger = !value ? (
     <Placeholder>{creationTitle}</Placeholder>
   ) : (
@@ -14,11 +14,17 @@ export default ({ value, onChange, creationTitle }) => {
     <Toggle trigger={trigger}>
       {(close) => (
         <Autocomplete>
-          <Autocomplete.Item>Test 1</Autocomplete.Item>
-          <Autocomplete.Item>Test 2</Autocomplete.Item>
-          <Autocomplete.Item>Test 3</Autocomplete.Item>
-          <Autocomplete.Item>Test 4</Autocomplete.Item>
-          <Autocomplete.Item>Test 5</Autocomplete.Item>
+          {suggestions.map((item, i) => (
+            <Autocomplete.Item
+              key={i}
+              onClick={() => {
+                onChange(item.data)
+                close()
+              }}
+            >
+              {item.title}
+            </Autocomplete.Item>
+          ))}
         </Autocomplete>
       )}
     </Toggle>
