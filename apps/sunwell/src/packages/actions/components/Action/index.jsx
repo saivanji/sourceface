@@ -12,7 +12,6 @@ export default function Action({ children, secondary, add = false }) {
   return (
     <div className={styles.root}>
       <div className={styles.head}>
-        <Guide className={styles.typeIcon} />
         <span className={styles.name}>Unnamed</span>
         <Delete onClick={() => {}} className={styles.deleteIcon} />
       </div>
