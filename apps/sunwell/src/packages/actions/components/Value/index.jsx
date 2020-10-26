@@ -2,16 +2,15 @@ import React from "react"
 import { Toggle, Autocomplete } from "@sourceface/components"
 import Snippet from "../Snippet"
 import Placeholder from "../Placeholder"
+import Variables from "../Variables"
 
-// TODO: do not have switch for literal/variable, adding literal will be implemented by displaying
-// "Use 'something' as literal" option at the first position of dropdown.
 // TODO: remove icons, have only colors for variable types/literals. Display icons in dropdown instead.
 export default function Value({
   value,
-  autoFocus,
-  creationTitle = "Add value",
   onChange,
-  onDestroy,
+  filter,
+  literalAllowed = true,
+  creationTitle = "Add value",
 }) {
   const trigger = !value ? (
     <Placeholder>{creationTitle}</Placeholder>
@@ -25,11 +24,24 @@ export default function Value({
     <Toggle trigger={trigger}>
       {(close) => (
         <Autocomplete>
-          <Autocomplete.Item>Test 1</Autocomplete.Item>
-          <Autocomplete.Item>Test 2</Autocomplete.Item>
-          <Autocomplete.Item>Test 3</Autocomplete.Item>
-          <Autocomplete.Item>Test 4</Autocomplete.Item>
-          <Autocomplete.Item>Test 5</Autocomplete.Item>
+          {(value) => (
+            <>
+              {literalAllowed && value && (
+                <Autocomplete.Item
+                  onClick={() => onChange({ type: "literal", data: value })}
+                >
+                  Use "{value}" as literal
+                </Autocomplete.Item>
+              )}
+              <Variables
+                filter={filter}
+                onItemClick={(variable) => {
+                  onChange(variable)
+                  close()
+                }}
+              />
+            </>
+          )}
         </Autocomplete>
       )}
     </Toggle>

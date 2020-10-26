@@ -8,7 +8,7 @@ import { useConfiguration } from "../../configuration"
 import styles from "./index.scss"
 
 const definition = {
-  query_id: "listOrders",
+  queryId: "listOrders",
   args: [
     // {
     //   type: "group",
@@ -44,6 +44,7 @@ const definition = {
   ],
 }
 
+// TODO: when at least one action created, have Creation inside of a link as "+" in the right side?
 // TODO: when removing action from pipe, remove it from config first and then remove action itself so there
 // would be no data inconsistency
 export default ({ value = [], onChange }) => {
@@ -58,6 +59,7 @@ export default ({ value = [], onChange }) => {
   const create = async (type) => {
     const action = await onActionCreate(type)
     onChange([...value, action.id])
+    setOpened(true)
   }
   const remove = (id) => {
     onActionRemove(id)
@@ -71,7 +73,7 @@ export default ({ value = [], onChange }) => {
     .map((id) => module.actions.find((x) => x.id === id))
     .filter(Boolean)
 
-  return !value || !value.length ? (
+  return !actions.length ? (
     <Creation onCreate={create} />
   ) : (
     <>

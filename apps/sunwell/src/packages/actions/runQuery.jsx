@@ -1,4 +1,5 @@
 import React from "react"
+import { update } from "ramda"
 import { Action, Static, Arguments } from "./components"
 
 // TODO: when adding a new action, user will choose from multiple sub categories. For some modules will be the only one option(query, redirect),
@@ -20,19 +21,45 @@ import { Action, Static, Arguments } from "./components"
 
 // TODO: have groupped autosuggest for all variables and have a switch only with literal?
 
-export function Root({ queries, config, onConfigChange }) {
-  // TODO: get queries from context
+// Single source of truth. That code might needs to be in "packages/factory/action.jsx"
+// TODO: implement a hook which gets variable definition and returns it's data
+// TODO: implement a hook which gets variable definition and returns it's title(for example module title needs display it's name)
 
-  const query = config.query_id && queries.find((x) => x.id === config.query_id)
+// TODO: keep variables listing and getting variable value code in one place
+
+export function Root({
+  queries,
+  config: { queryId, groups = [], fields = [] },
+  onConfigChange,
+}) {
+  const query = queryId && queries.find((x) => x.id === queryId)
   const suggestions = queries.map((item) => ({ title: item.name, data: item }))
 
+  const addField = (key, variable) =>
+    onConfigChange("fields", [...fields, { key, variable }])
+  const addGroup = (variable) => onConfigChange("groups", [...groups, variable])
+  const changeGroup = (variable, i) =>
+    onConfigChange("groups", update(i, variable, groups))
+
   return (
-    <Action secondary={<Arguments />}>
+    <Action
+      secondary={
+        queryId && (
+          <Arguments
+            groups={groups}
+            fields={fields}
+            onFieldAdd={addField}
+            onGroupAdd={addGroup}
+            onGroupChange={changeGroup}
+          />
+        )
+      }
+    >
       Execute
       <Static
         creationTitle="Add query"
         value={query?.name}
-        onChange={(query) => onConfigChange("query_id", query.id)}
+        onChange={(query) => onConfigChange("queryId", query.id)}
         suggestions={suggestions}
       />
       query

@@ -23,10 +23,10 @@ export default function Toggle({
     close()
 
   useEffect(() => {
-    document.addEventListener("mousedown", onClickOutside)
+    document.addEventListener("mouseup", onClickOutside)
 
     return () => {
-      document.removeEventListener("mousedown", onClickOutside)
+      document.removeEventListener("mouseup", onClickOutside)
     }
   })
 

@@ -422,6 +422,8 @@ ALTER TABLE ONLY public.sources ALTER COLUMN id SET DEFAULT nextval('public.sour
 --
 
 COPY public.actions (id, created_at, module_id, name, type, config) FROM stdin;
+9	2020-10-25 16:34:28.58102	1	\N	runQuery	{"query_id":7}
+10	2020-10-25 17:24:05.010147	1	\N	runQuery	{"query_id":9}
 \.
 
 
@@ -429,7 +431,7 @@ COPY public.actions (id, created_at, module_id, name, type, config) FROM stdin;
 -- Name: actions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.actions_id_seq', 1, false);
+SELECT pg_catalog.setval('public.actions_id_seq', 10, true);
 
 
 --
@@ -482,7 +484,8 @@ COPY public.migrations (data) FROM stdin;
 --
 
 COPY public.modules (id, created_at, position_id, type, config, name) FROM stdin;
-1	2020-10-25 15:50:07.253689	1	table	{"limit":"10","pagination":true}	table_1
+1	2020-10-25 15:50:07.253689	1	table	{"limit":"10","pagination":true,"data":[8,9,10]}	table_1
+2	2020-10-26 16:54:18.590493	2	table	{"limit":"5","pagination":true}	table_2
 \.
 
 
@@ -490,7 +493,7 @@ COPY public.modules (id, created_at, position_id, type, config, name) FROM stdin
 -- Name: modules_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.modules_id_seq', 1, true);
+SELECT pg_catalog.setval('public.modules_id_seq', 2, true);
 
 
 --
@@ -525,6 +528,7 @@ SELECT pg_catalog.setval('public.pages_id_seq', 3, true);
 
 COPY public.positions (id, created_at, layout_id, "position") FROM stdin;
 1	2020-10-25 15:48:17.106124	1	{"x":0,"y":0,"w":10,"h":11}
+2	2020-10-26 16:53:17.372039	1	{"x":0,"y":11,"w":10,"h":11}
 \.
 
 
@@ -532,7 +536,7 @@ COPY public.positions (id, created_at, layout_id, "position") FROM stdin;
 -- Name: positions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.positions_id_seq', 1, true);
+SELECT pg_catalog.setval('public.positions_id_seq', 2, true);
 
 
 --
