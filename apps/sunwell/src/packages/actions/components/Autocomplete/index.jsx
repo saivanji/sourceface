@@ -1,6 +1,8 @@
-import React, { useState, useRef } from "react"
+import React, { createContext, useContext, useState, useRef } from "react"
 import styles from "./index.scss"
 import Close from "./close.svg"
+
+const context = createContext()
 
 export default function Autocomplete({
   children,
@@ -27,34 +29,38 @@ export default function Autocomplete({
   }
 
   return (
-    <div className={styles.root}>
-      <div className={styles.head}>
-        {inputs.map((input, i) => (
-          <Input
-            key={i}
-            clearable={!!value[i]}
-            placeholder={placeholders[i]}
-            value={input}
-            onChange={(input) =>
-              setInputs((inputs) => update(i, input, inputs))
-            }
-            onFocus={() => setFocus(i)}
-            onClear={() => change(i, undefined)}
-          />
-        ))}
+    <context.Provider value={{ change, focus }}>
+      <div className={styles.root}>
+        <div className={styles.head}>
+          {inputs.map((input, i) => (
+            <Input
+              key={i}
+              clearable={!!value[i]}
+              placeholder={placeholders[i]}
+              value={input}
+              onChange={(input) =>
+                setInputs((inputs) => update(i, input, inputs))
+              }
+              onFocus={() => setFocus(i)}
+              onClear={() => change(i, undefined)}
+            />
+          ))}
+        </div>
+        <div className={styles.items}>
+          {typeof suggestions === "function"
+            ? suggestions(inputs[focus])
+            : suggestions}
+        </div>
       </div>
-      <div className={styles.items}>
-        {typeof suggestions === "function"
-          ? suggestions(inputs[focus])
-          : suggestions}
-      </div>
-    </div>
+    </context.Provider>
   )
 }
 
-Autocomplete.Item = function AutocompleteItem({ children, onClick }) {
+Autocomplete.Item = function AutocompleteItem({ children, value }) {
+  const { change, focus } = useContext(context)
+
   return (
-    <span className={styles.item} onClick={onClick}>
+    <span className={styles.item} onClick={() => change(focus, value)}>
       {children}
     </span>
   )
