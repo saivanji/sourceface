@@ -163,6 +163,10 @@ export const createLocalVariables = (config, state, updateState) => ({
   //
   // _page: compute(config.currentPage),
   // _offset: compute(config.currentPage, currentPage => currentPage * config.limit)
+  test: {
+    x: 1,
+    y: 2,
+  },
 })
 
 export const initialState = {

@@ -1,40 +1,9 @@
 import { keys } from "ramda"
 import { useContainer, useConfiguration } from "packages/factory"
 
-// TODO: use map/filter in the autocomplete instead
-// TODO: should identify by definition?
 export const useVariables = () => {
   const { modulesScope, modules } = useContainer()
   const { module } = useConfiguration()
-
-  const variables = createModulesVariables(module.id, modules, modulesScope)
-  const match = (definition) => {
-    // if (definition.type === "local") {
-    //   return {
-    //     view: types.module.render(module, definition),
-    //     definition,
-    //     data: modulesScope[module.id][name],
-    //   }
-    // }
-    // if (definition.type === "external") {
-    //   const module = modules.find((m) => m.id === definition.moduleId)
-    //   return {
-    //     view: types.module.render(module, definition),
-    //     definition,
-    //     data: modulesScope[module.id][name],
-    //   }
-    // }
-  }
-
-  const identify = (definition) => {
-    if (definition.type === "local") {
-      return `module-local-${definition.name}`
-    }
-
-    if (definition.type === "external") {
-      return `module-${definition.moduleId}-${definition.name}`
-    }
-  }
 
   const define = (id) => {
     const [a, b, c] = id.split("-")
@@ -48,22 +17,62 @@ export const useVariables = () => {
 
     if (a === "module") {
       return {
-        type: "local",
-        moduleId: b,
+        type: "external",
+        moduleId: +b,
         name: c,
       }
     }
   }
 
+  const identify = (definition) => {
+    if (definition.type === "local") {
+      return `module-local-${definition.name}`
+    }
+
+    if (definition.type === "external") {
+      return `module-${definition.moduleId}-${definition.name}`
+    }
+  }
+
+  const render = (definition) => {
+    if (definition.type === "local") {
+      return `[local] ${definition.name}`
+    }
+
+    if (definition.type === "external") {
+      const module = modules.find((m) => m.id === definition.moduleId)
+
+      return `[external] ${module.name}.${definition.name}`
+    }
+  }
+
+  const evaluate = (definition) => {
+    if (definition.type === "local") {
+      return modulesScope[module.id][definition.name]
+    }
+
+    if (definition.type === "external") {
+      return modulesScope[definition.moduleId][definition.name]
+    }
+  }
+
+  const variables = createModulesVariables(
+    module.id,
+    modules,
+    modulesScope,
+    render
+  )
+
   return {
     variables,
-    match,
-    identify,
     define,
+    identify,
+    render,
+    evaluate,
   }
 }
 
-const createModulesVariables = (selectedId, modules, modulesScope) =>
+const createModulesVariables = (selectedId, modules, modulesScope, render) =>
   modules.reduce((acc, m) => {
     const scope = modulesScope[m.id]
 
@@ -85,7 +94,7 @@ const createModulesVariables = (selectedId, modules, modulesScope) =>
           }
 
       const variable = {
-        view: `[${definition.type}] ${m.name}.${definition.name}`,
+        view: render(definition),
         definition,
         data: scope[name],
       }

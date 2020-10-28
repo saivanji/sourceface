@@ -1,5 +1,5 @@
 import React from "react"
-import { update } from "ramda"
+import { update, adjust, mergeLeft } from "ramda"
 import { Action, Static, Arguments } from "./components"
 
 // TODO: when adding a new action, user will choose from multiple sub categories. For some modules will be the only one option(query, redirect),
@@ -35,11 +35,26 @@ export function Root({
   const query = queryId && queries.find((x) => x.id === queryId)
   const suggestions = queries.map((q) => ({ title: q.name, value: q.id }))
 
-  const addField = (key, variable) =>
-    onConfigChange("fields", [...fields, { key, variable }])
-  const addGroup = (variable) => onConfigChange("groups", [...groups, variable])
-  const changeGroup = (variable, i) =>
-    onConfigChange("groups", update(i, variable, groups))
+  // TODO: rename variable to definition
+  const addField = (key, definition) =>
+    onConfigChange("fields", [...fields, { key, definition }])
+  const changeField = (definition, i) =>
+    onConfigChange("fields", adjust(i, mergeLeft({ definition }), fields))
+  const removeField = (idx) =>
+    onConfigChange(
+      "fields",
+      fields.filter((_, i) => i !== idx)
+    )
+
+  const addGroup = (definition) =>
+    onConfigChange("groups", [...groups, definition])
+  const changeGroup = (definition, i) =>
+    onConfigChange("groups", update(i, definition, groups))
+  const removeGroup = (idx) =>
+    onConfigChange(
+      "groups",
+      groups.filter((_, i) => i !== idx)
+    )
 
   return (
     <Action
@@ -49,8 +64,11 @@ export function Root({
             groups={groups}
             fields={fields}
             onFieldAdd={addField}
+            onFieldChange={changeField}
+            onFieldRemove={removeField}
             onGroupAdd={addGroup}
             onGroupChange={changeGroup}
+            onGroupRemove={removeGroup}
           />
         )
       }
@@ -71,18 +89,3 @@ export function Root({
 export const execute = (config, { queries, modules }) => {}
 
 export const add = (config) => {}
-
-//       {!!config.args.length && "with "}
-//       {!!config.args.length &&
-//         config.args.map((arg, i) =>
-//           arg.type === "key" ? (
-//             <Action.Group key={i}>
-//               <Snippet color="gray">{arg.key}</Snippet>
-//               as
-//               <Value value={arg.value} />
-//               {i !== config.args.length - 1 && " and "}
-//             </Action.Group>
-//           ) : (
-//             <Value value={arg.value} />
-//           )
-//         )}

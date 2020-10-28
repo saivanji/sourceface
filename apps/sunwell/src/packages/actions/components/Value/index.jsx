@@ -13,20 +13,21 @@ export default function Value({
   literalAllowed = true,
   creationTitle = "Add value",
 }) {
-  const trigger = !value ? (
-    <Placeholder>{creationTitle}</Placeholder>
-  ) : value.type === "literal" ? (
-    <Snippet color="beige">{value.data}</Snippet>
-  ) : (
-    <Snippet color="blue">{value.name}</Snippet>
-  )
-  const { variables, identify, define } = useVariables()
+  const { variables, identify, define, render } = useVariables()
   const map = (variable) => ({
     value: identify(variable.definition),
     title: variable.view,
     variable,
   })
   const customFilter = ({ variable }) => filter(variable)
+
+  const trigger = !value ? (
+    <Placeholder>{creationTitle}</Placeholder>
+  ) : value.type === "literal" ? (
+    <Snippet color="beige">{value.data}</Snippet>
+  ) : (
+    <Snippet color="blue">{render(value)}</Snippet>
+  )
 
   return (
     <Toggle trigger={trigger}>
@@ -40,7 +41,7 @@ export default function Value({
           customSuggestion={(input) => `Use "${input}" as literal`}
           value={value && identify(value)}
           onChange={(value) => {
-            onChange(define(value))
+            onChange(value && define(value))
             close()
           }}
         />

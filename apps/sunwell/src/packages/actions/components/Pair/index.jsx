@@ -3,41 +3,58 @@ import { Toggle } from "@sourceface/components"
 import { useVariables } from "../../hooks"
 import Placeholder from "../Placeholder"
 import Autocomplete from "../Autocomplete"
+import styles from "./index.scss"
 
-// TODO: have selection in Autocomplete component(with ability to clear) and filter out selected item from a list
-export default ({
-  value: [key, definition] = [],
-  onChange,
-  creationTitle,
-  placeholders,
-  keys,
-}) => {
-  const trigger =
-    !key && !definition ? (
-      <Placeholder>{creationTitle}</Placeholder>
-    ) : (
-      // TODO: display key and value with Static and Value components?
-      "Value"
-    )
-
-  const { variables, identify, define } = useVariables()
+export default ({ value: [key, definition] = [], onChange, keys }) => {
+  const placeholders = ["Key", "Value"]
+  const { variables, identify, define, render } = useVariables()
   const map = ({ view, definition }) => ({
     value: identify(definition),
     title: view,
   })
 
+  if (!key && !definition) {
+    const trigger = <Placeholder>Add key/value</Placeholder>
+
+    return (
+      <Toggle trigger={trigger}>
+        {(close) => (
+          <Autocomplete
+            items={[keys, variables]}
+            map={[undefined, map]}
+            placeholder={placeholders}
+            custom
+            customSuggestion={(input) => `Use "${input}" as literal`}
+            value={[key, definition && identify(definition)]}
+            onChange={([key, variableId]) => {
+              onChange([key, define(variableId)])
+              close()
+            }}
+          />
+        )}
+      </Toggle>
+    )
+  }
+
+  const trigger = (
+    <div className={styles.data}>
+      <span className={styles.key}>{key}</span>
+      <span className={styles.definition}>{render(definition)}</span>
+    </div>
+  )
+
   return (
     <Toggle trigger={trigger}>
       {(close) => (
         <Autocomplete
-          items={[keys, variables]}
-          map={[undefined, map]}
-          placeholder={placeholders}
+          items={variables}
+          map={map}
+          placeholder={placeholders[1]}
           custom
           customSuggestion={(input) => `Use "${input}" as literal`}
-          value={[key, definition && identify(definition)]}
-          onChange={([key, variableId]) => {
-            onChange([key, define(variableId)])
+          value={identify(definition)}
+          onChange={(variableId) => {
+            onChange(variableId && [key, define(variableId)])
             close()
           }}
         />

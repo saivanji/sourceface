@@ -200,7 +200,8 @@ const useSections = (
 }
 
 const shouldSubmit = (sections) =>
-  sections.reduce((result, item) => (!result ? result : !!item.value), true)
+  sections.every((item) => !item.value) ||
+  sections.every((item) => !!item.value)
 
 const findTitle = (isSingle, i, value, map, items) => {
   const found = (isSingle ? items : items[i]).find(
