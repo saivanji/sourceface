@@ -33,7 +33,7 @@ export function Root({
   onConfigChange,
 }) {
   const query = queryId && queries.find((x) => x.id === queryId)
-  const suggestions = queries.map((item) => ({ title: item.name, data: item }))
+  const suggestions = queries.map((q) => ({ title: q.name, value: q.id }))
 
   const addField = (key, variable) =>
     onConfigChange("fields", [...fields, { key, variable }])
@@ -58,8 +58,9 @@ export function Root({
       Execute
       <Static
         creationTitle="Add query"
-        value={query?.name}
-        onChange={(query) => onConfigChange("queryId", query.id)}
+        clearable={false}
+        value={query?.id}
+        onChange={(queryId) => onConfigChange("queryId", queryId)}
         suggestions={suggestions}
       />
       query

@@ -54,7 +54,7 @@ export const changeActionConfig = `
   mutation(
     $actionId: Int!
     $key: String!
-    $value: JSON!
+    $value: JSON
   ) {
     changeActionConfig(actionId: $actionId, key: $key, value: $value) @populate
   }

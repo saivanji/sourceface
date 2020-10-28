@@ -14,5 +14,5 @@ extend type Mutation {
   createAction(moduleId: Int!, type: ActionType!, config: JSONObject!): Action!
   removeAction(actionId: Int!): Boolean!
   renameAction(actionId: Int!, name: String!): Action!
-  changeActionConfig(actionId: Int!, key: String!, value: JSON!): Action!
+  changeActionConfig(actionId: Int!, key: String!, value: JSON): Action!
 }
