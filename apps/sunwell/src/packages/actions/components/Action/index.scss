@@ -6,13 +6,16 @@
   background-color: $color-white;
 }
 
+.primary {
+  &:hover .deleteIcon {
+    opacity: 1;
+  }
+}
+
 .head {
   display: flex;
   align-items: center;
   padding: $value-1 $value-2 0;
-  &:hover .deleteIcon {
-    opacity: 1;
-  }
 }
 
 .deleteIcon {
@@ -28,8 +31,13 @@
 }
 
 .name {
+  border: 0;
+  padding: 0;
   font-size: $font-size-xs;
-  color: $color-gray-700;
+  color: $color-gray-900;
+  &:focus {
+    outline: 0;
+  }
 }
 
 .text {

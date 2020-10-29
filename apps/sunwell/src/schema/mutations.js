@@ -50,6 +50,12 @@ export const removeAction = `
   }
 `
 
+export const renameAction = `
+  mutation($actionId: Int!, $name: String!) {
+    renameAction(actionId: $actionId, name: $name)
+  }
+`
+
 export const changeActionConfig = `
   mutation(
     $actionId: Int!

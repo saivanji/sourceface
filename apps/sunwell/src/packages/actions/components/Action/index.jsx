@@ -1,5 +1,6 @@
 import React, { useState, Children } from "react"
 import cx from "classnames"
+import Input from "react-input-autosize"
 import styles from "./index.scss"
 import BottomArrow from "assets/chev-b.svg"
 import TopArrow from "assets/chev-t.svg"
@@ -11,13 +12,15 @@ export default function Action({ children, secondary, add = false }) {
 
   return (
     <div className={styles.root}>
-      <div className={styles.head}>
-        <span className={styles.name}>Unnamed</span>
-        <Delete onClick={() => {}} className={styles.deleteIcon} />
-      </div>
-      <div className={cx(styles.body, styles.group)}>
-        {wrapText(children)}
-        {add && <span className={styles.add}>+</span>}
+      <div className={styles.primary}>
+        <div className={styles.head}>
+          <Input inputClassName={styles.name} placeholder="Unnamed" />
+          <Delete onClick={() => {}} className={styles.deleteIcon} />
+        </div>
+        <div className={cx(styles.body, styles.group)}>
+          {wrapText(children)}
+          {add && <span className={styles.add}>+</span>}
+        </div>
       </div>
       {secondary && !isOpened ? (
         <div className={styles.show} onClick={() => setOpened(true)}>

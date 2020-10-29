@@ -1,8 +1,7 @@
 import React from "react"
-import { Toggle } from "@sourceface/components"
+import { Autocomplete, Toggle } from "@sourceface/components"
 import { useVariables } from "../../hooks"
 import Placeholder from "../Placeholder"
-import Autocomplete from "../Autocomplete"
 import styles from "./index.scss"
 
 export default ({ value: [key, definition] = [], onChange, keys }) => {

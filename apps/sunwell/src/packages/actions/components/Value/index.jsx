@@ -1,9 +1,8 @@
 import React from "react"
-import { Toggle } from "@sourceface/components"
+import { Autocomplete, Toggle } from "@sourceface/components"
 import { useVariables } from "../../hooks"
 import Snippet from "../Snippet"
 import Placeholder from "../Placeholder"
-import Autocomplete from "../Autocomplete"
 
 // TODO: remove icons, have only colors for variable types/literals. Display icons in dropdown instead.
 export default function Value({

@@ -8,6 +8,8 @@ import * as updates from "./updates"
 
 const endpoint = "http://localhost:5001/graphql"
 
+// TODO: move to schema/client package? so we can reuse schema client logic by other clients(mobile app)
+// TODO: have `useSchema` hook to get mutations definitions`
 export default createClient({
   url: endpoint,
   maskTypename: true,

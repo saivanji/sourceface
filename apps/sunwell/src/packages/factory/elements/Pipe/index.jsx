@@ -137,19 +137,15 @@ function Creation({ className, onCreate }) {
   return (
     <Toggle trigger={trigger}>
       {(close) => (
-        <Autocomplete>
-          {stock.actions.list.map((item) => (
-            <Autocomplete.Item
-              key={item.type}
-              onClick={() => {
-                onCreate(item.type)
-                close()
-              }}
-            >
-              {item.type}
-            </Autocomplete.Item>
-          ))}
-        </Autocomplete>
+        <Autocomplete
+          placeholder="Choose action..."
+          items={stock.actions.list}
+          map={(item) => ({ title: item.type, value: item.type })}
+          onChange={(value) => {
+            onCreate(value)
+            close()
+          }}
+        />
       )}
     </Toggle>
   )

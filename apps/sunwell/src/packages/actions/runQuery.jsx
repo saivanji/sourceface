@@ -27,6 +27,8 @@ import { Action, Static, Arguments } from "./components"
 
 // TODO: keep variables listing and getting variable value code in one place
 
+// TODO: Implement "Selector" action so we can get object fields values. Might be useful for query results when we get an object like { count: 5 } and we need 5 as a result
+
 export function Root({
   queries,
   config: { queryId, groups = [], fields = [] },
@@ -35,7 +37,8 @@ export function Root({
   const query = queryId && queries.find((x) => x.id === queryId)
   const suggestions = queries.map((q) => ({ title: q.name, value: q.id }))
 
-  // TODO: rename variable to definition
+  // TODO: move callbacks below to Arguments and provide only onFieldsChange and onGroupsChange functions?
+
   const addField = (key, definition) =>
     onConfigChange("fields", [...fields, { key, definition }])
   const changeField = (definition, i) =>

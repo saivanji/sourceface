@@ -1,8 +1,7 @@
 import React from "react"
-import { Toggle } from "@sourceface/components"
+import { Autocomplete, Toggle } from "@sourceface/components"
 import Placeholder from "../Placeholder"
 import Snippet from "../Snippet"
-import Autocomplete from "../Autocomplete"
 
 export default ({ value, onChange, clearable, creationTitle, suggestions }) => {
   const trigger = !value ? (
