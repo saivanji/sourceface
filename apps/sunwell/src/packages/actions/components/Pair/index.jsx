@@ -4,6 +4,7 @@ import { useVariables } from "../../hooks"
 import Placeholder from "../Placeholder"
 import styles from "./index.scss"
 
+// TODO: consider having "x" icon on hover of Pair or Snippet to delete it
 export default ({ value: [key, definition] = [], onChange, keys }) => {
   const placeholders = ["Key", "Value"]
   const { variables, identify, define, render } = useVariables()

@@ -24,7 +24,15 @@ ReactDOM.render(
 )
 
 // TODO:
+// have uuids as ids for the modules and actions so we can have "Save/Cancel" logic on the frontend.
 // consider implementing auto upgrade feature
+//
+// use case - user need to be able to create postgres table in the app. either with "arbitrary query" for example(with predefined queries for table etc), or have a feature to manage source entities in addition to queries.
+//
+// think of the app conception. generic use cases are:
+// - be admin(management) app for existing application with existing database (internal admin app for the existing startup)
+// - be admin(management) app created from scratch and empty database (internal application for managing candidates hiring process for a startup)
+// - be a regular app created from scratch, where users in the admin are related with users from external db. (external hospital app where we can query appointments for the "admin app" user. where patients are a users of the "admin app")
 //
 // Input module configuration
 // - validation is performed via regex. user can provide custom regex, or configure validation by choosing required, type(number only), limit, email and other settings and we will create corresponding regex for that(find a library)
