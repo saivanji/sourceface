@@ -1,5 +1,5 @@
 import React from "react"
-import { equals } from "ramda"
+import { equals, update, adjust, mergeLeft } from "ramda"
 import { isPlainObject } from "is-plain-object"
 import Action from "../Action"
 import Value from "../Value"
@@ -9,15 +9,23 @@ import styles from "./index.scss"
 export default function Arguments({
   fields,
   groups,
-  onFieldAdd,
-  onFieldChange,
-  onFieldRemove,
-  onGroupAdd,
-  onGroupChange,
-  onGroupRemove,
+  onFieldsChange,
+  onGroupsChange,
 }) {
-  const addField = ([key, definition]) => onFieldAdd(key, definition)
   const keys = ["limit", "offset"].map((key) => ({ title: key, value: key }))
+
+  const addField = ([key, definition]) =>
+    onFieldsChange([...fields, { key, definition }])
+  const changeField = (definition, i) =>
+    onFieldsChange(adjust(i, mergeLeft({ definition }), fields))
+  const removeField = (idx) =>
+    onFieldsChange(fields.filter((_, i) => i !== idx))
+
+  const addGroup = (definition) => onGroupsChange([...groups, definition])
+  const changeGroup = (definition, i) =>
+    onGroupsChange(update(i, definition, groups))
+  const removeGroup = (idx) =>
+    onGroupsChange(groups.filter((_, i) => i !== idx))
 
   return (
     <Action.Section title="Input">
@@ -28,8 +36,8 @@ export default function Arguments({
               key={i}
               keys={keys}
               value={[field.key, field.definition]}
-              onChange={(value) =>
-                !value ? onFieldRemove(i) : onFieldChange(value[1], i)
+              onChange={([, value]) =>
+                !value ? removeField(i) : changeField(value, i)
               }
             />
           ))}
@@ -42,7 +50,7 @@ export default function Arguments({
               filter={filterGroupsEdition}
               value={definition}
               onChange={(definition) =>
-                !definition ? onGroupRemove(i) : onGroupChange(definition, i)
+                !definition ? removeGroup(i) : changeGroup(definition, i)
               }
             />
           ))}
@@ -53,7 +61,7 @@ export default function Arguments({
         <Value
           filter={filterGroupsCreation(groups)}
           creationTitle="Add group"
-          onChange={onGroupAdd}
+          onChange={addGroup}
         />
       </div>
     </Action.Section>

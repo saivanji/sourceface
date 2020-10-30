@@ -23,6 +23,7 @@ export default ({ value: [key, definition] = [], onChange, keys }) => {
               placeholder="Value"
               onChange={(value) => {
                 onChange([selectedKey, value])
+                setSelectedKey(null)
                 close()
               }}
             />
@@ -36,7 +37,7 @@ export default ({ value: [key, definition] = [], onChange, keys }) => {
     <Value
       prefix={{ color: "gray", text: key }}
       value={definition}
-      onChange={onChange}
+      onChange={(value) => onChange([key, value])}
       placeholder="Value"
     />
   )

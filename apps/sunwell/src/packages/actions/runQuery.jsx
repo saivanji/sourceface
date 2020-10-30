@@ -1,5 +1,4 @@
 import React from "react"
-import { update, adjust, mergeLeft } from "ramda"
 import { Action, Static, Arguments } from "./components"
 
 // TODO: when adding a new action, user will choose from multiple sub categories. For some modules will be the only one option(query, redirect),
@@ -37,27 +36,8 @@ export function Root({
   const query = queryId && queries.find((x) => x.id === queryId)
   const suggestions = queries.map((q) => ({ title: q.name, value: q.id }))
 
-  // TODO: move callbacks below to Arguments and provide only onFieldsChange and onGroupsChange functions?
-
-  const addField = (key, definition) =>
-    onConfigChange("fields", [...fields, { key, definition }])
-  const changeField = (definition, i) =>
-    onConfigChange("fields", adjust(i, mergeLeft({ definition }), fields))
-  const removeField = (idx) =>
-    onConfigChange(
-      "fields",
-      fields.filter((_, i) => i !== idx)
-    )
-
-  const addGroup = (definition) =>
-    onConfigChange("groups", [...groups, definition])
-  const changeGroup = (definition, i) =>
-    onConfigChange("groups", update(i, definition, groups))
-  const removeGroup = (idx) =>
-    onConfigChange(
-      "groups",
-      groups.filter((_, i) => i !== idx)
-    )
+  const changeFields = (fields) => onConfigChange("fields", fields)
+  const changeGroups = (groups) => onConfigChange("groups", groups)
 
   return (
     <Action
@@ -66,12 +46,8 @@ export function Root({
           <Arguments
             groups={groups}
             fields={fields}
-            onFieldAdd={addField}
-            onFieldChange={changeField}
-            onFieldRemove={removeField}
-            onGroupAdd={addGroup}
-            onGroupChange={changeGroup}
-            onGroupRemove={removeGroup}
+            onFieldsChange={changeFields}
+            onGroupsChange={changeGroups}
           />
         )
       }
