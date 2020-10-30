@@ -6,9 +6,9 @@ export const up = () =>
 
     await t.none(`
       CREATE TABLE actions(
-        id serial PRIMARY KEY,
+        id uuid PRIMARY KEY,
         created_at timestamp NOT NULL DEFAULT NOW(),
-        module_id integer NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
+        module_id uuid NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
         name text CHECK (name <> ''),
         type action NOT NULL,
         config json NOT NULL

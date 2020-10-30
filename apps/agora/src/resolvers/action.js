@@ -1,7 +1,10 @@
 import * as actionRepo from "repos/action"
 
-const createAction = async (parent, { moduleId, type, config }, { pg }) =>
-  await actionRepo.create(moduleId, type, config, pg)
+const createAction = async (
+  parent,
+  { actionId, moduleId, type, config },
+  { pg }
+) => await actionRepo.create(actionId, moduleId, type, config, pg)
 
 const renameAction = async (parent, { actionId, name }, { pg }) =>
   await actionRepo.rename(actionId, name, pg)

@@ -83,9 +83,9 @@ SET default_with_oids = false;
 --
 
 CREATE TABLE public.actions (
-    id integer NOT NULL,
+    id uuid NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL,
-    module_id integer NOT NULL,
+    module_id uuid NOT NULL,
     name text,
     type public.action NOT NULL,
     config json NOT NULL,
@@ -94,27 +94,6 @@ CREATE TABLE public.actions (
 
 
 ALTER TABLE public.actions OWNER TO admin;
-
---
--- Name: actions_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
---
-
-CREATE SEQUENCE public.actions_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.actions_id_seq OWNER TO admin;
-
---
--- Name: actions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
---
-
-ALTER SEQUENCE public.actions_id_seq OWNED BY public.actions.id;
-
 
 --
 -- Name: commands; Type: TABLE; Schema: public; Owner: admin
@@ -202,7 +181,7 @@ ALTER TABLE public.migrations OWNER TO admin;
 --
 
 CREATE TABLE public.modules (
-    id integer NOT NULL,
+    id uuid NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL,
     position_id integer NOT NULL,
     type public.module NOT NULL,
@@ -215,32 +194,11 @@ CREATE TABLE public.modules (
 ALTER TABLE public.modules OWNER TO admin;
 
 --
--- Name: modules_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
---
-
-CREATE SEQUENCE public.modules_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.modules_id_seq OWNER TO admin;
-
---
--- Name: modules_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
---
-
-ALTER SEQUENCE public.modules_id_seq OWNED BY public.modules.id;
-
-
---
 -- Name: modules_layouts; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.modules_layouts (
-    module_id integer NOT NULL,
+    module_id uuid NOT NULL,
     layout_id integer NOT NULL
 );
 
@@ -369,13 +327,6 @@ CREATE TABLE public.stale_commands (
 ALTER TABLE public.stale_commands OWNER TO admin;
 
 --
--- Name: actions id; Type: DEFAULT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.actions ALTER COLUMN id SET DEFAULT nextval('public.actions_id_seq'::regclass);
-
-
---
 -- Name: commands id; Type: DEFAULT; Schema: public; Owner: admin
 --
 
@@ -387,13 +338,6 @@ ALTER TABLE ONLY public.commands ALTER COLUMN id SET DEFAULT nextval('public.com
 --
 
 ALTER TABLE ONLY public.layouts ALTER COLUMN id SET DEFAULT nextval('public.layouts_id_seq'::regclass);
-
-
---
--- Name: modules id; Type: DEFAULT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.modules ALTER COLUMN id SET DEFAULT nextval('public.modules_id_seq'::regclass);
 
 
 --
@@ -422,16 +366,7 @@ ALTER TABLE ONLY public.sources ALTER COLUMN id SET DEFAULT nextval('public.sour
 --
 
 COPY public.actions (id, created_at, module_id, name, type, config) FROM stdin;
-9	2020-10-25 16:34:28.58102	1	\N	runQuery	{"query_id":7}
-10	2020-10-25 17:24:05.010147	1	\N	runQuery	{"query_id":9}
 \.
-
-
---
--- Name: actions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
---
-
-SELECT pg_catalog.setval('public.actions_id_seq', 10, true);
 
 
 --
@@ -484,16 +419,7 @@ COPY public.migrations (data) FROM stdin;
 --
 
 COPY public.modules (id, created_at, position_id, type, config, name) FROM stdin;
-1	2020-10-25 15:50:07.253689	1	table	{"limit":"10","pagination":true,"data":[8,9,10]}	table_1
-2	2020-10-26 16:54:18.590493	2	table	{"limit":"5","pagination":true}	table_2
 \.
-
-
---
--- Name: modules_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
---
-
-SELECT pg_catalog.setval('public.modules_id_seq', 2, true);
 
 
 --
@@ -527,8 +453,6 @@ SELECT pg_catalog.setval('public.pages_id_seq', 3, true);
 --
 
 COPY public.positions (id, created_at, layout_id, "position") FROM stdin;
-1	2020-10-25 15:48:17.106124	1	{"x":0,"y":0,"w":10,"h":11}
-2	2020-10-26 16:53:17.372039	1	{"x":0,"y":11,"w":10,"h":11}
 \.
 
 

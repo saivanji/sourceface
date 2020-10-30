@@ -1,5 +1,5 @@
 type Action {
-  id: Int!
+  id: UUID!
   createdAt: DateTime!
   name: String
   type: ActionType!
@@ -11,9 +11,14 @@ enum ActionType {
 }
 
 extend type Mutation {
-  createAction(moduleId: Int!, type: ActionType!, config: JSONObject!): Action!
-  removeAction(actionId: Int!): Boolean!
-  renameAction(actionId: Int!, name: String!): Action!
+  createAction(
+    actionId: UUID!
+    moduleId: UUID!
+    type: ActionType!
+    config: JSONObject!
+  ): Action!
+  removeAction(actionId: UUID!): Boolean!
+  renameAction(actionId: UUID!, name: String!): Action!
   # configureAction - new name
-  changeActionConfig(actionId: Int!, key: String!, value: JSON): Action!
+  changeActionConfig(actionId: UUID!, key: String!, value: JSON): Action!
 }

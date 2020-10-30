@@ -1,10 +1,9 @@
 export const one = (actionId, pg) => pg.one(sql.one, [actionId])
-export const create = (moduleId, type, config, pg) =>
-  pg.one(sql.create, [moduleId, type, config])
+export const create = (actionId, moduleId, type, config, pg) =>
+  pg.one(sql.create, [actionId, moduleId, type, config])
 export const rename = (actionId, name, pg) =>
   pg.one(sql.rename, [actionId, name])
-export const remove = (actionId, pg) =>
-  pg.none(sql.remove, [actionId])
+export const remove = (actionId, pg) => pg.none(sql.remove, [actionId])
 export const updateConfig = (actionId, config, pg) =>
   pg.one(sql.updateConfig, [actionId, config])
 export const listByModuleIds = (moduleIds, pg) =>
@@ -15,7 +14,7 @@ const sql = {
     SELECT * FROM actions WHERE id = $1
   `,
   create: `
-    INSERT INTO actions (module_id, type, config) VALUES ($1, $2, $3)
+    INSERT INTO actions (id, module_id, type, config) VALUES ($1, $2, $3, $4)
     RETURNING *
   `,
   rename: `

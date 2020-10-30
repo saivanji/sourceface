@@ -174,9 +174,8 @@ export const initialState = {
 }
 
 export const defaultConfig = {
-  items: "",
   pagination: true,
-  currentPage: "~page",
+  // currentPage: "~page",
 }
 
 export const validationSchema = yup.object().shape({

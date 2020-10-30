@@ -26,7 +26,7 @@ ReactDOM.render(
 // TODO:
 // have uuids as ids for the modules and actions so we can have "Save/Cancel" logic on the frontend.
 //
-// move client schema logic to "schema" package
+// move client schema logic to "client/graphql-client" package
 //
 // consider implementing auto app upgrade feature
 // - have mutations callbacks in place they needed and import actual mutations from schema

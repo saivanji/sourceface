@@ -6,62 +6,70 @@ export const updatePositions = `
 
 export const createModule = `
   mutation(
+    $moduleId: UUID!
     $type: ModuleType!
     $config: JSONObject!
     $position: PositionInput!
     $positions: [PositionInput!]!
   ) {
     updatePositions(positions: $positions) @populate
-    createModule(type: $type, config: $config, position: $position) @populate
+    createModule(
+      moduleId: $moduleId
+      type: $type
+      config: $config
+      position: $position
+    ) @populate
   }
 `
 
 export const updateModule = `
-  mutation($moduleId: Int!, $key: String!, $value: JSON!) {
+  mutation($moduleId: UUID!, $key: String!, $value: JSON!) {
     updateModule(moduleId: $moduleId, key: $key, value: $value) @populate
   }
 `
 
 export const removeModule = `
-  mutation($moduleId: Int!) {
+  mutation($moduleId: UUID!) {
     removeModule(moduleId: $moduleId)
   }
 `
 
 export const pushBinds = `
-  mutation($moduleId: Int!, $binds: JSONObject!) {
+  mutation($moduleId: UUID!, $binds: JSONObject!) {
     pushBinds(moduleId: $moduleId, binds: $binds)
   }
 `
 
 export const createAction = `
   mutation(
-    $moduleId: Int!
+    $actionId: UUID!
+    $moduleId: UUID!
     $type: ActionType!
     $config: JSONObject!
   ) {
-    createAction(moduleId: $moduleId, type: $type, config: $config) @populate
+    createAction(
+      actionId: $actionId
+      moduleId: $moduleId
+      type: $type
+      config: $config
+    ) @populate
   }
 `
 
 export const removeAction = `
-  mutation($actionId: Int!) {
+  mutation($actionId: UUID!) {
     removeAction(actionId: $actionId)
   }
 `
 
 export const renameAction = `
-  mutation($actionId: Int!, $name: String!) {
+  mutation($actionId: UUID!, $name: String!) {
     renameAction(actionId: $actionId, name: $name)
   }
 `
 
 export const changeActionConfig = `
-  mutation(
-    $actionId: Int!
-    $key: String!
-    $value: JSON
-  ) {
+  mutation($actionId: UUID!, $key: String!, $value: JSON) {
     changeActionConfig(actionId: $actionId, key: $key, value: $value) @populate
   }
 `

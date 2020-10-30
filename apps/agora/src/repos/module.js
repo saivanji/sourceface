@@ -1,8 +1,6 @@
-import { prop } from "ramda"
-
 export const one = (moduleId, pg) => pg.one(sql.one, [moduleId])
-export const create = (type, config, positionId, pg) =>
-  pg.one(sql.create, [type, config, positionId])
+export const create = (moduleId, type, config, positionId, pg) =>
+  pg.one(sql.create, [moduleId, type, config, positionId])
 export const updateConfig = (moduleId, config, pg) =>
   pg.one(sql.updateConfig, [moduleId, config])
 export const listByPageIds = (pageIds, pg) =>
@@ -13,7 +11,10 @@ const sql = {
     SELECT * FROM modules WHERE id = $1
   `,
   create: `
-    INSERT INTO modules (type, config, position_id) VALUES ($1, $2, $3)
+    INSERT INTO modules (id, type, config, position_id, name)
+    SELECT $1 AS id, $2 AS type, $3 AS config, $4 AS position_id,
+    $2 || '_' || coalesce(max(cast(regexp_replace(name, $2 || '_(.*)', '\\1') AS integer)), 0) + 1 AS name
+    FROM modules WHERE name LIKE $2 || '_%'
     RETURNING *
   `,
   _create: `

@@ -23,6 +23,7 @@ export const findPageIdByModule = (moduleId, cache) => {
  * to a found pageId.
  */
 // TODO: Not working anymore since we fetch page by path right now
+// Most likely still need to have pageId additionally to path
 // Do we need to return pageId or path?
 export const findPageIdByLayout = (layoutId, cache) => {
   return cache.inspectFields("Query").reduce((result, x) => {

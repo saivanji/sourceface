@@ -11,3 +11,5 @@ scalar DateTime
 scalar JSON
 
 scalar JSONObject
+
+scalar UUID

@@ -1,6 +1,7 @@
 import React, { useState } from "react"
-import { SORTABLE_INNER, SORTABLE_OUTER } from "packages/grid"
+import { v4 as uuid } from "uuid"
 import { useMutation } from "urql"
+import { SORTABLE_INNER, SORTABLE_OUTER } from "packages/grid"
 import { dict } from "packages/modules"
 import Configuration from "../Configuration"
 import Stock from "../Stock"
@@ -115,6 +116,7 @@ const useChange = (selectedId, onModuleRemove) => {
       const position = { layoutId, ...outer }
 
       createModule({
+        moduleId: uuid(),
         type: moduleType,
         config: dict[moduleType].defaultConfig,
         position,
@@ -126,6 +128,7 @@ const useChange = (selectedId, onModuleRemove) => {
 
   const handleActionCreate = async (type) => {
     const { data } = await createAction({
+      actionId: uuid(),
       moduleId: selectedId,
       type,
       config: {},

@@ -3,12 +3,12 @@ import * as positionRepo from "repos/position"
 
 const createModule = async (
   parent,
-  { type, config, position: { layoutId, ...position } },
+  { moduleId, type, config, position: { layoutId, ...position } },
   { pg }
 ) => {
   return pg.tx(async (t) => {
     const { id: positionId } = await positionRepo.create(layoutId, position, t)
-    return await moduleRepo.create(type, config, positionId, t)
+    return await moduleRepo.create(moduleId, type, config, positionId, t)
   })
 }
 
