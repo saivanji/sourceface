@@ -39,7 +39,7 @@ export default function Arguments({
         <div className={styles.row}>
           {groups.map((definition, i) => (
             <Value
-              filter={filterGroups(groups)}
+              filter={filterGroupsEdition}
               value={definition}
               onChange={(definition) =>
                 !definition ? onGroupRemove(i) : onGroupChange(definition, i)
@@ -51,7 +51,7 @@ export default function Arguments({
       <div className={styles.row}>
         <Pair keys={keys} onChange={addField} />
         <Value
-          filter={filterGroups(groups)}
+          filter={filterGroupsCreation(groups)}
           creationTitle="Add group"
           onChange={onGroupAdd}
         />
@@ -60,5 +60,7 @@ export default function Arguments({
   )
 }
 
-const filterGroups = (groups) => ({ definition, data }) =>
+const filterGroupsEdition = ({ data }) => isPlainObject(data)
+
+const filterGroupsCreation = (groups) => ({ definition, data }) =>
   !groups.find(equals(definition)) && isPlainObject(data)

@@ -4,7 +4,6 @@ import Input from "react-input-autosize"
 import styles from "./index.scss"
 import BottomArrow from "assets/chev-b.svg"
 import TopArrow from "assets/chev-t.svg"
-import Guide from "assets/guide.svg"
 import Delete from "assets/delete.svg"
 
 export default function Action({ children, secondary, add = false }) {

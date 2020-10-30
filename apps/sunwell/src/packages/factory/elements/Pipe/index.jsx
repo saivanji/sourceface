@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import cx from "classnames"
-import { Button, Toggle } from "@sourceface/components"
+import { Autocomplete, Button, Toggle } from "@sourceface/components"
 import Link from "assets/link.svg"
 import Add from "assets/add.svg"
 import { useContainer } from "../../container"

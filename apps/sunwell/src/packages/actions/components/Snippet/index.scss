@@ -1,6 +1,7 @@
 @import "~@sourceface/style/index.scss";
 
 .root {
+  position: relative;
   font-family: "monospace";
   display: inline-flex;
   align-items: center;
@@ -8,13 +9,51 @@
   user-select: none;
   font-size: $font-size-xs;
   border-radius: $rounded-sm;
+  &:hover {
+    .remove {
+      visibility: visible;
+    }
+  }
+  &:hover .gray {
+    background-color: $color-gray-400;
+  }
+  &:hover .blue {
+    background-color: $color-blue-400;
+  }
+}
+
+.item {
+  position: relative;
+  border-radius: $rounded-sm;
   padding: $value-1 $value-2;
+  &.prefix {
+    padding-right: $value-4;
+    margin-right: -$value-2;
+  }
+}
+
+.remove {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  visibility: hidden;
+  transform: translateX(calc(100% - #{$rounded-sm}));
+  z-index: 1;
+  border-top-right-radius: $rounded-sm;
+  border-bottom-right-radius: $rounded-sm;
+  padding: $value-1 $value-2 $value-1 $value-1;
+  svg {
+    width: $value-3;
+  }
 }
 
 .gray {
   background-color: $color-gray-300;
   color: $color-gray-900;
-  &:hover {
+  & + .remove {
     background-color: $color-gray-400;
   }
 }
@@ -22,12 +61,7 @@
 .blue {
   background-color: $color-blue-300;
   color: $color-blue-900;
-  &:hover {
+  & + .remove {
     background-color: $color-blue-400;
   }
-}
-
-.beige {
-  background-color: beige;
-  color: $color-gray-900;
 }
