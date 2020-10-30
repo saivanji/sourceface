@@ -8,7 +8,7 @@ export default function EditorView({ children, isSaving, right, onClose }) {
   return (
     <div className={styles.root}>
       <div className={styles.header}>
-        Orders page
+        <span className={styles.title}>Orders page</span>
         <div>mobile | tablet | desktop</div>
         <div>
           {isSaving && "Saving..."}
