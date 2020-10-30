@@ -1,8 +1,9 @@
 import React from "react"
-import { Autocomplete, Toggle } from "@sourceface/components"
+import { Toggle } from "@sourceface/components"
 import { useVariables } from "../../hooks"
 import Placeholder from "../Placeholder"
 import styles from "./index.scss"
+import Autocomplete from "../Autocomplete"
 
 // TODO: consider having "x" icon on hover of Pair or Snippet to delete it
 export default ({ value: [key, definition] = [], onChange, keys }) => {
@@ -19,22 +20,31 @@ export default ({ value: [key, definition] = [], onChange, keys }) => {
     return (
       <Toggle trigger={trigger}>
         {(close) => (
-          <Autocomplete
-            items={[keys, variables]}
-            map={[undefined, map]}
-            placeholder={placeholders}
-            custom
-            customSuggestion={(input) => `Use "${input}" as literal`}
-            value={[key, definition && identify(definition)]}
-            onChange={([key, variableId]) => {
-              onChange([key, define(variableId)])
+          <Autocomplete.Stack
+            onChange={(value) => {
+              console.log(value)
               close()
             }}
-          />
+          >
+            <Autocomplete items={keys} placeholder="Key" />
+            <Autocomplete items={keys} placeholder="Key" />
+            <Autocomplete items={keys} placeholder="Key" />
+            <Autocomplete items={keys} placeholder="Key" />
+            <Autocomplete items={keys} placeholder="Key" />
+            <Autocomplete
+              items={variables}
+              map={map}
+              placeholder="Value"
+              custom
+              customSuggestion={(input) => `Use "${input}" as literal`}
+            />
+          </Autocomplete.Stack>
         )}
       </Toggle>
     )
   }
+
+  return <div />
 
   const trigger = (
     <div className={styles.data}>

@@ -1,48 +1,11 @@
 import React, { useState } from "react"
 import cx from "classnames"
-import { Button, Toggle, Autocomplete } from "@sourceface/components"
+import { Button, Toggle } from "@sourceface/components"
 import Link from "assets/link.svg"
 import Add from "assets/add.svg"
 import { useContainer } from "../../container"
 import { useConfiguration } from "../../configuration"
 import styles from "./index.scss"
-
-const definition = {
-  queryId: "listOrders",
-  args: [
-    // {
-    //   type: "group",
-    //   value: {
-    //     type: "action",
-    //     action_id: 7,
-    //   },
-    // },
-    {
-      type: "key",
-      key: "limit",
-      value: {
-        type: "literal",
-        data: 5,
-      },
-    },
-    {
-      type: "key",
-      key: "offset",
-      value: {
-        type: "literal",
-        data: 8,
-      },
-    },
-    {
-      type: "key",
-      key: "offset",
-      value: {
-        type: "local",
-        name: "offset",
-      },
-    },
-  ],
-}
 
 // TODO: when at least one action created, have Creation inside of a link as "+" in the right side?
 // TODO: when removing action from pipe, remove it from config first and then remove action itself so there

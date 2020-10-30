@@ -1,9 +1,10 @@
 import React from "react"
-import { Autocomplete, Toggle } from "@sourceface/components"
+import { Toggle } from "@sourceface/components"
 import Placeholder from "../Placeholder"
 import Snippet from "../Snippet"
+import Autocomplete from "../Autocomplete"
 
-export default ({ value, onChange, clearable, creationTitle, suggestions }) => {
+export default ({ value, onChange, creationTitle, suggestions }) => {
   const trigger = !value ? (
     <Placeholder>{creationTitle}</Placeholder>
   ) : (
@@ -15,7 +16,6 @@ export default ({ value, onChange, clearable, creationTitle, suggestions }) => {
       {(close) => (
         <Autocomplete
           items={suggestions}
-          clearable={clearable}
           placeholder="Search for ..."
           value={value}
           onChange={(value) => {
