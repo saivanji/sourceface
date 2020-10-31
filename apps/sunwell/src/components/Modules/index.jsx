@@ -1,9 +1,13 @@
 import React from "react"
 import cx from "classnames"
+import { v4 as uuid } from "uuid"
 import * as factory from "packages/factory"
+import { useMutation, mutations } from "packages/client"
+import { SORTABLE_INNER, SORTABLE_OUTER } from "packages/grid"
+import { dict } from "packages/modules"
 import Grid from "./Grid"
 import styles from "./index.scss"
-import { createLayer } from "./utils"
+import { createLayer, toPositionsRequest } from "./utils"
 
 export default function Modules({ layout, modules, ...props }) {
   const layer = layout && createLayer(layout, modules)
@@ -18,14 +22,48 @@ function Frame({
   layer,
   isEditing,
   selectedId,
-  onChange,
   onModuleClick,
   onConfigChange,
 }) {
-  /**
-   * Passing down event and previous layer.
-   */
-  const handleChange = (event) => onChange(event, layer)
+  const [, createModule] = useMutation(mutations.createModule)
+  const [, updatePositions] = useMutation(mutations.updatePositions)
+
+  const handleChange = (event) => {
+    const prevLayer = layer
+    const { layoutId } = prevLayer
+
+    /**
+     * Update layout positions when items are sorted, resized or put on
+     * a layout.
+     */
+    if (
+      ["sort", "resize"].includes(event.name) ||
+      (event.name === "enter" && event.sourceType === SORTABLE_INNER)
+    ) {
+      updatePositions({
+        positions: toPositionsRequest(prevLayer, event.units),
+      })
+      return
+    }
+
+    /**
+     * Create new module from the stock.
+     */
+    if (event.name === "enter" && event.sourceType === SORTABLE_OUTER) {
+      const { moduleType } = event.custom
+      const { outer, ...filtered } = event.units
+      const position = { layoutId, ...outer }
+
+      createModule({
+        moduleId: uuid(),
+        type: moduleType,
+        config: dict[moduleType].defaultConfig,
+        position,
+        positions: toPositionsRequest(prevLayer, filtered),
+      })
+      return
+    }
+  }
 
   return (
     <Grid

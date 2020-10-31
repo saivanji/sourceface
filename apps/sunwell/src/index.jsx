@@ -4,13 +4,12 @@ import "./index.scss"
 import React from "react"
 import ReactDOM from "react-dom"
 import { BrowserRouter, Route } from "react-router-dom"
-import { Provider as ClientProvider } from "urql"
+import { ClientProvider } from "packages/client"
 import * as pages from "./pages"
-import client from "./schema"
 // import Grid from "./packages/grid/examples"
 
 ReactDOM.render(
-  <ClientProvider value={client}>
+  <ClientProvider>
     <BrowserRouter>
       <Route exact path="/">
         Home
