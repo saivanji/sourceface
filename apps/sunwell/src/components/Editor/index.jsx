@@ -15,7 +15,6 @@ export default function Editor({ layout, modules, onClose }) {
 
   const {
     isChanging,
-    updateModule,
     removeModule,
     createAction,
     changeActionConfig,
@@ -29,7 +28,6 @@ export default function Editor({ layout, modules, onClose }) {
         selectedModule ? (
           <Configuration
             module={selectedModule}
-            onUpdate={updateModule}
             onRemove={removeModule}
             onActionCreate={createAction}
             onActionConfigChange={changeActionConfig}
@@ -47,7 +45,6 @@ export default function Editor({ layout, modules, onClose }) {
         isEditing
         selectedId={selectedId}
         onModuleClick={setSelectedId}
-        onConfigChange={updateModule}
       />
     </View>
   )

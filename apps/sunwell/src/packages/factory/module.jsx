@@ -14,9 +14,8 @@ export function Module({ module, isEditing, frame: Frame }) {
   const state = readState(module.id)
 
   // TODO: implement debouncing
-  const changeConfig = async (key, value) => {
-    await updateModule({ moduleId: module.id, key, value })
-  }
+  const changeConfig = async (key, value) =>
+    updateModule({ moduleId: module.id, key, value })
 
   return (
     <context.Provider value={module}>

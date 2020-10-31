@@ -4,7 +4,6 @@ import * as factory from "packages/factory"
 
 export default function Configuration({
   module,
-  onUpdate,
   onRemove,
   onActionCreate,
   onActionConfigChange,
@@ -29,7 +28,6 @@ export default function Configuration({
       <factory.Configuration
         key={module.id}
         module={module}
-        onConfigChange={onUpdate}
         onActionConfigChange={onActionConfigChange}
         onActionCreate={onActionCreate}
         onActionRemove={onActionRemove}

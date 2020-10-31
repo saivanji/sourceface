@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useState } from "react"
 import { ValidationError } from "yup"
+import { useMutation, mutations } from "packages/client"
 import { useContainer } from "./container"
 
 const context = createContext({})
 
 export function Configuration({
   module,
-  onConfigChange,
   onActionConfigChange,
   onActionCreate,
   onActionRemove,
@@ -19,7 +19,6 @@ export function Configuration({
       value={{
         // or pass config?
         module,
-        onConfigChange,
         onActionConfigChange,
         onActionCreate,
         onActionRemove,
@@ -48,7 +47,8 @@ export function Form({ children, validationSchema }) {
 // at a runtime. For example option to have the pagination available or not is rarely needed to be
 // configured at a runtime.
 export function Field({ name, component: Component, ...props }) {
-  const { module, validationSchema, onConfigChange } = useContext(context)
+  const [, updateModule] = useMutation(mutations.updateModule)
+  const { module, validationSchema } = useContext(context)
   const [error, setError] = useState(null)
   const value = module.config[name]
 
@@ -70,7 +70,8 @@ export function Field({ name, component: Component, ...props }) {
               : event
           validationSchema.fields[name]?.validateSync(value)
           setError(null)
-          onConfigChange(name, value)
+
+          updateModule({ moduleId: module.id, key: name, value })
         } catch (err) {
           if (!(err instanceof ValidationError)) throw err
           setError(err)
