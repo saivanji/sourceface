@@ -5,27 +5,23 @@ import Link from "assets/link.svg"
 import Add from "assets/add.svg"
 import { useContainer } from "../../container"
 import { useConfiguration } from "../../configuration"
+import { useCreateAction } from "./callbacks"
 import styles from "./index.scss"
+
+// TODO: move to actions and re-export in factory?
 
 // TODO: when at least one action created, have Creation inside of a link as "+" in the right side?
 // TODO: when removing action from pipe, remove it from config first and then remove action itself so there
 // would be no data inconsistency
 export default ({ value = [], onChange }) => {
   const [isOpened, setOpened] = useState(false)
-  const {
-    module,
-    onActionCreate,
-    onActionRemove,
-    onActionConfigChange,
-  } = useConfiguration()
+  const { module, onActionRemove, onActionConfigChange } = useConfiguration()
 
-  const create = async (type) => {
-    const action = await onActionCreate(type)
-    // TODO: should call "onChange" in onSuccess mutation callback in order to execute after optimistic update
-    // will apply and not after server request will be received.
+  const create = useCreateAction((action) => {
     onChange([...value, action.id])
     setOpened(true)
-  }
+  })
+
   const remove = (id) => {
     onActionRemove(id)
     onChange(value.filter((x) => x.id !== id))

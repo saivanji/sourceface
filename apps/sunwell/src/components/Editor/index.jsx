@@ -50,9 +50,6 @@ export default function Editor({ layout, modules, onClose }) {
 }
 
 const useChange = (selectedId, onModuleRemove) => {
-  const [{ fetching: isCreatingAction }, createAction] = useMutation(
-    mutations.createAction
-  )
   const [
     { fetching: isChangingActionConfig },
     changeActionConfig,
@@ -65,17 +62,6 @@ const useChange = (selectedId, onModuleRemove) => {
     onModuleRemove()
   }
 
-  const handleActionCreate = async (type) => {
-    const { data } = await createAction({
-      actionId: uuid(),
-      moduleId: selectedId,
-      type,
-      config: {},
-    })
-
-    return data.createAction
-  }
-
   const handleActionConfigChange = async (actionId, key, value) => {
     await changeActionConfig({ actionId, key, value })
   }
@@ -85,9 +71,8 @@ const useChange = (selectedId, onModuleRemove) => {
   }
 
   return {
-    isChanging: isCreatingAction || isChangingActionConfig || isRemovingAction,
+    isChanging: isChangingActionConfig || isRemovingAction,
     removeModule: handleModuleRemove,
-    createAction: handleActionCreate,
     changeActionConfig: handleActionConfigChange,
     removeAction: handleActionRemove,
   }
