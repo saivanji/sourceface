@@ -21,6 +21,8 @@ export default ({ value = [], onChange }) => {
 
   const create = async (type) => {
     const action = await onActionCreate(type)
+    // TODO: should call "onChange" in onSuccess mutation callback in order to execute after optimistic update
+    // will apply and not after server request will be received.
     onChange([...value, action.id])
     setOpened(true)
   }
