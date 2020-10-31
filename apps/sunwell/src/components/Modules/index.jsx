@@ -1,13 +1,10 @@
-import React from "react"
+import React, { forwardRef } from "react"
 import cx from "classnames"
-import { v4 as uuid } from "uuid"
 import * as factory from "packages/factory"
-import { useMutation, mutations } from "packages/client"
-import { SORTABLE_INNER, SORTABLE_OUTER } from "packages/grid"
-import { dict } from "packages/modules"
-import Grid from "./Grid"
+import Grill from "packages/grid"
+import { createLayer } from "./utils"
+import { useChangeGrid } from "./callbacks"
 import styles from "./index.scss"
-import { createLayer, toPositionsRequest } from "./utils"
 
 export default function Modules({ layout, modules, ...props }) {
   const layer = layout && createLayer(layout, modules)
@@ -18,58 +15,25 @@ export default function Modules({ layout, modules, ...props }) {
 
 // TODO: get some props from context provided from Editor? (explore git history for the additional context)
 // since that component is used inside another modules and there is no another way to get this data
-function Frame({
-  layer,
-  isEditing,
-  selectedId,
-  onModuleClick,
-  onConfigChange,
-}) {
-  const [, createModule] = useMutation(mutations.createModule)
-  const [, updatePositions] = useMutation(mutations.updatePositions)
-
-  const handleChange = (event) => {
-    const prevLayer = layer
-    const { layoutId } = prevLayer
-
-    /**
-     * Update layout positions when items are sorted, resized or put on
-     * a layout.
-     */
-    if (
-      ["sort", "resize"].includes(event.name) ||
-      (event.name === "enter" && event.sourceType === SORTABLE_INNER)
-    ) {
-      updatePositions({
-        positions: toPositionsRequest(prevLayer, event.units),
-      })
-      return
-    }
-
-    /**
-     * Create new module from the stock.
-     */
-    if (event.name === "enter" && event.sourceType === SORTABLE_OUTER) {
-      const { moduleType } = event.custom
-      const { outer, ...filtered } = event.units
-      const position = { layoutId, ...outer }
-
-      createModule({
-        moduleId: uuid(),
-        type: moduleType,
-        config: dict[moduleType].defaultConfig,
-        position,
-        positions: toPositionsRequest(prevLayer, filtered),
-      })
-      return
-    }
-  }
+//
+// Use context only in that file. Use provider in Modules and consume data in Frame?
+function Frame({ layer, isEditing, selectedId, onModuleClick }) {
+  const changeGrid = useChangeGrid(layer)
 
   return (
-    <Grid
-      units={layer.units}
-      isEditable={isEditing}
-      onChange={handleChange}
+    <Grill
+      rows={50}
+      cols={10}
+      rowHeight={60}
+      layout={layer.units}
+      isStatic={!isEditing}
+      onChange={changeGrid}
+      components={{
+        Box,
+        OuterItem,
+        SortPlaceholder: Placeholder,
+        ResizePlaceholder: Placeholder,
+      }}
       renderItem={(module) => {
         const isSelected = isEditing && selectedId === module.id
 
@@ -94,7 +58,6 @@ function Frame({
               module={module}
               frame={Frame}
               isEditing={isEditing}
-              onConfigChange={onConfigChange}
             />
           </div>
         )
@@ -102,3 +65,42 @@ function Frame({
     />
   )
 }
+
+const OuterItem = ({ style }) => {
+  return (
+    <div
+      style={{
+        ...style,
+        backgroundColor: "skyblue",
+        border: "2px dashed blue",
+        transition: "all cubic-bezier(0.2, 0, 0, 1) .2s",
+        borderRadius: 4,
+      }}
+    ></div>
+  )
+}
+
+const Placeholder = ({ style }) => {
+  return (
+    <div
+      style={{
+        ...style,
+        backgroundColor: "lightGray",
+        transition: "all cubic-bezier(0.2, 0, 0, 1) .2s",
+        borderRadius: 4,
+      }}
+    ></div>
+  )
+}
+
+const Box = forwardRef(({ children, style }, ref) => (
+  <div
+    ref={ref}
+    style={{
+      ...style,
+      transition: "all cubic-bezier(0.2, 0, 0, 1) .2s",
+    }}
+  >
+    {children}
+  </div>
+))

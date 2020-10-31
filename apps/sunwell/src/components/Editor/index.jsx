@@ -57,9 +57,6 @@ const useChange = (selectedId, onModuleRemove) => {
   const [{ fetching: isRemovingModule }, removeModule] = useMutation(
     mutations.removeModule
   )
-  const [{ fetching: isUpdatingModule }, updateModule] = useMutation(
-    mutations.updateModule
-  )
   const [{ fetching: isCreatingAction }, createAction] = useMutation(
     mutations.createAction
   )
@@ -70,11 +67,6 @@ const useChange = (selectedId, onModuleRemove) => {
   const [{ fetching: isRemovingAction }, removeAction] = useMutation(
     mutations.removeAction
   )
-
-  // TODO: implement debouncing
-  const handleModuleUpdate = async (key, value) => {
-    await updateModule({ moduleId: selectedId, key, value })
-  }
 
   const handleModuleRemove = async () => {
     await removeModule({ moduleId: selectedId })
@@ -102,12 +94,10 @@ const useChange = (selectedId, onModuleRemove) => {
 
   return {
     isChanging:
-      isUpdatingModule ||
       isRemovingModule ||
       isCreatingAction ||
       isChangingActionConfig ||
       isRemovingAction,
-    updateModule: handleModuleUpdate,
     removeModule: handleModuleRemove,
     createAction: handleActionCreate,
     changeActionConfig: handleActionConfigChange,

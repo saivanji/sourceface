@@ -2,6 +2,8 @@
 # page table and also inside of a config in case of modules nesting. Keeping such data in relational table
 # doesn't make sence since we don't need make queries and joins with it.
 
+# Alternatively have layouts table and keep position JSON as column in modules table
+
 type Layout {
   id: Int!
   createdAt: DateTime!

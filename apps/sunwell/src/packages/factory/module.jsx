@@ -1,15 +1,22 @@
 import React, { createContext, useContext } from "react"
+import { useMutation, mutations } from "packages/client"
 import { useContainer } from "./container"
 
 const context = createContext({})
 
-export function Module({ module, isEditing, frame: Frame, onConfigChange }) {
+export function Module({ module, isEditing, frame: Frame }) {
+  const [, updateModule] = useMutation(mutations.updateModule)
   const { stock } = useContainer()
 
   const Component = stock.modules.dict[module.type].Root
   const { readState, modulesScope } = useContainer()
   const scope = modulesScope[module.id]
   const state = readState(module.id)
+
+  // TODO: implement debouncing
+  const changeConfig = async (key, value) => {
+    await updateModule({ moduleId: module.id, key, value })
+  }
 
   return (
     <context.Provider value={module}>
@@ -20,7 +27,7 @@ export function Module({ module, isEditing, frame: Frame, onConfigChange }) {
         layers={module.layers}
         components={{ Frame }}
         isEditing={isEditing}
-        onConfigChange={onConfigChange}
+        onConfigChange={changeConfig}
       />
     </context.Provider>
   )
