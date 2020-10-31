@@ -2,7 +2,7 @@ import { v4 as uuid } from "uuid"
 import { useMutation, mutations } from "packages/client"
 import { useConfiguration } from "../../configuration"
 
-export const useCreateAction = (onCreateSuccess) => {
+export const useCreateAction = (onSuccess) => {
   const { module } = useConfiguration()
   const [, createAction] = useMutation(mutations.createAction)
 
@@ -18,6 +18,15 @@ export const useCreateAction = (onCreateSuccess) => {
 
     // TODO: should call "onChange" in onSuccess mutation callback in order to execute after optimistic update
     // will apply and not after server request will be received.
-    onCreateSuccess(action)
+    onSuccess(action)
+  }
+}
+
+export const useRemoveAction = (onSuccess) => {
+  const [, removeAction] = useMutation(mutations.removeAction)
+
+  return async (actionId) => {
+    await removeAction({ actionId })
+    onSuccess(actionId)
   }
 }

@@ -1,5 +1,4 @@
 import React, { useState } from "react"
-import { v4 as uuid } from "uuid"
 import { useMutation } from "urql"
 import Configuration from "../Configuration"
 import Stock from "../Stock"
@@ -13,12 +12,7 @@ export default function Editor({ layout, modules, onClose }) {
 
   const selectedModule = selectedId && modules?.find((x) => x.id === selectedId)
 
-  const {
-    isChanging,
-    createAction,
-    changeActionConfig,
-    removeAction,
-  } = useChange(selectedId, removeSelection)
+  const { isChanging, changeActionConfig } = useChange()
 
   return (
     <View
@@ -28,9 +22,7 @@ export default function Editor({ layout, modules, onClose }) {
           <Configuration
             module={selectedModule}
             onModuleRemove={removeSelection}
-            onActionCreate={createAction}
             onActionConfigChange={changeActionConfig}
-            onActionRemove={removeAction}
           />
         ) : (
           <Stock />
@@ -49,31 +41,18 @@ export default function Editor({ layout, modules, onClose }) {
   )
 }
 
-const useChange = (selectedId, onModuleRemove) => {
+const useChange = () => {
   const [
     { fetching: isChangingActionConfig },
     changeActionConfig,
   ] = useMutation(mutations.changeActionConfig)
-  const [{ fetching: isRemovingAction }, removeAction] = useMutation(
-    mutations.removeAction
-  )
-
-  const handleModuleRemove = async () => {
-    onModuleRemove()
-  }
 
   const handleActionConfigChange = async (actionId, key, value) => {
     await changeActionConfig({ actionId, key, value })
   }
 
-  const handleActionRemove = async (actionId) => {
-    await removeAction({ actionId })
-  }
-
   return {
-    isChanging: isChangingActionConfig || isRemovingAction,
-    removeModule: handleModuleRemove,
+    isChanging: isChangingActionConfig,
     changeActionConfig: handleActionConfigChange,
-    removeAction: handleActionRemove,
   }
 }
