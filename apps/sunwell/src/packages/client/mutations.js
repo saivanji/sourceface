@@ -34,12 +34,6 @@ export const removeModule = `
   }
 `
 
-export const pushBinds = `
-  mutation($moduleId: UUID!, $binds: JSONObject!) {
-    pushBinds(moduleId: $moduleId, binds: $binds)
-  }
-`
-
 export const createAction = `
   mutation(
     $actionId: UUID!

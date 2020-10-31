@@ -3,13 +3,7 @@ import { useMutation, mutations } from "packages/client"
 import { Input } from "@sourceface/components"
 import * as factory from "packages/factory"
 
-export default function Configuration({
-  module,
-  onModuleRemove,
-  onActionCreate,
-  onActionConfigChange,
-  onActionRemove,
-}) {
+export default function Configuration({ module, onModuleRemove }) {
   const [, removeModule] = useMutation(mutations.removeModule)
 
   return (
@@ -26,13 +20,7 @@ export default function Configuration({
         <Input size="compact" placeholder="Module name" value={module.name} />
         <span>{module.type}</span>
       </div>
-      <factory.Configuration
-        key={module.id}
-        module={module}
-        onActionConfigChange={onActionConfigChange}
-        onActionCreate={onActionCreate}
-        onActionRemove={onActionRemove}
-      />
+      <factory.Configuration key={module.id} module={module} />
       <button
         type="button"
         onClick={async () => {
