@@ -5,7 +5,7 @@ import { useContainer } from "./container"
 
 const context = createContext({})
 
-export function Configuration({ module, onActionConfigChange }) {
+export function Configuration({ module }) {
   const { stock } = useContainer()
   const Component = stock.modules.dict[module.type].Configuration
 
@@ -14,7 +14,6 @@ export function Configuration({ module, onActionConfigChange }) {
       value={{
         // or pass config?
         module,
-        onActionConfigChange,
       }}
     >
       <Component config={module.config} />

@@ -30,3 +30,9 @@ export const useRemoveAction = (onSuccess) => {
     onSuccess(actionId)
   }
 }
+
+export const useConfigureAction = () => {
+  const [, changeActionConfig] = useMutation(mutations.changeActionConfig)
+
+  return (actionId, key, value) => changeActionConfig({ actionId, key, value })
+}

@@ -5,7 +5,11 @@ import Link from "assets/link.svg"
 import Add from "assets/add.svg"
 import { useContainer } from "../../container"
 import { useConfiguration } from "../../configuration"
-import { useCreateAction, useRemoveAction } from "./callbacks"
+import {
+  useCreateAction,
+  useRemoveAction,
+  useConfigureAction,
+} from "./callbacks"
 import styles from "./index.scss"
 
 // TODO: move to actions and re-export in factory?
@@ -15,7 +19,7 @@ import styles from "./index.scss"
 // would be no data inconsistency
 export default ({ value = [], onChange }) => {
   const [isOpened, setOpened] = useState(false)
-  const { module, onActionConfigChange } = useConfiguration()
+  const { module } = useConfiguration()
 
   const afterChange = (action) => {
     onChange([...value, action.id])
@@ -25,6 +29,7 @@ export default ({ value = [], onChange }) => {
 
   const create = useCreateAction(afterChange)
   const remove = useRemoveAction(afterRemove)
+  const configure = useConfigureAction()
 
   /**
    * Matching actions by config ids and filtering out wrong links.
@@ -52,7 +57,7 @@ export default ({ value = [], onChange }) => {
                 key={action.id}
                 {...action}
                 onRemove={remove}
-                onConfigChange={onActionConfigChange}
+                onConfigChange={configure}
               />
             ))}
           </div>
