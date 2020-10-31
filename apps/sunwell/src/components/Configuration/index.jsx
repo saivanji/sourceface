@@ -10,6 +10,8 @@ export default function Configuration({
   onActionConfigChange,
   onActionRemove,
 }) {
+  // TODO: do we need to move mutations inside factory?
+
   return (
     <>
       <div
