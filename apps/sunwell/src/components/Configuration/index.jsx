@@ -1,15 +1,16 @@
 import React from "react"
+import { useMutation, mutations } from "packages/client"
 import { Input } from "@sourceface/components"
 import * as factory from "packages/factory"
 
 export default function Configuration({
   module,
-  onRemove,
+  onModuleRemove,
   onActionCreate,
   onActionConfigChange,
   onActionRemove,
 }) {
-  // TODO: do we need to move mutations inside factory?
+  const [, removeModule] = useMutation(mutations.removeModule)
 
   return (
     <>
@@ -34,9 +35,10 @@ export default function Configuration({
       />
       <button
         type="button"
-        onClick={() => {
+        onClick={async () => {
           if (window.confirm()) {
-            onRemove()
+            await removeModule({ moduleId: module.id })
+            onModuleRemove()
           }
         }}
       >

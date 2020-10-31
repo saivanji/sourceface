@@ -15,7 +15,6 @@ export default function Editor({ layout, modules, onClose }) {
 
   const {
     isChanging,
-    removeModule,
     createAction,
     changeActionConfig,
     removeAction,
@@ -28,7 +27,7 @@ export default function Editor({ layout, modules, onClose }) {
         selectedModule ? (
           <Configuration
             module={selectedModule}
-            onRemove={removeModule}
+            onModuleRemove={removeSelection}
             onActionCreate={createAction}
             onActionConfigChange={changeActionConfig}
             onActionRemove={removeAction}
@@ -51,9 +50,6 @@ export default function Editor({ layout, modules, onClose }) {
 }
 
 const useChange = (selectedId, onModuleRemove) => {
-  const [{ fetching: isRemovingModule }, removeModule] = useMutation(
-    mutations.removeModule
-  )
   const [{ fetching: isCreatingAction }, createAction] = useMutation(
     mutations.createAction
   )
@@ -66,7 +62,6 @@ const useChange = (selectedId, onModuleRemove) => {
   )
 
   const handleModuleRemove = async () => {
-    await removeModule({ moduleId: selectedId })
     onModuleRemove()
   }
 
@@ -90,11 +85,7 @@ const useChange = (selectedId, onModuleRemove) => {
   }
 
   return {
-    isChanging:
-      isRemovingModule ||
-      isCreatingAction ||
-      isChangingActionConfig ||
-      isRemovingAction,
+    isChanging: isCreatingAction || isChangingActionConfig || isRemovingAction,
     removeModule: handleModuleRemove,
     createAction: handleActionCreate,
     changeActionConfig: handleActionConfigChange,
