@@ -2,33 +2,46 @@ import { v4 as uuid } from "uuid"
 import { useMutation, mutations } from "packages/client"
 import { useConfiguration } from "../../configuration"
 
-export const useCreateAction = (onSuccess) => {
+export const useCreateAction = (name, value, onSuccess, onFailure) => {
   const { module } = useConfiguration()
   const [, createAction] = useMutation(mutations.createAction)
 
   return async (type) => {
-    const {
-      data: { createAction: action },
-    } = await createAction({
-      actionId: uuid(),
-      moduleId: module.id,
-      type,
-      config: {},
-    })
+    const actionId = uuid()
 
-    // TODO: should call "onChange" in onSuccess mutation callback in order to execute after optimistic update
-    // will apply and not after server request will be received.
-    onSuccess(action)
+    try {
+      /**
+       * Optimistically calling onSuccess.
+       */
+      onSuccess()
+      await createAction({
+        actionId,
+        moduleId: module.id,
+        type,
+        config: {},
+        key: name,
+        value: [...value, actionId],
+      })
+    } catch (err) {
+      /**
+       * Reverting optimistic UI change in case of failed mutation.
+       */
+      onFailure()
+    }
   }
 }
 
-export const useRemoveAction = (onSuccess) => {
+export const useRemoveAction = (name, value) => {
+  const { module } = useConfiguration()
   const [, removeAction] = useMutation(mutations.removeAction)
 
-  return async (actionId) => {
-    await removeAction({ actionId })
-    onSuccess(actionId)
-  }
+  return (actionId) =>
+    removeAction({
+      actionId,
+      moduleId: module.id,
+      key: name,
+      value: value.filter((x) => x.id !== actionId),
+    })
 }
 
 export const useConfigureAction = () => {

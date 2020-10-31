@@ -1,4 +1,3 @@
-// TODO: doesn't work
 export default ({ actionId, type, config }) => {
   const __typename = "Action"
 

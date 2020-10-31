@@ -15,20 +15,20 @@ import styles from "./index.scss"
 // TODO: move to actions and re-export in factory?
 
 // TODO: when at least one action created, have Creation inside of a link as "+" in the right side?
-// TODO: when removing action from pipe, remove it from config first and then remove action itself so there
-// would be no data inconsistency
-export default ({ value = [], onChange }) => {
+/**
+ * Not using "onChange" handler to change field value as in regular form element since
+ * we update it's value with direct "configureModule" mutation. It's needed ...
+ */
+export default ({ name, value = [] }) => {
   const [isOpened, setOpened] = useState(false)
   const { module } = useConfiguration()
 
-  const afterChange = (action) => {
-    onChange([...value, action.id])
-    setOpened(true)
-  }
-  const afterRemove = (id) => onChange(value.filter((x) => x.id !== id))
+  const open = () => setOpened(true)
+  const close = () => setOpened(false)
+  const toggle = () => setOpened((value) => !value)
 
-  const create = useCreateAction(afterChange)
-  const remove = useRemoveAction(afterRemove)
+  const create = useCreateAction(name, value, open, close)
+  const remove = useRemoveAction(name, value)
   const configure = useConfigureAction()
 
   /**
@@ -43,7 +43,7 @@ export default ({ value = [], onChange }) => {
   ) : (
     <>
       <span
-        onClick={() => setOpened((value) => !value)}
+        onClick={toggle}
         className={cx(styles.link, isOpened && styles.opened)}
       >
         <Link className={styles.actionsIcon} />

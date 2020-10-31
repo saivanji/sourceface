@@ -23,12 +23,12 @@ ReactDOM.render(
 )
 
 // TODO:
-// have uuids as ids for the modules and actions so we can have "Save/Cancel" logic on the frontend.
-//
-// move client schema logic to "client/graphql-client" package and move mutations as closer to the actual usage as possible
+// Implement "Save/Cancel" logic on the frontend.
+// - Make sure all module/action updates are optimistic
+// - Fix all cache updates of modules/actions.
+// - Implement action removal
 //
 // consider implementing auto app upgrade feature
-// - have mutations callbacks in place they needed and import actual mutations from schema
 //
 // use case - user need to be able to create postgres table in the app. either with "arbitrary query" for example(with predefined queries for table etc), or have a feature to manage source entities in addition to queries.
 //

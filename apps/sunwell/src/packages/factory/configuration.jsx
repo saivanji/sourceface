@@ -49,6 +49,7 @@ export function Field({ name, component: Component, ...props }) {
       {...props}
       style={{ width: "100%" }}
       error={error?.message}
+      name={name}
       value={error?.value ?? value}
       onChange={(event) => {
         try {

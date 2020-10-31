@@ -1,3 +1,5 @@
+// TODO: mutations might be in the applications since update logic is not bound to them.
+
 export const updatePositions = `
   mutation($positions: [PositionInput!]!) {
     updatePositions(positions: $positions) @populate
@@ -40,6 +42,8 @@ export const createAction = `
     $moduleId: UUID!
     $type: ActionType!
     $config: JSONObject!
+    $key: String!
+    $value: JSON!
   ) {
     createAction(
       actionId: $actionId
@@ -47,12 +51,14 @@ export const createAction = `
       type: $type
       config: $config
     ) @populate
+    updateModule(moduleId: $moduleId, key: $key, value: $value) @populate
   }
 `
 
 export const removeAction = `
-  mutation($actionId: UUID!) {
+  mutation($actionId: UUID!, $moduleId: UUID!, $key: String!, $value: JSON!) {
     removeAction(actionId: $actionId)
+    updateModule(moduleId: $moduleId, key: $key, value: $value) @populate
   }
 `
 

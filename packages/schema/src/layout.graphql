@@ -4,6 +4,10 @@
 
 # Alternatively have layouts table and keep position JSON as column in modules table
 
+# Alternatively(and most likely) have layouts table and all their positions in "positions" column of the same
+# table. When removing a module remove it's position in layout JSON. Match layouts with corresponding modules
+# on the front-end. In case of data inconsistency on the front-end ignore missing module.
+
 type Layout {
   id: Int!
   createdAt: DateTime!
