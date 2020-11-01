@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import { compose } from "ramda"
 import cx from "classnames"
 import { Autocomplete, Button, Toggle } from "@sourceface/components"
 import Link from "assets/link.svg"
@@ -15,20 +16,19 @@ import styles from "./index.scss"
 // TODO: move to actions and re-export in factory?
 
 // TODO: when at least one action created, have Creation inside of a link as "+" in the right side?
-/**
- * Not using "onChange" handler to change field value as in regular form element since
- * we update it's value with direct "configureModule" mutation. It's needed ...
- */
-export default ({ name, value = [] }) => {
+export default ({ value = [], onChange }) => {
   const [isOpened, setOpened] = useState(false)
   const { module } = useConfiguration()
+
+  const append = (actionId) => onChange([...value, actionId])
+  const filter = (actionId) => onChange(value.filter((x) => x.id !== actionId))
 
   const open = () => setOpened(true)
   const close = () => setOpened(false)
   const toggle = () => setOpened((value) => !value)
 
-  const create = useCreateAction(name, value, open, close)
-  const remove = useRemoveAction(name, value)
+  const create = useCreateAction(compose(open, append), close)
+  const remove = useRemoveAction(filter)
   const configure = useConfigureAction()
 
   /**

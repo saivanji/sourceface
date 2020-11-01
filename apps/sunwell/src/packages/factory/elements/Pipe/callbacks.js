@@ -2,7 +2,7 @@ import { v4 as uuid } from "uuid"
 import { useMutation, mutations } from "packages/client"
 import { useConfiguration } from "../../configuration"
 
-export const useCreateAction = (name, value, onSuccess, onFailure) => {
+export const useCreateAction = (onSuccess, onFailure) => {
   const { module } = useConfiguration()
   const [, createAction] = useMutation(mutations.createAction)
 
@@ -10,18 +10,15 @@ export const useCreateAction = (name, value, onSuccess, onFailure) => {
     const actionId = uuid()
 
     try {
-      /**
-       * Optimistically calling onSuccess.
-       */
-      onSuccess()
-      await createAction({
-        actionId,
-        moduleId: module.id,
-        type,
-        config: {},
-        key: name,
-        value: [...value, actionId],
-      })
+      await Promise.all([
+        onSuccess(actionId),
+        createAction({
+          actionId,
+          moduleId: module.id,
+          type,
+          config: {},
+        }),
+      ])
     } catch (err) {
       /**
        * Reverting optimistic UI change in case of failed mutation.
@@ -31,17 +28,16 @@ export const useCreateAction = (name, value, onSuccess, onFailure) => {
   }
 }
 
-export const useRemoveAction = (name, value) => {
-  const { module } = useConfiguration()
+export const useRemoveAction = (onSuccess) => {
   const [, removeAction] = useMutation(mutations.removeAction)
 
   return (actionId) =>
-    removeAction({
-      actionId,
-      moduleId: module.id,
-      key: name,
-      value: value.filter((x) => x.id !== actionId),
-    })
+    Promise.all([
+      onSuccess(actionId),
+      removeAction({
+        actionId,
+      }),
+    ])
 }
 
 export const useConfigureAction = () => {

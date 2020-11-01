@@ -49,7 +49,6 @@ export function Field({ name, component: Component, ...props }) {
       {...props}
       style={{ width: "100%" }}
       error={error?.message}
-      name={name}
       value={error?.value ?? value}
       onChange={(event) => {
         try {
@@ -64,7 +63,7 @@ export function Field({ name, component: Component, ...props }) {
           validationSchema.fields[name]?.validateSync(value)
           setError(null)
 
-          updateModule({ moduleId: module.id, key: name, value })
+          return updateModule({ moduleId: module.id, key: name, value })
         } catch (err) {
           if (!(err instanceof ValidationError)) throw err
           setError(err)

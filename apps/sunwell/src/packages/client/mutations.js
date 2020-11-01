@@ -42,8 +42,6 @@ export const createAction = `
     $moduleId: UUID!
     $type: ActionType!
     $config: JSONObject!
-    $key: String!
-    $value: JSON!
   ) {
     createAction(
       actionId: $actionId
@@ -51,14 +49,12 @@ export const createAction = `
       type: $type
       config: $config
     ) @populate
-    updateModule(moduleId: $moduleId, key: $key, value: $value) @populate
   }
 `
 
 export const removeAction = `
-  mutation($actionId: UUID!, $moduleId: UUID!, $key: String!, $value: JSON!) {
+  mutation($actionId: UUID!) {
     removeAction(actionId: $actionId)
-    updateModule(moduleId: $moduleId, key: $key, value: $value) @populate
   }
 `
 
