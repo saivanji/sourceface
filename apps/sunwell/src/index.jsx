@@ -28,6 +28,9 @@ ReactDOM.render(
 // - Fix all cache updates of modules/actions.
 // - Implement action removal
 // - Investigate extra fields in populate mutation and warnings after updateModule optimistic updates.(check it's file for details)
+//   - Consider not using populate(returning fields really changed on server) directive and also moving all mutations in the app since it's return
+//   fields might be app specific.
+//   - Consider moving client to schema?
 //
 // consider implementing auto app upgrade feature
 //
