@@ -23,6 +23,7 @@ type PostgresCommandConfig {
 #   config: SourceConfig!
 # }
 
+# Name it "Operation"?
 type Command {
   id: Int!
   createdAt: DateTime!

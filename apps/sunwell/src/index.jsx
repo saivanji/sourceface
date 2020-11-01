@@ -27,6 +27,7 @@ ReactDOM.render(
 // - Make sure all module/action updates are optimistic
 // - Fix all cache updates of modules/actions.
 // - Implement action removal
+// - Investigate extra fields in populate mutation and warnings after updateModule optimistic updates.(check it's file for details)
 //
 // consider implementing auto app upgrade feature
 //

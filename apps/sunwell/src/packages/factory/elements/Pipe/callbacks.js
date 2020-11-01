@@ -17,9 +17,12 @@ export const useCreateAction = (onSuccess, onFailure) => {
           moduleId: module.id,
           type,
           config: {},
+          // temp
+          deferrable: true,
         }),
       ])
     } catch (err) {
+      // TODO: do a rethrow and apply "onFailure" only for specific errors.
       /**
        * Reverting optimistic UI change in case of failed mutation.
        */
