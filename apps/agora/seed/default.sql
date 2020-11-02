@@ -323,7 +323,7 @@ SELECT pg_catalog.setval('public.commands_id_seq', 9, true);
 --
 
 COPY public.layouts (id, created_at, positions) FROM stdin;
-1a3c0c29-a473-473d-b744-6e609154a14b	2020-11-02 18:15:37.692755	{}
+1a3c0c29-a473-473d-b744-6e609154a14b	2020-11-02 18:15:37.692755	{"1a3c0c29-a473-473d-b744-6e609154a14a": {"x": 0, "y": 0, "w": 10, "h": 10}}
 \.
 
 
