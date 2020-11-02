@@ -1,4 +1,4 @@
-import gql from "graphql-tag"
+import { parse } from "graphql"
 import * as utils from "../utils"
 
 export default (result, { position }, cache) => {
@@ -25,8 +25,8 @@ export default (result, { position }, cache) => {
 }
 
 // TODO: why it'not causing extra page request when x, y, w, h are not passed?
-const layoutFragment = gql`
-  fragment layoutFragment on Layout {
+const layoutFragment = parse(`
+  fragment _ on Layout {
     id
     positions {
       id
@@ -36,14 +36,14 @@ const layoutFragment = gql`
       h
     }
   }
-`
+`)
 
 // TODO: why it's not causing extra page request
-const pageFragment = gql`
-  fragment pageFragment on Page {
+const pageFragment = parse(`
+  fragment _ on Page {
     id
     modules {
       id
     }
   }
-`
+`)

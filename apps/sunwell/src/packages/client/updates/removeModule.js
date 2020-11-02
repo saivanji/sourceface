@@ -1,4 +1,4 @@
-import gql from "graphql-tag"
+import { parse } from "graphql"
 import * as utils from "../utils"
 
 export default (result, { moduleId }, cache) => {
@@ -7,7 +7,7 @@ export default (result, { moduleId }, cache) => {
    */
   const pageId = utils.findPageIdByModule(moduleId, cache)
   const page = cache.readFragment(pageFragment, { id: pageId })
-  const { positionId } = page.modules.find(module => module.id === moduleId)
+  const { positionId } = page.modules.find((module) => module.id === moduleId)
 
   /**
    * Removing position from the root layout in case top-level module
@@ -39,7 +39,7 @@ const filterModules = (moduleId, positionId, modules) =>
             ...acc,
             {
               ...module,
-              layouts: module.layouts.map(layout => ({
+              layouts: module.layouts.map((layout) => ({
                 ...layout,
                 positions: filterPositions(positionId, layout.positions),
               })),
@@ -49,9 +49,9 @@ const filterModules = (moduleId, positionId, modules) =>
   )
 
 const filterPositions = (positionId, positions) =>
-  positions.filter(position => position.id !== positionId)
+  positions.filter((position) => position.id !== positionId)
 
-const pageFragment = gql`
+const pageFragment = parse(`
   fragment pageFragment on Page {
     id
     layout {
@@ -71,4 +71,4 @@ const pageFragment = gql`
       }
     }
   }
-`
+`)

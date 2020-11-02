@@ -1,4 +1,4 @@
-import gql from "graphql-tag"
+import { parse } from "graphql"
 import { chain, difference, prop, propEq, keys } from "ramda"
 import * as utils from "../utils"
 
@@ -53,7 +53,7 @@ export default (result, args, cache) => {
     cleanupPageLayout(diff, pageId, cache)
     cleanupModulesLayouts(diff, pageId, cache)
 
-    const updatedPositions = positionsByLayout[layoutId].filter(p =>
+    const updatedPositions = positionsByLayout[layoutId].filter((p) =>
       diff.includes(p.id)
     )
 
@@ -90,8 +90,8 @@ const cleanupModulesLayouts = (diff, pageId, cache) => {
     "modules"
   )
   const layoutIdsOfModules = chain(
-    link =>
-      cache.resolve(link, "layouts").map(link => cache.resolve(link, "id")),
+    (link) =>
+      cache.resolve(link, "layouts").map((link) => cache.resolve(link, "id")),
     moduleLinks
   )
 
@@ -104,7 +104,7 @@ const cleanupModulesLayouts = (diff, pageId, cache) => {
 
 const removePositionIfExists = (layoutId, positionId, cache) => {
   const { positions } = cache.readFragment(layoutFragment, { id: layoutId })
-  const hasPosition = !!positions.find(p => p.id === positionId)
+  const hasPosition = !!positions.find((p) => p.id === positionId)
 
   /**
    * No need to remove if layout has no desired position.
@@ -115,14 +115,14 @@ const removePositionIfExists = (layoutId, positionId, cache) => {
 
   cache.writeFragment(layoutFragment, {
     id: layoutId,
-    positions: positions.filter(p => p.id !== positionId),
+    positions: positions.filter((p) => p.id !== positionId),
   })
 }
 
 const getLayoutPositionIds = (layoutId, cache) =>
   cache
     .resolve({ __typename: "Layout", id: layoutId }, "positions")
-    .map(link => cache.resolve(link, "id"))
+    .map((link) => cache.resolve(link, "id"))
 
 const tranfsormPositions = (positionsIn, positionsOut) =>
   positionsIn.reduce(
@@ -136,11 +136,11 @@ const tranfsormPositions = (positionsIn, positionsOut) =>
     {}
   )
 
-const layoutFragment = gql`
-  fragment layoutFragment on Layout {
+const layoutFragment = parse(`
+  fragment _ on Layout {
     id
     positions {
       id
     }
   }
-`
+`)

@@ -1,4 +1,4 @@
-import gql from "graphql-tag"
+import { parse } from "graphql"
 
 export default (result, { moduleId }, cache) => {
   const module = cache.readFragment(moduleFragment, { id: moduleId })
@@ -9,11 +9,11 @@ export default (result, { moduleId }, cache) => {
   })
 }
 
-const moduleFragment = gql`
-  fragment moduleFragment on Module {
+const moduleFragment = parse(`
+  fragment _ on Module {
     id
     actions {
       id
     }
   }
-`
+`)
