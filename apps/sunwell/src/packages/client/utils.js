@@ -44,8 +44,31 @@ export const findPageIdByLayout = (layoutId, cache) => {
   }, null)
 }
 
-// TODO: implement
-export const findModuleIdByAction = (actionId, cache) => {}
+export const findModuleIdByAction = (actionId, cache) => {
+  return cache.inspectFields("Query").reduce((result, x) => {
+    if (x.fieldName !== "page" || result) {
+      return result
+    }
+
+    const pageLink = cache.resolve("Query", "page", x.arguments)
+
+    return cache
+      .resolve(pageLink, "modules")
+      .reduce(
+        (result, moduleLink) =>
+          result ||
+          (actionInModule(actionId, moduleLink, cache)
+            ? cache.resolve(moduleLink, "id")
+            : result),
+        null
+      )
+  }, null)
+}
+
+export const actionInModule = (actionId, moduleLink, cache) =>
+  cache
+    .resolve(moduleLink, "actions")
+    .some((actionLink) => cache.resolve(actionLink, "id") === actionId)
 
 export const layoutInModules = (layoutId, moduleLinks, cache) =>
   moduleLinks.reduce((result, moduleLink) => {
