@@ -1,16 +1,16 @@
-// TODO: will not work as well
 export const findPageIdByModule = (moduleId, cache) => {
   return cache.inspectFields("Query").reduce((result, x) => {
     if (x.fieldName !== "page" || result) {
       return result
     }
 
+    const pageLink = cache.resolve("Query", "page", x.arguments)
     const moduleIds = cache
-      .resolve(cache.resolve("Query", "page", x.arguments), "modules")
+      .resolve(pageLink, "modules")
       .map((x) => cache.resolve(x, "id"))
 
     if (moduleIds.includes(moduleId)) {
-      return x.arguments.pageId
+      return cache.resolve(pageLink, "id")
     }
 
     return result
@@ -22,7 +22,6 @@ export const findPageIdByModule = (moduleId, cache) => {
  * across multiple pages it's safe to assume that layoutId belongs only
  * to a found pageId.
  */
-// TODO: Not working anymore since we fetch page by path right now
 // Most likely still need to have pageId additionally to path
 // Do we need to return pageId or path?
 export const findPageIdByLayout = (layoutId, cache) => {
@@ -38,8 +37,7 @@ export const findPageIdByLayout = (layoutId, cache) => {
       layoutInPage(layoutId, pageLink, cache) ||
       layoutInModules(layoutId, moduleLinks, cache)
     ) {
-      // hint, `cache.resolve(pageLink, "id")`
-      return x.arguments.pageId
+      return cache.resolve(pageLink, "id")
     }
 
     return result
