@@ -2,30 +2,31 @@ import React, { forwardRef } from "react"
 import cx from "classnames"
 import * as factory from "packages/factory"
 import Grill from "packages/grid"
-import { createLayer } from "./utils"
+import { populateLayout } from "./utils"
 import { useChangeGrid } from "./callbacks"
 import styles from "./index.scss"
 
 export default function Modules({ layout, modules, ...props }) {
-  const layer = layout && createLayer(layout, modules)
-  const isLoaded = !!layout
-
-  return !isLoaded ? "Loading..." : <Frame layer={layer} {...props} />
+  return !layout ? (
+    "Loading..."
+  ) : (
+    <Frame layout={populateLayout(layout, modules)} {...props} />
+  )
 }
 
 // TODO: get some props from context provided from Editor? (explore git history for the additional context)
 // since that component is used inside another modules and there is no another way to get this data
 //
 // Use context only in that file. Use provider in Modules and consume data in Frame?
-function Frame({ layer, isEditing, selectedId, onModuleClick }) {
-  const changeGrid = useChangeGrid(layer)
+function Frame({ layout, isEditing, selectedId, onModuleClick }) {
+  const changeGrid = useChangeGrid(layout)
 
   return (
     <Grill
       rows={50}
       cols={10}
       rowHeight={60}
-      layout={layer.units}
+      layout={layout.positions}
       isStatic={!isEditing}
       onChange={changeGrid}
       components={{

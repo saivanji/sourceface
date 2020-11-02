@@ -1,25 +1,11 @@
 import * as moduleRepo from "repos/module"
-import * as layoutRepo from "repos/layout"
 
 const createModule = async (
   parent,
-  { moduleId, layoutId, type, name, config, position },
+  { moduleId, layoutId, type, name, config },
   { pg }
 ) => {
-  return pg.tx(async (t) => {
-    const { positions } = await layoutRepo.one(layoutId, t)
-
-    await layoutRepo.updatePositions(
-      layoutId,
-      {
-        ...positions,
-        [moduleId]: position,
-      },
-      t
-    )
-
-    return await moduleRepo.create(moduleId, layoutId, type, name, config, t)
-  })
+  return moduleRepo.create(moduleId, layoutId, type, name, config, pg)
 }
 
 const configureModule = async (parent, { moduleId, key, value }, { pg }) => {

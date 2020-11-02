@@ -1,14 +1,12 @@
-export default ({ moduleId, type, config, position }) => {
+export default ({ moduleId, type, name, config }) => {
   const __typename = "Module"
 
   return {
     __typename,
     id: moduleId,
-    createdAt: "",
     type,
+    name,
     config,
-    // position: omit(["layoutId"], position),
-    name: "",
     actions: [],
     layouts: [],
   }

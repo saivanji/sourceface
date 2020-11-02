@@ -1,26 +1,28 @@
 // TODO: mutations might be in the applications since update logic is not bound to them.
 
-export const updatePositions = `
-  mutation($positions: [PositionInput!]!) {
-    updatePositions(positions: $positions) @populate
+export const updateLayout = `
+  mutation($layoutId: UUID!, $positions: JSONObject!) {
+    updateLayout(layoutId: $layoutId, positions: $positions) @populate
   }
 `
 
 export const createModule = `
   mutation(
     $moduleId: UUID!
+    $layoutId: UUID!
     $type: ModuleType!
+    $name: String!
     $config: JSONObject!
-    $position: PositionInput!
-    $positions: [PositionInput!]!
+    $positions: JSONObject!
   ) {
-    updatePositions(positions: $positions) @populate
     createModule(
       moduleId: $moduleId
+      layoutId: $layoutId
       type: $type
+      name: $name
       config: $config
-      position: $position
     ) @populate
+    updateLayout(layoutId: $layoutId, positions: $positions) @populate
   }
 `
 

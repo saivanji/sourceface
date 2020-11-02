@@ -12,6 +12,7 @@ const sql = {
   `,
   updatePositions: `
     UPDATE layouts SET positions = $2 WHERE id = $1
+    RETURNING *
   `,
   listByIds: `
     SELECT * FROM layouts WHERE id IN ($1:csv)

@@ -22,8 +22,6 @@ export const findPageIdByModule = (moduleId, cache) => {
  * across multiple pages it's safe to assume that layoutId belongs only
  * to a found pageId.
  */
-// Most likely still need to have pageId additionally to path
-// Do we need to return pageId or path?
 export const findPageIdByLayout = (layoutId, cache) => {
   return cache.inspectFields("Query").reduce((result, x) => {
     if (x.fieldName !== "page" || result) {

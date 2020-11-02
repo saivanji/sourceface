@@ -1,8 +1,6 @@
 export default ({ actionId, type, config }) => {
-  const __typename = "Action"
-
   return {
-    __typename,
+    __typename: "Action",
     id: actionId,
     type,
     config,

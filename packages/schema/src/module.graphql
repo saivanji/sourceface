@@ -23,8 +23,6 @@ extend type Mutation {
     type: ModuleType!
     name: String!
     config: JSONObject!
-    # Position
-    position: JSONObject!
   ): Module!
   configureModule(moduleId: UUID!, key: String!, value: JSON!): Module!
   # TODO: make sure all related child layouts are removed as well
