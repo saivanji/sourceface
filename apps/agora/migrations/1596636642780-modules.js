@@ -7,6 +7,7 @@ export const up = () =>
       CREATE TABLE modules(
         id uuid PRIMARY KEY,
         created_at timestamp NOT NULL DEFAULT NOW(),
+        layout_id uuid NOT NULL REFERENCES layouts(id) ON DELETE CASCADE,
         name text NOT NULL CHECK (name <> ''),
         type module NOT NULL,
         config json NOT NULL

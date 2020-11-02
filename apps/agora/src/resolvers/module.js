@@ -18,7 +18,7 @@ const createModule = async (
       t
     )
 
-    return await moduleRepo.create(moduleId, type, name, config, t)
+    return await moduleRepo.create(moduleId, layoutId, type, name, config, t)
   })
 }
 

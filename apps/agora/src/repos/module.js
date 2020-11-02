@@ -1,6 +1,6 @@
 export const one = (moduleId, pg) => pg.one(sql.one, [moduleId])
-export const create = (moduleId, type, name, config, pg) =>
-  pg.one(sql.create, [moduleId, type, name, config])
+export const create = (moduleId, layoutId, type, name, config, pg) =>
+  pg.one(sql.create, [moduleId, layoutId, type, name, config])
 export const remove = (moduleId, pg) => pg.none(sql.remove, [moduleId])
 export const updateConfig = (moduleId, config, pg) =>
   pg.one(sql.updateConfig, [moduleId, config])
@@ -12,7 +12,8 @@ const sql = {
     SELECT * FROM modules WHERE id = $1
   `,
   create: `
-    INSERT INTO modules (id, type, name, config)
+    INSERT INTO modules (id, layout_id, type, name, config)
+    VALUES ($1, $2, $3, $4, $5)
     RETURNING *
   `,
   remove: `
@@ -25,15 +26,13 @@ const sql = {
   listByPageIds: `
     WITH recursive cte AS (
       SELECT m.*, pg.id AS page_id FROM modules AS m
-      INNER JOIN positions AS p ON p.id = m.position_id
-      INNER JOIN pages AS pg ON pg.layout_id = p.layout_id
+      INNER JOIN pages AS pg ON pg.layout_id = m.layout_id
       WHERE pg.id IN ($1:csv)
 
       UNION ALL
 
       SELECT m.*, cte.page_id FROM modules AS m
-      INNER JOIN positions AS p ON p.id = m.position_id
-      INNER JOIN modules_layouts AS ml ON ml.layout_id = p.layout_id
+      INNER JOIN modules_layouts AS ml ON ml.layout_id = m.layout_id
       INNER JOIN cte ON cte.id = ml.module_id
     ) SELECT * FROM cte
   `,

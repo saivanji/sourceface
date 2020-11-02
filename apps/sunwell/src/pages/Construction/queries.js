@@ -11,18 +11,11 @@ export const root = `
       }
       layout {
         id
-        positions {
-          id
-          x
-          y
-          w
-          h
-        }
+        positions
       }
       modules {
         id
         name
-        positionId
         type
         config
         actions {
@@ -33,13 +26,7 @@ export const root = `
         }
         layouts {
           id
-          positions {
-            id
-            x
-            y
-            w
-            h
-          }
+          positions
         }
       }
     }

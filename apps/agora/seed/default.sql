@@ -145,7 +145,6 @@ CREATE TABLE public.layouts (
 
 ALTER TABLE public.layouts OWNER TO admin;
 
-
 --
 -- Name: migrations; Type: TABLE; Schema: public; Owner: admin
 --
@@ -167,6 +166,7 @@ CREATE TABLE public.modules (
     type public.module NOT NULL,
     config json NOT NULL,
     name text NOT NULL,
+    layout_id uuid NOT NULL,
     CONSTRAINT modules_name_check CHECK ((name <> ''::text))
 );
 
@@ -323,6 +323,7 @@ SELECT pg_catalog.setval('public.commands_id_seq', 9, true);
 --
 
 COPY public.layouts (id, created_at, positions) FROM stdin;
+1a3c0c29-a473-473d-b744-6e609154a14b	2020-11-02 18:15:37.692755	{}
 \.
 
 
@@ -339,7 +340,8 @@ COPY public.migrations (data) FROM stdin;
 -- Data for Name: modules; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-COPY public.modules (id, created_at, type, config, name) FROM stdin;
+COPY public.modules (id, created_at, type, config, name, layout_id) FROM stdin;
+1a3c0c29-a473-473d-b744-6e609154a14a	2020-11-02 18:57:03.7921	table	{}	table_1	1a3c0c29-a473-473d-b744-6e609154a14b
 \.
 
 
@@ -356,6 +358,7 @@ COPY public.modules_layouts (module_id, layout_id) FROM stdin;
 --
 
 COPY public.pages (id, created_at, route, layout_id, title) FROM stdin;
+4	2020-11-02 18:16:20.260669	/orders	1a3c0c29-a473-473d-b744-6e609154a14b	Orders list
 \.
 
 
@@ -363,7 +366,7 @@ COPY public.pages (id, created_at, route, layout_id, title) FROM stdin;
 -- Name: pages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.pages_id_seq', 3, true);
+SELECT pg_catalog.setval('public.pages_id_seq', 4, true);
 
 
 --
@@ -484,6 +487,14 @@ ALTER TABLE ONLY public.actions
 
 ALTER TABLE ONLY public.commands
     ADD CONSTRAINT commands_source_id_fkey FOREIGN KEY (source_id) REFERENCES public.sources(id) ON DELETE CASCADE;
+
+
+--
+-- Name: modules modules_layout_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.modules
+    ADD CONSTRAINT modules_layout_id_fkey FOREIGN KEY (layout_id) REFERENCES public.layouts(id) ON DELETE CASCADE;
 
 
 --
