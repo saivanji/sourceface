@@ -1,23 +1,10 @@
-import * as positionRepo from "repos/position"
-import { transformPositions, createPositionType } from "utils/index"
+import * as layoutRepo from "repos/layout"
 
-const updatePositions = (parent, { positions }, { pg }) =>
-  /**
-   * Handling empty update case in order to correspond to Graphql schema.
-   */
-  positions.length
-    ? positionRepo.batchUpdate(transformPositions(positions), pg)
-    : []
-
-const positions = async (parent, args, ctx) =>
-  ctx.loaders.positionsByLayout.load(parent.id)
+const updateLayout = (parent, { layoutId, positions }, { pg }) =>
+  layoutRepo.updatePositions(layoutId, positions, pg)
 
 export default {
   Mutation: {
-    updatePositions,
+    updateLayout,
   },
-  Layout: {
-    positions,
-  },
-  Position: createPositionType(),
 }

@@ -1,14 +1,24 @@
 import * as moduleRepo from "repos/module"
-import * as positionRepo from "repos/position"
+import * as layoutRepo from "repos/layout"
 
 const createModule = async (
   parent,
-  { moduleId, type, config, position: { layoutId, ...position } },
+  { moduleId, layoutId, type, name, config, position },
   { pg }
 ) => {
   return pg.tx(async (t) => {
-    const { id: positionId } = await positionRepo.create(layoutId, position, t)
-    return await moduleRepo.create(moduleId, type, config, positionId, t)
+    const { positions } = await layoutRepo.one(layoutId, t)
+
+    await layoutRepo.updatePositions(
+      layoutId,
+      {
+        ...positions,
+        [moduleId]: position,
+      },
+      t
+    )
+
+    return await moduleRepo.create(moduleId, type, name, config, t)
   })
 }
 
@@ -29,13 +39,8 @@ const configureModule = async (parent, { moduleId, key, value }, { pg }) => {
 }
 
 const removeModule = async (parent, { moduleId }, { pg }) => {
-  /**
-   * Since module is 1:1 polymorphic relation with position, along with
-   * deleting module, it's position needs to be removed as well.
-   * Therefore position is deleted at the first point instead of module
-   * which will be deleted automatically because of a foreign key.
-   */
-  await positionRepo.removeByModule(moduleId, pg)
+  await moduleRepo.remove(moduleId, pg)
+
   return true
 }
 

@@ -8,7 +8,6 @@ export const up = () =>
         id uuid PRIMARY KEY,
         created_at timestamp NOT NULL DEFAULT NOW(),
         name text NOT NULL CHECK (name <> ''),
-        position_id integer UNIQUE NOT NULL REFERENCES positions(id) ON DELETE CASCADE,
         type module NOT NULL,
         config json NOT NULL
       )
@@ -19,7 +18,7 @@ export const up = () =>
     await t.none(`
       CREATE TABLE modules_layouts(
         module_id uuid NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
-        layout_id integer UNIQUE NOT NULL REFERENCES layouts(id) ON DELETE CASCADE
+        layout_id uuid UNIQUE NOT NULL REFERENCES layouts(id) ON DELETE CASCADE
       )
     `)
   })

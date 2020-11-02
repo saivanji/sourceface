@@ -8,30 +8,19 @@
 # table. When removing a module remove it's position in layout JSON. Match layouts with corresponding modules
 # on the front-end. In case of data inconsistency on the front-end ignore missing module.
 
+# Positions type might be scalar since it's object with keys as ids
+
+scalar Position
+
+scalar PositionSet
+
 type Layout {
-  id: Int!
+  id: UUID!
   createdAt: DateTime!
-  page: Page!
-  positions: [Position!]!
-}
-
-type Position {
-  id: Int!
-  x: Int!
-  y: Int!
-  w: Int!
-  h: Int!
-}
-
-input PositionInput {
-  id: Int
-  layoutId: Int!
-  x: Int!
-  y: Int!
-  w: Int!
-  h: Int!
+  # PositionSet
+  positions: JSONObject!
 }
 
 extend type Mutation {
-  updatePositions(positions: [PositionInput]!): [Position!]!
+  updateLayout(layoutId: UUID!, positions: JSONObject!): Layout!
 }

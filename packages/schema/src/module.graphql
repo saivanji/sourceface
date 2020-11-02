@@ -1,14 +1,3 @@
-type Module {
-  id: UUID!
-  positionId: Int!
-  createdAt: DateTime!
-  name: String!
-  type: ModuleType!
-  config: JSONObject!
-  actions: [Action]!
-  layouts: [Layout!]!
-}
-
 enum ModuleType {
   button
   container
@@ -17,12 +6,25 @@ enum ModuleType {
   text
 }
 
+type Module {
+  id: UUID!
+  createdAt: DateTime!
+  name: String!
+  type: ModuleType!
+  config: JSONObject!
+  actions: [Action]!
+  layouts: [Layout!]!
+}
+
 extend type Mutation {
   createModule(
     moduleId: UUID!
+    layoutId: UUID!
     type: ModuleType!
+    name: String!
     config: JSONObject!
-    position: PositionInput!
+    # Position
+    position: JSONObject!
   ): Module!
   configureModule(moduleId: UUID!, key: String!, value: JSON!): Module!
   # TODO: make sure all related child layouts are removed as well

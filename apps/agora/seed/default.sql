@@ -137,32 +137,13 @@ ALTER SEQUENCE public.commands_id_seq OWNED BY public.commands.id;
 --
 
 CREATE TABLE public.layouts (
-    id integer NOT NULL,
-    created_at timestamp without time zone DEFAULT now() NOT NULL
+    id uuid NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    positions json NOT NULL
 );
 
 
 ALTER TABLE public.layouts OWNER TO admin;
-
---
--- Name: layouts_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
---
-
-CREATE SEQUENCE public.layouts_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.layouts_id_seq OWNER TO admin;
-
---
--- Name: layouts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
---
-
-ALTER SEQUENCE public.layouts_id_seq OWNED BY public.layouts.id;
 
 
 --
@@ -183,7 +164,6 @@ ALTER TABLE public.migrations OWNER TO admin;
 CREATE TABLE public.modules (
     id uuid NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL,
-    position_id integer NOT NULL,
     type public.module NOT NULL,
     config json NOT NULL,
     name text NOT NULL,
@@ -199,7 +179,7 @@ ALTER TABLE public.modules OWNER TO admin;
 
 CREATE TABLE public.modules_layouts (
     module_id uuid NOT NULL,
-    layout_id integer NOT NULL
+    layout_id uuid NOT NULL
 );
 
 
@@ -213,7 +193,7 @@ CREATE TABLE public.pages (
     id integer NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL,
     route text NOT NULL,
-    layout_id integer NOT NULL,
+    layout_id uuid NOT NULL,
     title text NOT NULL,
     CONSTRAINT pages_title_check CHECK ((title <> ''::text))
 );
@@ -240,41 +220,6 @@ ALTER TABLE public.pages_id_seq OWNER TO admin;
 --
 
 ALTER SEQUENCE public.pages_id_seq OWNED BY public.pages.id;
-
-
---
--- Name: positions; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public.positions (
-    id integer NOT NULL,
-    created_at timestamp without time zone DEFAULT now() NOT NULL,
-    layout_id integer NOT NULL,
-    "position" json NOT NULL
-);
-
-
-ALTER TABLE public.positions OWNER TO admin;
-
---
--- Name: positions_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
---
-
-CREATE SEQUENCE public.positions_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.positions_id_seq OWNER TO admin;
-
---
--- Name: positions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
---
-
-ALTER SEQUENCE public.positions_id_seq OWNED BY public.positions.id;
 
 
 --
@@ -334,24 +279,10 @@ ALTER TABLE ONLY public.commands ALTER COLUMN id SET DEFAULT nextval('public.com
 
 
 --
--- Name: layouts id; Type: DEFAULT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.layouts ALTER COLUMN id SET DEFAULT nextval('public.layouts_id_seq'::regclass);
-
-
---
 -- Name: pages id; Type: DEFAULT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.pages ALTER COLUMN id SET DEFAULT nextval('public.pages_id_seq'::regclass);
-
-
---
--- Name: positions id; Type: DEFAULT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.positions ALTER COLUMN id SET DEFAULT nextval('public.positions_id_seq'::regclass);
 
 
 --
@@ -391,18 +322,8 @@ SELECT pg_catalog.setval('public.commands_id_seq', 9, true);
 -- Data for Name: layouts; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-COPY public.layouts (id, created_at) FROM stdin;
-1	2020-10-25 15:41:38.951719
-2	2020-10-25 15:43:15.198872
-3	2020-10-25 15:43:15.198872
+COPY public.layouts (id, created_at, positions) FROM stdin;
 \.
-
-
---
--- Name: layouts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
---
-
-SELECT pg_catalog.setval('public.layouts_id_seq', 1, false);
 
 
 --
@@ -418,7 +339,7 @@ COPY public.migrations (data) FROM stdin;
 -- Data for Name: modules; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-COPY public.modules (id, created_at, position_id, type, config, name) FROM stdin;
+COPY public.modules (id, created_at, type, config, name) FROM stdin;
 \.
 
 
@@ -435,9 +356,6 @@ COPY public.modules_layouts (module_id, layout_id) FROM stdin;
 --
 
 COPY public.pages (id, created_at, route, layout_id, title) FROM stdin;
-1	2020-10-25 15:42:32.357993	/orders	1	Orders
-2	2020-10-25 15:44:09.912236	/orders/create	2	Create order
-3	2020-10-25 15:44:09.912236	/orders/:id	3	Order
 \.
 
 
@@ -446,21 +364,6 @@ COPY public.pages (id, created_at, route, layout_id, title) FROM stdin;
 --
 
 SELECT pg_catalog.setval('public.pages_id_seq', 3, true);
-
-
---
--- Data for Name: positions; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-COPY public.positions (id, created_at, layout_id, "position") FROM stdin;
-\.
-
-
---
--- Name: positions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
---
-
-SELECT pg_catalog.setval('public.positions_id_seq', 2, true);
 
 
 --
@@ -528,14 +431,6 @@ ALTER TABLE ONLY public.modules
 
 
 --
--- Name: modules modules_position_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.modules
-    ADD CONSTRAINT modules_position_id_key UNIQUE (position_id);
-
-
---
 -- Name: pages pages_layout_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -557,14 +452,6 @@ ALTER TABLE ONLY public.pages
 
 ALTER TABLE ONLY public.pages
     ADD CONSTRAINT pages_route_key UNIQUE (route);
-
-
---
--- Name: positions positions_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.positions
-    ADD CONSTRAINT positions_pkey PRIMARY KEY (id);
 
 
 --
@@ -616,27 +503,11 @@ ALTER TABLE ONLY public.modules_layouts
 
 
 --
--- Name: modules modules_position_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.modules
-    ADD CONSTRAINT modules_position_id_fkey FOREIGN KEY (position_id) REFERENCES public.positions(id) ON DELETE CASCADE;
-
-
---
 -- Name: pages pages_layout_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.pages
     ADD CONSTRAINT pages_layout_id_fkey FOREIGN KEY (layout_id) REFERENCES public.layouts(id) ON DELETE CASCADE;
-
-
---
--- Name: positions positions_layout_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.positions
-    ADD CONSTRAINT positions_layout_id_fkey FOREIGN KEY (layout_id) REFERENCES public.layouts(id) ON DELETE CASCADE;
 
 
 --
