@@ -23,6 +23,8 @@ ReactDOM.render(
 )
 
 // TODO:
+// Fix layouts/positions data structure.
+//
 // Implement "Save/Cancel" logic on the frontend.
 // - Make sure all module/action updates are optimistic
 // - Fix all cache updates of modules/actions.
@@ -31,8 +33,6 @@ ReactDOM.render(
 //   - Consider not using populate(returning fields really changed on server) directive and also moving all mutations in the app since it's return
 //   fields might be app specific.
 //   - Consider moving client to schema?
-//
-// Fix layouts/positions data structure.
 //
 //
 //

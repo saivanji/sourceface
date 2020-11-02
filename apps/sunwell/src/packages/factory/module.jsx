@@ -5,7 +5,7 @@ import { useContainer } from "./container"
 const context = createContext({})
 
 export function Module({ module, isEditing, frame: Frame }) {
-  const [, updateModule] = useMutation(mutations.updateModule)
+  const [, configureModule] = useMutation(mutations.configureModule)
   const { stock } = useContainer()
 
   const Component = stock.modules.dict[module.type].Root
@@ -13,9 +13,8 @@ export function Module({ module, isEditing, frame: Frame }) {
   const scope = modulesScope[module.id]
   const state = readState(module.id)
 
-  // TODO: implement debouncing
   const changeConfig = async (key, value) =>
-    updateModule({ moduleId: module.id, key, value })
+    configureModule({ moduleId: module.id, key, value })
 
   return (
     <context.Provider value={module}>
