@@ -24,9 +24,7 @@ extend type Mutation {
     config: JSONObject!
     position: PositionInput!
   ): Module!
-  # TODO: rename to pushConfig and mutation should return JSONObject instead? Have similar logic as
-  # changeModuleConfig/configureModule - alternative mutation name
-  updateModule(moduleId: UUID!, key: String!, value: JSON!): Module!
+  configureModule(moduleId: UUID!, key: String!, value: JSON!): Module!
   # TODO: make sure all related child layouts are removed as well
   removeModule(moduleId: UUID!): Boolean
 }

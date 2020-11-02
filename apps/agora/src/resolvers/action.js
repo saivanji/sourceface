@@ -14,7 +14,7 @@ const removeAction = async (parent, { actionId }, { pg }) => {
   return true
 }
 
-const changeActionConfig = async (parent, { actionId, key, value }, { pg }) => {
+const configureAction = async (parent, { actionId, key, value }, { pg }) => {
   return await pg.task(async (t) => {
     const action = await actionRepo.one(actionId, t)
 
@@ -34,6 +34,6 @@ export default {
     createAction,
     renameAction,
     removeAction,
-    changeActionConfig,
+    configureAction,
   },
 }

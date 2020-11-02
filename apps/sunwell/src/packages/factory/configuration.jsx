@@ -39,7 +39,7 @@ export function Form({ children, validationSchema }) {
 // at a runtime. For example option to have the pagination available or not is rarely needed to be
 // configured at a runtime.
 export function Field({ name, component: Component, ...props }) {
-  const [, updateModule] = useMutation(mutations.updateModule)
+  const [, configureModule] = useMutation(mutations.configureModule)
   const { module, validationSchema } = useContext(context)
   const [error, setError] = useState(null)
   const value = module.config[name]
@@ -63,7 +63,7 @@ export function Field({ name, component: Component, ...props }) {
           validationSchema.fields[name]?.validateSync(value)
           setError(null)
 
-          return updateModule({ moduleId: module.id, key: name, value })
+          return configureModule({ moduleId: module.id, key: name, value })
         } catch (err) {
           if (!(err instanceof ValidationError)) throw err
           setError(err)

@@ -32,6 +32,10 @@ ReactDOM.render(
 //   fields might be app specific.
 //   - Consider moving client to schema?
 //
+// Fix layouts/positions data structure.
+//
+//
+//
 // consider implementing auto app upgrade feature
 //
 // use case - user need to be able to create postgres table in the app. either with "arbitrary query" for example(with predefined queries for table etc), or have a feature to manage source entities in addition to queries.

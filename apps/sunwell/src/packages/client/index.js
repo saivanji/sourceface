@@ -11,7 +11,6 @@ import { devtoolsExchange } from "@urql/devtools"
 import { cacheExchange } from "@urql/exchange-graphcache"
 import { populateExchange } from "@urql/exchange-populate"
 import { introspection } from "@sourceface/schema"
-import deferrableExchange from "./deferrable"
 import * as optimistic from "./optimistic"
 import * as updates from "./updates"
 import * as mutations from "./mutations"
@@ -24,7 +23,6 @@ const client = createClient({
   url: endpoint,
   maskTypename: true,
   exchanges: [
-    deferrableExchange,
     devtoolsExchange,
     dedupExchange,
     populateExchange({

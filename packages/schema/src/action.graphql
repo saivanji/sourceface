@@ -19,6 +19,5 @@ extend type Mutation {
   ): Action!
   removeAction(actionId: UUID!): Boolean!
   renameAction(actionId: UUID!, name: String!): Action!
-  # configureAction - new name
-  changeActionConfig(actionId: UUID!, key: String!, value: JSON): Action!
+  configureAction(actionId: UUID!, key: String!, value: JSON): Action!
 }

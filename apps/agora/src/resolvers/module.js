@@ -12,9 +12,7 @@ const createModule = async (
   })
 }
 
-// TODO: rename to pushConfig and return config as a response. Have similar logic as
-// in pushBinds, since in future people might need to update nested fields in config.
-const updateModule = async (parent, { moduleId, key, value }, { pg }) => {
+const configureModule = async (parent, { moduleId, key, value }, { pg }) => {
   return await pg.task(async (t) => {
     const module = await moduleRepo.one(moduleId, t)
 
@@ -50,7 +48,7 @@ const layouts = (parent, args, ctx) =>
 export default {
   Mutation: {
     createModule,
-    updateModule,
+    configureModule,
     removeModule,
   },
   Module: {

@@ -24,9 +24,12 @@ export const createModule = `
   }
 `
 
-export const updateModule = `
+export const configureModule = `
   mutation($moduleId: UUID!, $key: String!, $value: JSON!) {
-    updateModule(moduleId: $moduleId, key: $key, value: $value) @populate
+    configureModule(moduleId: $moduleId, key: $key, value: $value) {
+      id
+      config
+    }
   }
 `
 
@@ -64,8 +67,11 @@ export const renameAction = `
   }
 `
 
-export const changeActionConfig = `
+export const configureAction = `
   mutation($actionId: UUID!, $key: String!, $value: JSON) {
-    changeActionConfig(actionId: $actionId, key: $key, value: $value) @populate
+    configureAction(actionId: $actionId, key: $key, value: $value) {
+      id
+      config
+    }
   }
 `
