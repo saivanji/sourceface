@@ -1,8 +1,9 @@
 import { keys } from "ramda"
-import { useContainer, useConfiguration } from "packages/factory"
+import { useEditor, useScope, useConfiguration } from "packages/factory"
 
 export const useVariables = () => {
-  const { modulesScope, modules } = useContainer()
+  const { modulesScope } = useScope()
+  const { modules } = useEditor()
   const { module } = useConfiguration()
 
   const define = (id) => {

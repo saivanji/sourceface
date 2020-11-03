@@ -4,14 +4,14 @@ import styles from "./index.scss"
 
 export const Root = function ContainerModule({
   config,
-  layers,
+  layouts,
   components: { Frame },
 }) {
-  const layer = layers.find(x => x.layoutId === config.layoutId)
+  const layout = layouts.find((x) => x.id === config.layoutId)
 
   return (
     <div className={styles.root}>
-      <Frame layer={layer} />
+      <Frame layout={layout} />
     </div>
   )
 }

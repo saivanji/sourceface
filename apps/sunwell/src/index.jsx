@@ -43,6 +43,8 @@ ReactDOM.render(
 // Implement version forking in the app where app might have multiple versions and we can create new version based on the existing one by copying it's database with data to a new db. For the case when user need to implement
 // a big feature in the app and then publish it.
 //
+// Implement editor edition history so use can jump back to a specific item in the timeline like in p?
+//
 // think of the app conception. generic use cases are:
 // - be admin(management) app for existing application with existing database (internal admin app for the existing startup)
 // - be admin(management) app created from scratch and empty database (internal application for managing candidates hiring process for a startup)

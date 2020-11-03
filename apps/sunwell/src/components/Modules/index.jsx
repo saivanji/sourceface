@@ -1,16 +1,18 @@
 import React, { forwardRef } from "react"
 import cx from "classnames"
-import * as factory from "packages/factory"
+import { Module, useEditor } from "packages/factory"
 import Grill from "packages/grid"
 import { populateLayout } from "./utils"
 import { useChangeGrid } from "./callbacks"
 import styles from "./index.scss"
 
-export default function Modules({ layout, modules, ...props }) {
+export default function Modules() {
+  const { layout, modules } = useEditor()
+
   return !layout ? (
     "Loading..."
   ) : (
-    <Frame layout={populateLayout(layout, modules)} {...props} />
+    <Frame layout={populateLayout(layout, modules)} />
   )
 }
 
@@ -18,7 +20,8 @@ export default function Modules({ layout, modules, ...props }) {
 // since that component is used inside another modules and there is no another way to get this data
 //
 // Use context only in that file. Use provider in Modules and consume data in Frame?
-function Frame({ layout, isEditing, selectedId, onModuleClick }) {
+function Frame({ layout }) {
+  const { isEditing, selected, select } = useEditor()
   const changeGrid = useChangeGrid(layout)
 
   return (
@@ -36,17 +39,17 @@ function Frame({ layout, isEditing, selectedId, onModuleClick }) {
         ResizePlaceholder: Placeholder,
       }}
       renderItem={(module) => {
-        const isSelected = isEditing && selectedId === module.id
+        const isSelected = isEditing && selected?.id === module.id
 
         return (
           <div
             onClick={(e) => {
-              if (onModuleClick) {
+              if (isEditing) {
                 /**
                  * Propagating click events in order to be able to click on nested module
                  */
                 e.stopPropagation()
-                onModuleClick(module.id)
+                select(module.id)
               }
             }}
             className={cx(
@@ -55,11 +58,7 @@ function Frame({ layout, isEditing, selectedId, onModuleClick }) {
               isSelected && styles.selected
             )}
           >
-            <factory.Module
-              module={module}
-              frame={Frame}
-              isEditing={isEditing}
-            />
+            <Module module={module} frame={Frame} isEditing={isEditing} />
           </div>
         )
       }}

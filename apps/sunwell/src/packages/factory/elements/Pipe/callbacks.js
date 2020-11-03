@@ -17,8 +17,6 @@ export const useCreateAction = (onSuccess, onFailure) => {
           moduleId: module.id,
           type,
           config: {},
-          // temp
-          deferrable: true,
         }),
       ])
     } catch (err) {

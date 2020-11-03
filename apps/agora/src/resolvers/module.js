@@ -25,6 +25,8 @@ const configureModule = async (parent, { moduleId, key, value }, { pg }) => {
 }
 
 const removeModule = async (parent, { moduleId }, { pg }) => {
+  // TODO: remove module from the assigned layout. Most likely accept layoutId?
+
   await moduleRepo.remove(moduleId, pg)
 
   return true

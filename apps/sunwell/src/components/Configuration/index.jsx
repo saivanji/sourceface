@@ -1,10 +1,9 @@
 import React from "react"
-import { useMutation, mutations } from "packages/client"
 import { Input } from "@sourceface/components"
-import * as factory from "packages/factory"
+import { Configuration, useEditor } from "packages/factory"
 
-export default function Configuration({ module, onModuleRemove }) {
-  const [, removeModule] = useMutation(mutations.removeModule)
+export default function () {
+  const { selected: module, removeModule } = useEditor()
 
   return (
     <>
@@ -20,13 +19,12 @@ export default function Configuration({ module, onModuleRemove }) {
         <Input size="compact" placeholder="Module name" value={module.name} />
         <span>{module.type}</span>
       </div>
-      <factory.Configuration key={module.id} module={module} />
+      <Configuration key={module.id} module={module} />
       <button
         type="button"
         onClick={async () => {
           if (window.confirm()) {
-            await removeModule({ moduleId: module.id })
-            onModuleRemove()
+            removeModule(module.id)
           }
         }}
       >

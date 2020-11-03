@@ -1,4 +1,6 @@
 export { Container, useContainer } from "./container"
+export { useScope } from "./scope"
+export { useEditor } from "./editor"
 export { useValue, useFunction } from "./execution"
 export { Configuration, Form, Field, useConfiguration } from "./configuration"
 export { Module, useModule, useTransition } from "./module"
