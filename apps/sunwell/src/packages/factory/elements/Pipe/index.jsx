@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import cx from "classnames"
+import { without } from "ramda"
 import { Autocomplete, Button, Toggle } from "@sourceface/components"
 import Link from "assets/link.svg"
 import Add from "assets/add.svg"
@@ -12,10 +13,13 @@ import styles from "./index.scss"
 // TODO: move to actions and re-export in factory?
 
 // TODO: when at least one action created, have Creation inside of a link as "+" in the right side?
+// TODO: have action deletion here. Along with action listing and creation, responsibility of that module is also
+// deletion and update(rename).
+// TODO: is it possible to import Action here when Pipe becomes a member of a separate package?
 export default ({ value = [], onChange }) => {
   const [isOpened, setOpened] = useState(false)
   const { module } = useConfiguration()
-  const { createAction } = useEditor()
+  const { createAction, removeAction } = useEditor()
 
   const open = () => setOpened(true)
   const toggle = () => setOpened((value) => !value)
@@ -25,6 +29,13 @@ export default ({ value = [], onChange }) => {
     onChange([...value, actionId])
     open()
   }
+
+  const remove = (actionId) => {
+    removeAction(actionId)
+    onChange(without([actionId], value))
+  }
+
+  const rename = () => {}
 
   /**
    * Matching actions by config ids and filtering out wrong links.

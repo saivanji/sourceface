@@ -1,5 +1,5 @@
 import React from "react"
-import { Action, Static, Arguments } from "./components"
+import { Static, Arguments } from "./components"
 
 // TODO: when adding a new action, user will choose from multiple sub categories. For some modules will be the only one option(query, redirect),
 // for others - many(module - for every module, from specific module)
@@ -28,30 +28,12 @@ import { Action, Static, Arguments } from "./components"
 
 // TODO: Implement "Selector" action so we can get object fields values. Might be useful for query results when we get an object like { count: 5 } and we need 5 as a result
 
-export function Root({
-  queries,
-  config: { queryId, groups = [], fields = [] },
-  onConfigChange,
-}) {
+export function Root({ queries, config: { queryId }, onConfigChange }) {
   const query = queryId && queries.find((x) => x.id === queryId)
   const suggestions = queries.map((q) => ({ title: q.name, value: q.id }))
 
-  const changeFields = (fields) => onConfigChange("fields", fields)
-  const changeGroups = (groups) => onConfigChange("groups", groups)
-
   return (
-    <Action
-      secondary={
-        queryId && (
-          <Arguments
-            groups={groups}
-            fields={fields}
-            onFieldsChange={changeFields}
-            onGroupsChange={changeGroups}
-          />
-        )
-      }
-    >
+    <>
       Execute
       <Static
         creationTitle="Add query"
@@ -61,7 +43,26 @@ export function Root({
         suggestions={suggestions}
       />
       query
-    </Action>
+    </>
+  )
+}
+
+export function Cut({
+  config: { queryId, groups = [], fields = [] },
+  onConfigChange,
+}) {
+  const changeFields = (fields) => onConfigChange("fields", fields)
+  const changeGroups = (groups) => onConfigChange("groups", groups)
+
+  return (
+    queryId && (
+      <Arguments
+        groups={groups}
+        fields={fields}
+        onFieldsChange={changeFields}
+        onGroupsChange={changeGroups}
+      />
+    )
   )
 }
 

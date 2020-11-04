@@ -4,19 +4,24 @@ import { useEditor } from "./editor"
 
 const context = createContext({})
 
-export function Action({ action }) {
+export function Action({ action, children }) {
   const { stock, queries } = useContainer()
   const { configureAction } = useEditor()
 
-  const Component = stock.actions.dict[action.type].Root
+  const { Root, Cut } = stock.actions.dict[action.type]
+
+  const props = {
+    queries,
+    config: action.config,
+    onConfigChange: (key, value) => configureAction(action.id, key, value),
+  }
+
+  const root = <Root {...props} />
+  const cut = <Cut {...props} />
 
   return (
-    <context.Provider value={action}>
-      <Component
-        queries={queries}
-        config={action.config}
-        onConfigChange={(key, value) => configureAction(action.id, key, value)}
-      />
+    <context.Provider value={{ action }}>
+      {children(root, cut)}
     </context.Provider>
   )
 }

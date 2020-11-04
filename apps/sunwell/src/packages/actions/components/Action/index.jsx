@@ -1,26 +1,21 @@
 import React, { useState, Children } from "react"
 import cx from "classnames"
 import Input from "react-input-autosize"
-import { useEditor, useAction } from "packages/factory"
 import styles from "./index.scss"
 import BottomArrow from "assets/chev-b.svg"
 import TopArrow from "assets/chev-t.svg"
 import Delete from "assets/delete.svg"
 
+// TODO: move to Pipe or consider keeping it here since it's used by other components here, such as Arguments
 export default function Action({ children, secondary, add = false }) {
   const [isOpened, setOpened] = useState(false)
-  const { removeAction } = useEditor()
-  const { id } = useAction()
 
   return (
     <div className={styles.root}>
       <div className={styles.primary}>
         <div className={styles.head}>
           <Input inputClassName={styles.name} placeholder="Unnamed" />
-          <Delete
-            onClick={() => removeAction(id)}
-            className={styles.deleteIcon}
-          />
+          <Delete onClick={() => {}} className={styles.deleteIcon} />
         </div>
         <div className={cx(styles.body, styles.group)}>
           {wrapText(children)}
@@ -47,10 +42,6 @@ export default function Action({ children, secondary, add = false }) {
   )
 }
 
-Action.Group = function ActionGroup({ children }) {
-  return <div className={styles.group}>{wrapText(children)}</div>
-}
-
 Action.Section = function ActionSection({ title, children }) {
   return (
     <div className={styles.section}>
@@ -60,10 +51,6 @@ Action.Section = function ActionSection({ title, children }) {
       <div className={styles.sectionBody}>{children}</div>
     </div>
   )
-}
-
-Action.SectionRow = function ActionSectionRow({ children }) {
-  return <div className={styles.sectionRow}>{children}</div>
 }
 
 const wrapText = (children) =>
