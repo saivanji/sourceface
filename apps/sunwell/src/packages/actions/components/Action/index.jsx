@@ -1,7 +1,7 @@
 import React, { useState, Children } from "react"
 import cx from "classnames"
 import Input from "react-input-autosize"
-import { useEditor } from "packages/factory"
+import { useEditor, useAction } from "packages/factory"
 import styles from "./index.scss"
 import BottomArrow from "assets/chev-b.svg"
 import TopArrow from "assets/chev-t.svg"
@@ -9,8 +9,8 @@ import Delete from "assets/delete.svg"
 
 export default function Action({ children, secondary, add = false }) {
   const [isOpened, setOpened] = useState(false)
-  // TODO: get action id
   const { removeAction } = useEditor()
+  const { id } = useAction()
 
   return (
     <div className={styles.root}>
@@ -18,7 +18,7 @@ export default function Action({ children, secondary, add = false }) {
         <div className={styles.head}>
           <Input inputClassName={styles.name} placeholder="Unnamed" />
           <Delete
-            onClick={() => removeAction()}
+            onClick={() => removeAction(id)}
             className={styles.deleteIcon}
           />
         </div>

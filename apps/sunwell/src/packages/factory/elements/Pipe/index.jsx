@@ -6,6 +6,7 @@ import Add from "assets/add.svg"
 import { useContainer } from "../../container"
 import { useConfiguration } from "../../configuration"
 import { useEditor } from "../../editor"
+import { Action } from "../../action"
 import styles from "./index.scss"
 
 // TODO: move to actions and re-export in factory?
@@ -47,30 +48,15 @@ export default ({ value = [], onChange }) => {
         <>
           <div className={styles.list}>
             {actions.map((action) => (
-              <Action key={action.id} {...action} />
+              <div key={action.id} className={styles.action}>
+                <Action action={action} />
+              </div>
             ))}
           </div>
           <Creation className={styles.add} onCreate={create} />
         </>
       )}
     </>
-  )
-}
-
-function Action({ id, config, type, onRemove }) {
-  const { stock, queries } = useContainer()
-  const { configureAction, removeAction } = useEditor()
-
-  const Component = stock.actions.dict[type].Root
-
-  return (
-    <div key={id} className={styles.action}>
-      <Component
-        queries={queries}
-        config={config}
-        onConfigChange={(key, value) => configureAction(id, key, value)}
-      />
-    </div>
   )
 }
 

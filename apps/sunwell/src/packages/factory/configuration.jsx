@@ -21,6 +21,8 @@ export function Configuration({ module }) {
   )
 }
 
+// TODO: have a package which will be used while making modules, which will contain:
+// Form, Field and different elements such Pipe and so on
 export function Form({ children, validationSchema }) {
   const parent = useContext(context)
 
