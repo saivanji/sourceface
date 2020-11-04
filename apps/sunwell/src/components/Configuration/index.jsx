@@ -3,7 +3,7 @@ import { Input } from "@sourceface/components"
 import { Configuration, useEditor } from "packages/factory"
 
 export default function () {
-  const { selected: module, removeModule } = useEditor()
+  const { selected: module, select, removeModule } = useEditor()
 
   return (
     <>
@@ -24,6 +24,7 @@ export default function () {
         type="button"
         onClick={async () => {
           if (window.confirm()) {
+            select(null)
             removeModule(module.id)
           }
         }}

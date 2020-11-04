@@ -58,7 +58,7 @@ function Frame({ layout }) {
               isSelected && styles.selected
             )}
           >
-            <Module module={module} frame={Frame} isEditing={isEditing} />
+            <Module module={module} frame={Frame} />
           </div>
         )
       }}

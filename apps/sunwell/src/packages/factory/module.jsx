@@ -1,21 +1,18 @@
 import React, { createContext, useContext } from "react"
-import { useMutation, mutations } from "packages/client"
 import { useContainer } from "./container"
 import { useScope } from "./scope"
+import { useEditor } from "./editor"
 
 const context = createContext({})
 
-export function Module({ module, isEditing, frame: Frame }) {
-  const [, configureModule] = useMutation(mutations.configureModule)
+export function Module({ module, frame: Frame }) {
   const { stock } = useContainer()
+  const { isEditing, configureModule } = useEditor()
   const { readState, modulesScope } = useScope()
 
   const Component = stock.modules.dict[module.type].Root
   const scope = modulesScope[module.id]
   const state = readState(module.id)
-
-  const changeConfig = async (key, value) =>
-    configureModule({ moduleId: module.id, key, value })
 
   return (
     <context.Provider value={module}>
@@ -26,7 +23,7 @@ export function Module({ module, isEditing, frame: Frame }) {
         layouts={module.layouts}
         components={{ Frame }}
         isEditing={isEditing}
-        onConfigChange={changeConfig}
+        onConfigChange={(key, value) => configureModule(module.id, key, value)}
       />
     </context.Provider>
   )

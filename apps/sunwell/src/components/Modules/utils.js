@@ -1,4 +1,4 @@
-import { pick, keys, mapObjIndexed } from "ramda"
+import { pick, keys } from "ramda"
 
 // TODO: consider moving that logic somewhere since it's might be reused in mobile app?
 export const populateLayout = (layout, modules) => {
@@ -28,4 +28,4 @@ export const populateLayout = (layout, modules) => {
   return result
 }
 
-export const sanitizePositions = mapObjIndexed(pick(["w", "h", "x", "y"]))
+export const sanitizePosition = pick(["w", "h", "x", "y"])

@@ -1,16 +1,11 @@
 import React, { useState } from "react"
-import { compose } from "ramda"
 import cx from "classnames"
 import { Autocomplete, Button, Toggle } from "@sourceface/components"
 import Link from "assets/link.svg"
 import Add from "assets/add.svg"
 import { useContainer } from "../../container"
 import { useConfiguration } from "../../configuration"
-import {
-  useCreateAction,
-  useRemoveAction,
-  useConfigureAction,
-} from "./callbacks"
+import { useEditor } from "../../editor"
 import styles from "./index.scss"
 
 // TODO: move to actions and re-export in factory?
@@ -19,17 +14,16 @@ import styles from "./index.scss"
 export default ({ value = [], onChange }) => {
   const [isOpened, setOpened] = useState(false)
   const { module } = useConfiguration()
-
-  const append = (actionId) => onChange([...value, actionId])
-  const filter = (actionId) => onChange(value.filter((x) => x.id !== actionId))
+  const { createAction } = useEditor()
 
   const open = () => setOpened(true)
-  const close = () => setOpened(false)
   const toggle = () => setOpened((value) => !value)
 
-  const create = useCreateAction(compose(open, append), close)
-  const remove = useRemoveAction(filter)
-  const configure = useConfigureAction()
+  const create = (type) => {
+    const actionId = createAction(module.id, type)
+    onChange([...value, actionId])
+    open()
+  }
 
   /**
    * Matching actions by config ids and filtering out wrong links.
@@ -53,12 +47,7 @@ export default ({ value = [], onChange }) => {
         <>
           <div className={styles.list}>
             {actions.map((action) => (
-              <Action
-                key={action.id}
-                {...action}
-                onRemove={remove}
-                onConfigChange={configure}
-              />
+              <Action key={action.id} {...action} />
             ))}
           </div>
           <Creation className={styles.add} onCreate={create} />
@@ -68,8 +57,9 @@ export default ({ value = [], onChange }) => {
   )
 }
 
-function Action({ id, config, type, onConfigChange, onRemove }) {
+function Action({ id, config, type, onRemove }) {
   const { stock, queries } = useContainer()
+  const { configureAction, removeAction } = useEditor()
 
   const Component = stock.actions.dict[type].Root
 
@@ -78,7 +68,7 @@ function Action({ id, config, type, onConfigChange, onRemove }) {
       <Component
         queries={queries}
         config={config}
-        onConfigChange={(key, value) => onConfigChange(id, key, value)}
+        onConfigChange={(key, value) => configureAction(id, key, value)}
       />
     </div>
   )

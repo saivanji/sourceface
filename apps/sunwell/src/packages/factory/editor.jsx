@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useReducer } from "react"
 import { normalize, denormalize, schema } from "normalizr"
 import { v4 as uuid } from "uuid"
-import { omit, without } from "ramda"
+import { omit, without, keys } from "ramda"
 import { useContainer } from "./container"
 
 const context = createContext({})
@@ -9,14 +9,16 @@ const context = createContext({})
 // TODO: instead of diffing, do a mapping between dispatched actions and mutations(next deletion mutation will exclude past creation mutation)
 
 // TODO: rename "page" to something meaningful
+// TODO: do not mix UI and data state
 export function Editor({ children, page: cached }) {
   const { stock } = useContainer()
+  const initialState = normalize(cached, pageSchema)
 
-  const [state, dispatch] = useReducer(reducer, normalize(cached, pageSchema))
+  const [state, dispatch] = useReducer(reducer, initialState)
   const page = !state.isEditing
     ? cached
     : denormalize(state.result, pageSchema, state.entities)
-  const selected = state.entities.modules[state.selection]
+  const selected = page.modules.find((x) => x.id === state.selection)
 
   function select(moduleId) {
     dispatch({ type: "select", payload: moduleId })
@@ -24,6 +26,9 @@ export function Editor({ children, page: cached }) {
 
   function edit(isEditing) {
     dispatch({ type: "edit", payload: isEditing })
+    if (!isEditing) {
+      dispatch({ type: "reset", payload: initialState })
+    }
   }
 
   function updateLayout(layoutId, positions) {
@@ -37,17 +42,19 @@ export function Editor({ children, page: cached }) {
   }
 
   function createModule(layoutId, type, position) {
+    const moduleId = uuid()
     dispatch({
       type: "createModule",
       payload: {
         layoutId,
-        moduleId: uuid(),
-        config: stock.modules[type].defaultConfig,
+        moduleId,
+        config: stock.modules.dict[type].defaultConfig,
         type,
         name,
         position,
       },
     })
+    return moduleId
   }
 
   function configureModule(moduleId, key, value) {
@@ -62,17 +69,20 @@ export function Editor({ children, page: cached }) {
   }
 
   function removeModule(moduleId) {
+    const layoutId = findLayoutIdByModule(moduleId, state.entities.layouts)
     dispatch({
       type: "removeModule",
-      payload: { moduleId },
+      payload: { moduleId, layoutId },
     })
   }
 
-  function createAction(actionId, moduleId, type) {
+  function createAction(moduleId, type) {
+    const actionId = uuid()
     dispatch({
       type: "createAction",
       payload: { actionId, moduleId, type, config: {} },
     })
+    return actionId
   }
 
   function configureAction(actionId, key, value) {
@@ -83,9 +93,10 @@ export function Editor({ children, page: cached }) {
   }
 
   function removeAction(actionId) {
+    const moduleId = findModuleIdByAction(actionId, state.entities.modules)
     dispatch({
       type: "removeAction",
-      payload: { actionId },
+      payload: { actionId, moduleId },
     })
   }
 
@@ -117,7 +128,9 @@ export const useEditor = () => {
 }
 
 const reducer = (state, action) => {
-  // TODO: resest state to initialState when "edit = false" dispatched
+  if (action.type === "reset") {
+    return action.payload
+  }
 
   return {
     entities: {
@@ -126,7 +139,7 @@ const reducer = (state, action) => {
       actions: actionsReducer(state.entities.actions, action),
     },
     result: resultReducer(state.result, action),
-    selection: selectionReducer(state.selectio, action),
+    selection: selectionReducer(state.selection, action),
     isEditing: editionReducer(state.isEditing, action),
   }
 }
@@ -152,14 +165,25 @@ function layoutsReducer(state, { type, payload }) {
         ...state,
         [layoutId]: {
           ...state[layoutId],
-          [moduleId]: position,
+          positions: {
+            ...state[layoutId].positions,
+            [moduleId]: position,
+          },
         },
       }
     }
 
     case "removeModule": {
-      // TODO: remove module from assigned layout
-      return state
+      const { moduleId, layoutId } = payload
+      console.log(layoutId)
+
+      return {
+        ...state,
+        [layoutId]: {
+          ...state[layoutId],
+          positions: omit([moduleId], state[layoutId].positions),
+        },
+      }
     }
 
     default:
@@ -179,6 +203,8 @@ function modulesReducer(state, { type, payload }) {
           type,
           name,
           config,
+          actions: [],
+          layouts: [],
         },
       }
     }
@@ -202,7 +228,7 @@ function modulesReducer(state, { type, payload }) {
       return omit([payload.moduleId], state.modules)
 
     case "createAction": {
-      const { moduleId, actionId } = payload
+      const { actionId, moduleId } = payload
 
       return {
         ...state,
@@ -214,8 +240,15 @@ function modulesReducer(state, { type, payload }) {
     }
 
     case "removeAction": {
-      // TODO: implement
-      return state
+      const { actionId, moduleId } = payload
+
+      return {
+        ...state,
+        [moduleId]: {
+          ...state[moduleId],
+          actions: without([actionId], state[moduleId].actions),
+        },
+      }
     }
 
     default:
@@ -266,7 +299,7 @@ function resultReducer(state, { type, payload }) {
     case "createModule":
       return {
         ...state,
-        modules: [...state.modules, payload.module.id],
+        modules: [...state.modules, payload.moduleId],
       }
 
     case "removeModule": {
@@ -286,9 +319,6 @@ function selectionReducer(state, { type, payload }) {
     case "select":
       return payload
 
-    case "removeModule":
-      return state === payload.moduleId ? null : state
-
     default:
       return state
   }
@@ -303,6 +333,12 @@ function editionReducer(state, action) {
       return state
   }
 }
+
+const findLayoutIdByModule = (moduleId, layouts) =>
+  keys(layouts).find((layoutId) => !!layouts[layoutId].positions[moduleId])
+
+const findModuleIdByAction = (actionId, modules) =>
+  keys(modules).find((moduleId) => modules[moduleId].actions.includes(actionId))
 
 const layout = new schema.Entity("layouts")
 const action = new schema.Entity("actions")

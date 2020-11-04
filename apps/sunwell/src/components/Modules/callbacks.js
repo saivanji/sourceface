@@ -1,15 +1,13 @@
-import { v4 as uuid } from "uuid"
-import { useMutation, mutations } from "packages/client"
+import { mapObjIndexed } from "ramda"
 import { SORTABLE_INNER, SORTABLE_OUTER } from "packages/grid"
-import { dict } from "packages/modules"
-import { sanitizePositions } from "./utils"
+import { useEditor } from "packages/factory"
+import { sanitizePosition } from "./utils"
 
 // TODO: make sure there is nothing left from old layout naming conventions.
 // TODO: most likely keep grill logic here and call lower level functions from editor here.
 // TODO: why called prevLayout?
 export const useChangeGrid = (prevLayout) => {
-  const [, createModule] = useMutation(mutations.createModule)
-  const [, updateLayout] = useMutation(mutations.updateLayout)
+  const { createModule, updateLayout, select } = useEditor()
 
   // TODO: handle "leave" event
   return (event) => {
@@ -27,10 +25,7 @@ export const useChangeGrid = (prevLayout) => {
       ["sort", "resize"].includes(event.name) ||
       (event.name === "enter" && event.sourceType === SORTABLE_INNER)
     ) {
-      updateLayout({
-        layoutId: prevLayout.id,
-        positions: sanitizePositions(positions),
-      })
+      updateLayout(prevLayout.id, mapObjIndexed(sanitizePosition, positions))
       return
     }
 
@@ -39,18 +34,14 @@ export const useChangeGrid = (prevLayout) => {
      */
     if (event.name === "enter" && event.sourceType === SORTABLE_OUTER) {
       const { moduleType } = event.custom
-      const { outer, ...filtered } = positions
 
-      const moduleId = uuid()
+      const moduleId = createModule(
+        prevLayout.id,
+        moduleType,
+        sanitizePosition(positions.outer)
+      )
+      select(moduleId)
 
-      createModule({
-        moduleId,
-        layoutId: prevLayout.id,
-        type: moduleType,
-        name: "test",
-        config: dict[moduleType].defaultConfig,
-        positions: sanitizePositions({ ...filtered, [moduleId]: outer }),
-      })
       return
     }
   }

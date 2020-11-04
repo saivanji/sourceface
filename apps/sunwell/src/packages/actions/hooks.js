@@ -7,7 +7,7 @@ export const useVariables = () => {
   const { module } = useConfiguration()
 
   const define = (id) => {
-    const [a, b, c] = id.split("-")
+    const [a, b, c] = id.split("/")
 
     if (a === "module" && b === "local") {
       return {
@@ -19,7 +19,7 @@ export const useVariables = () => {
     if (a === "module") {
       return {
         type: "external",
-        moduleId: +b,
+        moduleId: b,
         name: c,
       }
     }
@@ -27,11 +27,11 @@ export const useVariables = () => {
 
   const identify = (definition) => {
     if (definition.type === "local") {
-      return `module-local-${definition.name}`
+      return `module/local/${definition.name}`
     }
 
     if (definition.type === "external") {
-      return `module-${definition.moduleId}-${definition.name}`
+      return `module/${definition.moduleId}/${definition.name}`
     }
   }
 
