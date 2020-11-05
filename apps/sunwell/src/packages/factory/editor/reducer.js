@@ -109,7 +109,7 @@ function modules(state, { type, payload }) {
     }
 
     case "removeModule":
-      return omit([payload.moduleId], state.modules)
+      return omit([payload.moduleId], state)
 
     case "createAction": {
       const { actionId, moduleId } = payload
