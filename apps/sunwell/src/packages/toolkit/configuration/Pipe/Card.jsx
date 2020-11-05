@@ -5,14 +5,26 @@ import TopArrow from "assets/chev-t.svg"
 import Delete from "assets/delete.svg"
 import styles from "./card.scss"
 
-export default function Card({ children, cut, add = false, onRemove }) {
+export default function Card({
+  children,
+  cut,
+  add = false,
+  name,
+  onRename,
+  onRemove,
+}) {
   const [isOpened, setOpened] = useState(false)
 
   return (
     <div className={styles.root}>
       <div className={styles.primary}>
         <div className={styles.head}>
-          <Input inputClassName={styles.name} placeholder="Unnamed" />
+          <Input
+            value={name}
+            inputClassName={styles.name}
+            placeholder="Unnamed"
+            onChange={(e) => onRename(e.target.value)}
+          />
           <Delete onClick={onRemove} className={styles.deleteIcon} />
         </div>
         <div className={styles.body}>

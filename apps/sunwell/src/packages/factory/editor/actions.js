@@ -53,6 +53,13 @@ export function useActions(state, initialState, dispatch) {
     })
   }
 
+  function renameModule(moduleId, name) {
+    dispatch({
+      type: "renameModule",
+      payload: { moduleId, name },
+    })
+  }
+
   function removeModule(moduleId) {
     const layoutId = utils.findLayoutIdByModule(
       moduleId,
@@ -80,6 +87,13 @@ export function useActions(state, initialState, dispatch) {
     })
   }
 
+  function renameAction(actionId, name) {
+    dispatch({
+      type: "renameAction",
+      payload: { actionId, name },
+    })
+  }
+
   function removeAction(actionId) {
     const moduleId = utils.findModuleIdByAction(
       actionId,
@@ -97,9 +111,11 @@ export function useActions(state, initialState, dispatch) {
     updateLayout,
     createModule,
     configureModule,
+    renameModule,
     removeModule,
     createAction,
     configureAction,
+    renameAction,
     removeAction,
   }
 }

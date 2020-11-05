@@ -96,6 +96,18 @@ function modules(state, { type, payload }) {
       }
     }
 
+    case "renameModule": {
+      const { moduleId, name } = payload
+
+      return {
+        ...state,
+        [moduleId]: {
+          ...state[moduleId],
+          name,
+        },
+      }
+    }
+
     case "removeModule":
       return omit([payload.moduleId], state.modules)
 
@@ -154,6 +166,18 @@ function actions(state, { type, payload }) {
             ...state[actionId].config,
             [key]: value,
           },
+        },
+      }
+    }
+
+    case "renameAction": {
+      const { actionId, name } = payload
+
+      return {
+        ...state,
+        [actionId]: {
+          ...state[actionId],
+          name,
         },
       }
     }

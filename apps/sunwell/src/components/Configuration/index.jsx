@@ -3,7 +3,7 @@ import { Input } from "@sourceface/components"
 import { Configuration, useEditor } from "packages/factory"
 
 export default function () {
-  const { selected: module, select, removeModule } = useEditor()
+  const { selected: module, select, renameModule, removeModule } = useEditor()
 
   return (
     <>
@@ -16,7 +16,12 @@ export default function () {
           borderBottom: "1px solid #ccc",
         }}
       >
-        <Input size="compact" placeholder="Module name" value={module.name} />
+        <Input
+          size="compact"
+          placeholder="Module name"
+          onChange={(e) => renameModule(module.id, e.target.value)}
+          value={module.name}
+        />
         <span>{module.type}</span>
       </div>
       <Configuration key={module.id} module={module} />
