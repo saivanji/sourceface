@@ -2,7 +2,7 @@ import React from "react"
 import * as yup from "yup"
 import * as system from "@sourceface/style"
 import { Row, Label, Input, Select } from "@sourceface/components"
-import { Form, Field } from "packages/factory"
+import { Field } from "packages/toolkit"
 import styles from "./index.scss"
 
 // every module should have correspoding loader(depending on type)
@@ -30,7 +30,7 @@ export const Root = function TextModule({ config }) {
 
 export const Configuration = function TextModuleConfiguration() {
   return (
-    <Form validationSchema={validationSchema}>
+    <>
       <Row>
         <Label title="Text">
           <Field name="text" type="text" component={Input} />
@@ -86,7 +86,7 @@ export const Configuration = function TextModuleConfiguration() {
           <Field name="color" type="text" component={Input} />
         </Label>
       </Row>
-    </Form>
+    </>
   )
 }
 

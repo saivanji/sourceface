@@ -1,7 +1,7 @@
 import React from "react"
 import cx from "classnames"
-import styles from "./index.scss"
 import Delete from "assets/delete.svg"
+import styles from "./index.scss"
 
 export default ({ children, prefix, color, removable, onRemove }) => {
   return (

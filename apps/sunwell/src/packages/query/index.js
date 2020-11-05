@@ -1,3 +1,4 @@
+// TODO: move to runQuery action?
 // TODO: when we call 2 the same query function at the same time, it will produce 2 corresponding
 // graphq requests. Instead of that, make a request only for a first call, and the second call should
 // subscribe on data changes and be resolved once cache will be populated by a first item.

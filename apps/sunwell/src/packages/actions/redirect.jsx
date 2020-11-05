@@ -1,13 +1,13 @@
 import React from "react"
-import { Action, Value } from "./components"
+import { Value } from "packages/toolkit"
 
 // TODO: use actual page names instead of paths and provide params similar way we provide arguments to a function
 export function Root({ config }) {
   return (
-    <Action>
+    <>
       Redirect to
       <Value value={{ type: "literal", data: "/" }} />
-    </Action>
+    </>
   )
 }
 

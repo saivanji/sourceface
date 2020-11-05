@@ -8,7 +8,8 @@ import {
   Checkbox,
 } from "@sourceface/components"
 import * as yup from "yup"
-import { Form, Field, Pipe, useFunction } from "packages/factory"
+import { useFunction } from "packages/factory"
+import { Field, Pipe } from "packages/toolkit"
 
 export const Root = function ButtonModule({ config }) {
   const [onClick] = useFunction(config.action)
@@ -26,7 +27,7 @@ export const Root = function ButtonModule({ config }) {
 
 export const Configuration = function ButtonModuleConfiguration() {
   return (
-    <Form validationSchema={validationSchema}>
+    <>
       <Row>
         <Label title="Text">
           <Field name="text" type="text" component={Input} />
@@ -49,7 +50,7 @@ export const Configuration = function ButtonModuleConfiguration() {
           component={Checkbox}
         />
       </Row>
-    </Form>
+    </>
   )
 }
 

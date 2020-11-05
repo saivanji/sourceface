@@ -1,6 +1,6 @@
 import React from "react"
 import { Autocomplete, Toggle } from "@sourceface/components"
-import { useVariables } from "../../hooks"
+import { useVariables } from "packages/factory"
 import Snippet from "../Snippet"
 import Placeholder from "../Placeholder"
 

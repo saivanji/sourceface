@@ -1,5 +1,7 @@
 import { keys } from "ramda"
-import { useEditor, useScope, useConfiguration } from "packages/factory"
+import { useEditor } from "./editor"
+import { useScope } from "./scope"
+import { useConfiguration } from "./configuration"
 
 export const useVariables = () => {
   const { modulesScope } = useScope()

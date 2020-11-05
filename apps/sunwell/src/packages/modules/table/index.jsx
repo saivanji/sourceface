@@ -11,7 +11,8 @@ import {
   Input,
   Checkbox,
 } from "@sourceface/components"
-import { Form, Field, Pipe, useTransition, useValue } from "packages/factory"
+import { useTransition, useValue } from "packages/factory"
+import { Field, Pipe } from "packages/toolkit"
 import styles from "./index.scss"
 
 // TODO: filters might be displayed in place of a column(filtered column will have gray rounded bg and "i" icon. When user will hover it - will display applied filters)
@@ -98,7 +99,7 @@ export const Root = function TableModule({ config, scope: { limit, offset } }) {
 // other optional stuff. (probably with accordion for the section?)
 export const Configuration = function TableModuleConfiguration({ config }) {
   return (
-    <Form validationSchema={validationSchema}>
+    <>
       <Section title="Basic">
         <Row>
           <Label title="Data">
@@ -135,7 +136,7 @@ export const Configuration = function TableModuleConfiguration({ config }) {
           </>
         )}
       </Section>
-    </Form>
+    </>
   )
 }
 

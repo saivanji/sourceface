@@ -24,8 +24,7 @@
   opacity: 0;
 }
 
-.deleteIcon,
-.typeIcon {
+.deleteIcon {
   width: $value-3;
   height: $value-3;
 }
@@ -45,17 +44,14 @@
   font-weight: 600;
 }
 
-.group {
+.body {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  > *:not(.group) {
+  padding: 0 $value-1 $value-1;
+  > *:not(.body) {
     margin: $value-1;
   }
-}
-
-.body {
-  padding: 0 $value-1 $value-1;
   &:hover .add {
     opacity: 1;
   }
@@ -116,29 +112,5 @@
   border: 1px solid $color-gray-400;
   &:hover {
     background: $color-gray-400;
-  }
-}
-
-.sectionHead {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: $font-size-xs;
-  background-color: $color-gray-300;
-  padding: $value-1 $value-2;
-  margin: -#{$value-1} -#{$value-2} $value-1;
-}
-
-.sectionBody {
-  padding: $value-1 0;
-}
-
-.sectionRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: $value-2;
-  &:last-child {
-    margin-bottom: 0;
   }
 }

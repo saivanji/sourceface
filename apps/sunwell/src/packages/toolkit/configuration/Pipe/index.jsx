@@ -2,15 +2,16 @@ import React, { useState } from "react"
 import cx from "classnames"
 import { without } from "ramda"
 import { Autocomplete, Button, Toggle } from "@sourceface/components"
+import {
+  useContainer,
+  useConfiguration,
+  useEditor,
+  Action,
+} from "packages/factory"
 import Link from "assets/link.svg"
 import Add from "assets/add.svg"
-import { useContainer } from "../../container"
-import { useConfiguration } from "../../configuration"
-import { useEditor } from "../../editor"
-import { Action } from "../../action"
+import Card from "./Card"
 import styles from "./index.scss"
-
-// TODO: move to actions and re-export in factory?
 
 // TODO: when at least one action created, have Creation inside of a link as "+" in the right side?
 // TODO: have action deletion here. Along with action listing and creation, responsibility of that module is also
@@ -60,7 +61,13 @@ export default ({ value = [], onChange }) => {
           <div className={styles.list}>
             {actions.map((action) => (
               <div key={action.id} className={styles.action}>
-                <Action action={action} />
+                <Action action={action}>
+                  {(root, cut) => (
+                    <Card cut={cut} onRemove={() => remove(action.id)}>
+                      {root}
+                    </Card>
+                  )}
+                </Action>
               </div>
             ))}
           </div>

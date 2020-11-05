@@ -1,5 +1,5 @@
 import React from "react"
-import { Static, Arguments } from "./components"
+import { Static, Arguments } from "packages/toolkit"
 
 // TODO: when adding a new action, user will choose from multiple sub categories. For some modules will be the only one option(query, redirect),
 // for others - many(module - for every module, from specific module)
@@ -34,7 +34,7 @@ export function Root({ queries, config: { queryId }, onConfigChange }) {
 
   return (
     <>
-      Execute
+      <span>Execute</span>
       <Static
         creationTitle="Add query"
         clearable={false}

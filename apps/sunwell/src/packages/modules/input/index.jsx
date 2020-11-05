@@ -1,7 +1,8 @@
 import React from "react"
 import * as yup from "yup"
 import { Row, Label, Input } from "@sourceface/components"
-import { Form, Field, useTransition } from "packages/factory"
+import { useTransition } from "packages/factory"
+import { Field } from "packages/toolkit"
 
 export const Root = function InputModule({
   config,
@@ -36,7 +37,7 @@ export const Root = function InputModule({
 
 export const Configuration = function InputModuleConfiguration() {
   return (
-    <Form validationSchema={validationSchema}>
+    <>
       <Row>
         <Label title="Placeholder">
           <Field name="placeholder" type="text" component={Input} />
@@ -52,7 +53,7 @@ export const Configuration = function InputModuleConfiguration() {
           <Field name="validationMessage" type="text" component={Input} />
         </Label>
       </Row>
-    </Form>
+    </>
   )
 }
 
