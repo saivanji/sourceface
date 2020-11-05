@@ -29,7 +29,7 @@ export const Root = function TableModule({ config, scope: { limit, offset } }) {
     config.currentPage
   )
 
-  if (!config.items) {
+  if (!config.items?.length) {
     return <div>No items</div>
   }
 
