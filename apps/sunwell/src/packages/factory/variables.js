@@ -1,12 +1,10 @@
 import { keys } from "ramda"
 import { useEditor } from "./editor"
 import { useScope } from "./scope"
-import { useConfiguration } from "./configuration"
 
-export const useVariables = () => {
+export const useVariables = (moduleId) => {
   const { modulesScope } = useScope()
   const { modules } = useEditor()
-  const { module } = useConfiguration()
 
   const define = (id) => {
     const [a, b, c] = id.split("/")
@@ -51,7 +49,7 @@ export const useVariables = () => {
 
   const evaluate = (definition) => {
     if (definition.type === "local") {
-      return modulesScope[module.id][definition.name]
+      return modulesScope[moduleId][definition.name]
     }
 
     if (definition.type === "external") {
@@ -60,7 +58,7 @@ export const useVariables = () => {
   }
 
   const variables = createModulesVariables(
-    module.id,
+    moduleId,
     modules,
     modulesScope,
     render

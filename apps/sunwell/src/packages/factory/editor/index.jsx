@@ -15,6 +15,7 @@ export function Editor({ children, page: cached }) {
 
   const [state, dispatch] = useReducer(reducer, initialState)
   const actions = useActions(state, initialState, dispatch)
+  const selectors = createSelectors(state)
 
   const page = !state.isEditing
     ? cached
@@ -29,6 +30,7 @@ export function Editor({ children, page: cached }) {
   return (
     <context.Provider
       value={{
+        selectors,
         isEditing: state.isEditing,
         layout: page.layout,
         modules: page.modules,
@@ -40,6 +42,10 @@ export function Editor({ children, page: cached }) {
     </context.Provider>
   )
 }
+
+const createSelectors = (state) => ({
+  actions: (ids) => ids.map((actionId) => state.entities.actions[actionId]),
+})
 
 export const useEditor = () => {
   return useContext(context)

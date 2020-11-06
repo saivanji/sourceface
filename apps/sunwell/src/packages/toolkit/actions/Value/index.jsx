@@ -1,6 +1,6 @@
 import React from "react"
 import { Autocomplete, Toggle } from "@sourceface/components"
-import { useVariables } from "packages/factory"
+import { useVariables, useConfiguration } from "packages/factory"
 import Snippet from "../Snippet"
 import Placeholder from "../Placeholder"
 
@@ -14,7 +14,8 @@ export default function Value({
   literalAllowed = true,
   creationTitle = "Add value",
 }) {
-  const { render } = useVariables()
+  const { module } = useConfiguration()
+  const { render } = useVariables(module.id)
 
   const remove = () => onChange(null)
 
@@ -55,7 +56,8 @@ Value.Autocomplete = function ValueAutocomplete({
   value,
   onChange,
 }) {
-  const { variables, identify, define } = useVariables()
+  const { module } = useConfiguration()
+  const { variables, identify, define } = useVariables(module.id)
   const map = (variable) => ({
     value: identify(variable.definition),
     title: variable.view,

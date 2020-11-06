@@ -20,14 +20,18 @@ import styles from "./index.scss"
 // TODO: implement actions. on clicking button - execute query. or open another page
 
 export const Root = function TableModule({ config, scope: { limit, offset } }) {
+  useValue(config.data)
+
+  return "TODO"
+
   const changePage = useTransition("page")
 
   // TODO: page is not changing, the change is reflected only after edit mode is toggled.
-  const [[rows, count, page], loading, pristine] = useValue(
-    config.items,
-    config.count,
-    config.currentPage
-  )
+  // const [[rows, count, page], loading, pristine] = useValue(
+  //   config.items,
+  //   config.count,
+  //   config.currentPage
+  // )
 
   if (!config.items?.length) {
     return <div>No items</div>

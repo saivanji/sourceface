@@ -68,6 +68,29 @@ export function Cut({
   )
 }
 
-export const execute = (config, { queries, modules }) => {}
+// TODO: have 2 functions:
+// 1. Transforms action config to function arguments
+// 2. Executes action, for that case it's equal to packages/query "execute"
+
+export const serialize = (config, evaluate) => {
+  const { queryId } = config
+
+  const fields = config.fields?.reduce(
+    (acc, { key, definition }) => ({ ...acc, [key]: evaluate(definition) }),
+    {}
+  )
+  const groups = config.groups?.reduce(
+    (acc, definition) => ({ ...acc, [definition.name]: evaluate(definition) }),
+    {}
+  )
+
+  return [queryId, { ...fields, ...groups }]
+}
+
+export const execute = (config, { queries }) => (queryId, args) => {
+  // const staleIds = queries.find((x) => x.id === queryId).stale.map((x) => x.id)
+
+  return query.execute(queryId, args, [], () => {})
+}
 
 export const add = (config) => {}
