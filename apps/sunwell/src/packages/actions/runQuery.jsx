@@ -1,6 +1,8 @@
 import React from "react"
 import { Static, Arguments } from "packages/toolkit"
 
+// TODO: rename to "operation"
+
 // TODO: when adding a new action, user will choose from multiple sub categories. For some modules will be the only one option(query, redirect),
 // for others - many(module - for every module, from specific module)
 //
