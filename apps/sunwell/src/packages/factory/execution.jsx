@@ -57,7 +57,7 @@ const execute = async ([[args, fn], ...tail]) => {
   // arguments - get result from cache. Handle stale data here. That change will make obsolete query cache and handling
   // stale results there. That will help to return cache data on a very first render.
   //
-  // Have cache limit.
+  // Have cache limit or ttl for example 3 mins.
   const out = await fn(args)
 
   if (!tail.length) {
