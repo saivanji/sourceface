@@ -1,5 +1,6 @@
 import React from "react"
 import { Static, Arguments } from "packages/toolkit"
+import * as query from "packages/query"
 
 // TODO: rename to "operation"
 
@@ -87,7 +88,7 @@ export const serialize = (config, evaluate) => {
   return [queryId, { ...fields, ...groups }]
 }
 
-export const execute = (config, { queries }) => (queryId, args) => {
+export const execute = ([queryId, args], config, { queries }) => {
   // const staleIds = queries.find((x) => x.id === queryId).stale.map((x) => x.id)
 
   return query.execute(queryId, args, [], () => {})

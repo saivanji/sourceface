@@ -113,7 +113,7 @@ class Cache {
 let cache = new Cache()
 
 const readCommand = `
-  query($commandId: String!, $args: JSONObject) {
+  query($commandId: Int!, $args: JSONObject) {
     readCommand(commandId: $commandId, args: $args)
   }
 `

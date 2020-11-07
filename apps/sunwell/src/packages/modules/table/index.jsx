@@ -20,7 +20,12 @@ import styles from "./index.scss"
 // TODO: implement actions. on clicking button - execute query. or open another page
 
 export const Root = function TableModule({ config, scope: { limit, offset } }) {
-  useValue(config.data)
+  const [[rows1, rows2], loading, pristine] = useValue([
+    config.data,
+    config.data,
+  ])
+
+  console.log(rows1, rows2, loading, pristine)
 
   return "TODO"
 
@@ -180,6 +185,7 @@ export const initialState = {
 
 export const defaultConfig = {
   pagination: true,
+  limit: 10,
   // currentPage: "~page",
 }
 

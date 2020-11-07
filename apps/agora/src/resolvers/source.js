@@ -16,6 +16,7 @@ const executeCommand = async (
 
 const stale = (parent, args, ctx) => ctx.loaders.staleByCommand.load(parent.id)
 
+// TODO: have "executeOperation" as both - read and write
 export default {
   Query: {
     commands,
