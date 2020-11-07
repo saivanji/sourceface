@@ -58,6 +58,8 @@ const execute = async ([[args, fn], ...tail]) => {
   // stale results there. That will help to return cache data on a very first render.
   //
   // Have cache limit or ttl for example 3 mins.
+  //
+  // Cache need to be enabled manually from action file. It's disabled by default
   const out = await fn(args)
 
   if (!tail.length) {
