@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { assoc, mergeLeft } from "ramda"
+import { mergeLeft } from "ramda"
 import { useEditor } from "./editor"
 import { useModule } from "./module"
 import { useContainer } from "./container"
@@ -9,7 +9,6 @@ export const useFunction = () => {
   return [() => {}]
 }
 
-// TODO: have pipes as input in future
 export const useValue = (input) => {
   const { stock } = useContainer()
   const { selectors } = useEditor()
@@ -26,12 +25,8 @@ export const useValue = (input) => {
     serialize(selectors.actions(actionIds), stock, evaluate)
   )
 
-  // TODO: should distinct between sync and async if loading true/false state updates might be stacked and
-  // it will not cause loading flickering.
   useEffect(() => {
     console.log("eff")
-
-    const out = executeAll(sequences)
 
     let canceled = false
     const start = () => !canceled && setResult(mergeLeft({ loading: true }))
@@ -39,13 +34,9 @@ export const useValue = (input) => {
       !canceled &&
       setResult(mergeLeft({ data, loading: false, pristine: false }))
 
-    if (!isAsync(out)) {
-      populate(out)
-    } else {
-      // TODO: handle errors
-      start()
-      out.then(populate)
-    }
+    // TODO: handle errors
+    start()
+    Promise.all(sequences.map(execute)).then(populate)
 
     return () => {
       canceled = true
@@ -61,30 +52,17 @@ const serialize = (actions, stock, evaluate) =>
     return [serialize(config, evaluate), (args) => execute(args, config, {})]
   })
 
-const execute = ([[args, fn], ...tail]) => {
-  const out = fn(args)
+const execute = async ([[args, fn], ...tail]) => {
+  // TODO: have memoization on the execution level. Should be defined here. If action was executed with existing
+  // arguments - get result from cache. Handle stale data here. That change will make obsolete query cache and handling
+  // stale results there. That will help to return cache data on a very first render.
+  //
+  // Have cache limit.
+  const out = await fn(args)
 
   if (!tail.length) {
     return out
   }
 
-  return isAsync(out) ? out.then(() => execute(tail)) : execute(tail)
+  return execute(tail)
 }
-
-const executeAll = (items) => {
-  let async = false
-
-  const out = items.map((x) => {
-    const out = execute(x)
-
-    if (isAsync(out)) {
-      async = true
-    }
-
-    return out
-  })
-
-  return !async ? out : Promise.all(out)
-}
-
-const isAsync = (x) => x instanceof Promise
