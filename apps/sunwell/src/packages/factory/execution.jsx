@@ -39,7 +39,7 @@ export const useValue = (...input) => {
       )
 
     start()
-    Promise.all(sequences.map(execute)).then(populate).catch(failure)
+    Promise.all(sequences.map(applyMany)).then(populate).catch(failure)
 
     return () => {
       canceled = true
@@ -52,10 +52,10 @@ export const useValue = (...input) => {
 const serialize = (actions, stock, evaluate) =>
   actions.map(({ config, type }) => {
     const { serialize, execute } = stock.actions.dict[type]
-    return [serialize(config, evaluate), (args) => execute(args, config, {})]
+    return [execute(config, {}), serialize(config, evaluate)]
   })
 
-const execute = async ([[args, fn], ...tail]) => {
+const applyMany = async ([[fn, args], ...tail]) => {
   // TODO: have memoization on the execution level. Should be defined here. If action was executed with existing
   // arguments - get result from cache. Handle stale data here. That change will make obsolete query cache and handling
   // stale results there. That will help to return cache data on a very first render.
@@ -63,11 +63,62 @@ const execute = async ([[args, fn], ...tail]) => {
   // Have cache limit or ttl for example 3 mins.
   //
   // Cache need to be enabled manually from action file. It's disabled by default
-  const out = await fn(args)
+  const out = await fn(...args)
 
   if (!tail.length) {
     return out
   }
 
-  return execute(tail)
+  return applyMany(tail)
 }
+
+class Cache {
+  constructor() {
+    this.store = {}
+  }
+
+  async apply(id, args, fn, ttl) {
+    const key = this.stringify(id, args)
+    const cached = this.get(key)
+
+    if (cached) {
+      return cached
+    }
+
+    const data = await fn(...args)
+    this.set(key, data, ttl)
+    return data
+  }
+
+  set(key, data, ttl = 3 * 60 * 1000) {
+    this.clearTimeout(key)
+    const timeout = setTimeout(() => this.purge(key), ttl)
+
+    this.store[key] = {
+      data,
+      timeout,
+    }
+  }
+
+  get(key) {
+    return this.store[key]?.data
+  }
+
+  purge(key) {
+    delete this.store[key]
+  }
+
+  clearTimeout(key) {
+    const timeout = this.store[key]?.timeout
+
+    if (timeout) {
+      clearTimeout(timeout)
+    }
+  }
+
+  stringify(id, args) {
+    return JSON.stringify([id, args])
+  }
+}
+
+let cache = new Cache()

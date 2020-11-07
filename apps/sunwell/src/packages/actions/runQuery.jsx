@@ -88,7 +88,7 @@ export const serialize = (config, evaluate) => {
   return [queryId, { ...fields, ...groups }]
 }
 
-export const execute = ([queryId, args], config, { queries }) => {
+export const execute = (config, { queries }) => (queryId, args) => {
   // const staleIds = queries.find((x) => x.id === queryId).stale.map((x) => x.id)
 
   return query.execute(queryId, args, [], () => {})
