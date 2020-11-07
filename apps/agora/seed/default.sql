@@ -297,6 +297,8 @@ ALTER TABLE ONLY public.sources ALTER COLUMN id SET DEFAULT nextval('public.sour
 --
 
 COPY public.actions (id, created_at, module_id, name, type, config) FROM stdin;
+17ebb990-8d6f-44c7-b6b1-cf75a52be7db	2020-11-02 20:10:23.069048	1a3c0c29-a473-473d-b744-6e609154a14a	\N	runQuery	{"queryId":9}
+8d8557a2-3bd7-41d6-bace-e89a61be093f	2020-11-02 19:54:30.655329	1a3c0c29-a473-473d-b744-6e609154a14a	\N	runQuery	{"queryId":10,"fields":[{"key":"limit","definition":{"type":"local","name":"limit"}},{"key":"offset","definition":{"type":"local","name":"offset"}}]}
 \.
 
 
@@ -308,6 +310,7 @@ COPY public.commands (id, created_at, name, source_id, config) FROM stdin;
 7	2020-10-25 15:41:01.204099	listOrders	1	{"value": "SELECT * FROM orders WHERE customer_name LIKE '{{search}}%' ORDER BY created_at DESC LIMIT {{limit}} OFFSET {{offset}}", "result": "many"}
 8	2020-10-25 15:41:01.204099	createOrder	1	{"value": "INSERT INTO orders (customer_name, address, delivery_type, status, payment_type, amount, currency) VALUES ('{{customer_name}}', '{{address}}', '{{delivery_type}}', '{{status}}', '{{payment_type}}', {{amount}}, '{{currency}}') RETURNING *", "result": "single"}
 9	2020-10-25 15:41:01.204099	countOrders	1	{"value":"SELECT count(id)::integer FROM orders","result":"single","compute":"result => result.count"}
+10	2020-11-07 13:05:01.444378	getOrders	1	{"value": "SELECT * FROM orders ORDER BY created_at DESC LIMIT {{limit}} OFFSET {{offset}}", "result": "many"}
 \.
 
 
@@ -315,7 +318,7 @@ COPY public.commands (id, created_at, name, source_id, config) FROM stdin;
 -- Name: commands_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.commands_id_seq', 9, true);
+SELECT pg_catalog.setval('public.commands_id_seq', 10, true);
 
 
 --
@@ -323,7 +326,7 @@ SELECT pg_catalog.setval('public.commands_id_seq', 9, true);
 --
 
 COPY public.layouts (id, created_at, positions) FROM stdin;
-1a3c0c29-a473-473d-b744-6e609154a14b	2020-11-02 18:15:37.692755	{"1a3c0c29-a473-473d-b744-6e609154a14a": {"x": 0, "y": 0, "w": 10, "h": 10}}
+1a3c0c29-a473-473d-b744-6e609154a14b	2020-11-02 18:15:37.692755	{"1a3c0c29-a473-473d-b744-6e609154a14a":{"w":10,"h":12,"x":0,"y":1}}
 \.
 
 
@@ -341,7 +344,7 @@ COPY public.migrations (data) FROM stdin;
 --
 
 COPY public.modules (id, created_at, type, config, name, layout_id) FROM stdin;
-1a3c0c29-a473-473d-b744-6e609154a14a	2020-11-02 18:57:03.7921	table	{}	table_1	1a3c0c29-a473-473d-b744-6e609154a14b
+1a3c0c29-a473-473d-b744-6e609154a14a	2020-11-02 18:57:03.7921	table	{"data":["8d8557a2-3bd7-41d6-bace-e89a61be093f"],"count":["17ebb990-8d6f-44c7-b6b1-cf75a52be7db"],"limit":10,"pagination":true}	table_1	1a3c0c29-a473-473d-b744-6e609154a14b
 \.
 
 

@@ -41,6 +41,11 @@ export const execute = (commandId, args, staleIds, onStale) => {
       return res.json()
     })
     .then((json) => {
+      if (json.errors) {
+        // TODO: create error class
+        throw json.errors
+      }
+
       const data = json.data.readCommand
 
       cache.set(commandId, args, data, onStale)

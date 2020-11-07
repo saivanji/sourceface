@@ -19,30 +19,20 @@ import styles from "./index.scss"
 
 // TODO: implement actions. on clicking button - execute query. or open another page
 
-export const Root = function TableModule({ config, scope: { limit, offset } }) {
-  const [[rows1, rows2], loading, pristine] = useValue([
+export const Root = function TableModule({
+  config,
+  scope: { limit, offset, page },
+}) {
+  const [[rows, count], loading, pristine, error] = useValue(
     config.data,
-    config.data,
-  ])
-
-  console.log(rows1, rows2, loading, pristine)
-
-  return "TODO"
+    config.count
+  )
 
   const changePage = useTransition("page")
 
-  // TODO: page is not changing, the change is reflected only after edit mode is toggled.
-  // const [[rows, count, page], loading, pristine] = useValue(
-  //   config.items,
-  //   config.count,
-  //   config.currentPage
-  // )
-
-  if (!config.items?.length) {
-    return <div>No items</div>
-  }
-
-  return pristine ? (
+  return error ? (
+    "Failed to load data"
+  ) : pristine ? (
     "Loading..."
   ) : (
     <Await isAwaiting={loading} className={styles.root}>
@@ -115,11 +105,6 @@ export const Configuration = function TableModuleConfiguration({ config }) {
             <Field name="data" component={Pipe} />
           </Label>
         </Row>
-        <Row>
-          <Label title="Data">
-            <Field name="items" component={Pipe} />
-          </Label>
-        </Row>
       </Section>
       <Section title="Pagination">
         <Row>
@@ -148,6 +133,16 @@ export const Configuration = function TableModuleConfiguration({ config }) {
     </>
   )
 }
+
+// TODO: implement support of computing every config element but ideally that should be invisible
+// for the module developers.
+//
+// Any field from a config(even boolean value like "pagination") inside of a module component should be
+// used through "useValue" hook. If config value is literal then it will simple return it, if it's
+// an action - execute it.
+//
+// In case of "createLocalVariables" function, config elements might be functions itself with similar logic.
+// For literals - will be returned their values, for actions - executed
 
 // TODO: remove parsing to int and have limit as integer in config instead
 export const createLocalVariables = (config, state, updateState) => ({

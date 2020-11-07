@@ -9,7 +9,7 @@ export const useFunction = () => {
   return [() => {}]
 }
 
-export const useValue = (input) => {
+export const useValue = (...input) => {
   const { stock } = useContainer()
   const { selectors } = useEditor()
   const { module } = useModule()
@@ -17,6 +17,7 @@ export const useValue = (input) => {
 
   const [result, setResult] = useState({
     data: [],
+    error: null,
     loading: false,
     pristine: true,
   })
@@ -30,20 +31,22 @@ export const useValue = (input) => {
 
     let canceled = false
     const start = () => !canceled && setResult(mergeLeft({ loading: true }))
+    const failure = (error) => !canceled && setResult(mergeLeft({ error }))
     const populate = (data) =>
       !canceled &&
-      setResult(mergeLeft({ data, loading: false, pristine: false }))
+      setResult(
+        mergeLeft({ data, loading: false, pristine: false, error: null })
+      )
 
-    // TODO: handle errors
     start()
-    Promise.all(sequences.map(execute)).then(populate)
+    Promise.all(sequences.map(execute)).then(populate).catch(failure)
 
     return () => {
       canceled = true
     }
   }, [JSON.stringify(sequences)])
 
-  return [result.data, result.loading, result.pristine]
+  return [result.data, result.loading, result.pristine, result.error]
 }
 
 const serialize = (actions, stock, evaluate) =>
