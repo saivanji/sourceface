@@ -2,6 +2,8 @@ import React, { useState } from "react"
 import cx from "classnames"
 import styles from "./index.scss"
 
+// TODO: implement multiselect so it can be used for choosing multiple modules in
+// some actions(for example in the form submission case)
 export default function Autocomplete({
   items,
   placeholder,
