@@ -76,6 +76,7 @@ const prepare = (actions, evaluate, stock, fn) =>
     return fn(execute, args)
   })
 
+// TODO: get data from on of the previous named modules instead of previous acc
 const reduce = async (fn, [head, ...tail], acc) => {
   const out = await fn(acc, head)
 
