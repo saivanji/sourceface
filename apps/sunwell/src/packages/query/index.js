@@ -60,13 +60,15 @@ export const execute = (commandId, args, staleIds, onStale) => {
 
 export const readCache = (commandId, args) => cache.get(commandId, args)
 
-// TODO: implement TTL of cached data
+const TTL = 3 * 60 * 1000
+
 /**
  * Simplest form of caching. Storing queries results by it's arguments.
  */
 class Cache {
   constructor() {
     this.store = {}
+    this.timeouts = {}
     this.listeners = {}
   }
 
@@ -76,16 +78,24 @@ class Cache {
   }
 
   set(commandId, args, data, onStale) {
-    const commands = this.store[commandId] || {}
+    const key = this.stringify(args)
+    const timeoutKey = this.stringify([commandId, args])
+
+    clearTimeout(this.timeouts[timeoutKey])
 
     this.store[commandId] = {
-      ...commands,
-      [this.stringify(args)]: data,
+      ...this.store[commandId],
+      [key]: data,
     }
 
     if (onStale) {
       this.addListener(commandId, onStale)
     }
+
+    this.timeouts[timeoutKey] = setTimeout(() => {
+      delete this.store[commandId]
+      this.removeListener(commandId, onStale)
+    }, TTL)
   }
 
   invalidate(commandId) {
@@ -101,18 +111,24 @@ class Cache {
     }
   }
 
-  stringify(args) {
-    return JSON.stringify(args) || ""
-  }
-
   addListener(commandId, onStale) {
     const prevListeners = this.listeners[commandId] || []
 
     this.listeners[commandId] = [...prevListeners, onStale]
   }
 
+  removeListener(commandId, onStale) {
+    const prevListeners = this.listeners[commandId] || []
+
+    this.listeners[commandId] = prevListeners.filter((x) => x !== onStale)
+  }
+
   clearListeners(commandId) {
     delete this.listeners[commandId]
+  }
+
+  stringify(args) {
+    return JSON.stringify(args) || ""
   }
 }
 

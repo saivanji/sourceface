@@ -88,18 +88,16 @@ export const serialize = (config, evaluate) => {
   return [queryId, { ...fields, ...groups }]
 }
 
-export const execute = (queryId, args) => {
-  // TODO: get "queries" from args
-  // const staleIds = queries.find((x) => x.id === queryId).stale.map((x) => x.id)
+export const execute = ({ queries }, { onReload }) => (queryId, args) => {
+  const staleIds = queries.find((x) => x.id === queryId).stale.map((x) => x.id)
 
-  return query.execute(queryId, args, [], () => {})
+  return query.execute(queryId, args, staleIds, onReload)
 }
 
-export const readCache = query.readCache
+export const readCache = () => query.readCache
 
 export const add = (config) => {}
 
 export const settings = {
   effect: true,
-  cacheable: true,
 }

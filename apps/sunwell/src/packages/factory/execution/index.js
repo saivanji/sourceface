@@ -10,23 +10,26 @@ export const useFunction = () => {
 }
 
 export const useValue = (...input) => {
-  const { stock } = useContainer()
+  const { stock, queries } = useContainer()
   const { selectors } = useEditor()
   const { module } = useModule()
   const { evaluate } = useVariables(module.id)
+  const deps = { queries }
 
   const [result, setResult] = useState({
     data: [],
     error: null,
     loading: false,
     pristine: true,
+    stale: false,
   })
 
   const sequences = input.map((actionIds) =>
-    serializeSequence(selectors.actions(actionIds), stock, evaluate)
+    serializeSequence(selectors.actions(actionIds), evaluate, stock, deps)
   )
 
-  const initial = result.pristine && init(input, stock, evaluate, selectors)
+  const initial =
+    result.pristine && init(input, evaluate, stock, deps, selectors)
 
   useEffect(() => {
     let canceled = false
@@ -37,6 +40,7 @@ export const useValue = (...input) => {
       setResult(
         mergeLeft({ data, loading: false, pristine: false, error: null })
       )
+    const reload = () => !canceled && setResult(mergeLeft({ stale: true }))
 
     if (initial) {
       populate(initial)
@@ -45,12 +49,14 @@ export const useValue = (...input) => {
     }
 
     start()
-    Promise.all(sequences.map(applyMany)).then(populate).catch(failure)
+    Promise.all(sequences.map(executeSequence(reload)))
+      .then(populate)
+      .catch(failure)
 
     return () => {
       canceled = true
     }
-  }, [JSON.stringify(sequences)])
+  }, [JSON.stringify(sequences), result.stale])
 
   if (initial) {
     return [initial, false, false, null]
@@ -59,25 +65,27 @@ export const useValue = (...input) => {
   return [result.data, result.loading, result.pristine, result.error]
 }
 
-const serializeSequence = (actions, stock, evaluate) =>
+const serializeSequence = (actions, evaluate, stock, deps) =>
   actions.map(({ config, type }) => {
     const { serialize, execute } = stock.actions.dict[type]
     const args = serialize(config, evaluate)
+    const fn = (args, onReload) => execute(deps, { onReload })(...args)
 
-    return [execute, args]
+    return [fn, args]
   })
 
-const applyMany = async ([[fn, args], ...tail]) => {
-  const out = await fn(...args)
+const executeSequence = (onReload) =>
+  async function call([[fn, args], ...tail]) {
+    const out = await fn(args, onReload)
 
-  if (!tail.length) {
-    return out
+    if (!tail.length) {
+      return out
+    }
+
+    return call(tail)
   }
 
-  return applyMany(tail)
-}
-
-const init = (input, stock, evaluate, selectors) => {
+const init = (input, evaluate, stock, deps, selectors) => {
   let result = []
 
   for (let actionIds of input) {
@@ -93,7 +101,7 @@ const init = (input, stock, evaluate, selectors) => {
         ]
 
         const args = serialize(config, evaluate)
-        const cached = readCache(...args)
+        const cached = readCache(deps)(...args)
         const cacheable = !!readCache
 
         if (cacheable && !cached) {
@@ -101,7 +109,9 @@ const init = (input, stock, evaluate, selectors) => {
           return
         }
 
-        return !settings.effect && !cacheable ? execute(...args) : cached
+        return !settings?.effect && !cacheable
+          ? execute(deps, {})(...args)
+          : cached
       }, null)
 
     result?.push(output)
