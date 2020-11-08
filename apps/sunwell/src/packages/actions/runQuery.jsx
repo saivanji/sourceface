@@ -95,3 +95,8 @@ export const execute = (config, { queries }) => (queryId, args) => {
 }
 
 export const add = (config) => {}
+
+export const settings = {
+  effect: true,
+  cacheable: true,
+}

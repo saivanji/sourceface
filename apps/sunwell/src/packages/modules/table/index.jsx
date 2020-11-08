@@ -31,7 +31,7 @@ export const Root = function TableModule({
   const changePage = useTransition("page")
 
   return error ? (
-    "Failed to load data"
+    `Failed to load data:\n${JSON.stringify(error)}`
   ) : pristine ? (
     "Loading..."
   ) : (
