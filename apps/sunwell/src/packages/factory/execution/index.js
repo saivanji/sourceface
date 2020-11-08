@@ -4,9 +4,6 @@ import { useEditor } from "../editor"
 import { useModule } from "../module"
 import { useContainer } from "../container"
 import { useVariables } from "../variables"
-import Cache from "./cache"
-
-let cache = new Cache()
 
 export const useFunction = () => {
   return [() => {}]
@@ -63,16 +60,11 @@ export const useValue = (...input) => {
 }
 
 const serializeSequence = (actions, stock, evaluate) =>
-  actions.map(({ id, config, type }) => {
-    const { serialize, execute, settings = {} } = stock.actions.dict[type]
+  actions.map(({ config, type }) => {
+    const { serialize, execute } = stock.actions.dict[type]
     const args = serialize(config, evaluate)
-    const initialFn = execute(config, {})
 
-    const fn = settings.cacheable
-      ? (...args) => cache.apply(id, args, initialFn)
-      : initialFn
-
-    return [fn, args]
+    return [execute, args]
   })
 
 const applyMany = async ([[fn, args], ...tail]) => {
@@ -91,24 +83,25 @@ const init = (input, stock, evaluate, selectors) => {
   for (let actionIds of input) {
     const output = selectors
       .actions(actionIds)
-      .reduce((acc, { id, config, type }) => {
+      .reduce((acc, { config, type }) => {
         if (!result) {
           return
         }
 
-        const { serialize, execute, settings } = stock.actions.dict[type]
+        const { serialize, execute, readCache, settings } = stock.actions.dict[
+          type
+        ]
 
         const args = serialize(config, evaluate)
-        const cached = cache.get(cache.stringify(id, args))
+        const cached = readCache(...args)
+        const cacheable = !!readCache
 
-        if (settings.cacheable && !cached) {
+        if (cacheable && !cached) {
           result = null
           return
         }
 
-        return !settings.effect && !settings.cacheable
-          ? execute(config, {})
-          : cached
+        return !settings.effect && !cacheable ? execute(...args) : cached
       }, null)
 
     result?.push(output)
