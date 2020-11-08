@@ -25,7 +25,10 @@ export const useValue = (...input) => {
   })
 
   const sequences = input.map((actionIds) =>
-    serializeSequence(selectors.actions(actionIds), evaluate, stock, deps)
+    prepare(selectors.actions(actionIds), evaluate, stock, (execute, args) => [
+      (onReload) => execute(deps, { onReload })(...args),
+      args,
+    ])
   )
 
   const initial =
@@ -49,7 +52,7 @@ export const useValue = (...input) => {
     }
 
     start()
-    Promise.all(sequences.map(executeSequence(reload)))
+    Promise.all(sequences.map((seq) => reduce((prev, [fn]) => fn(reload), seq)))
       .then(populate)
       .catch(failure)
 
@@ -65,25 +68,23 @@ export const useValue = (...input) => {
   return [result.data, result.loading, result.pristine, result.error]
 }
 
-const serializeSequence = (actions, evaluate, stock, deps) =>
+const prepare = (actions, evaluate, stock, fn) =>
   actions.map(({ config, type }) => {
     const { serialize, execute } = stock.actions.dict[type]
     const args = serialize(config, evaluate)
-    const fn = (args, onReload) => execute(deps, { onReload })(...args)
 
-    return [fn, args]
+    return fn(execute, args)
   })
 
-const executeSequence = (onReload) =>
-  async function call([[fn, args], ...tail]) {
-    const out = await fn(args, onReload)
+const reduce = async (fn, [head, ...tail], acc) => {
+  const out = await fn(acc, head)
 
-    if (!tail.length) {
-      return out
-    }
-
-    return call(tail)
+  if (!tail.length) {
+    return out
   }
+
+  return reduce(fn, tail, out)
+}
 
 const init = (input, evaluate, stock, deps, selectors) => {
   let result = []
