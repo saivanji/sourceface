@@ -10,19 +10,3 @@
   overflow: auto;
   padding: $value-1;
 }
-
-.editing {
-  border-radius: $rounded-base;
-  transition: ease-out 0.1s;
-  &:hover {
-    box-shadow: 0 0 0 2px $color-blue-300;
-    background-color: $color-blue-100;
-    &:not(.selected) {
-      cursor: pointer;
-    }
-  }
-  &.selected {
-    box-shadow: 0 0 0 2px $color-blue-500;
-    background-color: $color-blue-200;
-  }
-}

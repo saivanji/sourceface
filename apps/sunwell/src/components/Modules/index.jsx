@@ -1,19 +1,18 @@
-import React, { useRef, forwardRef } from "react"
-import cx from "classnames"
+import React, { forwardRef } from "react"
+import { identity } from "ramda"
 import { Module, useEditor } from "packages/factory"
 import Grill from "packages/grid"
-import { useClickOutside } from "hooks/index"
 import { populateLayout } from "./utils"
 import { useChangeGrid } from "./callbacks"
 import styles from "./index.scss"
 
-export default function Modules() {
+export default function Modules({ renderItem = identity }) {
   const { layout, modules } = useEditor()
 
   return !layout ? (
     "Loading..."
   ) : (
-    <Frame layout={populateLayout(layout, modules)} />
+    <Frame renderItem={renderItem} layout={populateLayout(layout, modules)} />
   )
 }
 
@@ -21,8 +20,8 @@ export default function Modules() {
 // since that component is used inside another modules and there is no another way to get this data
 //
 // Use context only in that file. Use provider in Modules and consume data in Frame?
-function Frame({ layout }) {
-  const { isEditing, selected } = useEditor()
+function Frame({ layout, renderItem }) {
+  const { isEditing } = useEditor()
   const changeGrid = useChangeGrid(layout)
 
   return (
@@ -39,46 +38,15 @@ function Frame({ layout }) {
         SortPlaceholder: Placeholder,
         ResizePlaceholder: Placeholder,
       }}
-      renderItem={(module) => {
-        const isSelected = isEditing && selected?.id === module.id
-        const element = <Module module={module} frame={Frame} />
-
-        return !isEditing ? (
-          <div className={styles.module}>{element}</div>
-        ) : (
-          <Edition id={module.id} isSelected={isSelected}>
-            {element}
-          </Edition>
+      renderItem={(module) =>
+        renderItem(
+          <div className={styles.module}>
+            <Module module={module} frame={Frame} />
+          </div>,
+          module.id
         )
-      }}
+      }
     />
-  )
-}
-
-const Edition = ({ children, id, isSelected }) => {
-  const { select } = useEditor()
-  const ref = useRef()
-
-  useClickOutside(ref, () => isSelected && select(null))
-
-  return (
-    <div
-      ref={ref}
-      onClick={(e) => {
-        /**
-         * Propagating click events in order to be able to click on nested module
-         */
-        e.stopPropagation()
-        select(id)
-      }}
-      className={cx(
-        styles.module,
-        styles.editing,
-        isSelected && styles.selected
-      )}
-    >
-      {children}
-    </div>
   )
 }
 

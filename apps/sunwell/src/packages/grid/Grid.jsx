@@ -11,34 +11,39 @@ import { useResize, useResizeArea } from "./resizable"
 // react-deep-grid
 // react-nested-grid
 // @sourceface/grid
-export default function GridRoot(props) {
+export default forwardRef(function GridRoot(props, ref) {
   const isWrapped = useWrapped()
-  const grid = <Grid {...props} />
+  const grid = <Grid ref={ref} {...props} />
 
   return !isWrapped ? <Provider>{grid}</Provider> : grid
-}
+})
 
 // TODO: Introduce a delay for sorting. That will solve a problem of putting
 // new item on a grid when grid is full. Or alternatively use debouncing for
 // example 300ms. We collide items, if in 300ms no move happened - sort, otherwise
 // not collide and do clearTimeout
-function Grid({
-  className,
-  style,
-  cols = 10,
-  rows = 10,
-  rowHeight = 20,
-  isStatic,
-  layout: initialLayout,
-  renderItem,
-  onChange,
-  components = {},
-}) {
+const Grid = forwardRef(function Grid(
+  {
+    className,
+    style,
+    cols = 10,
+    rows = 10,
+    rowHeight = 20,
+    isStatic,
+    layout: initialLayout,
+    renderItem,
+    onChange,
+    components = {},
+  },
+  ref
+) {
   const [containerWidth, setContainerWidth] = useState(null)
   const [layout, updateLayout, resetLayout] = useLayout(initialLayout)
   const info = utils.toInfo(cols, rows, containerWidth, rowHeight)
 
-  const containerRef = useRef()
+  const rootRef = useRef()
+  const containerRef = ref || rootRef
+
   const [sortArea, isSortOver, overItem, overItemType] = useSortArea(
     containerRef,
     initialLayout,
@@ -69,7 +74,7 @@ function Grid({
       className={className}
     >
       {containerWidth && (isSortOver || isResizeOver) && <Lines info={info} />}
-      {Object.keys(layout).map(id => {
+      {Object.keys(layout).map((id) => {
         if (overItemType === itemTypes.SORTABLE_OUTER && overItem.id === id) {
           const style = utils.toBoxCSS(utils.toBounds(layout[id], info))
           return <OuterItem key={id} style={style} components={components} />
@@ -104,7 +109,7 @@ function Grid({
       })}
     </Wrap>
   )
-}
+})
 
 // TODO: when unmounting a component which is using drag as reference - extra node
 // is rendered in the end of a document. See that issue as a reference:
