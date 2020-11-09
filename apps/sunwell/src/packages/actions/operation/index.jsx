@@ -33,6 +33,11 @@ import request, { cache } from "./request"
 
 // TODO: Implement "Selector" action so we can get object fields values. Might be useful for query results when we get an object like { count: 5 } and we need 5 as a result
 
+// TODO: UI improvements
+// 1. If cut has no data populated - do not display bottom bar. Display only "down" icon.
+// 2. If action has no name - hide input. Display trigger in the right side remove icon.
+// 3. Keep field name inside of action bar. Rethink empty state. Fit action creation inside of action bar.
+
 export function Root({ queries, config: { queryId }, onConfigChange }) {
   const query = queryId && queries.find((x) => x.id === queryId)
   const suggestions = queries.map((q) => ({ title: q.name, value: q.id }))
@@ -70,10 +75,6 @@ export function Cut({
     )
   )
 }
-
-// TODO: have 2 functions:
-// 1. Transforms action config to function arguments
-// 2. Executes action, for that case it's equal to packages/query "execute"
 
 export const serialize = (config, evaluate) => {
   const { queryId } = config
