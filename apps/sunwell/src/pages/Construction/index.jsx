@@ -28,7 +28,9 @@ export default () => {
   })
 
   const page = result.data?.page
-  const effects = createEffects(history, result.data?.commands)
+  const effects = createEffects(history)
+
+  // TODO: implement operations and queries search instead of getting all of them in the initial queries.
 
   return (
     <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>

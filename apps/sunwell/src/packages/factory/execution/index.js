@@ -88,8 +88,8 @@ const useData = (input, identify = false, restore = false) => {
       }
       sequence.push((onReload) => execute(deps, { onReload })(...args))
 
-      const cached = readCache(deps)(...args)
       const cacheable = !!readCache
+      const cached = cacheable && readCache(deps)(...args)
 
       if (cacheable && !cached) {
         initial = null
