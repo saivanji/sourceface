@@ -17,7 +17,7 @@ import styles from "./index.scss"
 export default ({ value = [], onChange }) => {
   const [isOpened, setOpened] = useState(false)
   const { module } = useConfiguration()
-  const { createAction, removeAction, renameAction } = useEditor()
+  const { selectors, createAction, removeAction, renameAction } = useEditor()
 
   const open = () => setOpened(true)
   const toggle = () => setOpened((value) => !value)
@@ -33,12 +33,7 @@ export default ({ value = [], onChange }) => {
     onChange(without([actionId], value))
   }
 
-  /**
-   * Matching actions by config ids and filtering out wrong links.
-   */
-  const actions = value
-    .map((id) => module.actions.find((x) => x.id === id))
-    .filter(Boolean)
+  const actions = selectors.actions(value)
 
   return !actions.length ? (
     <Creation onCreate={create} />

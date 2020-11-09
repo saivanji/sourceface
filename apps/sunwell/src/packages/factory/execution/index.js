@@ -75,7 +75,7 @@ const useData = (input, identify = false, restore = false) => {
   for (let actionIds of input) {
     let sequence = []
     let initialValue
-    const actions = selectors.actions(actionIds)
+    const actions = selectors.actions(actionIds || [])
 
     for (let { config, type } of actions) {
       const { serialize, execute, readCache, settings } = stock.actions.dict[

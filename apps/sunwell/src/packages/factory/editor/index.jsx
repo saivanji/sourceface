@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer } from "react"
+import React, { createContext, useContext, useReducer, useState } from "react"
 import { detailedDiff } from "deep-object-diff"
 import { normalize, denormalize } from "./schema"
 import { useActions } from "./actions"
@@ -44,7 +44,15 @@ export function Editor({ children, page: cached }) {
 }
 
 const createSelectors = (state) => ({
-  actions: (ids) => ids.map((actionId) => state.entities.actions[actionId]),
+  actions: (ids) =>
+    ids.reduce((acc, actionId) => {
+      const action = state.entities.actions[actionId]
+
+      /**
+       * Filtering out not existing actions.
+       */
+      return !action ? acc : [...acc, action]
+    }, []),
 })
 
 export const useEditor = () => {
@@ -57,16 +65,19 @@ const usePersistedReducer = (reducer, initialState) => {
   const raw = localStorage.getItem(key)
   const persisted = raw && JSON.parse(raw)
 
-  const [state, dispatch] = useReducer(reducer, persisted || initialState)
+  const [state, setState] = useState(persisted || initialState)
 
   return [
     state,
     (action) => {
-      const nextState = reducer(state, action)
+      if (action.type !== "reset") {
+        const raw = localStorage.getItem(key)
+        const prevState = raw && JSON.parse(raw)
+        const nextState = reducer(prevState, action)
 
-      localStorage.setItem(key, JSON.stringify(nextState))
-
-      return dispatch(action)
+        localStorage.setItem(key, JSON.stringify(nextState))
+        setState(nextState)
+      }
     },
   ]
 }
