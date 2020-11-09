@@ -37,6 +37,7 @@ import request, { cache } from "./request"
 // 1. If cut has no data populated - do not display bottom bar. Display only "down" icon.
 // 2. If action has no name - hide input. Display trigger in the right side remove icon.
 // 3. Keep field name inside of action bar. Rethink empty state. Fit action creation inside of action bar.
+// 4. Consider not collapsing actions, since it might be not much of them
 
 export function Root({ queries, config: { queryId }, onConfigChange }) {
   const query = queryId && queries.find((x) => x.id === queryId)
