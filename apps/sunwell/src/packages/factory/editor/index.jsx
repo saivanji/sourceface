@@ -13,7 +13,7 @@ const context = createContext({})
 export function Editor({ children, page: cached }) {
   const initialState = normalize(cached)
 
-  const [state, dispatch] = useReducer(reducer, initialState)
+  const [state, dispatch] = usePersistedReducer(reducer, initialState)
   const actions = useActions(state, initialState, dispatch)
   const selectors = createSelectors(state)
 
@@ -49,4 +49,24 @@ const createSelectors = (state) => ({
 
 export const useEditor = () => {
   return useContext(context)
+}
+
+// Temp. Unless diff algorythm will be implemented.
+const usePersistedReducer = (reducer, initialState) => {
+  const key = "editor_state"
+  const raw = localStorage.getItem(key)
+  const persisted = raw && JSON.parse(raw)
+
+  const [state, dispatch] = useReducer(reducer, persisted || initialState)
+
+  return [
+    state,
+    (action) => {
+      const nextState = reducer(state, action)
+
+      localStorage.setItem(key, JSON.stringify(nextState))
+
+      return dispatch(action)
+    },
+  ]
 }

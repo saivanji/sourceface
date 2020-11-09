@@ -11,6 +11,8 @@ export function Root({ config }) {
   )
 }
 
-export const execute = (config, { queries, modules }) => {}
+export const execute = ({ queries }) => () => {
+  console.log("works")
+}
 
 export const add = (config) => {}
