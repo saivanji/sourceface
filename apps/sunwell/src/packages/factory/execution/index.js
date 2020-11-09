@@ -5,17 +5,14 @@ import { useModule } from "../module"
 import { useContainer } from "../container"
 import { useVariables } from "../variables"
 
-export const useFunction = () => {
-  return [() => {}]
+export const useFunction = (...input) => {
+  const [executions] = useData(input)
+
+  // TODO: consider function arguments as input to the action
+  return executions.map((fn) => (args) => fn())
 }
 
 export const useValue = (...input) => {
-  const { stock, queries } = useContainer()
-  const { selectors } = useEditor()
-  const { module } = useModule()
-  const { evaluate } = useVariables(module.id)
-  const deps = { queries }
-
   const [result, setResult] = useState({
     data: [],
     error: null,
@@ -24,15 +21,11 @@ export const useValue = (...input) => {
     stale: false,
   })
 
-  const sequences = input.map((actionIds) =>
-    prepare(selectors.actions(actionIds), evaluate, stock, (execute, args) => [
-      (onReload) => execute(deps, { onReload })(...args),
-      args,
-    ])
+  const [executions, identifier, initial] = useData(
+    input,
+    true,
+    result.pristine
   )
-
-  const initial =
-    result.pristine && init(input, evaluate, stock, deps, selectors)
 
   useEffect(() => {
     let canceled = false
@@ -52,14 +45,14 @@ export const useValue = (...input) => {
     }
 
     start()
-    Promise.all(sequences.map((seq) => reduce((prev, [fn]) => fn(reload), seq)))
+    Promise.all(executions.map((fn) => fn(reload)))
       .then(populate)
       .catch(failure)
 
     return () => {
       canceled = true
     }
-  }, [JSON.stringify(sequences), result.stale])
+  }, [identifier, result.stale])
 
   if (initial) {
     return [initial, false, false, null]
@@ -68,13 +61,53 @@ export const useValue = (...input) => {
   return [result.data, result.loading, result.pristine, result.error]
 }
 
-const prepare = (actions, evaluate, stock, fn) =>
-  actions.map(({ config, type }) => {
-    const { serialize, execute } = stock.actions.dict[type]
-    const args = serialize(config, evaluate)
+const useData = (input, identify = false, restore = false) => {
+  const { stock, queries } = useContainer()
+  const { selectors } = useEditor()
+  const { module } = useModule()
+  const { evaluate } = useVariables(module.id)
+  const deps = { queries }
 
-    return fn(execute, args)
-  })
+  let identifier = ""
+  let executions = []
+  let initial = restore ? [] : null
+
+  for (let actionIds of input) {
+    let sequence = []
+    let initialValue
+    const actions = selectors.actions(actionIds)
+
+    for (let { config, type } of actions) {
+      const { serialize, execute, readCache, settings } = stock.actions.dict[
+        type
+      ]
+      const args = serialize(config, evaluate)
+
+      if (identify) {
+        identifier += JSON.stringify(args)
+      }
+      sequence.push((onReload) => execute(deps, { onReload })(...args))
+
+      const cached = readCache(deps)(...args)
+      const cacheable = !!readCache
+
+      if (cacheable && !cached) {
+        initial = null
+        continue
+      }
+
+      if (initial) {
+        initialValue =
+          !settings?.effect && !cacheable ? execute(deps, {})(...args) : cached
+      }
+    }
+
+    executions.push((onReload) => reduce((_, fn) => fn(onReload), sequence))
+    initial?.push(initialValue)
+  }
+
+  return [executions, identifier, initial]
+}
 
 // TODO: get data from on of the previous named modules instead of previous acc
 const reduce = async (fn, [head, ...tail], acc) => {
@@ -85,39 +118,4 @@ const reduce = async (fn, [head, ...tail], acc) => {
   }
 
   return reduce(fn, tail, out)
-}
-
-const init = (input, evaluate, stock, deps, selectors) => {
-  let result = []
-
-  for (let actionIds of input) {
-    const output = selectors
-      .actions(actionIds)
-      .reduce((acc, { config, type }) => {
-        if (!result) {
-          return
-        }
-
-        const { serialize, execute, readCache, settings } = stock.actions.dict[
-          type
-        ]
-
-        const args = serialize(config, evaluate)
-        const cached = readCache(deps)(...args)
-        const cacheable = !!readCache
-
-        if (cacheable && !cached) {
-          result = null
-          return
-        }
-
-        return !settings?.effect && !cacheable
-          ? execute(deps, {})(...args)
-          : cached
-      }, null)
-
-    result?.push(output)
-  }
-
-  return result
 }
