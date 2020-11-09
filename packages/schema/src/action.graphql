@@ -4,6 +4,8 @@ type Action {
   name: String
   type: ActionType!
   config: JSONObject!
+  pages: [Page!]!
+  commands: [Command!]!
 }
 
 enum ActionType {
