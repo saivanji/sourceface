@@ -1,8 +1,6 @@
 import React from "react"
 import { Static, Arguments } from "packages/toolkit"
-import * as query from "packages/query"
-
-// TODO: rename to "operation"
+import request, { cache } from "./request"
 
 // TODO: when adding a new action, user will choose from multiple sub categories. For some modules will be the only one option(query, redirect),
 // for others - many(module - for every module, from specific module)
@@ -16,6 +14,10 @@ import * as query from "packages/query"
 
 // TODO: will have only one "module" action for now(for calling functions).
 // "call `justify` `for`/`for every` `form_*`"
+// alternative - "for every "
+// - depending on how much modules selected
+//   - singular - "for `input_1` module call `justify`"
+//   - plural - "for every in `3 modules` call `justify`"
 
 // TODO: get module value as variable
 
@@ -91,10 +93,10 @@ export const serialize = (config, evaluate) => {
 export const execute = ({ queries }, { onReload }) => (queryId, args) => {
   const staleIds = queries.find((x) => x.id === queryId).stale.map((x) => x.id)
 
-  return query.execute(queryId, args, staleIds, onReload)
+  return request(queryId, args, staleIds, onReload)
 }
 
-export const readCache = () => query.readCache
+export const readCache = () => cache.get.bind(cache)
 
 export const add = (config) => {}
 

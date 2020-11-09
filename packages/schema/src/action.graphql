@@ -7,7 +7,7 @@ type Action {
 }
 
 enum ActionType {
-  runQuery
+  operation
 }
 
 extend type Mutation {

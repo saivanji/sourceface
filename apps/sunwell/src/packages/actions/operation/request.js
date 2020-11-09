@@ -1,9 +1,8 @@
-// TODO: move to runQuery action?
 // TODO: when we call 2 the same query function at the same time, it will produce 2 corresponding
 // graphq requests. Instead of that, make a request only for a first call, and the second call should
 // subscribe on data changes and be resolved once cache will be populated by a first item.
 
-export const execute = (commandId, args, staleIds, onStale) => {
+export default (commandId, args, staleIds, onStale) => {
   const cached = cache.get(commandId, args)
 
   if (cached) {
@@ -57,8 +56,6 @@ export const execute = (commandId, args, staleIds, onStale) => {
       return data
     })
 }
-
-export const readCache = (commandId, args) => cache.get(commandId, args)
 
 const TTL = 3 * 60 * 1000
 
@@ -139,3 +136,5 @@ const readCommand = `
     readCommand(commandId: $commandId, args: $args)
   }
 `
+
+export { cache }

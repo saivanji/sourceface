@@ -1,7 +1,7 @@
 import { keys } from "ramda"
 
 import * as redirect from "./redirect"
-import * as runQuery from "./runQuery"
+import * as operation from "./operation"
 
 /**
  * Transforming object to list with keys as "type" field.
@@ -9,5 +9,5 @@ import * as runQuery from "./runQuery"
 const toList = (obj) =>
   keys(obj).reduce((acc, key) => [...acc, { type: key, ...obj[key] }], [])
 
-export const dict = { redirect, runQuery }
+export const dict = { redirect, operation }
 export const list = toList(dict)

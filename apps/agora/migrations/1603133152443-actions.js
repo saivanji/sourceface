@@ -1,7 +1,7 @@
 export const up = () =>
   global.pg.tx(async (t) => {
     await t.none(`
-      CREATE TYPE action AS ENUM ('runQuery')
+      CREATE TYPE action AS ENUM ('operation', 'redirect')
     `)
 
     await t.none(`

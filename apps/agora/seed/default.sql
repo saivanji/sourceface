@@ -42,7 +42,8 @@ COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 --
 
 CREATE TYPE public.action AS ENUM (
-    'runQuery'
+    'operation',
+    'redirect'
 );
 
 
@@ -297,8 +298,8 @@ ALTER TABLE ONLY public.sources ALTER COLUMN id SET DEFAULT nextval('public.sour
 --
 
 COPY public.actions (id, created_at, module_id, name, type, config) FROM stdin;
-17ebb990-8d6f-44c7-b6b1-cf75a52be7db	2020-11-02 20:10:23.069048	1a3c0c29-a473-473d-b744-6e609154a14a	\N	runQuery	{"queryId":9}
-8d8557a2-3bd7-41d6-bace-e89a61be093f	2020-11-02 19:54:30.655329	1a3c0c29-a473-473d-b744-6e609154a14a	\N	runQuery	{"queryId":10,"fields":[{"key":"limit","definition":{"type":"local","name":"limit"}},{"key":"offset","definition":{"type":"local","name":"offset"}}]}
+17ebb990-8d6f-44c7-b6b1-cf75a52be7db	2020-11-02 20:10:23.069048	1a3c0c29-a473-473d-b744-6e609154a14a	\N	operation	{"queryId":9}
+8d8557a2-3bd7-41d6-bace-e89a61be093f	2020-11-02 19:54:30.655329	1a3c0c29-a473-473d-b744-6e609154a14a	\N	operation	{"queryId":10,"fields":[{"key":"limit","definition":{"type":"local","name":"limit"}},{"key":"offset","definition":{"type":"local","name":"offset"}}]}
 \.
 
 
