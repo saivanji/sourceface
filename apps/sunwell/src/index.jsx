@@ -34,7 +34,7 @@ ReactDOM.render(
 //   fields might be app specific.
 //   - Consider moving client to schema?
 //
-//
+// consider having json db for keeping config data?
 //
 // consider implementing auto app upgrade feature
 //

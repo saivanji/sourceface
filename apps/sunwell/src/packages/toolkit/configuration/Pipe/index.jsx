@@ -8,7 +8,8 @@ import {
   useEditor,
   Action,
 } from "packages/factory"
-import Link from "assets/link.svg"
+import Collapse from "assets/collapse.svg"
+import Expand from "assets/expand.svg"
 import Add from "assets/add.svg"
 import Card from "./Card"
 import styles from "./index.scss"
@@ -43,8 +44,12 @@ export default ({ value = [], onChange }) => {
         onClick={toggle}
         className={cx(styles.link, isOpened && styles.opened)}
       >
-        <Link className={styles.actionsIcon} />
         {actions.length} actions assigned
+        {isOpened ? (
+          <Collapse className={styles.stateIcon} />
+        ) : (
+          <Expand className={styles.stateIcon} />
+        )}
       </span>
       {isOpened && (
         <>
