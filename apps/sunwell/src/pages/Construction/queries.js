@@ -23,6 +23,17 @@ export const root = `
           type
           name
           config
+          pages {
+            id
+            title
+          }
+          commands {
+            id
+            name
+            stale {
+              id
+            }
+          }
         }
         layouts {
           id

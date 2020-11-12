@@ -27,6 +27,14 @@ export default (pg) => {
     (ids) => commandRepo.staleByCommandIds(ids, pg),
     "commandId"
   )
+  const pagesByAction = new DataLoaderHasMany(
+    (ids) => pageRepo.listByActionIds(ids, pg),
+    "actionId"
+  )
+  const commandsByAction = new DataLoaderHasMany(
+    (ids) => commandRepo.listByActionIds(ids, pg),
+    "actionId"
+  )
 
   return {
     layout,
@@ -35,6 +43,8 @@ export default (pg) => {
     modulesByPage,
     trailByPage,
     staleByCommand,
+    pagesByAction,
+    commandsByAction,
   }
 }
 

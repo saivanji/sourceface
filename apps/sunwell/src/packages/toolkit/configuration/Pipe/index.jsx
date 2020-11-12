@@ -1,5 +1,4 @@
-import React, { useState } from "react"
-import cx from "classnames"
+import React from "react"
 import { without } from "ramda"
 import { Autocomplete, Button, Toggle } from "@sourceface/components"
 import {
@@ -8,20 +7,13 @@ import {
   useEditor,
   Action,
 } from "packages/factory"
-import Collapse from "assets/collapse.svg"
-import Expand from "assets/expand.svg"
 import Add from "assets/add.svg"
 import Card from "./Card"
 import styles from "./index.scss"
 
-// TODO: when at least one action created, have Creation inside of a link as "+" in the right side?
 export default ({ value = [], onChange }) => {
-  const [isOpened, setOpened] = useState(false)
   const { module } = useConfiguration()
   const { selectors, createAction, removeAction, renameAction } = useEditor()
-
-  const open = () => setOpened(true)
-  const toggle = () => setOpened((value) => !value)
 
   const create = (type) => {
     const actionId = createAction(module.id, type)
@@ -40,40 +32,25 @@ export default ({ value = [], onChange }) => {
     <Creation onCreate={create} />
   ) : (
     <>
-      <span
-        onClick={toggle}
-        className={cx(styles.link, isOpened && styles.opened)}
-      >
-        {actions.length} actions assigned
-        {isOpened ? (
-          <Collapse className={styles.stateIcon} />
-        ) : (
-          <Expand className={styles.stateIcon} />
-        )}
-      </span>
-      {isOpened && (
-        <>
-          <div className={styles.list}>
-            {actions.map((action) => (
-              <div key={action.id} className={styles.action}>
-                <Action action={action}>
-                  {(root, cut) => (
-                    <Card
-                      cut={cut}
-                      name={action.name}
-                      onRename={(name) => renameAction(action.id, name)}
-                      onRemove={() => remove(action.id)}
-                    >
-                      {root}
-                    </Card>
-                  )}
-                </Action>
-              </div>
-            ))}
+      <div className={styles.list}>
+        {actions.map((action) => (
+          <div key={action.id} className={styles.action}>
+            <Action action={action}>
+              {(root, cut) => (
+                <Card
+                  cut={cut}
+                  name={action.name}
+                  onRename={(name) => renameAction(action.id, name)}
+                  onRemove={() => remove(action.id)}
+                >
+                  {root}
+                </Card>
+              )}
+            </Action>
           </div>
-          <Creation className={styles.add} onCreate={create} />
-        </>
-      )}
+        ))}
+      </div>
+      <Creation className={styles.add} onCreate={create} />
     </>
   )
 }

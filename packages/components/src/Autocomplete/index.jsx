@@ -19,7 +19,7 @@ export default function Autocomplete({
 
   return (
     <div className={styles.root}>
-      <div className={styles.head}>
+      <div>
         <input
           autoFocus
           type="text"

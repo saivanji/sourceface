@@ -12,7 +12,7 @@ type Module {
   name: String!
   type: ModuleType!
   config: JSONObject!
-  actions: [Action]!
+  actions: [Action!]!
   layouts: [Layout!]!
 }
 

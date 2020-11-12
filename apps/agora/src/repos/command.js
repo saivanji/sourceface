@@ -1,7 +1,9 @@
 export const byId = (commandId, pg) => pg.one(sql.byId, [commandId])
-export const all = pg => pg.manyOrNone(sql.all)
+export const all = (pg) => pg.manyOrNone(sql.all)
 export const staleByCommandIds = (commandIds, pg) =>
   pg.manyOrNone(sql.staleByCommandIds, [commandIds])
+export const listByActionIds = (actionIds, pg) =>
+  pg.manyOrNone(sql.listByActionIds, [actionIds])
 
 const sql = {
   byId: `
@@ -15,5 +17,10 @@ const sql = {
     SELECT c.*, sc.command_id FROM commands AS c
     LEFT JOIN stale_commands AS sc ON (sc.stale_id = c.id) 
     WHERE sc.command_id IN ($1:csv)
+  `,
+  listByActionIds: `
+    SELECT c.*, ac.action_id FROM commands AS c
+    LEFT JOIN actions_commands AS ac ON (ac.command_id = c.id)
+    WHERE ac.action_id IN ($1:csv)
   `,
 }

@@ -29,11 +29,20 @@ const configureAction = async (parent, { actionId, key, value }, { pg }) => {
   })
 }
 
+const pages = (parent, args, ctx) => ctx.loaders.pagesByAction.load(parent.id)
+
+const commands = (parent, args, ctx) =>
+  ctx.loaders.commandsByAction.load(parent.id)
+
 export default {
   Mutation: {
     createAction,
     renameAction,
     removeAction,
     configureAction,
+  },
+  Action: {
+    pages,
+    commands,
   },
 }
