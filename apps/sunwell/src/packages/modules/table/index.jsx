@@ -13,11 +13,14 @@ import {
 } from "@sourceface/components"
 import { useTransition, useValue } from "packages/factory"
 import { Field, Pipe } from "packages/toolkit"
+import More from "assets/more.svg"
 import styles from "./index.scss"
 
 // TODO: filters might be displayed in place of a column(filtered column will have gray rounded bg and "i" icon. When user will hover it - will display applied filters)
 
 // TODO: implement actions. on clicking button - execute query. or open another page
+
+// TODO: implement sub module configuration. When clicking on something inside of a module(for example column head) - display separate configuration sidebar instead of main configuration.
 
 export const Root = function TableModule({
   config,
@@ -47,6 +50,7 @@ export const Root = function TableModule({
             <Table.Th>Status</Table.Th>
             <Table.Th>Payment type</Table.Th>
             <Table.Th>Amount</Table.Th>
+            <Table.Th />
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
@@ -64,13 +68,16 @@ export const Root = function TableModule({
               <Table.Td>
                 {row.amount} {row.currency}
               </Table.Td>
+              <Table.Td className={styles.more}>
+                <More />
+              </Table.Td>
             </Table.Tr>
           ))}
         </Table.Tbody>
         {config.pagination && limit !== 0 && (
           <Table.Tfoot>
             <Table.Tr>
-              <Table.Td colSpan={8}>
+              <Table.Td colSpan={9}>
                 <div className={styles.footer}>
                   <div className={styles.paginationInfo}>
                     Showing <span>{offset + 1}</span> to{" "}

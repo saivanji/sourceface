@@ -20,3 +20,17 @@
 .pagination-info > span {
   font-weight: 600;
 }
+
+.more {
+  padding: 0 $value-4 0 0 !important;
+  svg {
+    width: $value-6;
+    padding: $value-1;
+    border-radius: $rounded-full;
+    display: flex;
+    cursor: pointer;
+    &:hover {
+      background-color: $color-gray-200;
+    }
+  }
+}

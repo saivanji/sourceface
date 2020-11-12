@@ -22,4 +22,11 @@ extend type Mutation {
   removeAction(actionId: UUID!): Boolean!
   renameAction(actionId: UUID!, name: String!): Action!
   configureAction(actionId: UUID!, key: String!, value: JSON): Action!
+  updateAction(
+    actionId: UUID!
+    name: String
+    config: JSONObject
+    pages: [Int!]
+    commands: [Int!]
+  ): Action!
 }
