@@ -39,7 +39,12 @@ import request, { cache } from "./request"
 // 3. Keep field name inside of action bar. Rethink empty state. Fit action creation inside of action bar.
 // 4. Consider not collapsing actions, since it might be not much of them
 
-export function Root({ queries, config: { queryId }, onConfigChange }) {
+export function Root({
+  queries,
+  config: { queryId },
+  onConfigChange,
+  onCommandSet,
+}) {
   const query = queryId && queries.find((x) => x.id === queryId)
   const suggestions = queries.map((q) => ({ title: q.name, value: q.id }))
 

@@ -2,12 +2,12 @@ import { sort } from "ramda"
 
 export const oneByPath = async (path, pg) =>
   matchPage(await pg.many(sql.manyByPath, [createRegExp(path)]))
-
 export const trailByPageIds = (pageIds, pg) =>
   pg.manyOrNone(sql.trailByPageIds, [pageIds])
-
 export const listByActionIds = (actionIds, pg) =>
   pg.manyOrNone(sql.listByActionIds, [actionIds])
+export const search = (query, limit, offset, pg) =>
+  pg.manyOrNone(sql.search, [query, limit, offset])
 
 const sql = {
   manyByPath: `
@@ -24,6 +24,10 @@ const sql = {
     SELECT p.*, ap.action_id FROM pages AS p
     LEFT JOIN actions_pages AS ap ON (ap.page_id = p.id)
     WHERE ap.action_id IN ($1:csv)
+  `,
+  search: `
+    SELECT * FROM pages WHERE LOWER(title) LIKE LOWER('%$1:value%')
+    LIMIT $2 OFFSET $3
   `,
 }
 

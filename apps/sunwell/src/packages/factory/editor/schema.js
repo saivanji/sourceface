@@ -1,7 +1,12 @@
 import * as normalizr from "normalizr"
 
+const command = new normalizr.schema.Entity("commands")
+const page = new normalizr.schema.Entity("pages")
 const layout = new normalizr.schema.Entity("layouts")
-const action = new normalizr.schema.Entity("actions")
+const action = new normalizr.schema.Entity("actions", {
+  commands: [command],
+  pages: [page],
+})
 const module = new normalizr.schema.Entity("modules", { actions: [action] })
 
 const schema = {
