@@ -72,7 +72,7 @@ const usePersistedReducer = (reducer, initialState) => {
     (action) => {
       if (action.type !== "reset") {
         const raw = localStorage.getItem(key)
-        const prevState = raw && JSON.parse(raw)
+        const prevState = (raw && JSON.parse(raw)) || state
         const nextState = reducer(prevState, action)
 
         localStorage.setItem(key, JSON.stringify(nextState))
