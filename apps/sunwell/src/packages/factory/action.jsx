@@ -12,6 +12,9 @@ export function Action({ action, children }) {
 
   const props = {
     queries,
+    fetchCommands: () => {
+      // TODO: use raw urql function here without react bindings
+    },
     config: action.config,
     onConfigChange: (key, value) => configureAction(action.id, key, value),
   }

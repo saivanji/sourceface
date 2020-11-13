@@ -1,4 +1,5 @@
 import React from "react"
+import { map } from "ramda"
 import { Static, Arguments } from "packages/toolkit"
 import request, { cache } from "./request"
 
@@ -42,11 +43,16 @@ import request, { cache } from "./request"
 export function Root({
   queries,
   config: { queryId },
+  fetchCommands,
   onConfigChange,
   onCommandSet,
 }) {
   const query = queryId && queries.find((x) => x.id === queryId)
   const suggestions = queries.map((q) => ({ title: q.name, value: q.id }))
+  const _suggestions = (search, page) =>
+    fetchCommands(search, 10, page * 10).then(
+      map((c) => ({ title: c.name, value: c.id }))
+    )
 
   return (
     <>
