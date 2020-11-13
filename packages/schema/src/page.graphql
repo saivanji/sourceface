@@ -17,7 +17,7 @@ extend type Query {
   # TODO: have Path scalar type for validating path?
   page(path: String!): Page!
   #@authenticated
-  searchPages(query: String!, limit: Int, offset: Int): [Page!]!
+  pages(search: String, limit: Int, offset: Int): [Page!]!
 }
 
 extend type Mutation {

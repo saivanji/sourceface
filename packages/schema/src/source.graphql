@@ -34,8 +34,7 @@ type Command {
 }
 
 extend type Query {
-  commands: [Command!]!
-  searchCommands(query: String!, limit: Int, offset: Int): [Command!]!
+  commands(search: String, limit: Int, offset: Int): [Command!]!
   readCommand(commandId: Int!, args: JSONObject): JSON
 }
 

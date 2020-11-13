@@ -20,7 +20,7 @@ export default function Card({
       <div className={styles.primary}>
         <div className={styles.head}>
           <Input
-            value={name}
+            value={name || ""}
             inputClassName={styles.name}
             placeholder="Unnamed"
             onChange={(e) => onRename(e.target.value)}

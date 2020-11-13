@@ -1,11 +1,7 @@
 import * as commandRepo from "repos/command"
 
-const commands = async (parent, args, { pg }) => {
-  return await commandRepo.all(pg)
-}
-
-const searchCommands = (parent, { query, limit = 10, offset = 0 }, { pg }) =>
-  commandRepo.search(query, limit, offset, pg)
+const commands = (parent, { search, limit = 10, offset = 0 }, { pg }) =>
+  commandRepo.list(search, limit, offset, pg)
 
 const executeCommand = async (
   parent,
@@ -23,7 +19,6 @@ const stale = (parent, args, ctx) => ctx.loaders.staleByCommand.load(parent.id)
 export default {
   Query: {
     commands,
-    searchCommands,
     readCommand: executeCommand,
   },
   Mutation: {

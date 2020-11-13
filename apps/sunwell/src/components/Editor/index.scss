@@ -25,6 +25,7 @@
 
 .right {
   grid-area: modules;
+  overflow-y: auto;
   background-color: $color-white;
   border-left: 1px solid $color-gray-400;
   padding: $value-3;
