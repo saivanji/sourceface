@@ -12,13 +12,13 @@ export function Action({ action, children }) {
 
   const { Root, Cut } = stock.actions.dict[action.type]
 
+  const configureSelf = (key, value) => configureAction(action.id, key, value)
+
   const props = {
-    fetchPages,
-    fetchCommands,
     config: action.config,
-    pages: action.pages,
-    commands: action.commands,
-    onConfigChange: (key, value) => configureAction(action.id, key, value),
+    pages: createRelation("pages", action, configureSelf),
+    commands: createRelation("commands", action, configureSelf),
+    onConfigChange: configureSelf,
   }
 
   const root = <Root {...props} />
@@ -35,17 +35,18 @@ export const useAction = () => {
   return useContext(context)
 }
 
-const fetchCommands = (input) =>
-  client
-    .query(queries.commands, input)
-    .toPromise()
-    .then(path(["data", "commands"]))
-
-const fetchPages = (input) =>
-  client
-    .query(queries.pages, input)
-    .toPromise()
-    .then(path(["data", "pages"]))
+const createRelation = (name, action, onConfigChange) => ({
+  getLocal: (key) => action[name].find((x) => x.id === action.config[key]),
+  fetchAll: (input) =>
+    client
+      .query(queries[name], input)
+      .toPromise()
+      .then(path(["data", name])),
+  change: (key, id) => {
+    // TODO: assoc/dissoc. dispatch action to editor
+    onConfigChange(key, id)
+  },
+})
 
 const queries = {
   commands: `

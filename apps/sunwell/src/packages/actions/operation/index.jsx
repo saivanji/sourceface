@@ -40,19 +40,14 @@ import request, { cache } from "./request"
 // 3. Keep field name inside of action bar. Rethink empty state. Fit action creation inside of action bar.
 // 4. Consider not collapsing actions, since it might be not much of them
 
-export function Root({
-  config: { queryId },
-  commands,
-  fetchCommands,
-  onConfigChange,
-  onCommandSet,
-}) {
-  const command = commands.find((c) => c.id === queryId)
+export function Root({ commands }) {
+  const KEY = "queryId"
+  const command = commands.getLocal(KEY)
 
   const suggestions = (search, page) =>
-    fetchCommands({ search, limit: 10, offset: page * 10 }).then(
-      map((c) => ({ title: c.name, value: c.id }))
-    )
+    commands
+      .fetchAll({ search, limit: 10, offset: page * 10 })
+      .then(map((c) => ({ title: c.name, value: c.id })))
 
   return (
     <>
@@ -62,7 +57,7 @@ export function Root({
         editionTitle={command?.name}
         clearable={false}
         value={command?.id}
-        onChange={(queryId) => onConfigChange("queryId", queryId)}
+        onChange={(queryId) => commands.change(KEY, queryId)}
         suggestions={suggestions}
       />
       query
