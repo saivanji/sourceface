@@ -12,7 +12,7 @@ export function Action({ action, children }) {
 
   const props = {
     queries,
-    fetchCommands: () => {
+    fetchCommands: (search, limit, offset) => {
       // TODO: use raw urql function here without react bindings
     },
     config: action.config,

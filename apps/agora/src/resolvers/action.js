@@ -1,3 +1,4 @@
+import { mergeRight } from "ramda"
 import * as actionRepo from "repos/action"
 
 const createAction = async (
@@ -6,28 +7,38 @@ const createAction = async (
   { pg }
 ) => await actionRepo.create(actionId, moduleId, type, config, pg)
 
-const renameAction = async (parent, { actionId, name }, { pg }) =>
-  await actionRepo.rename(actionId, name, pg)
-
 const removeAction = async (parent, { actionId }, { pg }) => {
   await actionRepo.remove(actionId, pg)
   return true
 }
 
-const configureAction = async (parent, { actionId, key, value }, { pg }) => {
-  return await pg.task(async (t) => {
-    const action = await actionRepo.one(actionId, t)
+const updateAction = (
+  parent,
+  { actionId, name, config, pages, commands },
+  { pg }
+) =>
+  pg.tx(async (t) => {
+    const prev = await actionRepo.one(actionId, t)
+    const fields = {
+      ...(name && { name }),
+      ...(config && { config: mergeRight(prev.config, config) }),
+    }
 
-    return await actionRepo.updateConfig(
-      actionId,
-      {
-        ...action.config,
-        [key]: value,
-      },
-      t
-    )
+    const action =
+      name || config ? await actionRepo.update(actionId, fields, t) : prev
+
+    if (pages) {
+      await actionRepo.dissocPages(actionId, t)
+      await actionRepo.assocPages(actionId, pages, t)
+    }
+
+    if (commands) {
+      await actionRepo.dissocCommands(actionId, t)
+      await actionRepo.assocCommands(actionId, commands, t)
+    }
+
+    return action
   })
-}
 
 const pages = (parent, args, ctx) => ctx.loaders.pagesByAction.load(parent.id)
 
@@ -37,9 +48,8 @@ const commands = (parent, args, ctx) =>
 export default {
   Mutation: {
     createAction,
-    renameAction,
+    updateAction,
     removeAction,
-    configureAction,
   },
   Action: {
     pages,
