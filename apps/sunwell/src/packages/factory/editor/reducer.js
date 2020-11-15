@@ -171,6 +171,24 @@ function actions(state, { type, payload }) {
       }
     }
 
+    case "changeActionCommand": {
+      const { actionId, command, configKey } = payload
+
+      return {
+        ...state,
+        [actionId]: {
+          ...state[actionId],
+          // TODO: how to dissoc? Can not filter out previous id of a "configKey" since
+          // it might be used by another field in a config.
+          commands: [...state[actionId].commands, command.id],
+          config: {
+            ...state[actionId].config,
+            [configKey]: command.id,
+          },
+        },
+      }
+    }
+
     case "renameAction": {
       const { actionId, name } = payload
 

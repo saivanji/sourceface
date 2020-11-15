@@ -87,6 +87,20 @@ export function useActions(state, initialState, dispatch) {
     })
   }
 
+  function changeActionPage(actionId, configKey, page) {
+    dispatch({
+      type: "changeActionPage",
+      payload: { actionId, configKey, page },
+    })
+  }
+
+  function changeActionCommand(actionId, configKey, command) {
+    dispatch({
+      type: "changeActionCommand",
+      payload: { actionId, configKey, command },
+    })
+  }
+
   function renameAction(actionId, name) {
     dispatch({
       type: "renameAction",
@@ -115,6 +129,8 @@ export function useActions(state, initialState, dispatch) {
     removeModule,
     createAction,
     configureAction,
+    changeActionPage,
+    changeActionCommand,
     renameAction,
     removeAction,
   }

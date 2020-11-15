@@ -57,7 +57,7 @@ export function Root({ commands }) {
         editionTitle={command?.name}
         clearable={false}
         value={command?.id}
-        onChange={(queryId) => commands.change(KEY, queryId)}
+        onChange={(queryId) => commands.change(KEY, "value")}
         suggestions={suggestions}
       />
       query

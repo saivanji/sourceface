@@ -8,7 +8,7 @@ const context = createContext({})
 
 export function Action({ action, children }) {
   const { stock } = useContainer()
-  const { configureAction } = useEditor()
+  const { configureAction, changeActionPage, changeActionCommand } = useEditor()
 
   const { Root, Cut } = stock.actions.dict[action.type]
 
@@ -16,8 +16,8 @@ export function Action({ action, children }) {
 
   const props = {
     config: action.config,
-    pages: createRelation("pages", action, configureSelf),
-    commands: createRelation("commands", action, configureSelf),
+    pages: createRelation("pages", action, changeActionPage),
+    commands: createRelation("commands", action, changeActionCommand),
     onConfigChange: configureSelf,
   }
 
@@ -35,17 +35,14 @@ export const useAction = () => {
   return useContext(context)
 }
 
-const createRelation = (name, action, onConfigChange) => ({
+const createRelation = (name, action, change) => ({
   getLocal: (key) => action[name].find((x) => x.id === action.config[key]),
   fetchAll: (input) =>
     client
       .query(queries[name], input)
       .toPromise()
       .then(path(["data", name])),
-  change: (key, id) => {
-    // TODO: assoc/dissoc. dispatch action to editor
-    onConfigChange(key, id)
-  },
+  change: (key, value) => change(action.id, key, value),
 })
 
 const queries = {
