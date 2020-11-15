@@ -1,19 +1,15 @@
-import * as normalizr from "normalizr"
+import { schema } from "normalizr"
 
-const command = new normalizr.schema.Entity("commands")
-const page = new normalizr.schema.Entity("pages")
-const layout = new normalizr.schema.Entity("layouts")
-const action = new normalizr.schema.Entity("actions", {
+export const command = new schema.Entity("commands")
+export const page = new schema.Entity("pages")
+export const layout = new schema.Entity("layouts")
+export const action = new schema.Entity("actions", {
   commands: [command],
   pages: [page],
 })
-const module = new normalizr.schema.Entity("modules", { actions: [action] })
+export const module = new schema.Entity("modules", { actions: [action] })
 
-const schema = {
+export default {
   layout,
   modules: [module],
 }
-
-export const normalize = (page) => normalizr.normalize(page, schema)
-export const denormalize = (result, entities) =>
-  normalizr.denormalize(result, schema, entities)

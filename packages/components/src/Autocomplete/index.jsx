@@ -13,14 +13,14 @@ export default function Autocomplete({
   customSuggestion = (x) => x,
   map = (x) => x,
   filter = () => true,
-  renderError = () => "Failed to load data...",
+  renderError = () => "Failed to load data",
   value,
   onChange,
 }) {
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(0)
   const [hovered, setHovered] = useState(false)
-  const { data, error, isPaging, isSearching } = useItems(items, page, search)
+  const { data, error, isPaging, isSearching } = useItems(items, search, page)
 
   return (
     <div className={styles.root}>
@@ -38,10 +38,10 @@ export default function Autocomplete({
         )}
       </div>
       <div className={styles.items}>
-        {!data ? (
-          "Loading..."
-        ) : error ? (
-          renderError(error)
+        {error ? (
+          <span className={styles.info}>{renderError(error)}</span>
+        ) : !data ? (
+          <span className={styles.info}>Loading...</span>
         ) : (
           <>
             {custom && search && !value && (

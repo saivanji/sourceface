@@ -41,16 +41,16 @@ import request, { cache } from "./request"
 // 4. Consider not collapsing actions, since it might be not much of them
 
 export function Root({
-  queries,
   config: { queryId },
+  commands,
   fetchCommands,
   onConfigChange,
   onCommandSet,
 }) {
-  const query = queryId && queries.find((x) => x.id === queryId)
-  const suggestions = queries.map((q) => ({ title: q.name, value: q.id }))
-  const _suggestions = (search, page) =>
-    fetchCommands(search, 10, page * 10).then(
+  const command = commands.find((c) => c.id === queryId)
+
+  const suggestions = (search, page) =>
+    fetchCommands({ search, limit: 10, offset: page * 10 }).then(
       map((c) => ({ title: c.name, value: c.id }))
     )
 
@@ -59,8 +59,9 @@ export function Root({
       <span>Execute</span>
       <Static
         creationTitle="Add query"
+        editionTitle={command?.name}
         clearable={false}
-        value={query?.id}
+        value={command?.id}
         onChange={(queryId) => onConfigChange("queryId", queryId)}
         suggestions={suggestions}
       />

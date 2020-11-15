@@ -3,11 +3,21 @@ import { Autocomplete, Toggle } from "@sourceface/components"
 import Placeholder from "../Placeholder"
 import Snippet from "../Snippet"
 
-export default ({ value, onChange, creationTitle, suggestions }) => {
+export default ({
+  value,
+  onChange,
+  creationTitle,
+  editionTitle,
+  suggestions,
+}) => {
   const trigger = !value ? (
     <Placeholder>{creationTitle}</Placeholder>
   ) : (
-    <Snippet color="gray">{findTitle(suggestions, value)}</Snippet>
+    <Snippet color="gray">
+      {typeof suggestions === "function"
+        ? editionTitle
+        : findTitle(suggestions, value)}
+    </Snippet>
   )
 
   return (

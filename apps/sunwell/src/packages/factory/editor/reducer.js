@@ -7,6 +7,7 @@ export default (state, action) => {
 
   return {
     entities: {
+      ...state.entities,
       layouts: layouts(state.entities.layouts, action),
       modules: modules(state.entities.modules, action),
       actions: actions(state.entities.actions, action),

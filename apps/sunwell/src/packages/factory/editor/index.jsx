@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useReducer, useState } from "react"
+import { normalize, denormalize } from "normalizr"
 import { detailedDiff } from "deep-object-diff"
-import { normalize, denormalize } from "./schema"
+import schema, { action as actionSchema } from "./schema"
 import { useActions } from "./actions"
 import reducer from "./reducer"
 
@@ -11,7 +12,7 @@ const context = createContext({})
 // TODO: rename "page" to something meaningful
 // TODO: do not mix UI and data state
 export function Editor({ children, page: cached }) {
-  const initialState = normalize(cached)
+  const initialState = normalize(cached, schema)
 
   const [state, dispatch] = usePersistedReducer(reducer, initialState)
   const actions = useActions(state, initialState, dispatch)
@@ -19,7 +20,7 @@ export function Editor({ children, page: cached }) {
 
   const page = !state.isEditing
     ? cached
-    : denormalize(state.result, state.entities)
+    : denormalize(state.result, schema, state.entities)
 
   const selected = page.modules.find((x) => x.id === state.selection)
 
@@ -46,7 +47,11 @@ export function Editor({ children, page: cached }) {
 const createSelectors = (state) => ({
   actions: (ids) =>
     ids.reduce((acc, actionId) => {
-      const action = state.entities.actions[actionId]
+      const action = denormalize(
+        state.entities.actions[actionId],
+        actionSchema,
+        state.entities
+      )
 
       /**
        * Filtering out not existing actions.
@@ -59,7 +64,7 @@ export const useEditor = () => {
   return useContext(context)
 }
 
-// Temp. Unless diff algorythm will be implemented.
+// Temp. Until diff algorythm will be implemented.
 const usePersistedReducer = (reducer, initialState) => {
   const key = "editor_state"
   const raw = localStorage.getItem(key)

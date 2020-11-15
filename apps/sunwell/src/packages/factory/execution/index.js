@@ -75,6 +75,9 @@ const useData = (input, identify = false, restore = false) => {
   for (let actionIds of input) {
     let sequence = []
     let initialValue
+    // TODO: use actions from the module we're in and map with these ids. Selectors can
+    // be used only for editor. Also that will restrict of usage actions outside of current
+    // module.
     const actions = selectors.actions(actionIds || [])
 
     for (let { config, type } of actions) {

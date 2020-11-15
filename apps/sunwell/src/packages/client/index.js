@@ -46,4 +46,4 @@ export function ClientProvider({ children }) {
 /**
  * Re-exporting useQuery and useMutation hooks for the convenience.
  */
-export { mutations, useQuery, useMutation }
+export { mutations, useQuery, useMutation, client }

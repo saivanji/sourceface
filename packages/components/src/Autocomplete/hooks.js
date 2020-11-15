@@ -1,11 +1,11 @@
 import { useRef, useReducer, useEffect } from "react"
 
-export const useItems = (items, page, search) => {
+export const useItems = (items, search, page) => {
   const [{ isLoading, ...state }, dispatch] = useReducer(reducer, {
     isLoading: false,
     error: null,
   })
-  const loading = useLoading(isLoading, page, search)
+  const loading = useLoading(isLoading, search, page)
 
   const isFunc = typeof items === "function"
 
@@ -17,7 +17,7 @@ export const useItems = (items, page, search) => {
     let canceled = false
     const safeDispatch = (...args) => !canceled && dispatch(...args)
 
-    const result = items(page, search)
+    const result = items(search, page)
 
     if (result instanceof Promise) {
       safeDispatch({ type: "start" })
@@ -32,7 +32,7 @@ export const useItems = (items, page, search) => {
     }
 
     safeDispatch({ type: "finish", payload: result })
-  }, [isFunc, items, page, search])
+  }, [isFunc, items, search, page])
 
   return !isFunc
     ? { data: items }
@@ -42,11 +42,11 @@ export const useItems = (items, page, search) => {
       }
 }
 
-const useLoading = (isLoading, page, search) => {
+const useLoading = (isLoading, search, page) => {
   const ref = useRef({})
 
   useEffect(() => {
-    ref.current = { page, search }
+    ref.current = { search, page }
   })
 
   return {
