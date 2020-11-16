@@ -50,7 +50,7 @@ export default function Autocomplete({
               </span>
             )}
             {listSuggestions(
-              ({ value, title }, isSelected) => (
+              ({ value, title }, original, isSelected) => (
                 <span
                   key={value}
                   onMouseOver={() => !hovered && setHovered(true)}
@@ -58,7 +58,7 @@ export default function Autocomplete({
                     styles.item,
                     isSelected && !hovered && styles.selected
                   )}
-                  onClick={() => onChange(value)}
+                  onClick={() => onChange(value, original)}
                 >
                   {title}
                 </span>

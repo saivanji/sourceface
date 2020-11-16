@@ -8,17 +8,26 @@ const context = createContext({})
 
 export function Action({ action, children }) {
   const { stock } = useContainer()
-  const { configureAction, changeActionPage, changeActionCommand } = useEditor()
+  const { configureAction, changeActionReference } = useEditor()
 
   const { Root, Cut } = stock.actions.dict[action.type]
 
-  const configureSelf = (key, value) => configureAction(action.id, key, value)
-
   const props = {
     config: action.config,
-    pages: createRelation("pages", action, changeActionPage),
-    commands: createRelation("commands", action, changeActionCommand),
-    onConfigChange: configureSelf,
+    getReferenceData: (type, key) =>
+      action[type + "s"].find(
+        // TODO: handle the case when reference value is array
+        (x) => x.id === action.config.references?.[type]?.[key]
+      ),
+    getReference: (type, key) => action.config.references?.[type]?.[key],
+    listAll: (type, input) =>
+      client
+        .query(queries[type], input)
+        .toPromise()
+        .then(path(["data", type + "s"])),
+    onReferenceChange: (type, key, data) =>
+      changeActionReference(action.id, type, key, data),
+    onConfigChange: (key, value) => configureAction(action.id, key, value),
   }
 
   const root = <Root {...props} />
@@ -35,18 +44,8 @@ export const useAction = () => {
   return useContext(context)
 }
 
-const createRelation = (name, action, change) => ({
-  getLocal: (key) => action[name].find((x) => x.id === action.config[key]),
-  fetchAll: (input) =>
-    client
-      .query(queries[name], input)
-      .toPromise()
-      .then(path(["data", name])),
-  change: (key, value) => change(action.id, key, value),
-})
-
 const queries = {
-  commands: `
+  command: `
     query($search: String, $limit: Int, $offset: Int) {
       commands(search: $search, limit: $limit, offset: $offset) {
         id
@@ -57,7 +56,7 @@ const queries = {
       }
     }
   `,
-  pages: `
+  page: `
     query($search: String, $limit: Int, $offset: Int) {
       pages(search: $search, limit: $limit, offset: $offset) {
         id

@@ -1,5 +1,4 @@
 import React from "react"
-import { map } from "ramda"
 import { Static, Arguments } from "packages/toolkit"
 import request, { cache } from "./request"
 
@@ -40,24 +39,32 @@ import request, { cache } from "./request"
 // 3. Keep field name inside of action bar. Rethink empty state. Fit action creation inside of action bar.
 // 4. Consider not collapsing actions, since it might be not much of them
 
-export function Root({ commands }) {
+export function Root({ getReferenceData, listAll, onReferenceChange }) {
   const KEY = "queryId"
-  const command = commands.getLocal(KEY)
+  const REFERENCE_TYPE = "command"
+
+  const command = getReferenceData(REFERENCE_TYPE, KEY)
 
   const suggestions = (search, page) =>
-    commands
-      .fetchAll({ search, limit: 10, offset: page * 10 })
-      .then(map((c) => ({ title: c.name, value: c.id })))
+    listAll(REFERENCE_TYPE, { search, limit: 10, offset: page * 10 })
+
+  const map = (command) => ({
+    value: command.id,
+    title: command.name,
+  })
 
   return (
     <>
       <span>Execute</span>
       <Static
         creationTitle="Add query"
+        map={map}
         editionTitle={command?.name}
         clearable={false}
         value={command?.id}
-        onChange={(queryId) => commands.change(KEY, "value")}
+        onChange={(_, command) =>
+          onReferenceChange(REFERENCE_TYPE, KEY, command)
+        }
         suggestions={suggestions}
       />
       query

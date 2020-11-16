@@ -8,6 +8,7 @@ export default (state, action) => {
   return {
     entities: {
       ...state.entities,
+      commands: references(state.entities.commands, action),
       layouts: layouts(state.entities.layouts, action),
       modules: modules(state.entities.modules, action),
       actions: actions(state.entities.actions, action),
@@ -15,6 +16,34 @@ export default (state, action) => {
     result: result(state.result, action),
     selection: selection(state.selection, action),
     isEditing: edition(state.isEditing, action),
+  }
+}
+
+function references(state, { type, payload }) {
+  switch (type) {
+    case "changeActionReference": {
+      const { data } = payload
+
+      /**
+       * Do not updating entities state when removing reference.
+       */
+      if (!data) return state
+
+      if (data instanceof Array) {
+        return data.reduce(
+          (acc, item) => ({ ...state, [item.id]: item }),
+          state
+        )
+      }
+
+      return {
+        ...state,
+        [data.id]: data,
+      }
+    }
+
+    default:
+      return state
   }
 }
 
@@ -159,6 +188,8 @@ function actions(state, { type, payload }) {
     case "configureAction": {
       const { actionId, key, value } = payload
 
+      if (key === "references") return state
+
       return {
         ...state,
         [actionId]: {
@@ -171,19 +202,45 @@ function actions(state, { type, payload }) {
       }
     }
 
-    case "changeActionCommand": {
-      const { actionId, command, configKey } = payload
+    case "changeActionReference": {
+      const { actionId, type, key, data } = payload
+      const itemsKey = type + "s"
+      const items = state[actionId][itemsKey]
+
+      if (!data) {
+        return {
+          ...state,
+          [actionId]: {
+            ...state[actionId],
+            config: {
+              ...state[actionId].config,
+              references: {
+                ...state[actionId].config?.references,
+                [type]: omit([key], state[actionId]?.config.references?.[type]),
+              },
+            },
+          },
+        }
+      }
+
+      const isArr = data instanceof Array
+      const ids = isArr ? data.map((x) => x.id) : data.id
+      const diff = (isArr ? ids : [ids]).filter((id) => !items.includes(id))
 
       return {
         ...state,
         [actionId]: {
           ...state[actionId],
-          // TODO: how to dissoc? Can not filter out previous id of a "configKey" since
-          // it might be used by another field in a config.
-          commands: [...state[actionId].commands, command.id],
+          [itemsKey]: [...items, ...diff],
           config: {
             ...state[actionId].config,
-            [configKey]: command.id,
+            references: {
+              ...state[actionId].config?.references,
+              [type]: {
+                ...state[actionId].config?.references?.[type],
+                [key]: ids,
+              },
+            },
           },
         },
       }

@@ -87,17 +87,10 @@ export function useActions(state, initialState, dispatch) {
     })
   }
 
-  function changeActionPage(actionId, configKey, page) {
+  function changeActionReference(actionId, type, key, data) {
     dispatch({
-      type: "changeActionPage",
-      payload: { actionId, configKey, page },
-    })
-  }
-
-  function changeActionCommand(actionId, configKey, command) {
-    dispatch({
-      type: "changeActionCommand",
-      payload: { actionId, configKey, command },
+      type: "changeActionReference",
+      payload: { actionId, type, key, data },
     })
   }
 
@@ -129,8 +122,7 @@ export function useActions(state, initialState, dispatch) {
     removeModule,
     createAction,
     configureAction,
-    changeActionPage,
-    changeActionCommand,
+    changeActionReference,
     renameAction,
     removeAction,
   }

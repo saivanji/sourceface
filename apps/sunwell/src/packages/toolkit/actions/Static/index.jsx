@@ -5,6 +5,7 @@ import Snippet from "../Snippet"
 
 export default ({
   value,
+  map,
   onChange,
   creationTitle,
   editionTitle,
@@ -27,8 +28,9 @@ export default ({
           items={suggestions}
           placeholder="Search for ..."
           value={value}
-          onChange={(value) => {
-            onChange(value)
+          map={map}
+          onChange={(...args) => {
+            onChange(...args)
             close()
           }}
         />
