@@ -12,11 +12,7 @@ const removeAction = async (parent, { actionId }, { pg }) => {
   return true
 }
 
-const updateAction = (
-  parent,
-  { actionId, name, config, pages, commands },
-  { pg }
-) =>
+const updateAction = (parent, { actionId, name, config }, { pg }) =>
   pg.tx(async (t) => {
     const prev = await actionRepo.one(actionId, t)
     const fields = {
@@ -24,26 +20,14 @@ const updateAction = (
       ...(config && { config: mergeRight(prev.config, config) }),
     }
 
-    const action =
-      name || config ? await actionRepo.update(actionId, fields, t) : prev
-
-    if (pages) {
-      await actionRepo.dissocPages(actionId, t)
-      await actionRepo.assocPages(actionId, pages, t)
-    }
-
-    if (commands) {
-      await actionRepo.dissocCommands(actionId, t)
-      await actionRepo.assocCommands(actionId, commands, t)
-    }
-
-    return action
+    return name || config ? await actionRepo.update(actionId, fields, t) : prev
   })
 
-const pages = (parent, args, ctx) => ctx.loaders.pagesByAction.load(parent.id)
+const pages = (parent, args, ctx) =>
+  ctx.loaders.pagesByActionConfig.load(parent.config)
 
 const commands = (parent, args, ctx) =>
-  ctx.loaders.commandsByAction.load(parent.id)
+  ctx.loaders.commandsByActionConfig.load(parent.config)
 
 export default {
   Mutation: {

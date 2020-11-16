@@ -13,20 +13,6 @@ export const up = () =>
         config json NOT NULL
       )
     `)
-    await t.none(`
-      CREATE TABLE actions_pages(
-        action_id uuid NOT NULL REFERENCES actions(id) ON DELETE CASCADE,
-        page_id int NOT NULL REFERENCES pages(id) ON DELETE CASCADE,
-        UNIQUE (action_id, page_id)
-      )
-    `)
-    await t.none(`
-      CREATE TABLE actions_commands(
-        action_id uuid NOT NULL REFERENCES actions(id) ON DELETE CASCADE,
-        command_id int NOT NULL REFERENCES commands(id) ON DELETE CASCADE,
-        UNIQUE (action_id, command_id)
-      )
-    `)
   })
 
 export const down = () =>

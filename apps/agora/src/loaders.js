@@ -1,4 +1,5 @@
 import DataLoader from "dataloader"
+import { loadReferences, compare } from "utils/config"
 import * as actionRepo from "repos/action"
 import * as commandRepo from "repos/command"
 import * as layoutRepo from "repos/layout"
@@ -27,13 +28,13 @@ export default (pg) => {
     (ids) => commandRepo.staleByCommandIds(ids, pg),
     "commandId"
   )
-  const pagesByAction = new DataLoaderHasMany(
-    (ids) => pageRepo.listByActionIds(ids, pg),
-    "actionId"
+  const commandsByActionConfig = new DataLoaderHasMany(
+    loadReferences((ids) => commandRepo.listByIds(ids, pg), "command"),
+    compare
   )
-  const commandsByAction = new DataLoaderHasMany(
-    (ids) => commandRepo.listByActionIds(ids, pg),
-    "actionId"
+  const pagesByActionConfig = new DataLoaderHasMany(
+    loadReferences((ids) => pageRepo.listByIds(ids, pg), "page"),
+    compare
   )
 
   return {
@@ -43,8 +44,8 @@ export default (pg) => {
     modulesByPage,
     trailByPage,
     staleByCommand,
-    pagesByAction,
-    commandsByAction,
+    commandsByActionConfig,
+    pagesByActionConfig,
   }
 }
 
@@ -52,7 +53,11 @@ class DataLoaderHasMany extends DataLoader {
   constructor(fn, key, options) {
     super(async (ids) => {
       const items = await fn(ids)
-      return ids.map((id) => items.filter((item) => item[key] === id))
+      return ids.map((id, i) =>
+        items.filter((item) =>
+          typeof key === "string" ? item[key] === id : key(item, id, i)
+        )
+      )
     }, options)
   }
 }

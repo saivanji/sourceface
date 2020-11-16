@@ -19,12 +19,6 @@ extend type Mutation {
     type: ActionType!
     config: JSONObject!
   ): Action!
-  updateAction(
-    actionId: UUID!
-    name: String
-    config: JSONObject
-    pages: [Int!]
-    commands: [Int!]
-  ): Action!
+  updateAction(actionId: UUID!, name: String, config: JSONObject): Action!
   removeAction(actionId: UUID!): Boolean!
 }

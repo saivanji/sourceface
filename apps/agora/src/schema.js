@@ -1,7 +1,10 @@
 import { makeExecutableSchema } from "graphql-tools"
+import { values, mergeDeepLeft } from "ramda"
 import { printedSDL } from "@sourceface/schema"
-import { mergeResolvers } from "utils/index"
 import * as resolvers from "./resolvers"
+
+const mergeResolvers = (resolvers) =>
+  values(resolvers).reduce((acc, item) => mergeDeepLeft(item, acc), {})
 
 export default makeExecutableSchema({
   typeDefs: printedSDL,

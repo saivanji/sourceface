@@ -6,6 +6,8 @@ export const trailByPageIds = (pageIds, pg) =>
   pg.manyOrNone(sql.trailByPageIds, [pageIds])
 export const listByActionIds = (actionIds, pg) =>
   pg.manyOrNone(sql.listByActionIds, [actionIds])
+export const listByIds = (pageIds, pg) =>
+  pg.manyOrNone(sql.listByIds, [pageIds])
 export const list = (query, limit, offset, pg) =>
   pg.manyOrNone(sql.list, [query || "", limit, offset])
 
@@ -24,6 +26,9 @@ const sql = {
     SELECT p.*, ap.action_id FROM pages AS p
     LEFT JOIN actions_pages AS ap ON (ap.page_id = p.id)
     WHERE ap.action_id IN ($1:csv)
+  `,
+  listByIds: `
+    SELECT * FROM pages WHERE id IN ($1:csv)
   `,
   list: `
     SELECT * FROM pages WHERE LOWER(title) LIKE LOWER('%$1:value%')
