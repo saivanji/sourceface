@@ -10,8 +10,8 @@ export const up = () =>
         module_id uuid NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
         name text CHECK (name <> ''),
         type action NOT NULL,
-        config json
-        references json
+        config json NOT NULL,
+        references json NOT NULL
       )
     `)
   })
