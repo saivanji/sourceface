@@ -10,19 +10,14 @@ export const up = () =>
         module_id uuid NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
         name text CHECK (name <> ''),
         type action NOT NULL,
-        config json NOT NULL
+        config json
+        references json
       )
     `)
   })
 
 export const down = () =>
   global.pg.tx(async (t) => {
-    await t.none(`
-      DROP TABLE actions_commands
-    `)
-    await t.none(`
-      DROP TABLE actions_pages
-    `)
     await t.none(`
       DROP TABLE actions
     `)

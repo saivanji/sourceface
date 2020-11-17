@@ -1,13 +1,7 @@
 import { flatten, values } from "ramda"
 
-export const getReferences = (type, config) =>
-  values(config.references && config.references[type]).reduce(
-    (acc, ref) => acc.concat(ref),
-    []
-  )
-
-export const loadReferences = (fn, type) => async (configs) => {
-  const groupIds = configs.map((c) => getReferences(type, c))
+export const load = (fn, type) => async (referencesGroups) => {
+  const groupIds = referencesGroups.map((r) => values(r[type]))
   const ids = flatten(groupIds)
 
   if (!ids.length) return []
