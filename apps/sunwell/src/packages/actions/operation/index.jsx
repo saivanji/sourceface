@@ -39,14 +39,14 @@ import request, { cache } from "./request"
 // 3. Keep field name inside of action bar. Rethink empty state. Fit action creation inside of action bar.
 // 4. Consider not collapsing actions, since it might be not much of them
 
-export function Root({ getReferenceData, listAll, onReferenceChange }) {
-  const KEY = "queryId"
-  const REFERENCE_TYPE = "command"
+const KEY = "current"
+const RELATION_TYPE = "commands"
 
-  const command = getReferenceData(REFERENCE_TYPE, KEY)
+export function Root({ listAll, relations, onRelationChange }) {
+  const command = relations[RELATION_TYPE]?.[KEY]
 
   const suggestions = (search, page) =>
-    listAll(REFERENCE_TYPE, { search, limit: 10, offset: page * 10 })
+    listAll(RELATION_TYPE, { search, limit: 10, offset: page * 10 })
 
   const map = (command) => ({
     value: command.id,
@@ -62,9 +62,7 @@ export function Root({ getReferenceData, listAll, onReferenceChange }) {
         editionTitle={command?.name}
         clearable={false}
         value={command?.id}
-        onChange={(_, command) =>
-          onReferenceChange(REFERENCE_TYPE, KEY, command)
-        }
+        onChange={(_, command) => onRelationChange(RELATION_TYPE, KEY, command)}
         suggestions={suggestions}
       />
       query
@@ -73,14 +71,16 @@ export function Root({ getReferenceData, listAll, onReferenceChange }) {
 }
 
 export function Cut({
-  config: { queryId, groups = [], fields = [] },
+  relations,
+  config: { groups = [], fields = [] },
   onConfigChange,
 }) {
+  const command = relations[RELATION_TYPE]?.[KEY]
   const changeFields = (fields) => onConfigChange("fields", fields)
   const changeGroups = (groups) => onConfigChange("groups", groups)
 
   return (
-    queryId && (
+    command && (
       <Arguments
         groups={groups}
         fields={fields}
@@ -91,8 +91,9 @@ export function Cut({
   )
 }
 
-export const serialize = (config, evaluate) => {
-  const { queryId } = config
+export const serialize = (config, relations, evaluate) => {
+  const command = relations[RELATION_TYPE]?.[KEY]
+  const staleIds = command?.stale.map((x) => x.id)
 
   const fields = config.fields?.reduce(
     (acc, { key, definition }) => ({ ...acc, [key]: evaluate(definition) }),
@@ -103,16 +104,13 @@ export const serialize = (config, evaluate) => {
     {}
   )
 
-  return [queryId, { ...fields, ...groups }]
+  return [command?.id, { ...fields, ...groups }, staleIds]
 }
 
-export const execute = ({ queries }, { onReload }) => (queryId, args) => {
-  const staleIds = queries.find((x) => x.id === queryId).stale.map((x) => x.id)
+export const execute = ({ onReload }) => (commandId, args, staleIds) =>
+  request(commandId, args, staleIds, onReload)
 
-  return request(queryId, args, staleIds, onReload)
-}
-
-export const readCache = () => cache.get.bind(cache)
+export const readCache = cache.get.bind(cache)
 
 export const add = (config) => {}
 

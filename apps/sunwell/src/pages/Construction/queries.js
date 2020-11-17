@@ -23,6 +23,7 @@ export const root = `
           type
           name
           config
+          relations
           pages {
             id
             title

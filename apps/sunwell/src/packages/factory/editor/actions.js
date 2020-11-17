@@ -87,9 +87,9 @@ export function useActions(state, initialState, dispatch) {
     })
   }
 
-  function changeActionReference(actionId, type, key, data) {
+  function changeRelation(actionId, type, key, data) {
     dispatch({
-      type: "changeActionReference",
+      type: "changeRelation",
       payload: { actionId, type, key, data },
     })
   }
@@ -122,7 +122,7 @@ export function useActions(state, initialState, dispatch) {
     removeModule,
     createAction,
     configureAction,
-    changeActionReference,
+    changeRelation,
     renameAction,
     removeAction,
   }

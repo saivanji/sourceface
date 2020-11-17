@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
 import { mergeLeft } from "ramda"
-import { useEditor } from "../editor"
 import { useModule } from "../module"
 import { useContainer } from "../container"
 import { useVariables } from "../variables"
+import { populateRelations } from "../action"
 
 export const useFunction = (...input) => {
   const [executions] = useData(input)
@@ -62,11 +62,9 @@ export const useValue = (...input) => {
 }
 
 const useData = (input, identify = false, restore = false) => {
-  const { stock, queries } = useContainer()
-  const { selectors } = useEditor()
+  const { stock } = useContainer()
   const { module } = useModule()
   const { evaluate } = useVariables(module.id)
-  const deps = { queries }
 
   let identifier = ""
   let executions = []
@@ -75,24 +73,26 @@ const useData = (input, identify = false, restore = false) => {
   for (let actionIds of input) {
     let sequence = []
     let initialValue
-    // TODO: use actions from the module we're in and map with these ids. Selectors can
-    // be used only for editor. Also that will restrict of usage actions outside of current
-    // module.
-    const actions = selectors.actions(actionIds || [])
 
-    for (let { config, type } of actions) {
+    const actions = actionIds.map((id) =>
+      module.actions.find((a) => a.id === id)
+    )
+
+    for (let action of actions) {
+      const { config, type } = action
+
       const { serialize, execute, readCache, settings } = stock.actions.dict[
         type
       ]
-      const args = serialize(config, evaluate)
+      const args = serialize(config, populateRelations(action), evaluate)
 
       if (identify) {
         identifier += JSON.stringify(args)
       }
-      sequence.push((onReload) => execute(deps, { onReload })(...args))
+      sequence.push((onReload) => execute({ onReload })(...args))
 
       const cacheable = !!readCache
-      const cached = cacheable && readCache(deps)(...args)
+      const cached = cacheable && readCache(...args)
 
       if (cacheable && !cached) {
         initial = null
@@ -101,7 +101,7 @@ const useData = (input, identify = false, restore = false) => {
 
       if (initial) {
         initialValue =
-          !settings?.effect && !cacheable ? execute(deps, {})(...args) : cached
+          !settings?.effect && !cacheable ? execute({})(...args) : cached
       }
     }
 

@@ -7,7 +7,7 @@ export default (state, action) => {
 
   return {
     entities: {
-      ...state.entities,
+      pages: referenceEntity(state.entities.pages, action),
       commands: referenceEntity(state.entities.commands, action),
       layouts: layouts(state.entities.layouts, action),
       modules: modules(state.entities.modules, action),
@@ -21,7 +21,7 @@ export default (state, action) => {
 
 function referenceEntity(state, { type, payload }) {
   switch (type) {
-    case "changeActionReference": {
+    case "changeRelation": {
       const { data } = payload
 
       /**
@@ -188,8 +188,6 @@ function actions(state, { type, payload }) {
     case "configureAction": {
       const { actionId, key, value } = payload
 
-      if (key === "references") return state
-
       return {
         ...state,
         [actionId]: {
@@ -202,22 +200,18 @@ function actions(state, { type, payload }) {
       }
     }
 
-    case "changeActionReference": {
+    case "changeRelation": {
       const { actionId, type, key, data } = payload
-      const itemsKey = type + "s"
-      const items = state[actionId][itemsKey]
+      const links = state[actionId][type]
 
       if (!data) {
         return {
           ...state,
           [actionId]: {
             ...state[actionId],
-            config: {
-              ...state[actionId].config,
-              references: {
-                ...state[actionId].config?.references,
-                [type]: omit([key], state[actionId]?.config.references?.[type]),
-              },
+            relations: {
+              ...state[actionId].relations,
+              [type]: omit([key], state[actionId].relations[type]),
             },
           },
         }
@@ -225,21 +219,18 @@ function actions(state, { type, payload }) {
 
       const isArr = data instanceof Array
       const ids = isArr ? data.map((x) => x.id) : data.id
-      const diff = (isArr ? ids : [ids]).filter((id) => !items.includes(id))
+      const diff = (isArr ? ids : [ids]).filter((id) => !links.includes(id))
 
       return {
         ...state,
         [actionId]: {
           ...state[actionId],
-          [itemsKey]: [...items, ...diff],
-          config: {
-            ...state[actionId].config,
-            references: {
-              ...state[actionId].config?.references,
-              [type]: {
-                ...state[actionId].config?.references?.[type],
-                [key]: ids,
-              },
+          [type]: [...links, ...diff],
+          relations: {
+            ...state[actionId].relations,
+            [type]: {
+              ...state[actionId].relations[type],
+              [key]: ids,
             },
           },
         },

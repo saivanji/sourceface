@@ -29,11 +29,11 @@ export default (pg) => {
     "commandId"
   )
   const commandsByRelations = new DataLoaderHasMany(
-    load((ids) => commandRepo.listByIds(ids, pg), "command"),
+    load((ids) => commandRepo.listByIds(ids, pg), "commands"),
     compare
   )
   const pagesByRelations = new DataLoaderHasMany(
-    load((ids) => pageRepo.listByIds(ids, pg), "page"),
+    load((ids) => pageRepo.listByIds(ids, pg), "pages"),
     compare
   )
 
