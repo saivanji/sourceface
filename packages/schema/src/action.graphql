@@ -4,7 +4,7 @@ type Action {
   type: ActionType!
   name: String
   config: JSONObject!
-  references: JSONObject!
+  relations: JSONObject!
   pages: [Page!]!
   commands: [Command!]!
 }
@@ -19,13 +19,13 @@ extend type Mutation {
     moduleId: UUID!
     type: ActionType!
     config: JSONObject!
-    references: JSONObject!
+    relations: JSONObject!
   ): Action!
   updateAction(
     actionId: UUID!
     name: String
     config: JSONObject
-    references: JSONObject
+    relations: JSONObject
   ): Action!
   removeAction(actionId: UUID!): Boolean!
 }

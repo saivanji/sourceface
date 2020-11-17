@@ -2,8 +2,8 @@ import { pick } from "ramda"
 import { pgp } from "../postgres"
 
 export const one = (actionId, pg) => pg.one(sql.one, [actionId])
-export const create = (actionId, moduleId, type, config, references, pg) =>
-  pg.one(sql.create, [actionId, moduleId, type, config, references])
+export const create = (actionId, moduleId, type, config, relations, pg) =>
+  pg.one(sql.create, [actionId, moduleId, type, config, relations])
 export const update = (actionId, fields, pg) =>
   pg.one(sql.update(fields), [actionId])
 export const remove = (actionId, pg) => pg.none(sql.remove, [actionId])
@@ -15,7 +15,7 @@ const sql = {
     SELECT * FROM actions WHERE id = $1
   `,
   create: `
-    INSERT INTO actions (id, module_id, type, config, references)
+    INSERT INTO actions (id, module_id, type, config, relations)
     VALUES ($1, $2, $3, $4, $5) RETURNING *
   `,
   remove: `
@@ -26,7 +26,7 @@ const sql = {
   `,
   update: (fields) =>
     pgp.helpers.update(
-      pick(["name", "config", "references"], fields),
+      pick(["name", "config", "relations"], fields),
       null,
       "actions",
       {

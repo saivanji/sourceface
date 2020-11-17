@@ -11,7 +11,7 @@ export const up = () =>
         name text CHECK (name <> ''),
         type action NOT NULL,
         config json NOT NULL,
-        references json NOT NULL
+        relations json NOT NULL
       )
     `)
   })

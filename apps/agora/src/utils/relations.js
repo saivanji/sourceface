@@ -1,7 +1,7 @@
 import { compose, uniq, flatten, values } from "ramda"
 
-export const load = (fn, type) => async (referencesGroups) => {
-  const groupIds = referencesGroups.map((r) => flattenValues(r[type]))
+export const load = (fn, type) => async (relationsGroups) => {
+  const groupIds = relationsGroups.map((r) => flattenValues(r[type]))
   const ids = flattenUnique(groupIds)
 
   if (!ids.length) return []

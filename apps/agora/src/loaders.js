@@ -1,5 +1,5 @@
 import DataLoader from "dataloader"
-import { load, compare } from "utils/references"
+import { load, compare } from "utils/relations"
 import * as actionRepo from "repos/action"
 import * as commandRepo from "repos/command"
 import * as layoutRepo from "repos/layout"
@@ -28,11 +28,11 @@ export default (pg) => {
     (ids) => commandRepo.staleByCommandIds(ids, pg),
     "commandId"
   )
-  const commandsByReferences = new DataLoaderHasMany(
+  const commandsByRelations = new DataLoaderHasMany(
     load((ids) => commandRepo.listByIds(ids, pg), "command"),
     compare
   )
-  const pagesByReferences = new DataLoaderHasMany(
+  const pagesByRelations = new DataLoaderHasMany(
     load((ids) => pageRepo.listByIds(ids, pg), "page"),
     compare
   )
@@ -44,8 +44,8 @@ export default (pg) => {
     modulesByPage,
     trailByPage,
     staleByCommand,
-    commandsByReferences,
-    pagesByReferences,
+    commandsByRelations,
+    pagesByRelations,
   }
 }
 

@@ -8,7 +8,7 @@ export default (state, action) => {
   return {
     entities: {
       ...state.entities,
-      commands: references(state.entities.commands, action),
+      commands: referenceEntity(state.entities.commands, action),
       layouts: layouts(state.entities.layouts, action),
       modules: modules(state.entities.modules, action),
       actions: actions(state.entities.actions, action),
@@ -19,7 +19,7 @@ export default (state, action) => {
   }
 }
 
-function references(state, { type, payload }) {
+function referenceEntity(state, { type, payload }) {
   switch (type) {
     case "changeActionReference": {
       const { data } = payload
