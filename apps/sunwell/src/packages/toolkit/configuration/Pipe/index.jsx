@@ -18,7 +18,6 @@ export default ({ value = [], onChange }) => {
   const create = (type) => {
     const actionId = createAction(module.id, type)
     onChange([...value, actionId])
-    open()
   }
 
   const remove = (actionId) => {

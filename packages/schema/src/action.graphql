@@ -11,6 +11,7 @@ type Action {
 
 enum ActionType {
   operation
+  redirect
 }
 
 extend type Mutation {

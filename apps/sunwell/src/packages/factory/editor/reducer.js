@@ -181,6 +181,9 @@ function actions(state, { type, payload }) {
           id: actionId,
           type,
           config,
+          relations: {},
+          commands: [],
+          pages: [],
         },
       }
     }

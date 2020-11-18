@@ -57,10 +57,10 @@ export function Root({ listAll, relations, onRelationChange }) {
     <>
       <span>Execute</span>
       <Static
-        creationTitle="Add query"
         map={map}
-        editionTitle={command?.name}
         clearable={false}
+        creationTitle="Add query"
+        editionTitle={command?.name}
         value={command?.id}
         onChange={(_, command) => onRelationChange(RELATION_TYPE, KEY, command)}
         suggestions={suggestions}
