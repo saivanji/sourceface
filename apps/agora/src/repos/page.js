@@ -41,7 +41,7 @@ const sql = {
  */
 const createRegExp = (path, creator) => {
   const pattern = split(path)
-    .map((x) => `\\/(${x}|:[a-z]+)`)
+    .map((x) => `\\/(${x}|:[A-Za-z]+)`)
     .join("")
 
   return `^${pattern}$`

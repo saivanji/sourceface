@@ -37,8 +37,7 @@ export default () => {
       <When
         cond={!!page}
         component={Container}
-        queries={result.data?.commands}
-        page={result.data?.page}
+        page={page}
         effects={effects}
         stock={stock}
       >

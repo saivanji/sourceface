@@ -51,6 +51,8 @@ const EditableModule = ({ children, scopeRef, id }) => {
   return cloneElement(children, {
     ref,
     onClick: (e) => {
+      if (isSelected) return
+
       /**
        * Propagating click events in order to be able to click on nested module
        */

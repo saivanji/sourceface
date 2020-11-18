@@ -22,7 +22,7 @@ export function Action({ action, children }) {
   }
 
   const root = <Root {...props} />
-  const cut = <Cut {...props} />
+  const cut = Cut && <Cut {...props} />
 
   return (
     <context.Provider value={{ action }}>

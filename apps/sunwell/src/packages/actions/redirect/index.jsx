@@ -32,12 +32,17 @@ export function Root({ listAll, relations, onRelationChange }) {
   )
 }
 
-export const serialize = (config, evaluate) => {
-  return []
+export const serialize = (config, relations, evaluate) => {
+  const page = relations[RELATION_TYPE]?.[KEY]
+
+  return [page?.route]
 }
 
-export const execute = ({ queries }) => () => {
-  console.log("works")
+export const execute = ({ effects }) => (route) => {
+  if (route) {
+    // TODO: keep in mind params replacement
+    effects.navigate(route)
+  }
 }
 
 export const settings = {

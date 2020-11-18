@@ -62,7 +62,7 @@ export const useValue = (...input) => {
 }
 
 const useData = (input, identify = false, restore = false) => {
-  const { stock } = useContainer()
+  const { stock, effects } = useContainer()
   const { module } = useModule()
   const { evaluate } = useVariables(module.id)
 
@@ -88,7 +88,7 @@ const useData = (input, identify = false, restore = false) => {
       if (identify) {
         identifier += JSON.stringify(args)
       }
-      sequence.push((onReload) => execute({ onReload })(...args))
+      sequence.push((onReload) => execute({ effects, onReload })(...args))
 
       const cacheable = !!readCache
       const cached = cacheable && readCache(...args)
@@ -100,7 +100,9 @@ const useData = (input, identify = false, restore = false) => {
 
       if (initial) {
         initialValue =
-          !settings?.effect && !cacheable ? execute({})(...args) : cached
+          !settings?.effect && !cacheable
+            ? execute({ effects })(...args)
+            : cached
       }
     }
 

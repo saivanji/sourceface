@@ -4,19 +4,11 @@ import { Scope } from "./scope"
 
 const context = createContext({})
 
-export function Container({
-  children,
-  stock,
-  queries,
-  page,
-  effects,
-  // pages,
-}) {
+export function Container({ children, stock, page, effects }) {
   return (
     <context.Provider
       value={{
         stock,
-        queries,
         effects,
       }}
     >
