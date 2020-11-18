@@ -74,9 +74,8 @@ const useData = (input, identify = false, restore = false) => {
     let sequence = []
     let initialValue
 
-    const actions = actionIds.map((id) =>
-      module.actions.find((a) => a.id === id)
-    )
+    const actions =
+      actionIds?.map((id) => module.actions.find((a) => a.id === id)) || []
 
     for (let action of actions) {
       const { config, type } = action
