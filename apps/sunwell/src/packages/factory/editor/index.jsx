@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useReducer, useState } from "react"
 import { normalize, denormalize } from "normalizr"
-import { detailedDiff } from "deep-object-diff"
 import schema, { action as actionSchema } from "./schema"
 import { useActions } from "./actions"
 import reducer from "./reducer"
+import persist from "./persistence"
 
 const context = createContext({})
 
@@ -14,7 +14,7 @@ const context = createContext({})
 export function Editor({ children, page: cached }) {
   const initialState = normalize(cached, schema)
 
-  const [state, dispatch] = usePersistedReducer(reducer, initialState)
+  const [state, dispatch] = useReducer(reducer, initialState)
   const actions = useActions(state, initialState, dispatch)
   const selectors = createSelectors(state)
 
@@ -24,13 +24,12 @@ export function Editor({ children, page: cached }) {
 
   const selected = page.modules.find((x) => x.id === state.selection)
 
-  function diff() {
-    return detailedDiff(initialState.entities, state.entities)
-  }
+  const save = () => persist(initialState, state)
 
   return (
     <context.Provider
       value={{
+        save,
         selectors,
         isEditing: state.isEditing,
         layout: page.layout,

@@ -16,6 +16,7 @@ export default (state, action) => {
     result: result(state.result, action),
     selection: selection(state.selection, action),
     isEditing: edition(state.isEditing, action),
+    isDirty: dirty(state.isDirty, action),
   }
 }
 
@@ -298,4 +299,12 @@ function edition(state, action) {
     default:
       return state
   }
+}
+
+function dirty(state, action) {
+  if (!["select", "edit"].includes(action.type)) {
+    return true
+  }
+
+  return state
 }
