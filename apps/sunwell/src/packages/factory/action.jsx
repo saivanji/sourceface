@@ -25,9 +25,7 @@ export function Action({ action, children }) {
   const cut = Cut && <Cut {...props} />
 
   return (
-    <context.Provider value={{ action }}>
-      {children(root, cut)}
-    </context.Provider>
+    <context.Provider value={props}>{children(root, cut)}</context.Provider>
   )
 }
 

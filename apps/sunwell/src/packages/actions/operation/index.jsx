@@ -1,5 +1,5 @@
 import React from "react"
-import { Static, Arguments } from "packages/toolkit"
+import { Relation, Arguments } from "packages/toolkit"
 import request, { cache } from "./request"
 
 // TODO: when adding a new action, user will choose from multiple sub categories. For some modules will be the only one option(query, redirect),
@@ -39,31 +39,18 @@ import request, { cache } from "./request"
 // 3. Keep field name inside of action bar. Rethink empty state. Fit action creation inside of action bar.
 // 4. Consider not collapsing actions, since it might be not much of them
 
-const KEY = "current"
+const FIELD = "current"
 const RELATION_TYPE = "commands"
 
-export function Root({ listAll, relations, onRelationChange }) {
-  const command = relations[RELATION_TYPE]?.[KEY]
-
-  const suggestions = (search, page) =>
-    listAll(RELATION_TYPE, { search, limit: 10, offset: page * 10 })
-
-  const map = (command) => ({
-    value: command.id,
-    title: command.name,
-  })
-
+export function Root() {
   return (
     <>
       <span>Execute</span>
-      <Static
-        map={map}
-        clearable={false}
-        creationTitle="Add query"
-        editionTitle={command?.name}
-        value={command?.id}
-        onChange={(_, command) => onRelationChange(RELATION_TYPE, KEY, command)}
-        suggestions={suggestions}
+      <Relation
+        type={RELATION_TYPE}
+        field={FIELD}
+        titleField="name"
+        creationTitle="Add operation"
       />
       query
     </>
@@ -75,7 +62,7 @@ export function Cut({
   config: { groups = [], fields = [] },
   onConfigChange,
 }) {
-  const command = relations[RELATION_TYPE]?.[KEY]
+  const command = relations[RELATION_TYPE]?.[FIELD]
   const changeFields = (fields) => onConfigChange("fields", fields)
   const changeGroups = (groups) => onConfigChange("groups", groups)
 
@@ -92,7 +79,7 @@ export function Cut({
 }
 
 export const serialize = (config, relations, evaluate) => {
-  const command = relations[RELATION_TYPE]?.[KEY]
+  const command = relations[RELATION_TYPE]?.[FIELD]
   const staleIds = command?.stale.map((x) => x.id)
 
   const fields = config.fields?.reduce(
