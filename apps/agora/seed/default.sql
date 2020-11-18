@@ -329,6 +329,7 @@ SELECT pg_catalog.setval('public.commands_id_seq', 10, true);
 
 COPY public.layouts (id, created_at, positions) FROM stdin;
 1a3c0c29-a473-473d-b744-6e609154a14b	2020-11-02 18:15:37.692755	{"1a3c0c29-a473-473d-b744-6e609154a14a":{"w":10,"h":12,"x":0,"y":1}}
+a3f2d2a9-e588-47be-853e-975ab124236b	2020-11-18 18:52:26.794869	{}
 \.
 
 
@@ -364,6 +365,7 @@ COPY public.modules_layouts (module_id, layout_id) FROM stdin;
 
 COPY public.pages (id, created_at, route, layout_id, title) FROM stdin;
 4	2020-11-02 18:16:20.260669	/orders	1a3c0c29-a473-473d-b744-6e609154a14b	Orders list
+5	2020-11-18 18:53:18.840502	/orders/:orderId	a3f2d2a9-e588-47be-853e-975ab124236b	Order edition
 \.
 
 
@@ -371,7 +373,7 @@ COPY public.pages (id, created_at, route, layout_id, title) FROM stdin;
 -- Name: pages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.pages_id_seq', 4, true);
+SELECT pg_catalog.setval('public.pages_id_seq', 5, true);
 
 
 --

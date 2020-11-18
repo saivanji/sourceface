@@ -8,7 +8,7 @@
     "format": "prettier --write \"src/**/*.js\"",
     "lint": "prettier --check \"src/**/*.js\" && eslint \"src/**/*.js\"",
     "build": "babel ./server.js --out-dir ./build",
-    "seed:dump": "node ./seed dump",
+    "seed:save": "node ./seed save",
     "seed:restore": "node ./seed restore",
     "migrate:create": "migrate create",
     "migrate:list": "migrate list --store='./setup/migrationStore' --compiler='js:@babel/register'",

@@ -3,7 +3,7 @@ const { execSync } = require("child_process")
 
 const { DATABASE_URL } = process.env
 
-const generatePath = name => path.resolve(__dirname, name)
+const generatePath = (name) => path.resolve(__dirname, name)
 
 const run = (command, message) => {
   execSync(command, {
@@ -18,30 +18,30 @@ const run = (command, message) => {
 
 require("yargs")
   .command(
-    "dump [name]",
-    "dump seed",
-    yargs => {
+    "save [name]",
+    "save seed",
+    (yargs) => {
       yargs.positional("name", {
-        describe: "generates seed from current database",
+        describe: "saves seed from current database",
         default: "default",
       })
     },
-    argv =>
+    (argv) =>
       run(
         `pg_dump ${DATABASE_URL} > ${generatePath(argv.name)}.sql`,
-        `"${argv.name}" seed was generated successfully`
+        `"${argv.name}" seed was saved successfully`
       )
   )
   .command(
     "restore [name]",
     "restore seed",
-    yargs => {
+    (yargs) => {
       yargs.positional("name", {
         describe: "applies seed data",
         default: "default",
       })
     },
-    argv => {
+    (argv) => {
       run(
         `
         echo "DROP SCHEMA public CASCADE; CREATE SCHEMA public;" | psql ${DATABASE_URL} &&
