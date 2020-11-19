@@ -9,14 +9,15 @@ export default (initialState, state) => {
 
   for (let { kind, path, rhs } of diff) {
     /**
-     * Module creation
+     * Module creation of base fields
      */
     if (kind === "N" && path[0] === "modules" && path.length === 2) {
       const moduleId = rhs.id
+      const key = `createModule/${moduleId}`
 
-      result[`createModule/${moduleId}`] = {
+      result[key] = {
+        ...result[key],
         moduleId,
-        layoutId: null,
         type: rhs.type,
         name: rhs.name,
         config: rhs.config,
@@ -24,7 +25,7 @@ export default (initialState, state) => {
     }
 
     /**
-     * Add layout position
+     * Module creation of position field
      */
     if (
       kind === "N" &&
@@ -33,15 +34,50 @@ export default (initialState, state) => {
       path.length === 4
     ) {
       const layoutId = path[1]
-      const positionId = path[3]
-      const key = `updateLayout/${layoutId}`
+      const moduleId = path[3]
+      const key = `createModule/${moduleId}`
 
       result[key] = {
+        ...result[key],
         layoutId,
-        positions: {
-          ...result[key]?.positions,
-          [positionId]: rhs,
-        },
+        position: rhs,
+      }
+    }
+
+    /**
+     * Update module information
+     */
+    if (kind === "E" && path[0] === "modules") {
+      const moduleId = path[1]
+      const prop = path[2]
+      const key = `updateModule/${moduleId}`
+
+      result[key] =
+        prop === "config"
+          ? {
+              ...result[key],
+              moduleId,
+              config: {
+                ...result[key]?.config,
+                [path[3]]: rhs,
+              },
+            }
+          : {
+              ...result[key],
+              moduleId,
+              [prop]: rhs,
+            }
+    }
+
+    /**
+     * Remove module
+     */
+    if (kind === "D" && path[0] === "modules" && path.length === 2) {
+      const moduleId = path[1]
+      const key = `removeModule/${moduleId}`
+
+      result[key] = {
+        moduleId,
       }
     }
 
