@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useState } from "react"
+import React, { createContext, useContext, useReducer } from "react"
 import { normalize, denormalize } from "normalizr"
 import schema, { action as actionSchema } from "./schema"
 import { useActions } from "./actions"
@@ -61,27 +61,4 @@ const createSelectors = (state) => ({
 
 export const useEditor = () => {
   return useContext(context)
-}
-
-// Temp. Until diff algorythm will be implemented.
-const usePersistedReducer = (reducer, initialState) => {
-  const key = "editor_state"
-  const raw = localStorage.getItem(key)
-  const persisted = raw && JSON.parse(raw)
-
-  const [state, setState] = useState(persisted || initialState)
-
-  return [
-    state,
-    (action) => {
-      if (action.type !== "reset") {
-        const raw = localStorage.getItem(key)
-        const prevState = (raw && JSON.parse(raw)) || state
-        const nextState = reducer(prevState, action)
-
-        localStorage.setItem(key, JSON.stringify(nextState))
-        setState(nextState)
-      }
-    },
-  ]
 }

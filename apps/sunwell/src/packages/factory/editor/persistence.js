@@ -3,20 +3,18 @@ import deepDiff from "deep-diff"
 export default (initialState, state) => {
   const diff = deepDiff(initialState.entities, state.entities)
 
-  console.log(diff)
-
   let result = {}
 
-  for (let { kind, path, rhs } of diff) {
+  for (let { kind, path, rhs, item } of diff) {
     /**
-     * Module creation of base fields
+     * Create module
      */
     if (kind === "N" && path[0] === "modules" && path.length === 2) {
       const moduleId = rhs.id
-      const key = `createModule/${moduleId}`
+      const mutation = `createModule/${moduleId}`
 
-      result[key] = {
-        ...result[key],
+      result[mutation] = {
+        ...result[mutation],
         moduleId,
         type: rhs.type,
         name: rhs.name,
@@ -25,7 +23,7 @@ export default (initialState, state) => {
     }
 
     /**
-     * Module creation of position field
+     * Create module(assign position to layout)
      */
     if (
       kind === "N" &&
@@ -35,10 +33,10 @@ export default (initialState, state) => {
     ) {
       const layoutId = path[1]
       const moduleId = path[3]
-      const key = `createModule/${moduleId}`
+      const mutation = `createModule/${moduleId}`
 
-      result[key] = {
-        ...result[key],
+      result[mutation] = {
+        ...result[mutation],
         layoutId,
         position: rhs,
       }
@@ -47,26 +45,28 @@ export default (initialState, state) => {
     /**
      * Update module information
      */
-    if (kind === "E" && path[0] === "modules") {
+    if (
+      (kind === "E" || kind === "N" || kind === "A") &&
+      path[0] === "modules" &&
+      ["name", "config"].includes(path[2]) &&
+      path.length > 2
+    ) {
       const moduleId = path[1]
-      const prop = path[2]
-      const key = `updateModule/${moduleId}`
+      const field = path[2]
+      const objectField = path[3]
+      const isObject = field === "config" && path.length > 3
+      const mutation = `updateModule/${moduleId}`
 
-      result[key] =
-        prop === "config"
+      result[mutation] = {
+        moduleId,
+        [field]: isObject
           ? {
-              ...result[key],
-              moduleId,
-              config: {
-                ...result[key]?.config,
-                [path[3]]: rhs,
-              },
+              ...result[mutation]?.[field],
+              [objectField]:
+                state.entities.modules[moduleId][field][objectField],
             }
-          : {
-              ...result[key],
-              moduleId,
-              [prop]: rhs,
-            }
+          : rhs,
+      }
     }
 
     /**
@@ -74,9 +74,9 @@ export default (initialState, state) => {
      */
     if (kind === "D" && path[0] === "modules" && path.length === 2) {
       const moduleId = path[1]
-      const key = `removeModule/${moduleId}`
+      const mutation = `removeModule/${moduleId}`
 
-      result[key] = {
+      result[mutation] = {
         moduleId,
       }
     }
@@ -92,18 +92,96 @@ export default (initialState, state) => {
     ) {
       const layoutId = path[1]
       const positionId = path[3]
-      const prop = path[4]
-      const key = `updateLayout/${layoutId}`
+      const field = path[4]
+      const mutation = `updateLayout/${layoutId}`
 
-      result[key] = {
+      result[mutation] = {
         layoutId,
         positions: {
-          ...result[key]?.positions,
+          ...result[mutation]?.positions,
           [positionId]: {
-            ...result[key]?.positions[positionId],
-            [prop]: rhs,
+            ...result[mutation]?.positions[positionId],
+            [field]: rhs,
           },
         },
+      }
+    }
+
+    /**
+     * Create action
+     */
+    if (kind === "N" && path[0] === "actions" && path.length === 2) {
+      const actionId = path[1]
+      const mutation = `createAction/${actionId}`
+
+      result[mutation] = {
+        ...result[mutation],
+        actionId,
+        type: rhs.type,
+        name: rhs.name,
+        config: rhs.config,
+        relations: rhs.relations,
+      }
+    }
+
+    /**
+     * Creation action(assign to module)
+     */
+    if (
+      kind === "A" &&
+      path[0] === "modules" &&
+      path[2] === "actions" &&
+      path.length === 3 &&
+      item.kind === "N"
+    ) {
+      const moduleId = path[1]
+      const actionId = item.rhs
+      const mutation = `createAction/${actionId}`
+
+      result[mutation] = {
+        ...result[mutation],
+        moduleId,
+      }
+    }
+
+    /**
+     * Update action
+     */
+    if (
+      (kind === "E" || kind === "N" || kind === "A") &&
+      path[0] === "actions" &&
+      ["name", "relations", "config"].includes(path[2]) &&
+      path.length > 2
+    ) {
+      const actionId = path[1]
+      const field = path[2]
+      const objectField = path[3]
+      const isObject =
+        ["relations", "config"].includes(field) && path.length > 3
+      const mutation = `updateAction/${actionId}`
+
+      result[mutation] = {
+        ...result[mutation],
+        actionId,
+        [field]: isObject
+          ? {
+              ...result[mutation]?.[field],
+              [objectField]:
+                state.entities.actions[actionId][field][objectField],
+            }
+          : rhs,
+      }
+    }
+
+    /**
+     * Remove action
+     */
+    if (kind === "D" && path[0] === "actions" && path.length === 2) {
+      const actionId = path[1]
+      const mutation = `removeAction/${actionId}`
+
+      result[mutation] = {
+        actionId,
       }
     }
   }
