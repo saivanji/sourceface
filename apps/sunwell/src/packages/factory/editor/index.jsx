@@ -31,7 +31,10 @@ export function Editor({ children, page: cached }) {
       value={{
         save,
         selectors,
+        // TODO: move to selectors?
         isEditing: state.isEditing,
+        isDirty: state.isDirty,
+        //
         layout: page.layout,
         modules: page.modules,
         selected,
