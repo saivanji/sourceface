@@ -9,31 +9,28 @@
   background-color: $color-gray-400;
 }
 
-.add {
-  margin-top: $value-2;
-}
-
-.link {
-  user-select: none;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  cursor: pointer;
-  border-radius: $rounded-sm;
-  border: 1px solid $color-gray-400;
-  background-color: $color-gray-100;
-  padding: $value-1 $value-2;
-  &.opened {
-    background-color: $color-gray-300;
+.list {
+  .add {
+    opacity: 0;
+  }
+  &:hover .add {
+    opacity: 1;
   }
 }
 
-.stateIcon {
-  width: $value-3;
-  height: $value-3;
-  margin-left: auto;
+.box {
+  display: flex;
+  align-items: center;
+  &.populated {
+    margin-bottom: $value-1;
+  }
 }
 
-.list {
-  margin-top: $value-2;
+.label {
+  font-weight: 600;
+  color: $color-gray-900;
+}
+
+.add {
+  margin-left: auto;
 }

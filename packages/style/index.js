@@ -114,6 +114,7 @@ exports.fonts = {
 
 exports.rounded = {
   sm: "0.25rem",
+  // TODO: have .375 instead?
   base: "0.3125rem",
   full: "9999px",
 }

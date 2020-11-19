@@ -108,9 +108,7 @@ export const Configuration = function TableModuleConfiguration({ config }) {
     <>
       <Section title="Basic">
         <Row>
-          <Label title="Data">
-            <Field name="data" component={Pipe} />
-          </Label>
+          <Field label="Data" name="data" component={Pipe} />
         </Row>
       </Section>
       <Section title="Pagination">
@@ -120,14 +118,15 @@ export const Configuration = function TableModuleConfiguration({ config }) {
         {config.pagination && (
           <>
             <Row>
-              <Label title="Total count">
-                <Field name="count" component={Pipe} />
-              </Label>
+              <Field label="Total count" name="count" component={Pipe} />
             </Row>
             <Row>
-              <Label title="Current page">
-                <Field name="currentPage" type="text" component={Pipe} />
-              </Label>
+              <Field
+                label="Current page"
+                name="currentPage"
+                type="text"
+                component={Pipe}
+              />
             </Row>
             <Row>
               <Label title="Items per page">

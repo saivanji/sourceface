@@ -1,4 +1,5 @@
 import React from "react"
+import cx from "classnames"
 import { without } from "ramda"
 import { Autocomplete, Button, Toggle } from "@sourceface/components"
 import {
@@ -11,7 +12,7 @@ import Add from "assets/add.svg"
 import Card from "./Card"
 import styles from "./index.scss"
 
-export default ({ value = [], onChange }) => {
+export default ({ label, value = [], onChange }) => {
   const { module } = useConfiguration()
   const { selectors, createAction, removeAction, renameAction } = useEditor()
 
@@ -27,11 +28,13 @@ export default ({ value = [], onChange }) => {
 
   const actions = selectors.actions(value)
 
+  // TODO: implement toggling of existing actions?
   return !actions.length ? (
-    <Creation onCreate={create} />
+    <Creation label={label} onCreate={create} />
   ) : (
-    <>
-      <div className={styles.list}>
+    <div className={styles.list}>
+      <Creation label={label} populated onCreate={create} />
+      <div>
         {actions.map((action) => (
           <div key={action.id} className={styles.action}>
             <Action action={action}>
@@ -49,39 +52,37 @@ export default ({ value = [], onChange }) => {
           </div>
         ))}
       </div>
-      <Creation className={styles.add} onCreate={create} />
-    </>
+    </div>
   )
 }
 
-function Creation({ className, onCreate }) {
+function Creation({ label, populated, onCreate }) {
   const { stock } = useContainer()
 
-  const trigger = (
-    <Button
-      className={className}
-      shouldFitContainer
-      size="small"
-      appearance="link"
-      icon={<Add />}
-    >
-      Add action
-    </Button>
-  )
-
   return (
-    <Toggle trigger={trigger}>
-      {(close) => (
-        <Autocomplete
-          placeholder="Choose action..."
-          items={stock.actions.list}
-          map={(item) => ({ title: item.type, value: item.type })}
-          onChange={(value) => {
-            onCreate(value)
-            close()
-          }}
-        />
-      )}
-    </Toggle>
+    <div className={cx(styles.box, populated && styles.populated)}>
+      <span className={styles.label}>{label}</span>
+      <Toggle
+        className={styles.add}
+        position="bottomRight"
+        trigger={
+          <Button appearance="link" size="small" icon={<Add />}>
+            Add action
+          </Button>
+        }
+      >
+        {(close) => (
+          <Autocomplete
+            placeholder="Choose action..."
+            items={stock.actions.list}
+            map={(item) => ({ title: item.type, value: item.type })}
+            onChange={(value) => {
+              onCreate(value)
+              close()
+            }}
+          />
+        )}
+      </Toggle>
+    </div>
   )
 }
