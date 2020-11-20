@@ -1,26 +1,31 @@
+import { mergeRight } from "ramda"
 import * as moduleRepo from "repos/module"
+import * as layoutService from "services/layout"
 
 const createModule = async (
   parent,
-  { moduleId, layoutId, type, name, config },
+  { moduleId, layoutId, position, type, name, config },
   { pg }
-) => {
-  return moduleRepo.create(moduleId, layoutId, type, name, config, pg)
-}
+) =>
+  pg.tx(async (t) => {
+    await layoutService.updatePositions(layoutId, { [moduleId]: position }, t)
 
-const configureModule = async (parent, { moduleId, key, value }, { pg }) => {
+    return moduleRepo.create(moduleId, layoutId, type, name, config, t)
+  })
+
+const updateModule = async (parent, { moduleId, name, config }, { pg }) => {
   return await pg.task(async (t) => {
-    const module = await moduleRepo.one(moduleId, t)
+    const prev = await moduleRepo.one(moduleId, t)
+    const fields = {
+      ...(name && { name }),
+      ...(config && { config: mergeRight(prev.config, config) }),
+    }
 
     // TODO: perform validation of config input data depending on module type
     // also check on validationSchema whether it has "key" user tries to update
     // define specific module config types with scalars(bounded with validationSchemas)?
 
-    return await moduleRepo.updateConfig(
-      moduleId,
-      { ...module.config, [key]: value },
-      t
-    )
+    return name || config ? await moduleRepo.update(moduleId, fields, t) : prev
   })
 }
 
@@ -41,7 +46,7 @@ const layouts = (parent, args, ctx) =>
 export default {
   Mutation: {
     createModule,
-    configureModule,
+    updateModule,
     removeModule,
   },
   Module: {

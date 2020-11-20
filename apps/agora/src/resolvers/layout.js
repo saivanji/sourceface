@@ -1,8 +1,7 @@
-import * as layoutRepo from "repos/layout"
+import * as layoutService from "services/layout"
 
-// TODO: use deep merge with existing positions
 const updateLayout = (parent, { layoutId, positions }, { pg }) =>
-  layoutRepo.updatePositions(layoutId, positions, pg)
+  layoutService.updatePositions(layoutId, positions, pg)
 
 export default {
   Mutation: {

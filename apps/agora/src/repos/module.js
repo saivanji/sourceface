@@ -1,9 +1,12 @@
+import { pick } from "ramda"
+import { pgp } from "../postgres"
+
 export const one = (moduleId, pg) => pg.one(sql.one, [moduleId])
 export const create = (moduleId, layoutId, type, name, config, pg) =>
   pg.one(sql.create, [moduleId, layoutId, type, name, config])
+export const update = (moduleId, fields, pg) =>
+  pg.one(sql.update(fields), [moduleId])
 export const remove = (moduleId, pg) => pg.none(sql.remove, [moduleId])
-export const updateConfig = (moduleId, config, pg) =>
-  pg.one(sql.updateConfig, [moduleId, config])
 export const listByPageIds = (pageIds, pg) =>
   pg.manyOrNone(sql.listByPageIds, [pageIds])
 
@@ -19,10 +22,6 @@ const sql = {
   remove: `
     DELETE FROM modules WHERE id = $1
   `,
-  updateConfig: `
-    UPDATE modules SET config = $2 WHERE id = $1
-    RETURNING *
-  `,
   listByPageIds: `
     WITH recursive cte AS (
       SELECT m.*, pg.id AS page_id FROM modules AS m
@@ -36,6 +35,10 @@ const sql = {
       INNER JOIN cte ON cte.id = ml.module_id
     ) SELECT * FROM cte
   `,
+  update: (fields) =>
+    pgp.helpers.update(pick(["name", "config"], fields), null, "modules", {
+      emptyUpdate: sql.one,
+    }) + " WHERE id = $1 RETURNING *",
 }
 
 // SELECT $1 AS id, $2 AS type, $3 AS config, $4 AS position_id,

@@ -7,13 +7,8 @@ const createAction = async (
   { pg }
 ) => await actionRepo.create(actionId, moduleId, type, config, pg)
 
-const removeAction = async (parent, { actionId }, { pg }) => {
-  await actionRepo.remove(actionId, pg)
-  return true
-}
-
 const updateAction = (parent, { actionId, name, config, relations }, { pg }) =>
-  pg.tx(async (t) => {
+  pg.task(async (t) => {
     const prev = await actionRepo.one(actionId, t)
     const fields = {
       ...(name && { name }),
@@ -27,6 +22,11 @@ const updateAction = (parent, { actionId, name, config, relations }, { pg }) =>
       ? await actionRepo.update(actionId, fields, t)
       : prev
   })
+
+const removeAction = async (parent, { actionId }, { pg }) => {
+  await actionRepo.remove(actionId, pg)
+  return true
+}
 
 const pages = (parent, args, ctx) =>
   ctx.loaders.pagesByRelations.load(parent.relations)
