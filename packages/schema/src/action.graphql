@@ -19,6 +19,7 @@ extend type Mutation {
     actionId: UUID!
     moduleId: UUID!
     type: ActionType!
+    name: String
     config: JSONObject!
     relations: JSONObject!
   ): Action!

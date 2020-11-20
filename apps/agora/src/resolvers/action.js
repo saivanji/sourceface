@@ -3,9 +3,10 @@ import * as actionRepo from "repos/action"
 
 const createAction = async (
   parent,
-  { actionId, moduleId, type, config },
+  { actionId, moduleId, type, name, config, relations },
   { pg }
-) => await actionRepo.create(actionId, moduleId, type, config, pg)
+) =>
+  await actionRepo.create(actionId, moduleId, type, name, config, relations, pg)
 
 const updateAction = (parent, { actionId, name, config, relations }, { pg }) =>
   pg.task(async (t) => {

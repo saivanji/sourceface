@@ -1,24 +1,105 @@
 import { useState, useEffect } from "react"
-import { keys } from "ramda"
+import { keys, toPairs } from "ramda"
+import { client } from "packages/client"
 import deepDiff from "deep-diff"
 
 export const useSave = (initialState, state) => {
   const [isPristine, setPristine] = useState(true)
-  const save = () => createMutations(initialState, state)
+  const [isSaving, setSaving] = useState(false)
+  const save = async () => {
+    const mutation = createMutation(createChanges(initialState, state))
+
+    console.log(mutation)
+
+    setSaving(true)
+    await client.mutation(mutation).toPromise()
+    setSaving(false)
+
+    // TODO: reset editor state
+  }
 
   useEffect(() => {
-    const mutations = save()
-    const isEqual = keys(mutations).length === 0
+    const changes = createChanges(initialState, state)
+    const isEqual = keys(changes).length === 0
 
     if (isEqual !== isPristine) {
       setPristine(isEqual)
     }
   })
 
-  return [isPristine, save]
+  return [isPristine, isSaving, save]
 }
 
-const createMutations = (initialState, state) => {
+// all fields will be required in generated mutation
+const definition = {
+  createModule: [
+    {
+      moduleId: "UUID",
+      layoutId: "UUID",
+      type: "ModuleType",
+      name: "String",
+      config: "JSONObject",
+      positions: "JSONObject",
+    },
+    ["id", "type", "config"],
+  ],
+  updateModule: [
+    {
+      moduleId: "UUID",
+      name: "String",
+      config: "JSONObject",
+    },
+    "@populate",
+  ],
+  removeModule: [
+    {
+      moduleId: "UUID",
+    },
+  ],
+  createAction: [
+    {
+      actionId: "UUID",
+      moduleId: "UUID",
+      type: "ModuleType",
+      name: "String",
+      config: "JSONObject",
+      relations: "JSONObject",
+    },
+    "@populate",
+  ],
+  updateAction: [
+    {
+      actionId: "UUID",
+      name: "String",
+      config: "JSONObject",
+      relations: "JSONObject",
+    },
+    "@populate",
+  ],
+  removeAction: [
+    {
+      actionId: "UUID",
+    },
+  ],
+}
+
+const createMutation = (changes) => {
+  const body = toPairs(changes).reduce((result, [identifier, args], i) => {
+    const mutationName = identifier.split("/")[0]
+    // const variableName = `$v${i}`
+
+    return result + `${mutationName}(${stringifyArgs(args)}) @populate`
+  }, "")
+
+  return `mutation {${body}}`
+}
+
+const stringifyArgs = (args) =>
+  toPairs(args)
+    .map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
+    .join(",")
+
+const createChanges = (initialState, state) => {
   const diff = deepDiff(initialState.entities, state.entities) || []
 
   let result = {}
@@ -29,10 +110,10 @@ const createMutations = (initialState, state) => {
      */
     if (kind === "N" && path[0] === "modules" && path.length === 2) {
       const moduleId = rhs.id
-      const mutation = `createModule/${moduleId}`
+      const identifier = `createModule/${moduleId}`
 
-      result[mutation] = {
-        ...result[mutation],
+      result[identifier] = {
+        ...result[identifier],
         moduleId,
         type: rhs.type,
         name: rhs.name,
@@ -51,10 +132,10 @@ const createMutations = (initialState, state) => {
     ) {
       const layoutId = path[1]
       const moduleId = path[3]
-      const mutation = `createModule/${moduleId}`
+      const identifier = `createModule/${moduleId}`
 
-      result[mutation] = {
-        ...result[mutation],
+      result[identifier] = {
+        ...result[identifier],
         layoutId,
         position: rhs,
       }
@@ -73,13 +154,13 @@ const createMutations = (initialState, state) => {
       const field = path[2]
       const objectField = path[3]
       const isObject = field === "config" && path.length > 3
-      const mutation = `updateModule/${moduleId}`
+      const identifier = `updateModule/${moduleId}`
 
-      result[mutation] = {
+      result[identifier] = {
         moduleId,
         [field]: isObject
           ? {
-              ...result[mutation]?.[field],
+              ...result[identifier]?.[field],
               [objectField]:
                 state.entities.modules[moduleId][field][objectField],
             }
@@ -92,9 +173,9 @@ const createMutations = (initialState, state) => {
      */
     if (kind === "D" && path[0] === "modules" && path.length === 2) {
       const moduleId = path[1]
-      const mutation = `removeModule/${moduleId}`
+      const identifier = `removeModule/${moduleId}`
 
-      result[mutation] = {
+      result[identifier] = {
         moduleId,
       }
     }
@@ -111,14 +192,14 @@ const createMutations = (initialState, state) => {
       const layoutId = path[1]
       const positionId = path[3]
       const field = path[4]
-      const mutation = `updateLayout/${layoutId}`
+      const identifier = `updateLayout/${layoutId}`
 
-      result[mutation] = {
+      result[identifier] = {
         layoutId,
         positions: {
-          ...result[mutation]?.positions,
+          ...result[identifier]?.positions,
           [positionId]: {
-            ...result[mutation]?.positions[positionId],
+            ...result[identifier]?.positions[positionId],
             [field]: rhs,
           },
         },
@@ -130,10 +211,10 @@ const createMutations = (initialState, state) => {
      */
     if (kind === "N" && path[0] === "actions" && path.length === 2) {
       const actionId = path[1]
-      const mutation = `createAction/${actionId}`
+      const identifier = `createAction/${actionId}`
 
-      result[mutation] = {
-        ...result[mutation],
+      result[identifier] = {
+        ...result[identifier],
         actionId,
         type: rhs.type,
         name: rhs.name,
@@ -154,10 +235,10 @@ const createMutations = (initialState, state) => {
     ) {
       const moduleId = path[1]
       const actionId = item.rhs
-      const mutation = `createAction/${actionId}`
+      const identifier = `createAction/${actionId}`
 
-      result[mutation] = {
-        ...result[mutation],
+      result[identifier] = {
+        ...result[identifier],
         moduleId,
       }
     }
@@ -176,14 +257,14 @@ const createMutations = (initialState, state) => {
       const objectField = path[3]
       const isObject =
         ["config", "relations"].includes(field) && path.length > 3
-      const mutation = `updateAction/${actionId}`
+      const identifier = `updateAction/${actionId}`
 
-      result[mutation] = {
-        ...result[mutation],
+      result[identifier] = {
+        ...result[identifier],
         actionId,
         [field]: isObject
           ? {
-              ...result[mutation]?.[field],
+              ...result[identifier]?.[field],
               [objectField]:
                 state.entities.actions[actionId][field][objectField],
             }
@@ -196,9 +277,9 @@ const createMutations = (initialState, state) => {
      */
     if (kind === "D" && path[0] === "actions" && path.length === 2) {
       const actionId = path[1]
-      const mutation = `removeAction/${actionId}`
+      const identifier = `removeAction/${actionId}`
 
-      result[mutation] = {
+      result[identifier] = {
         actionId,
       }
     }

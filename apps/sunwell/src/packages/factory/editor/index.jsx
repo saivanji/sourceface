@@ -22,7 +22,7 @@ export function Editor({ children, page: cached }) {
 
   const selected = page.modules.find((x) => x.id === state.selection)
 
-  const [isPristine, save] = useSave(initialState, state)
+  const [isPristine, isSaving, save] = useSave(initialState, state)
 
   return (
     <context.Provider
@@ -32,6 +32,7 @@ export function Editor({ children, page: cached }) {
         // TODO: move to selectors?
         isEditing: state.isEditing,
         isPristine,
+        isSaving,
         //
         layout: page.layout,
         modules: page.modules,
