@@ -30,7 +30,7 @@ const updateModule = async (parent, { moduleId, name, config }, { pg }) => {
 }
 
 const removeModule = async (parent, { moduleId }, { pg }) => {
-  // TODO: remove module from the assigned layout. Most likely accept layoutId?
+  // TODO: remove module from the assigned layout.(get layout_id from delete statement)
 
   await moduleRepo.remove(moduleId, pg)
 

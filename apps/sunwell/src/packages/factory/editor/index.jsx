@@ -22,7 +22,9 @@ export function Editor({ children, page: cached }) {
 
   const selected = page.modules.find((x) => x.id === state.selection)
 
-  const [isPristine, isSaving, save] = useSave(initialState, state)
+  const [isPristine, isSaving, save] = useSave(initialState, state, () =>
+    actions.edit(false)
+  )
 
   return (
     <context.Provider

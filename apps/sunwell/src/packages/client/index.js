@@ -11,9 +11,7 @@ import { devtoolsExchange } from "@urql/devtools"
 import { cacheExchange } from "@urql/exchange-graphcache"
 import { populateExchange } from "@urql/exchange-populate"
 import { introspection } from "@sourceface/schema"
-import * as optimistic from "./optimistic"
 import * as updates from "./updates"
-import * as mutations from "./mutations"
 
 const endpoint = "http://localhost:5001/graphql"
 
@@ -30,7 +28,6 @@ const client = createClient({
     }),
     cacheExchange({
       schema: introspection,
-      optimistic,
       updates: {
         Mutation: updates,
       },
@@ -46,4 +43,4 @@ export function ClientProvider({ children }) {
 /**
  * Re-exporting useQuery and useMutation hooks for the convenience.
  */
-export { mutations, useQuery, useMutation, client }
+export { useQuery, useMutation, client }

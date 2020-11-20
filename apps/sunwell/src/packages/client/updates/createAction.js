@@ -1,6 +1,6 @@
 import { parse } from "graphql"
 
-export default (result, { moduleId }, cache) => {
+export default (result, { moduleId, relations }, cache) => {
   const module = cache.readFragment(moduleFragment, { id: moduleId })
 
   cache.writeFragment(moduleFragment, {
@@ -9,6 +9,7 @@ export default (result, { moduleId }, cache) => {
   })
 }
 
+// TODO: manually populate commands and pages based on input data of relations
 const moduleFragment = parse(`
   fragment _ on Module {
     id

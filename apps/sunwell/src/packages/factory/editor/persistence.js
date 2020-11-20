@@ -1,21 +1,24 @@
 import { useState, useEffect } from "react"
-import { keys, toPairs } from "ramda"
-import { client } from "packages/client"
+import { keys, toPairs, isNil } from "ramda"
 import deepDiff from "deep-diff"
+import { client } from "packages/client"
 
-export const useSave = (initialState, state) => {
+// TODO: test creating module with actions
+// TODO: keep in mind order of mutations since module creation should go before action creation. Also send multiple independent graphql requests simultaneously to implement performance
+
+export const useSave = (initialState, state, onSuccess) => {
   const [isPristine, setPristine] = useState(true)
   const [isSaving, setSaving] = useState(false)
   const save = async () => {
-    const mutation = createMutation(createChanges(initialState, state))
-
-    console.log(mutation)
+    const [mutation, variables] = createMutation(
+      createChanges(initialState, state)
+    )
 
     setSaving(true)
-    await client.mutation(mutation).toPromise()
+    await client.mutation(mutation, variables).toPromise()
     setSaving(false)
 
-    // TODO: reset editor state
+    onSuccess()
   }
 
   useEffect(() => {
@@ -30,8 +33,7 @@ export const useSave = (initialState, state) => {
   return [isPristine, isSaving, save]
 }
 
-// all fields will be required in generated mutation
-const definition = {
+const definitions = {
   createModule: [
     {
       moduleId: "UUID",
@@ -39,9 +41,9 @@ const definition = {
       type: "ModuleType",
       name: "String",
       config: "JSONObject",
-      positions: "JSONObject",
+      position: "JSONObject",
     },
-    ["id", "type", "config"],
+    ["id", "type", "name", "config"],
   ],
   updateModule: [
     {
@@ -49,7 +51,7 @@ const definition = {
       name: "String",
       config: "JSONObject",
     },
-    "@populate",
+    ["id", "name", "config"],
   ],
   removeModule: [
     {
@@ -60,11 +62,12 @@ const definition = {
     {
       actionId: "UUID",
       moduleId: "UUID",
-      type: "ModuleType",
+      type: "ActionType",
       name: "String",
       config: "JSONObject",
       relations: "JSONObject",
     },
+    // TODO: do we need to request "pages" and "commands" or make manual update in cache after mutation? What if assigned page/command does not exist in cache by some reason?
     "@populate",
   ],
   updateAction: [
@@ -81,23 +84,53 @@ const definition = {
       actionId: "UUID",
     },
   ],
+  updateLayout: [
+    {
+      layoutId: "UUID",
+      positions: "JSONObject",
+    },
+    ["id", "positions"],
+  ],
 }
 
 const createMutation = (changes) => {
-  const body = toPairs(changes).reduce((result, [identifier, args], i) => {
+  let init = []
+  let mutations = []
+  let variables = {}
+  let i = 0
+
+  for (let [identifier, input] of toPairs(changes)) {
+    let args = []
+
     const mutationName = identifier.split("/")[0]
-    // const variableName = `$v${i}`
+    const [types, out] = definitions[mutationName]
 
-    return result + `${mutationName}(${stringifyArgs(args)}) @populate`
-  }, "")
+    for (let [key, value] of toPairs(input)) {
+      if (isNil(value)) {
+        continue
+      }
 
-  return `mutation {${body}}`
+      const variable = `v${i++}`
+      const type = types[key]
+
+      variables[variable] = value
+      init.push(`$${variable}:${type}!`)
+
+      args.push(`${key}:$${variable}`)
+    }
+
+    mutations.push(`${mutationName}(${args.join(",")}) ${returns(out)}`)
+  }
+
+  return [`mutation(${init.join(",")}) {${mutations.join(" ")}}`, variables]
 }
 
-const stringifyArgs = (args) =>
-  toPairs(args)
-    .map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
-    .join(",")
+const returns = (value) =>
+  typeof value === "string"
+    ? value
+    : value instanceof Array
+    ? `{${value.join(", ")}}`
+    : ""
 
 const createChanges = (initialState, state) => {
   const diff = deepDiff(initialState.entities, state.entities) || []
