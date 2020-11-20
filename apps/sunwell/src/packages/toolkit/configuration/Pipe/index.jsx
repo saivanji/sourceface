@@ -30,10 +30,10 @@ export default ({ label, value = [], onChange }) => {
 
   // TODO: implement toggling of existing actions?
   return !actions.length ? (
-    <Creation label={label} onCreate={create} />
+    <Label title={label} onCreate={create} />
   ) : (
-    <div className={styles.list}>
-      <Creation label={label} populated onCreate={create} />
+    <>
+      <Label title={label} populated onCreate={create} />
       <div>
         {actions.map((action) => (
           <div key={action.id} className={styles.action}>
@@ -52,16 +52,16 @@ export default ({ label, value = [], onChange }) => {
           </div>
         ))}
       </div>
-    </div>
+    </>
   )
 }
 
-function Creation({ label, populated, onCreate }) {
+function Label({ title, populated, onCreate }) {
   const { stock } = useContainer()
 
   return (
-    <div className={cx(styles.box, populated && styles.populated)}>
-      <span className={styles.label}>{label}</span>
+    <div className={cx(styles.label, populated && styles.populated)}>
+      <span className={styles.title}>{title}</span>
       <Toggle
         className={styles.add}
         position="bottomRight"

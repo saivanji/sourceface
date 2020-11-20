@@ -1,43 +1,32 @@
 @import "~@sourceface/style/index.scss";
 
 .root {
-  position: relative;
-  display: inline-flex;
-}
-
-.menu {
-  position: absolute;
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
-  z-index: 1;
   background-color: $color-white;
   width: $value-48;
   border-radius: $rounded-base;
   box-shadow: $shadow-base;
-  padding: $value-2 0;
   border: 1px solid $color-gray-200;
-  &.bottom-left,
-  &.bottom-right {
-    top: calc(100% + #{$value-2});
+  &.small {
+    font-size: $font-size-xs;
+    padding: $value-1 0;
+    .item {
+      padding: 0 $value-2;
+      height: $value-6;
+    }
   }
-  &.top-left,
-  &.top-right {
-    bottom: calc(100% + #{$value-2});
-  }
-  &.bottom-left,
-  &.top-left {
-    left: 0;
-  }
-  &.bottom-right,
-  &.top-right {
-    right: 0;
+  &.regular {
+    font-size: $font-size-sm;
+    padding: $value-2 0;
+    .item {
+      padding: 0 $value-3;
+      height: $value-8;
+    }
   }
 }
 
 .item {
-  font-size: $font-size-sm;
-  padding: 0 $value-3;
-  height: $value-8;
   display: flex;
   align-items: center;
   cursor: pointer;

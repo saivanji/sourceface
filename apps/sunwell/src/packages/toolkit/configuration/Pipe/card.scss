@@ -1,13 +1,14 @@
 @import "~@sourceface/style/index.scss";
 
 .root {
+  position: relative;
   border-radius: $rounded-sm;
   border: 1px solid $color-gray-400;
   background-color: $color-white;
 }
 
 .primary {
-  &:hover .deleteIcon {
+  &:hover .moreIcon {
     opacity: 1;
   }
 }
@@ -18,15 +19,31 @@
   padding: $value-1 $value-2 0;
 }
 
-.deleteIcon {
-  margin-left: auto;
-  cursor: pointer;
-  opacity: 0;
+.more {
+  position: absolute !important;
+  top: $value-1;
+  right: $value-2;
 }
 
-.deleteIcon {
-  width: $value-3;
-  height: $value-3;
+.moreIcon {
+  cursor: pointer;
+  opacity: 0;
+  outline: 0;
+  border: 0;
+  background-color: transparent;
+  padding: $value-1;
+  width: $value-5;
+  height: $value-5;
+  border-radius: $rounded-full;
+  &:hover {
+    background-color: $color-gray-200;
+  }
+  &:focus {
+    box-shadow: 0 0 0 3px $color-gray-400;
+  }
+  &.visible {
+    opacity: 1;
+  }
 }
 
 .name {

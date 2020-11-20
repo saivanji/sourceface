@@ -33,7 +33,7 @@ export default function Toggle({
   return (
     <div className={cx(styles.root, className)}>
       <div ref={triggerRef} onClick={toggle}>
-        {trigger}
+        {typeof trigger === "function" ? trigger(isOpened) : trigger}
       </div>
       {isOpened && (
         <div
