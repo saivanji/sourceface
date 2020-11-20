@@ -20,12 +20,12 @@ extend type Mutation {
   createModule(
     moduleId: UUID!
     layoutId: UUID!
-    position: Position!
+    position: JSONObject!
     type: ModuleType!
     name: String!
     config: JSONObject!
   ): Module!
-  configureModule(moduleId: UUID!, key: String!, value: JSON!): Module!
+  udpateModule(moduleId: UUID!, name: String, config: JSONObject): Module!
   # TODO: make sure all related child layouts are removed as well
   # TODO: make sure module position is removed on assigned layout
   removeModule(moduleId: UUID!): Boolean

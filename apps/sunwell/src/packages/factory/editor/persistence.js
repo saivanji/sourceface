@@ -1,7 +1,25 @@
+import { useState, useEffect } from "react"
+import { keys } from "ramda"
 import deepDiff from "deep-diff"
 
-export default (initialState, state) => {
-  const diff = deepDiff(initialState.entities, state.entities)
+export const useSave = (initialState, state) => {
+  const [isPristine, setPristine] = useState(true)
+  const save = () => createMutations(initialState, state)
+
+  useEffect(() => {
+    const mutations = save()
+    const isEqual = keys(mutations).length === 0
+
+    if (isEqual !== isPristine) {
+      setPristine(isEqual)
+    }
+  })
+
+  return [isPristine, save]
+}
+
+const createMutations = (initialState, state) => {
+  const diff = deepDiff(initialState.entities, state.entities) || []
 
   let result = {}
 
@@ -150,14 +168,14 @@ export default (initialState, state) => {
     if (
       (kind === "E" || kind === "N" || kind === "A") &&
       path[0] === "actions" &&
-      ["name", "relations", "config"].includes(path[2]) &&
+      ["name", "config", "relations"].includes(path[2]) &&
       path.length > 2
     ) {
       const actionId = path[1]
       const field = path[2]
       const objectField = path[3]
       const isObject =
-        ["relations", "config"].includes(field) && path.length > 3
+        ["config", "relations"].includes(field) && path.length > 3
       const mutation = `updateAction/${actionId}`
 
       result[mutation] = {
@@ -186,5 +204,5 @@ export default (initialState, state) => {
     }
   }
 
-  console.log(result)
+  return result
 }

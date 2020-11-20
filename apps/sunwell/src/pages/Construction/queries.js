@@ -42,12 +42,5 @@ export const root = `
         }
       }
     }
-    commands {
-      id
-      name
-      stale {
-        id
-      }
-    }
   }
 `

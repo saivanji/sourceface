@@ -3,11 +3,9 @@ import { normalize, denormalize } from "normalizr"
 import schema, { action as actionSchema } from "./schema"
 import { useActions } from "./actions"
 import reducer from "./reducer"
-import persist from "./persistence"
+import { useSave } from "./persistence"
 
 const context = createContext({})
-
-// TODO: instead of diffing, do a mapping between dispatched actions and mutations(next deletion mutation will exclude past creation mutation)
 
 // TODO: rename "page" to something meaningful
 // TODO: do not mix UI and data state
@@ -24,7 +22,7 @@ export function Editor({ children, page: cached }) {
 
   const selected = page.modules.find((x) => x.id === state.selection)
 
-  const save = () => persist(initialState, state)
+  const [isPristine, save] = useSave(initialState, state)
 
   return (
     <context.Provider
@@ -33,7 +31,7 @@ export function Editor({ children, page: cached }) {
         selectors,
         // TODO: move to selectors?
         isEditing: state.isEditing,
-        isDirty: state.isDirty,
+        isPristine,
         //
         layout: page.layout,
         modules: page.modules,
