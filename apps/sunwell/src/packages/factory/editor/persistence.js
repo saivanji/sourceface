@@ -1,17 +1,17 @@
-import { useState, useEffect } from "react"
-import { keys, toPairs, isNil } from "ramda"
+import { useState } from "react"
+import { toPairs, isNil } from "ramda"
 import deepDiff from "deep-diff"
 import { client } from "packages/client"
+import { init } from "./reducer"
 
 // TODO: test creating module with actions
 // TODO: keep in mind order of mutations since module creation should go before action creation. Also send multiple independent graphql requests simultaneously to implement performance
 
-export const useSave = (initialState, state, onSuccess) => {
-  const [isPristine, setPristine] = useState(true)
+export const useSave = (initialPage, state, onSuccess) => {
   const [isSaving, setSaving] = useState(false)
   const save = async () => {
     const [mutation, variables] = createMutation(
-      createChanges(initialState, state)
+      createChanges(init(initialPage), state)
     )
 
     setSaving(true)
@@ -21,16 +21,7 @@ export const useSave = (initialState, state, onSuccess) => {
     onSuccess()
   }
 
-  useEffect(() => {
-    const changes = createChanges(initialState, state)
-    const isEqual = keys(changes).length === 0
-
-    if (isEqual !== isPristine) {
-      setPristine(isEqual)
-    }
-  })
-
-  return [isPristine, isSaving, save]
+  return [isSaving, save]
 }
 
 const definitions = {

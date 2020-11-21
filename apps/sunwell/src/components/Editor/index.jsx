@@ -11,7 +11,7 @@ import styles from "./index.scss"
 // page title is editable?
 // page creation button could be near page title, also page title is a select which has all pages inside
 export default function Editor() {
-  const { isPristine, save, selected, edit } = useEditor()
+  const { isDirty, save, selected, edit } = useEditor()
   const bodyRef = useRef()
 
   return (
@@ -20,7 +20,7 @@ export default function Editor() {
         <span className={styles.title}>Orders page</span>
         <div>mobile | tablet | desktop</div>
         <div>
-          {!isPristine && (
+          {isDirty && (
             <>
               <button onClick={() => save()}>Save</button>{" "}
             </>

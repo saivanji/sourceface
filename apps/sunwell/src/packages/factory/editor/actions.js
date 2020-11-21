@@ -2,18 +2,19 @@ import { v4 as uuid } from "uuid"
 import { useContainer } from "../container"
 import * as utils from "./utils"
 
-export function useActions(state, initialState, dispatch) {
+export function useActions(state, dispatch) {
   const { stock } = useContainer()
 
   function select(moduleId) {
     dispatch({ type: "select", payload: moduleId })
   }
 
+  function reset(page) {
+    dispatch({ type: "reset", payload: page })
+  }
+
   function edit(isEditing) {
     dispatch({ type: "edit", payload: isEditing })
-    if (!isEditing) {
-      dispatch({ type: "reset", payload: initialState })
-    }
   }
 
   function updateLayout(layoutId, positions) {
@@ -113,8 +114,9 @@ export function useActions(state, initialState, dispatch) {
   }
 
   return {
-    edit,
     select,
+    reset,
+    edit,
     updateLayout,
     createModule,
     configureModule,

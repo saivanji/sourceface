@@ -1,8 +1,12 @@
 import { omit, without } from "ramda"
+import { normalize } from "normalizr"
+import schema from "./schema"
+
+export const init = (page) => normalize(page, schema)
 
 export default (state, action) => {
   if (action.type === "reset") {
-    return action.payload
+    return init(action.payload)
   }
 
   return {
