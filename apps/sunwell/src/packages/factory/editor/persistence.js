@@ -1,8 +1,17 @@
 import { useState } from "react"
-import { toPairs, isNil } from "ramda"
+import { toPairs, isNil, call } from "ramda"
 import deepDiff from "deep-diff"
 import { client } from "packages/client"
 import { init } from "./reducer"
+
+// TODO:
+// 1. group by dependency chains
+// - Create smth <- Create action(might be multiple actions) <- Create module
+// - Remove action <- Remove module
+// 2. Sort every chain
+// 3. Filter group if needed(in case of remove action <- remove module)
+//
+// In future, consider dependency between dependencies. When we create module, then child action, then child something.
 
 // TODO: test creating module with actions
 // TODO: keep in mind order of mutations since module creation should go before action creation. Also send multiple independent graphql requests simultaneously to implement performance
@@ -10,19 +19,24 @@ import { init } from "./reducer"
 export const useSave = (initialPage, state, onSuccess) => {
   const [isSaving, setSaving] = useState(false)
   const save = async () => {
-    const [mutation, variables] = createMutation(
-      createChanges(init(initialPage), state)
-    )
+    const changes = createChanges(init(initialPage), state)
 
-    setSaving(true)
-    await client.mutation(mutation, variables).toPromise()
-    setSaving(false)
+    console.log(structure(changes))
 
-    onSuccess()
+    // setSaving(true)
+
+    // await Promise.all(structure(changes).map(call))
+
+    // setSaving(false)
+
+    // onSuccess()
   }
 
   return [isSaving, save]
 }
+
+// TODO: if module is removed, no need to send requests to remove child actions(how 3+ depencency nesting will scale if action will have childs and module is removed)
+// TODO: action creation should go after it's parent module created
 
 const definitions = {
   createModule: [
@@ -83,17 +97,16 @@ const definitions = {
   ],
 }
 
-const createMutation = (changes) => {
+const mutate = (items) => {
   let init = []
   let mutations = []
   let variables = {}
   let i = 0
 
-  for (let [identifier, input] of toPairs(changes)) {
+  for (let [name, input] of items) {
     let args = []
 
-    const mutationName = identifier.split("/")[0]
-    const [types, out] = definitions[mutationName]
+    const [types, out] = definitions[name]
 
     for (let [key, value] of toPairs(input)) {
       if (isNil(value)) {
@@ -109,10 +122,11 @@ const createMutation = (changes) => {
       args.push(`${key}:$${variable}`)
     }
 
-    mutations.push(`${mutationName}(${args.join(",")}) ${returns(out)}`)
+    mutations.push(`${name}(${args.join(",")}) ${returns(out)}`)
   }
 
-  return [`mutation(${init.join(",")}) {${mutations.join(" ")}}`, variables]
+  const mutation = `mutation(${init.join(",")}) {${mutations.join(" ")}}`
+  return client.mutation(mutation, variables)
 }
 
 const returns = (value) =>
@@ -121,6 +135,37 @@ const returns = (value) =>
     : value instanceof Array
     ? `{${value.join(", ")}}`
     : ""
+
+// TODO: consider multiple action creation of a module
+// TODO: how will it scale when action will have dependent child in the future?
+
+// TODO: do sort and then groupWith instead
+const structure = (changes) => {
+  let group = []
+  let copy = { ...changes }
+
+  for (let [identifier, input] of toPairs(changes)) {
+    const [name, id] = splitIdentifier(identifier)
+    const fn = () => mutate([[name, input]])
+
+    const createModule = identify("createModule", input.moduleId)
+
+    if (name === "createAction" && copy[createModule]) {
+      group.push(() =>
+        mutate([
+          ["createModule", copy[createModule]],
+          [name, input],
+        ])
+      )
+
+      continue
+    }
+
+    group.push(fn)
+  }
+
+  return group
+}
 
 const createChanges = (initialState, state) => {
   const diff = deepDiff(initialState.entities, state.entities) || []
@@ -133,7 +178,7 @@ const createChanges = (initialState, state) => {
      */
     if (kind === "N" && path[0] === "modules" && path.length === 2) {
       const moduleId = rhs.id
-      const identifier = `createModule/${moduleId}`
+      const identifier = identify("createModule", moduleId)
 
       result[identifier] = {
         ...result[identifier],
@@ -155,7 +200,7 @@ const createChanges = (initialState, state) => {
     ) {
       const layoutId = path[1]
       const moduleId = path[3]
-      const identifier = `createModule/${moduleId}`
+      const identifier = identify("createModule", moduleId)
 
       result[identifier] = {
         ...result[identifier],
@@ -177,7 +222,7 @@ const createChanges = (initialState, state) => {
       const field = path[2]
       const objectField = path[3]
       const isObject = field === "config" && path.length > 3
-      const identifier = `updateModule/${moduleId}`
+      const identifier = identify("updateModule", moduleId)
 
       result[identifier] = {
         moduleId,
@@ -196,7 +241,7 @@ const createChanges = (initialState, state) => {
      */
     if (kind === "D" && path[0] === "modules" && path.length === 2) {
       const moduleId = path[1]
-      const identifier = `removeModule/${moduleId}`
+      const identifier = identify("removeModule", moduleId)
 
       result[identifier] = {
         moduleId,
@@ -215,7 +260,7 @@ const createChanges = (initialState, state) => {
       const layoutId = path[1]
       const positionId = path[3]
       const field = path[4]
-      const identifier = `updateLayout/${layoutId}`
+      const identifier = identify("updateLayout", layoutId)
 
       result[identifier] = {
         layoutId,
@@ -234,7 +279,7 @@ const createChanges = (initialState, state) => {
      */
     if (kind === "N" && path[0] === "actions" && path.length === 2) {
       const actionId = path[1]
-      const identifier = `createAction/${actionId}`
+      const identifier = identify("createAction", actionId)
 
       result[identifier] = {
         ...result[identifier],
@@ -258,7 +303,7 @@ const createChanges = (initialState, state) => {
     ) {
       const moduleId = path[1]
       const actionId = item.rhs
-      const identifier = `createAction/${actionId}`
+      const identifier = identify("createAction", actionId)
 
       result[identifier] = {
         ...result[identifier],
@@ -280,7 +325,7 @@ const createChanges = (initialState, state) => {
       const objectField = path[3]
       const isObject =
         ["config", "relations"].includes(field) && path.length > 3
-      const identifier = `updateAction/${actionId}`
+      const identifier = identify("updateAction", actionId)
 
       result[identifier] = {
         ...result[identifier],
@@ -300,7 +345,7 @@ const createChanges = (initialState, state) => {
      */
     if (kind === "D" && path[0] === "actions" && path.length === 2) {
       const actionId = path[1]
-      const identifier = `removeAction/${actionId}`
+      const identifier = identify("removeAction", actionId)
 
       result[identifier] = {
         actionId,
@@ -310,3 +355,7 @@ const createChanges = (initialState, state) => {
 
   return result
 }
+
+const identify = (name, id) => `${name}/${id}`
+
+const splitIdentifier = (identifier) => identifier.split("/")
