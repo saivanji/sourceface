@@ -1,9 +1,8 @@
 import { parse } from "graphql"
 import { values } from "ramda"
 
-export default (result, { moduleId }, cache) => {
-  const module = cache.readFragment(moduleFragment, { id: moduleId })
-  const { relations } = result.createAction
+export default (result, { actionId }, cache) => {
+  const { relations } = result.updateAction
 
   const pages = values(relations.pages).map((pageId) =>
     cache.readFragment(pageFragment, { id: pageId })
@@ -12,32 +11,23 @@ export default (result, { moduleId }, cache) => {
     cache.readFragment(commandFragment, { id: commandId })
   )
 
-  cache.writeFragment(moduleFragment, {
-    ...module,
-    actions: [
-      ...module.actions,
-      {
-        ...result.createAction,
-        pages,
-        commands,
-      },
-    ],
+  cache.writeFragment(actionFragment, {
+    id: actionId,
+    pages,
+    commands,
   })
 }
 
-const moduleFragment = parse(`
-  fragment _ on Module {
+const actionFragment = parse(`
+  fragment _ on Action {
     id
-    actions {
+    pages {
       id
-      pages {
+    }
+    commands {
+      id
+      stale {
         id
-      }
-      commands {
-        id
-        stale {
-          id
-        }
       }
     }
   }

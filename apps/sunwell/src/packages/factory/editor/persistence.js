@@ -67,8 +67,7 @@ const definitions = {
       config: "JSONObject",
       relations: "JSONObject",
     },
-    // TODO: do we need to request "pages" and "commands" or make manual update in cache after mutation? What if assigned page/command does not exist in cache by some reason?
-    "@populate",
+    ["id", "type", "name", "config", "relations"],
   ],
   updateAction: [
     {
@@ -77,7 +76,7 @@ const definitions = {
       config: "JSONObject",
       relations: "JSONObject",
     },
-    "@populate",
+    ["id", "name", "config", "relations"],
   ],
   removeAction: [
     {
