@@ -2,6 +2,7 @@ import { v4 as uuid } from "uuid"
 import { useContainer } from "../container"
 import * as utils from "./utils"
 
+// TODO: export plain action creators and pass down "dispatch" function to the context?
 export function useActions(state, dispatch) {
   const { stock } = useContainer()
 
