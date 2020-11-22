@@ -1,6 +1,6 @@
 import { mergeRight } from "ramda"
 import * as moduleRepo from "repos/module"
-import * as layoutService from "services/layout"
+import * as layoutRepo from "repos/layout"
 
 const createModule = async (
   parent,
@@ -8,11 +8,12 @@ const createModule = async (
   { pg }
 ) =>
   pg.tx(async (t) => {
-    await layoutService.updatePositions(layoutId, { [moduleId]: position }, t)
+    await layoutRepo.insertPositions(layoutId, { [moduleId]: position }, t)
 
     return moduleRepo.create(moduleId, layoutId, type, name, config, t)
   })
 
+// TODO: probably do not merge JSON data in JS due to concurrency issues
 const updateModule = async (parent, { moduleId, name, config }, { pg }) => {
   return await pg.task(async (t) => {
     const prev = await moduleRepo.one(moduleId, t)

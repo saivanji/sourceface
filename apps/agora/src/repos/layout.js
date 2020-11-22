@@ -1,6 +1,6 @@
 export const one = (layoutId, pg) => pg.one(sql.one, [layoutId])
-export const updatePositions = (layoutId, positions, pg) =>
-  pg.one(sql.updatePositions, [layoutId, positions])
+export const insertPositions = (layoutId, positions, pg) =>
+  pg.one(sql.insertPositions, [layoutId, positions])
 export const listByIds = (layoutIds, pg) =>
   pg.manyOrNone(sql.listByIds, [layoutIds])
 export const listByModuleIds = (moduleIds, pg) =>
@@ -10,9 +10,9 @@ const sql = {
   one: `
     SELECT * FROM layouts WHERE id = $1
   `,
-  updatePositions: `
-    UPDATE layouts SET positions = $2 WHERE id = $1
-    RETURNING *
+  insertPositions: `
+    UPDATE layouts SET positions = jsonb_recursive_merge(positions::jsonb, $2::jsonb)
+    WHERE id = $1 RETURNING *
   `,
   listByIds: `
     SELECT * FROM layouts WHERE id IN ($1:csv)

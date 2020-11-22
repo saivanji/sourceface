@@ -1,14 +1,5 @@
 import { useState } from "react"
-import {
-  compose,
-  toPairs,
-  values,
-  isNil,
-  call,
-  map,
-  sort,
-  groupBy,
-} from "ramda"
+import { toPairs, isNil } from "ramda"
 import deepDiff from "deep-diff"
 import { client } from "packages/client"
 import { init } from "./reducer"
@@ -19,7 +10,7 @@ export const useSave = (initialPage, state, onSuccess) => {
     const mutations = structure(createChanges(init(initialPage), state))
 
     setSaving(true)
-    await Promise.all(mutations.map(call))
+    await send(mutations)
     setSaving(false)
 
     onSuccess()
@@ -87,14 +78,14 @@ const definitions = {
   ],
 }
 
-const createMutation = (items) => {
+const mutate = (items) => {
   let init = []
   let mutations = []
   let variables = {}
   let i = 0
 
   for (let [index, [identifier, input]] of items.entries()) {
-    const [name] = splitIdentifier(identifier)
+    const name = getName(identifier)
     let args = []
 
     const [types, out] = definitions[name]
@@ -117,7 +108,7 @@ const createMutation = (items) => {
   }
 
   const mutation = `mutation(${init.join(",")}) {${mutations.join(" ")}}`
-  return () => client.mutation(mutation, variables).toPromise()
+  return client.mutation(mutation, variables).toPromise()
 }
 
 const returns = (value) =>
@@ -127,46 +118,118 @@ const returns = (value) =>
     ? `{${value.join(", ")}}`
     : ""
 
-// TODO: do not combine mutations in one query. Instead send dependent mutations one after another.
-// That will improve performance when we create multiple actions after module creation
 const structure = (changes) => {
-  const orders = {
-    /**
-     * In case when action will have dependent child in future, add it to that array
-     */
-    module: ["createModule", "createAction"],
+  const deps = {
+    createAction: {
+      key: "moduleId",
+      parent: "createModule",
+    },
+    createSomething: {
+      key: "actionId",
+      parent: "createAction",
+    },
   }
 
-  /**
-   * In case there will be new group types introduced in future,
-   * do splitting by a group type and sorting each separate group.
-   */
-  const { other, ...moduleGroups } = compose(
-    groupBy(([identifier, input]) => {
-      const [name] = splitIdentifier(identifier)
+  let result = []
 
-      if (name === "createModule" || name === "createAction") {
-        return `module/${input.moduleId}`
-      }
+  for (let [identifier, input] of toPairs(changes)) {
+    const name = getName(identifier)
+    const dependency = deps[name]
+    const entry = [identifier, input]
 
-      return "other"
-    }),
-    toPairs
-  )(changes)
+    /**
+     * No need to add the data if it already in the result
+     */
+    if (exists(identifier, result)) {
+      continue
+    }
 
-  const moduleSorted = compose(
-    map(
-      sort(([a], [b]) => {
-        const [na] = splitIdentifier(a)
-        const [nb] = splitIdentifier(b)
+    /**
+     * When there is no dependencies
+     */
+    if (!dependency) {
+      result.push(entry)
 
-        return orders.module.indexOf(na) - orders.module.indexOf(nb)
-      })
-    ),
-    values
-  )(moduleGroups)
+      continue
+    }
 
-  return [...moduleSorted, ...values(other).map((x) => [x])].map(createMutation)
+    const parent = identify(dependency.parent, input[dependency.key])
+
+    /**
+     * When parent data already added to result
+     */
+    if (exists(parent, result)) {
+      result = insert(parent, result, entry)
+
+      continue
+    }
+
+    /**
+     * When parent exists in source
+     */
+    if (changes[parent]) {
+      result.push([parent, changes[parent], [entry]])
+
+      continue
+    }
+
+    result.push(entry)
+  }
+
+  return result
+}
+
+const send = async ([head, ...tail]) => {
+  if (!head) {
+    return []
+  }
+
+  const children = head[2]
+
+  const res = await Promise.all([mutate([head]), ...(await send(tail))])
+
+  if (children) {
+    await send(children)
+  }
+
+  return res
+}
+
+const exists = (identifier, [head, ...tail]) => {
+  if (!head) {
+    return false
+  }
+
+  if (head[0] === identifier) {
+    return true
+  }
+
+  if (head[2]) {
+    return exists(identifier, head[2])
+  }
+
+  return exists(identifier, tail)
+}
+
+const insert = (identifier, [head, ...tail], data) => {
+  if (!head) {
+    return []
+  }
+
+  const [id, input, children = []] = head
+
+  if (id === identifier) {
+    return [[id, input, [...children, data]], ...tail]
+  }
+
+  if (children.length) {
+    return [
+      [id, input, insert(identifier, children, data)],
+      ...insert(identifier, tail, data),
+    ]
+  }
+
+  return [head, ...insert(identifier, tail, data)]
 }
 
 const createChanges = (initialState, state) => {
@@ -369,4 +432,4 @@ const createChanges = (initialState, state) => {
 
 const identify = (name, id) => `${name}/${id}`
 
-const splitIdentifier = (identifier) => identifier.split("/")
+const getName = (identifier) => identifier.split("/")[0]
