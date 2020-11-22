@@ -1,42 +1,32 @@
 import { useState } from "react"
-import { toPairs, isNil, call } from "ramda"
+import {
+  compose,
+  toPairs,
+  values,
+  isNil,
+  call,
+  map,
+  sort,
+  groupBy,
+} from "ramda"
 import deepDiff from "deep-diff"
 import { client } from "packages/client"
 import { init } from "./reducer"
 
-// TODO:
-// 1. group by dependency chains
-// - Create smth <- Create action(might be multiple actions) <- Create module
-// - Remove action <- Remove module
-// 2. Sort every chain
-// 3. Filter group if needed(in case of remove action <- remove module)
-//
-// In future, consider dependency between dependencies. When we create module, then child action, then child something.
-
-// TODO: test creating module with actions
-// TODO: keep in mind order of mutations since module creation should go before action creation. Also send multiple independent graphql requests simultaneously to implement performance
-
 export const useSave = (initialPage, state, onSuccess) => {
   const [isSaving, setSaving] = useState(false)
   const save = async () => {
-    const changes = createChanges(init(initialPage), state)
+    const mutations = structure(createChanges(init(initialPage), state))
 
-    console.log(structure(changes))
+    setSaving(true)
+    await Promise.all(mutations.map(call))
+    setSaving(false)
 
-    // setSaving(true)
-
-    // await Promise.all(structure(changes).map(call))
-
-    // setSaving(false)
-
-    // onSuccess()
+    onSuccess()
   }
 
   return [isSaving, save]
 }
-
-// TODO: if module is removed, no need to send requests to remove child actions(how 3+ depencency nesting will scale if action will have childs and module is removed)
-// TODO: action creation should go after it's parent module created
 
 const definitions = {
   createModule: [
@@ -97,13 +87,14 @@ const definitions = {
   ],
 }
 
-const mutate = (items) => {
+const createMutation = (items) => {
   let init = []
   let mutations = []
   let variables = {}
   let i = 0
 
-  for (let [name, input] of items) {
+  for (let [index, [identifier, input]] of items.entries()) {
+    const [name] = splitIdentifier(identifier)
     let args = []
 
     const [types, out] = definitions[name]
@@ -122,11 +113,11 @@ const mutate = (items) => {
       args.push(`${key}:$${variable}`)
     }
 
-    mutations.push(`${name}(${args.join(",")}) ${returns(out)}`)
+    mutations.push(`a${index}: ${name}(${args.join(",")}) ${returns(out)}`)
   }
 
   const mutation = `mutation(${init.join(",")}) {${mutations.join(" ")}}`
-  return client.mutation(mutation, variables)
+  return () => client.mutation(mutation, variables).toPromise()
 }
 
 const returns = (value) =>
@@ -136,35 +127,46 @@ const returns = (value) =>
     ? `{${value.join(", ")}}`
     : ""
 
-// TODO: consider multiple action creation of a module
-// TODO: how will it scale when action will have dependent child in the future?
-
-// TODO: do sort and then groupWith instead
+// TODO: do not combine mutations in one query. Instead send dependent mutations one after another.
+// That will improve performance when we create multiple actions after module creation
 const structure = (changes) => {
-  let group = []
-  let copy = { ...changes }
-
-  for (let [identifier, input] of toPairs(changes)) {
-    const [name, id] = splitIdentifier(identifier)
-    const fn = () => mutate([[name, input]])
-
-    const createModule = identify("createModule", input.moduleId)
-
-    if (name === "createAction" && copy[createModule]) {
-      group.push(() =>
-        mutate([
-          ["createModule", copy[createModule]],
-          [name, input],
-        ])
-      )
-
-      continue
-    }
-
-    group.push(fn)
+  const orders = {
+    /**
+     * In case when action will have dependent child in future, add it to that array
+     */
+    module: ["createModule", "createAction"],
   }
 
-  return group
+  /**
+   * In case there will be new group types introduced in future,
+   * do splitting by a group type and sorting each separate group.
+   */
+  const { other, ...moduleGroups } = compose(
+    groupBy(([identifier, input]) => {
+      const [name] = splitIdentifier(identifier)
+
+      if (name === "createModule" || name === "createAction") {
+        return `module/${input.moduleId}`
+      }
+
+      return "other"
+    }),
+    toPairs
+  )(changes)
+
+  const moduleSorted = compose(
+    map(
+      sort(([a], [b]) => {
+        const [na] = splitIdentifier(a)
+        const [nb] = splitIdentifier(b)
+
+        return orders.module.indexOf(na) - orders.module.indexOf(nb)
+      })
+    ),
+    values
+  )(moduleGroups)
+
+  return [...moduleSorted, ...values(other).map((x) => [x])].map(createMutation)
 }
 
 const createChanges = (initialState, state) => {
@@ -186,6 +188,15 @@ const createChanges = (initialState, state) => {
         type: rhs.type,
         name: rhs.name,
         config: rhs.config,
+      }
+
+      for (let actionId of rhs.actions) {
+        const identifier = identify("createAction", actionId)
+
+        result[identifier] = {
+          ...result[identifier],
+          moduleId,
+        }
       }
     }
 
@@ -292,7 +303,7 @@ const createChanges = (initialState, state) => {
     }
 
     /**
-     * Creation action(assign to module)
+     * Creation action(assign to existing module)
      */
     if (
       kind === "A" &&
