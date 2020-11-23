@@ -115,6 +115,10 @@ const useData = (input, identify = false, restore = false) => {
 
 // TODO: get data from on of the previous named modules instead of previous acc
 const reduce = async (fn, [head, ...tail], acc) => {
+  if (!head) {
+    return acc
+  }
+
   const out = await fn(acc, head)
 
   if (!tail.length) {
