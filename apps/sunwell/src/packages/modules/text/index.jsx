@@ -23,7 +23,7 @@ export const Root = function TextModule({ config }) {
         color: config.color,
       }}
     >
-      {"text"}
+      {config.text}
     </span>
   )
 }
