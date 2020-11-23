@@ -12,12 +12,17 @@ import request, { cache } from "./request"
 // - Literal
 // - Variable(from prev action result(input), args, local value, external module value(not function call), page info). Every variable type will have it's unique color and icon
 
-// TODO: will have only one "module" action for now(for calling functions).
+// TODO: will have only one "module"(function) action for now(for calling functions of any variable not module specifically).
 // "call `justify` `for`/`for every` `form_*`"
 // alternative - "for every "
 // - depending on how much modules selected
-//   - singular - "for `input_1` module call `justify`"
-//   - plural - "for every in `3 modules` call `justify`"
+//   - singular - "for `input_1` module call `justify`"(autosuggest)
+//   - plural - "for every in `3 modules`(or display tag stack?) call `justify`"(autosuggest)
+// in case of multiple result - have option for mapping field keys under the cut
+// display arguments section under the cut
+//
+// When no module selected - display all available variables.
+// When at least one module is selected - display only modules which have common function to call
 
 // TODO: get module value as variable
 
