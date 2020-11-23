@@ -2,12 +2,13 @@ import { useState } from "react"
 import { toPairs, isNil } from "ramda"
 import deepDiff from "deep-diff"
 import { client } from "packages/client"
-import { init } from "./reducer"
+import reducer, { init } from "./reducer"
 
 export const useSave = (initialPage, state, onSuccess) => {
   const [isSaving, setSaving] = useState(false)
   const save = async () => {
-    const mutations = structure(createChanges(init(initialPage), state))
+    const initialState = reducer(init(initialPage), {})
+    const mutations = structure(createChanges(initialState, state))
 
     setSaving(true)
     await send(mutations)

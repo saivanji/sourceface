@@ -27,6 +27,7 @@ export const root = `
           pages {
             id
             title
+            route
           }
           commands {
             id

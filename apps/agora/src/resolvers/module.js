@@ -22,14 +22,12 @@ const updateModule = async (parent, { moduleId, name, config }, { pg }) => {
   // also check on validationSchema whether it has "key" user tries to update
   // define specific module config types with scalars(bounded with validationSchemas)?
 
-  return moduleRepo.update(
-    moduleId,
-    {
-      ...(name && { name }),
-      ...(config && { config }),
-    },
-    pg
-  )
+  const fields = {
+    ...(name && { name }),
+    ...(config && { config }),
+  }
+
+  return moduleRepo.update(moduleId, fields, pg)
 }
 
 const removeModule = async (parent, { moduleId }, { pg }) => {

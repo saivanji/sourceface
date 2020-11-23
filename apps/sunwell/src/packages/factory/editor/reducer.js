@@ -4,7 +4,7 @@ import schema from "./schema"
 
 export const init = (page) => normalize(page, schema)
 
-export default (state, action) => {
+export default (state = {}, action) => {
   if (action.type === "reset") {
     return init(action.payload)
   }
@@ -24,7 +24,7 @@ export default (state, action) => {
   }
 }
 
-function referenceEntity(state, { type, payload }) {
+function referenceEntity(state = {}, { type, payload }) {
   switch (type) {
     case "changeRelation": {
       const { data } = payload
@@ -52,7 +52,7 @@ function referenceEntity(state, { type, payload }) {
   }
 }
 
-function layouts(state, { type, payload }) {
+function layouts(state = {}, { type, payload }) {
   switch (type) {
     case "updateLayout": {
       const { layoutId, positions } = payload
@@ -98,7 +98,7 @@ function layouts(state, { type, payload }) {
   }
 }
 
-function modules(state, { type, payload }) {
+function modules(state = {}, { type, payload }) {
   switch (type) {
     case "createModule": {
       const { moduleId, type, name, config } = payload
@@ -175,7 +175,7 @@ function modules(state, { type, payload }) {
   }
 }
 
-function actions(state, { type, payload }) {
+function actions(state = {}, { type, payload }) {
   switch (type) {
     case "createAction": {
       const { actionId, type, config } = payload
@@ -265,7 +265,7 @@ function actions(state, { type, payload }) {
   }
 }
 
-function result(state, { type, payload }) {
+function result(state = {}, { type, payload }) {
   switch (type) {
     case "createModule":
       return {
@@ -285,7 +285,7 @@ function result(state, { type, payload }) {
   }
 }
 
-function selection(state, { type, payload }) {
+function selection(state = null, { type, payload }) {
   switch (type) {
     case "select":
       return payload
@@ -295,7 +295,7 @@ function selection(state, { type, payload }) {
   }
 }
 
-function edition(state, action) {
+function edition(state = false, action) {
   switch (action.type) {
     case "edit":
       return action.payload
@@ -305,7 +305,7 @@ function edition(state, action) {
   }
 }
 
-function dirty(state, action) {
+function dirty(state = false, action) {
   if (!["select", "edit"].includes(action.type)) {
     return true
   }
