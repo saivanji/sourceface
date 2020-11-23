@@ -1,4 +1,3 @@
-import { mergeRight, mergeDeepRight } from "ramda"
 import * as actionRepo from "repos/action"
 
 const createAction = async (
@@ -8,21 +7,21 @@ const createAction = async (
 ) =>
   await actionRepo.create(actionId, moduleId, type, name, config, relations, pg)
 
-const updateAction = (parent, { actionId, name, config, relations }, { pg }) =>
-  pg.task(async (t) => {
-    const prev = await actionRepo.one(actionId, t)
-    const fields = {
-      ...(name && { name }),
-      ...(config && { config: mergeRight(prev.config, config) }),
-      ...(relations && {
-        relations: mergeDeepRight(prev.relations, relations),
-      }),
-    }
+const updateAction = (
+  parent,
+  { actionId, name, config, relations },
+  { pg }
+) => {
+  const fields = {
+    ...(name && { name }),
+    ...(config && { config }),
+    ...(relations && {
+      relations,
+    }),
+  }
 
-    return name || config || relations
-      ? await actionRepo.update(actionId, fields, t)
-      : prev
-  })
+  return actionRepo.update(actionId, fields, pg)
+}
 
 const removeAction = async (parent, { actionId }, { pg }) => {
   await actionRepo.remove(actionId, pg)

@@ -11,8 +11,15 @@ export const pgp = pgPromise({
   receive: onReceive,
 })
 
+export const mergeableColumn = (name) => ({
+  name,
+  mod: "^",
+  init: ({ value }) =>
+    `jsonb_recursive_merge(${name}::jsonb, '${JSON.stringify(value)}'::jsonb)`,
+})
+
 // transforming js Date to ISO string
-pgp.pg.types.setTypeParser(1114, s => moment(s).toISOString())
+pgp.pg.types.setTypeParser(1114, (s) => moment(s).toISOString())
 
 function onReceive(data) {
   /**

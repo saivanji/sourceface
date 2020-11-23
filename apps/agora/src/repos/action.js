@@ -1,5 +1,5 @@
-import { pick } from "ramda"
-import { pgp } from "../postgres"
+import { keys } from "ramda"
+import { pgp, mergeableColumn } from "../postgres"
 
 export const one = (actionId, pg) => pg.one(sql.one, [actionId])
 export const create = (actionId, moduleId, type, name, config, relations, pg) =>
@@ -26,8 +26,12 @@ const sql = {
   `,
   update: (fields) =>
     pgp.helpers.update(
-      pick(["name", "config", "relations"], fields),
-      null,
+      fields,
+      new pgp.helpers.ColumnSet(
+        keys(fields).map((key) =>
+          ["config", "relations"].includes(key) ? mergeableColumn(key) : key
+        )
+      ),
       "actions",
       {
         emptyUpdate: sql.one,

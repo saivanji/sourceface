@@ -1,6 +1,10 @@
-import { mergeRight } from "ramda"
 import * as moduleRepo from "repos/module"
 import * as layoutRepo from "repos/layout"
+
+// TODO: have updateModuleConfig mutation to make updates on a config to avoid
+// concurrency issues(will need change front-end code accordingly and handle object
+// setting, array filtering/appending on Postgres side)
+// (moduleId: UUID!, key: String!, kind: 'set' | 'remove' | 'append', value: JSONObject!)
 
 const createModule = async (
   parent,
@@ -13,21 +17,19 @@ const createModule = async (
     return moduleRepo.create(moduleId, layoutId, type, name, config, t)
   })
 
-// TODO: probably do not merge JSON data in JS due to concurrency issues
 const updateModule = async (parent, { moduleId, name, config }, { pg }) => {
-  return await pg.task(async (t) => {
-    const prev = await moduleRepo.one(moduleId, t)
-    const fields = {
+  // TODO: perform validation of config input data depending on module type
+  // also check on validationSchema whether it has "key" user tries to update
+  // define specific module config types with scalars(bounded with validationSchemas)?
+
+  return moduleRepo.update(
+    moduleId,
+    {
       ...(name && { name }),
-      ...(config && { config: mergeRight(prev.config, config) }),
-    }
-
-    // TODO: perform validation of config input data depending on module type
-    // also check on validationSchema whether it has "key" user tries to update
-    // define specific module config types with scalars(bounded with validationSchemas)?
-
-    return name || config ? await moduleRepo.update(moduleId, fields, t) : prev
-  })
+      ...(config && { config }),
+    },
+    pg
+  )
 }
 
 const removeModule = async (parent, { moduleId }, { pg }) => {

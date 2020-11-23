@@ -1,5 +1,5 @@
-import { pick } from "ramda"
-import { pgp } from "../postgres"
+import { keys } from "ramda"
+import { pgp, mergeableColumn } from "../postgres"
 
 export const one = (moduleId, pg) => pg.one(sql.one, [moduleId])
 export const create = (moduleId, layoutId, type, name, config, pg) =>
@@ -36,9 +36,18 @@ const sql = {
     ) SELECT * FROM cte
   `,
   update: (fields) =>
-    pgp.helpers.update(pick(["name", "config"], fields), null, "modules", {
-      emptyUpdate: sql.one,
-    }) + " WHERE id = $1 RETURNING *",
+    pgp.helpers.update(
+      fields,
+      new pgp.helpers.ColumnSet(
+        keys(fields).map((key) =>
+          key === "config" ? mergeableColumn(key) : key
+        )
+      ),
+      "modules",
+      {
+        emptyUpdate: sql.one,
+      }
+    ) + " WHERE id = $1 RETURNING *",
 }
 
 // SELECT $1 AS id, $2 AS type, $3 AS config, $4 AS position_id,

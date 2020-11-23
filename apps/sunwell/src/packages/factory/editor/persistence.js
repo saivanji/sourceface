@@ -299,6 +299,7 @@ const createChanges = (initialState, state) => {
       const identifier = identify("updateModule", moduleId)
 
       result[identifier] = {
+        ...result[identifier],
         moduleId,
         [field]: isObject
           ? {
