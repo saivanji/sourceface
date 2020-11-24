@@ -1,35 +1,32 @@
 import React, { useState } from "react"
-import { Autocomplete, Toggle } from "@sourceface/components"
-import Placeholder from "../Placeholder"
 import Value from "../Value"
+import Static from "../Static"
 
 export default ({ value: [key, definition] = [], onChange, keys }) => {
   const [selectedKey, setSelectedKey] = useState()
 
-  if (!key && !definition) {
-    const trigger = <Placeholder>Add key/value</Placeholder>
+  const reset = () => setSelectedKey(null)
 
+  if (!key && !definition) {
     return (
-      <Toggle trigger={trigger}>
-        {(close) =>
-          !selectedKey ? (
-            <Autocomplete
-              items={keys}
-              placeholder="Key"
-              onChange={setSelectedKey}
-            />
-          ) : (
-            <Value.Autocomplete
-              placeholder="Value"
-              onChange={(value) => {
-                onChange([selectedKey, value])
-                setSelectedKey(null)
-                close()
-              }}
-            />
-          )
-        }
-      </Toggle>
+      <Static
+        shouldClose={!!selectedKey}
+        creationTitle="Add key/value"
+        items={!selectedKey && keys}
+        placeholder={!selectedKey ? "Key" : "Value"}
+        onClose={reset}
+        onChange={(x) => {
+          if (!selectedKey) {
+            setSelectedKey(x)
+            return
+          }
+
+          onChange([selectedKey, x])
+          reset()
+        }}
+      >
+        {!selectedKey ? <Static.Autocomplete /> : <Value.Autocomplete />}
+      </Static>
     )
   }
 

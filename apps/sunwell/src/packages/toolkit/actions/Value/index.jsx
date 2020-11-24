@@ -1,60 +1,39 @@
 import React from "react"
-import { Autocomplete, Toggle } from "@sourceface/components"
 import { useVariables, useConfiguration } from "packages/factory"
-import Snippet from "../Snippet"
-import Placeholder from "../Placeholder"
+import Static from "../Static"
 
 // TODO: remove icons, have only colors for variable types/literals. Display icons in dropdown instead.
 export default function Value({
   value,
-  onChange,
-  filter,
-  prefix,
-  placeholder = "Search for ...",
   literalAllowed = true,
   creationTitle = "Add value",
+  ...props
 }) {
-  const { module } = useConfiguration()
-  const { render } = useVariables(module.id)
+  const { identify, render } = useVariables(module.id)
 
-  const remove = () => onChange(null)
-
-  const trigger = !value ? (
-    <Placeholder>{creationTitle}</Placeholder>
-  ) : value.type === "literal" ? (
-    <Snippet prefix={prefix} color="beige" removable onRemove={remove}>
-      {value.data}
-    </Snippet>
-  ) : (
-    <Snippet prefix={prefix} color="blue" removable onRemove={remove}>
-      {render(value)}
-    </Snippet>
-  )
+  const editionTitle =
+    value?.type === "literal" ? value.data : value && render(value)
+  const snippetColor = value?.type === "literal" ? "beige" : value && "blue"
 
   return (
-    <Toggle trigger={trigger}>
-      {(close) => (
-        <Value.Autocomplete
-          filter={filter}
-          placeholder={placeholder}
-          literalAllowed={literalAllowed}
-          value={value}
-          onChange={(value) => {
-            onChange(value)
-            close()
-          }}
-        />
-      )}
-    </Toggle>
+    <Static
+      {...props}
+      removable
+      creationTitle={creationTitle}
+      editionTitle={editionTitle}
+      value={value && identify(value)}
+      snippetColor={snippetColor}
+      custom={literalAllowed}
+    >
+      <Value.Autocomplete />
+    </Static>
   )
 }
 
 Value.Autocomplete = function ValueAutocomplete({
   filter,
-  placeholder,
-  literalAllowed,
-  value,
   onChange,
+  ...props
 }) {
   const { module } = useConfiguration()
   const { variables, identify, define } = useVariables(module.id)
@@ -64,19 +43,18 @@ Value.Autocomplete = function ValueAutocomplete({
     variable,
   })
   const customFilter = filter && (({ variable }) => filter(variable))
+  const change = (value) => {
+    onChange(value && define(value))
+  }
 
   return (
-    <Autocomplete
+    <Static.Autocomplete
+      {...props}
       filter={customFilter}
       map={map}
       items={variables}
-      placeholder={placeholder}
-      custom={literalAllowed}
       customSuggestion={(input) => `Use "${input}" as literal`}
-      value={value && identify(value)}
-      onChange={(value) => {
-        onChange(value && define(value))
-      }}
+      onChange={change}
     />
   )
 }

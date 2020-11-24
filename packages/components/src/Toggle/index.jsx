@@ -7,10 +7,18 @@ export default function Toggle({
   className,
   trigger,
   position = "bottomLeft",
+  onOpen,
+  onClose,
 }) {
   const [isOpened, setOpened] = useState(false)
-  const toggle = () => setOpened(!isOpened)
-  const close = () => setOpened(false)
+  const toggle = () => {
+    setOpened(!isOpened)
+    isOpened ? onOpen && onOpen() : onClose && onClose()
+  }
+  const close = () => {
+    setOpened(false)
+    onClose && onClose()
+  }
 
   const triggerRef = useRef()
   const bodyRef = useRef()

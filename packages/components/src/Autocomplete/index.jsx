@@ -10,6 +10,7 @@ export default function Autocomplete({
   items,
   placeholder,
   custom = false,
+  multiple = false,
   customSuggestion = (x) => x,
   map = (x) => x,
   filter = () => true,
@@ -21,6 +22,22 @@ export default function Autocomplete({
   const [page, setPage] = useState(0)
   const [hovered, setHovered] = useState(false)
   const { data, error, isPaging, isSearching } = useItems(items, search, page)
+
+  const change = (currentValue, original, isSelected) => {
+    if (multiple && isSelected) {
+      onChange(value.filter((x) => x !== currentValue))
+
+      return
+    }
+
+    if (multiple && !isSelected) {
+      onChange([...value, currentValue])
+
+      return
+    }
+
+    onChange(currentValue, original)
+  }
 
   return (
     <div className={styles.root}>
@@ -45,7 +62,7 @@ export default function Autocomplete({
         ) : (
           <>
             {custom && search && !value && (
-              <span className={styles.item} onClick={() => onChange(search)}>
+              <span className={styles.item} onClick={() => change(search)}>
                 {customSuggestion(search)}
               </span>
             )}
@@ -58,15 +75,23 @@ export default function Autocomplete({
                     styles.item,
                     isSelected && !hovered && styles.selected
                   )}
-                  onClick={() => onChange(value, original)}
+                  onClick={() => change(value, original, !isSelected)}
                 >
+                  {multiple && (
+                    <input
+                      className={styles.checkbox}
+                      checked={isSelected}
+                      type="checkbox"
+                    />
+                  )}
                   {title}
                 </span>
               ),
               value,
               data,
               map,
-              filter
+              filter,
+              multiple
             )}
           </>
         )}

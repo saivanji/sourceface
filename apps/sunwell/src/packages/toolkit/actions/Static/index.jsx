@@ -1,43 +1,67 @@
-import React from "react"
+import React, { cloneElement } from "react"
 import { Autocomplete, Toggle } from "@sourceface/components"
 import Placeholder from "../Placeholder"
 import Snippet from "../Snippet"
 
-export default ({
+export default function Static({
+  snippetColor = "gray",
+  removable = false,
+  children,
+  prefix,
   value,
-  map,
-  onChange,
   creationTitle,
   editionTitle,
-  suggestions,
-}) => {
+  items,
+  onChange,
+  onOpen,
+  onClose,
+  ...props
+}) {
   const trigger = !value ? (
     <Placeholder>{creationTitle}</Placeholder>
   ) : (
-    <Snippet color="gray">
-      {typeof suggestions === "function"
-        ? editionTitle
-        : findTitle(suggestions, value)}
+    <Snippet
+      prefix={prefix}
+      color={snippetColor}
+      removable={removable}
+      onRemove={() => onChange(null)}
+    >
+      {editionTitle || findTitle(items, value)}
     </Snippet>
   )
 
   return (
-    <Toggle trigger={trigger}>
-      {(close) => (
-        <Autocomplete
-          items={suggestions}
-          placeholder="Search for ..."
-          value={value}
-          map={map}
-          onChange={(...args) => {
-            onChange(...args)
-            close()
-          }}
-        />
-      )}
+    <Toggle trigger={trigger} onClose={onClose} onOpen={onOpen}>
+      {(close) =>
+        cloneElement(children || <Static.Autocomplete />, {
+          ...props,
+          items,
+          value,
+          onChange,
+          onClose: close,
+        })
+      }
     </Toggle>
   )
 }
 
-const findTitle = (suggestions, value) =>
-  suggestions.find((s) => s.value === value).title
+Static.Autocomplete = function StaticAutocomplete({
+  placeholder = "Search for...",
+  shouldClose = true,
+  onChange,
+  onClose,
+  ...props
+}) {
+  return (
+    <Autocomplete
+      {...props}
+      placeholder={placeholder}
+      onChange={(...args) => {
+        shouldClose && onClose()
+        onChange(...args)
+      }}
+    />
+  )
+}
+
+const findTitle = (items, value) => items.find((s) => s.value === value).title
