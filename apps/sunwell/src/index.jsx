@@ -25,6 +25,13 @@ ReactDOM.render(
 // TODO:
 // Fix layouts/positions data structure.
 //
+// Module is having page_id instead of layout_id
+// Remove layouts table
+// Page will have "layout" column
+// Module will have "layouts" column
+//
+// Use avatars generator to make initial avatars for the users
+//
 // Implement "Save/Cancel" logic on the frontend.
 // - Make sure all module/action updates are optimistic
 // - Fix all cache updates of modules/actions.
