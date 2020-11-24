@@ -1,7 +1,8 @@
 import { keys } from "ramda"
 
-import * as redirect from "./redirect"
+import * as func from "./function"
 import * as operation from "./operation"
+import * as redirect from "./redirect"
 
 /**
  * Transforming object to list with keys as "type" field.
@@ -9,5 +10,5 @@ import * as operation from "./operation"
 const toList = (obj) =>
   keys(obj).reduce((acc, key) => [...acc, { type: key, ...obj[key] }], [])
 
-export const dict = { redirect, operation }
+export const dict = { function: func, operation, redirect }
 export const list = toList(dict)

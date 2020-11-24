@@ -18,6 +18,11 @@ export default function Autocomplete({
   value,
   onChange,
 }) {
+  /**
+   * Default value for the case when "multiple" is true
+   */
+  value = typeof value === "undefined" && multiple ? [] : value
+
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(0)
   const [hovered, setHovered] = useState(false)
@@ -75,10 +80,11 @@ export default function Autocomplete({
                     styles.item,
                     isSelected && !hovered && styles.selected
                   )}
-                  onClick={() => change(value, original, !isSelected)}
+                  onClick={() => change(value, original, isSelected)}
                 >
                   {multiple && (
                     <input
+                      readOnly
                       className={styles.checkbox}
                       checked={isSelected}
                       type="checkbox"

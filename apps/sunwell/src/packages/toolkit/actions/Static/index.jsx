@@ -48,6 +48,7 @@ export default function Static({
 Static.Autocomplete = function StaticAutocomplete({
   placeholder = "Search for...",
   shouldClose = true,
+  multiple,
   onChange,
   onClose,
   ...props
@@ -55,9 +56,10 @@ Static.Autocomplete = function StaticAutocomplete({
   return (
     <Autocomplete
       {...props}
+      multiple={multiple}
       placeholder={placeholder}
       onChange={(...args) => {
-        shouldClose && onClose()
+        shouldClose && !multiple && onClose()
         onChange(...args)
       }}
     />

@@ -5,6 +5,7 @@ import Static from "../Static"
 // TODO: remove icons, have only colors for variable types/literals. Display icons in dropdown instead.
 export default function Value({
   value,
+  multiple,
   literalAllowed = true,
   creationTitle = "Add value",
   ...props
@@ -12,16 +13,21 @@ export default function Value({
   const { identify, render } = useVariables(module.id)
 
   const editionTitle =
-    value?.type === "literal" ? value.data : value && render(value)
+    value?.type === "literal"
+      ? value.data
+      : multiple
+      ? value?.map(render)
+      : value && render(value)
   const snippetColor = value?.type === "literal" ? "beige" : value && "blue"
 
   return (
     <Static
       {...props}
       removable
+      multiple={multiple}
       creationTitle={creationTitle}
       editionTitle={editionTitle}
-      value={value && identify(value)}
+      value={value && (multiple ? value.map(identify) : identify(value))}
       snippetColor={snippetColor}
       custom={literalAllowed}
     >
@@ -33,6 +39,7 @@ export default function Value({
 Value.Autocomplete = function ValueAutocomplete({
   filter,
   onChange,
+  multiple,
   ...props
 }) {
   const { module } = useConfiguration()
@@ -44,12 +51,13 @@ Value.Autocomplete = function ValueAutocomplete({
   })
   const customFilter = filter && (({ variable }) => filter(variable))
   const change = (value) => {
-    onChange(value && define(value))
+    onChange(value && (multiple ? value.map(define) : define(value)))
   }
 
   return (
     <Static.Autocomplete
       {...props}
+      multiple={multiple}
       filter={customFilter}
       map={map}
       items={variables}
