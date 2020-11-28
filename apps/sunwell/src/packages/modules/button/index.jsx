@@ -25,6 +25,11 @@ export const Root = function ButtonModule({ config }) {
   )
 }
 
+// TODO: have "isSpinning" field to display loading state for a button.
+// That might be useful in combination with using actions for that field(when we set that value
+// to truthy when we have data of specific operation populated and that operation is triggered
+// also by that button. Use case of opening a modal of editing the order)
+
 export const Configuration = function ButtonModuleConfiguration() {
   return (
     <>
