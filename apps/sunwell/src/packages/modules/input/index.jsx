@@ -61,6 +61,7 @@ export const createLocalVariables = (config, state, transition) => ({
   value: state.value,
   // TODO: alternative name is "release"?
   // TODO: return "Action" type, or better wrap in Action(purify) internally.
+  // TODO: functions most likely doesn't need to be part of the scope. Return them from other function like "createFunctions", "createCalculations", "createEffects"
   justify: () => {
     transition("isJustified", true)
 

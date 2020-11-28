@@ -6,6 +6,7 @@ import Snippet from "../Snippet"
 export default function Static({
   snippetColor = "gray",
   removable = false,
+  multiple,
   children,
   prefix,
   value,
@@ -17,24 +18,26 @@ export default function Static({
   onClose,
   ...props
 }) {
-  const trigger = !value ? (
-    <Placeholder>{creationTitle}</Placeholder>
-  ) : (
-    <Snippet
-      prefix={prefix}
-      color={snippetColor}
-      removable={removable}
-      onRemove={() => onChange(null)}
-    >
-      {editionTitle || findTitle(items, value)}
-    </Snippet>
-  )
+  const trigger =
+    !value || (multiple && !value?.length) ? (
+      <Placeholder>{creationTitle}</Placeholder>
+    ) : (
+      <Snippet
+        prefix={prefix}
+        color={snippetColor}
+        removable={removable}
+        onRemove={() => onChange(null)}
+      >
+        {editionTitle}
+      </Snippet>
+    )
 
   return (
     <Toggle trigger={trigger} onClose={onClose} onOpen={onOpen}>
       {(close) =>
         cloneElement(children || <Static.Autocomplete />, {
           ...props,
+          multiple,
           items,
           value,
           onChange,
@@ -65,5 +68,3 @@ Static.Autocomplete = function StaticAutocomplete({
     />
   )
 }
-
-const findTitle = (items, value) => items.find((s) => s.value === value).title

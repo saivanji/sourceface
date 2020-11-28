@@ -12,13 +12,15 @@ import request, { cache } from "./request"
 // - Literal
 // - Variable(from prev action result(input), args, local value, external module value(not function call), page info). Every variable type will have it's unique color and icon
 
+// TODO: have "dictionary" module type and have arguments like key/value definition
+
 // TODO: will have only one "module"(function) action for now(for calling functions of any variable not module specifically).
 // "call `justify` `for`/`for every` `form_*`"
 // alternative - "for every "
 // - depending on how much modules selected
 //   - singular - "for `input_1` module call `justify`"(autosuggest)
 //   - plural - "for every in `3 modules`(or display tag stack?) call `justify`"(autosuggest)
-// in case of multiple result - have option for mapping field keys under the cut
+// NO in case of multiple result - have option for mapping field keys under the cut
 // display arguments section under the cut
 //
 // When no module selected - display all available variables.
@@ -68,6 +70,7 @@ export function Cut({
   onConfigChange,
 }) {
   const command = relations[RELATION_TYPE]?.[FIELD]
+  // TODO: set only config fields for Arguments and not provide handlers?
   const changeFields = (fields) => onConfigChange("fields", fields)
   const changeGroups = (groups) => onConfigChange("groups", groups)
 

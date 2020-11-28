@@ -78,7 +78,7 @@ export default function Autocomplete({
                   onMouseOver={() => !hovered && setHovered(true)}
                   className={cx(
                     styles.item,
-                    isSelected && !hovered && styles.selected
+                    isSelected && (!hovered || multiple) && styles.selected
                   )}
                   onClick={() => change(value, original, isSelected)}
                 >

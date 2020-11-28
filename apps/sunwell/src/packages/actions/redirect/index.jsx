@@ -25,6 +25,7 @@ export const serialize = (config, relations, evaluate) => {
   return [page?.route]
 }
 
+// TODO: have "effects" inside of "functions"
 export const execute = ({ effects }) => (route) => {
   if (route) {
     // TODO: keep in mind params replacement

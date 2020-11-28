@@ -3,6 +3,7 @@ export const up = () =>
     await t.none(`
       CREATE TYPE module AS ENUM ('button', 'container', 'input', 'table', 'text')
     `)
+    // TODO: make sure modules are unique within a page
     await t.none(`
       CREATE TABLE modules(
         id uuid PRIMARY KEY,

@@ -6,27 +6,29 @@ import Static from "../Static"
 export default function Value({
   value,
   multiple,
+  removable = true,
   literalAllowed = true,
   creationTitle = "Add value",
   ...props
 }) {
-  const { identify, render } = useVariables(module.id)
+  const { variables, identify, render } = useVariables(module.id)
 
   const editionTitle =
     value?.type === "literal"
       ? value.data
       : multiple
-      ? value?.map(render)
+      ? multipleSnippet(value, render)
       : value && render(value)
   const snippetColor = value?.type === "literal" ? "beige" : value && "blue"
 
   return (
     <Static
       {...props}
-      removable
+      removable={removable}
       multiple={multiple}
       creationTitle={creationTitle}
       editionTitle={editionTitle}
+      items={variables}
       value={value && (multiple ? value.map(identify) : identify(value))}
       snippetColor={snippetColor}
       custom={literalAllowed}
@@ -43,7 +45,7 @@ Value.Autocomplete = function ValueAutocomplete({
   ...props
 }) {
   const { module } = useConfiguration()
-  const { variables, identify, define } = useVariables(module.id)
+  const { identify, define } = useVariables(module.id)
   const map = (variable) => ({
     value: identify(variable.definition),
     title: variable.view,
@@ -60,9 +62,11 @@ Value.Autocomplete = function ValueAutocomplete({
       multiple={multiple}
       filter={customFilter}
       map={map}
-      items={variables}
       customSuggestion={(input) => `Use "${input}" as literal`}
       onChange={change}
     />
   )
 }
+
+const multipleSnippet = (value, render) =>
+  value?.length === 1 ? render(value[0]) : `${value?.length || 0} items`

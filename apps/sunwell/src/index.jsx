@@ -32,6 +32,8 @@ ReactDOM.render(
 //
 // Use avatars generator to make initial avatars for the users
 //
+// Introduce presets
+//
 // Implement "Save/Cancel" logic on the frontend.
 // - Make sure all module/action updates are optimistic
 // - Fix all cache updates of modules/actions.
@@ -44,6 +46,10 @@ ReactDOM.render(
 // consider having json db for keeping config data?
 //
 // consider implementing auto app upgrade feature
+//
+// What should happen if module/page/operation(any other relation) mentioned in the action chain gets removed? Should we restrict the deletion and show a message with depending data?
+//
+// Have connection between action relations json and actual postgres data to maintain data integrity. Also keep that approach in the rest application parts where we reference entities inside of a json
 //
 // use case - user need to be able to create postgres table in the app. either with "arbitrary query" for example(with predefined queries for table etc), or have a feature to manage source entities in addition to queries.
 //

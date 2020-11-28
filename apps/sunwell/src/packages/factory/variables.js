@@ -2,7 +2,10 @@ import { keys } from "ramda"
 import { useEditor } from "./editor"
 import { useScope } from "./scope"
 
+// TODO: most likely functions should not be part of a scope. Since variables are values only?
+
 export const useVariables = (moduleId) => {
+  // TODO: do not have "useScope" here
   const { modulesScope } = useScope()
   const { modules } = useEditor()
 
@@ -47,6 +50,7 @@ export const useVariables = (moduleId) => {
     }
   }
 
+  // TODO: accept scope
   const evaluate = (definition) => {
     if (definition.type === "local") {
       return modulesScope[moduleId][definition.name]
