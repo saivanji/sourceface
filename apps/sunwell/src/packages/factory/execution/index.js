@@ -3,10 +3,10 @@ import { mergeLeft } from "ramda"
 import { useModule } from "../module"
 import { useContainer } from "../container"
 import { useVariables } from "../variables"
-import { useScope } from "../scope"
+import { useFunctions } from "../functions"
 import { populateRelations } from "../action"
 
-export const useFunction = (...input) => {
+export const useHandler = (...input) => {
   const [executions] = useData(input)
 
   // TODO: consider function arguments as input to the action
@@ -63,10 +63,10 @@ export const useValue = (...input) => {
 }
 
 const useData = (input, identify = false, restore = false) => {
-  const { stock, effects } = useContainer()
+  const { stock } = useContainer()
   const { module } = useModule()
   const { evaluate } = useVariables(module.id)
-  const scope = useScope()
+  const functions = useFunctions()
 
   let identifier = ""
   let executions = []
@@ -93,7 +93,7 @@ const useData = (input, identify = false, restore = false) => {
       }
       sequence.push((onReload) =>
         // TODO: merge prev action scope to "scope"
-        execute({ effects, scope, onReload })(...args)
+        execute({ functions, onReload })(...args)
       )
 
       const cacheable = !!readCache
@@ -107,7 +107,7 @@ const useData = (input, identify = false, restore = false) => {
       if (initial) {
         initialValue =
           !settings?.effect && !cacheable
-            ? execute({ effects, scope })(...args)
+            ? execute({ functions })(...args)
             : cached
       }
     }

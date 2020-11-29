@@ -6,7 +6,7 @@ import { Field } from "packages/toolkit"
 
 export const Root = function InputModule({
   config,
-  state: { value, validationError, isJustified },
+  state: { value, validationError, isReleased },
 }) {
   // TODO: additionally `useTransition()`, in order to be able to use `transition({value, validationError})` to
   // set multiple fields at once.
@@ -19,7 +19,7 @@ export const Root = function InputModule({
       config.validation &&
       (validate(config.validation, currentValue) || config.validationMessage)
 
-    transitionValidationError((isJustified && error) || null)
+    transitionValidationError((isReleased && error) || null)
     transitionValue(currentValue)
   }
 
@@ -57,13 +57,13 @@ export const Configuration = function InputModuleConfiguration() {
   )
 }
 
-export const createLocalVariables = (config, state, transition) => ({
+export const createVariables = (config, state) => ({
   value: state.value,
-  // TODO: alternative name is "release"?
-  // TODO: return "Action" type, or better wrap in Action(purify) internally.
-  // TODO: functions most likely doesn't need to be part of the scope. Return them from other function like "createFunctions", "createCalculations", "createEffects"
-  justify: () => {
-    transition("isJustified", true)
+})
+
+export const createFunctions = (config, state, transition) => ({
+  release: () => {
+    transition("isReleased", true)
 
     if (config.validation && !validate(config.validation, state.value)) {
       // TODO: transition({validationError: message}) in order to be able set multiple state fields at once

@@ -1,6 +1,7 @@
 import React, { createContext, useContext } from "react"
 import { Editor } from "./editor"
 import { Scope } from "./scope"
+import { Functions } from "./functions"
 
 const context = createContext({})
 
@@ -9,11 +10,12 @@ export function Container({ children, stock, page, effects }) {
     <context.Provider
       value={{
         stock,
-        effects,
       }}
     >
       <Editor page={page}>
-        <Scope>{children}</Scope>
+        <Scope>
+          <Functions effects={effects}>{children}</Functions>
+        </Scope>
       </Editor>
     </context.Provider>
   )

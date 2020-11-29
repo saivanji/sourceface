@@ -25,11 +25,10 @@ export const serialize = (config, relations, evaluate) => {
   return [page?.route]
 }
 
-// TODO: have "effects" inside of "functions"
-export const execute = ({ effects }) => (route) => {
+export const execute = ({ functions }) => (route) => {
   if (route) {
     // TODO: keep in mind params replacement
-    effects.navigate(route)
+    functions.effects.navigate(route)
   }
 }
 

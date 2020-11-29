@@ -1,7 +1,7 @@
 import React from "react"
-import { toPairs, innerJoin } from "ramda"
+import { keys, innerJoin } from "ramda"
 import { Static } from "packages/toolkit"
-import { useScope, useEditor } from "packages/factory"
+import { useEditor, useFunctions } from "packages/factory"
 
 // TODO: rename to "moduleFunction"?
 
@@ -9,8 +9,8 @@ import { useScope, useEditor } from "packages/factory"
 // pages/operations?
 export function Root({ config, onConfigChange }) {
   // TODO: have Field/ActionField component to automatically handle value/onChange?
-  const { modulesScope } = useScope()
   const { modules } = useEditor()
+  const functions = useFunctions()
 
   const map = ({ id, name }) => ({ title: name, value: id })
 
@@ -40,7 +40,7 @@ export function Root({ config, onConfigChange }) {
           <span>call</span>
           <Static
             value={config.func}
-            items={createFunctionsList(config.modules, modules, modulesScope)}
+            items={createSuggestions(config.modules, modules, functions)}
             editionTitle={config.func}
             creationTitle="Function"
             onChange={selectFunc}
@@ -55,17 +55,14 @@ export const serialize = (config) => {
   return [config.modules, config.func, {}]
 }
 
-// TODO: whether "scope" should be passed the same way as we pass effects?
-// most likely should get functions from "functions" object since functions
-// are not part of a scope
-export const execute = ({ scope }) => (moduleIds, func, args) => {
+export const execute = ({ functions }) => (moduleIds, func, args) => {
   let errors = []
   let result = {}
 
   for (let moduleId of moduleIds) {
     try {
       // TODO: have module name instead
-      result[moduleId] = scope.modulesScope[moduleId][func](args)
+      result[moduleId] = functions.modules[moduleId][func](args)
     } catch (err) {
       errors.push(err)
     }
@@ -82,20 +79,17 @@ export const settings = {
   effect: true,
 }
 
-const createFunctionsList = (moduleIds, modules, modulesScope) => {
+const createSuggestions = (moduleIds, modules, functions) => {
   return moduleIds.reduce((acc, id) => {
-    const scope = modulesScope[id]
-    const funcs = getFunctions(scope)
+    const items = toSuggestions(functions.modules[id])
 
     if (!acc.length) {
-      return funcs
+      return items
     }
 
-    return innerJoin((a, b) => a.value === b.value, funcs, acc)
+    return innerJoin((a, b) => a.value === b.value, items, acc)
   }, [])
 }
 
-const getFunctions = (scope) =>
-  toPairs(scope)
-    .filter(([, value]) => typeof value === "function")
-    .map(([key]) => ({ title: key, value: key }))
+const toSuggestions = (funcs) =>
+  keys(funcs).map((key) => ({ title: key, value: key }))

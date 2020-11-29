@@ -8,11 +8,11 @@ import {
   Checkbox,
 } from "@sourceface/components"
 import * as yup from "yup"
-import { useFunction } from "packages/factory"
+import { useHandler } from "packages/factory"
 import { Field, Pipe } from "packages/toolkit"
 
 export const Root = function ButtonModule({ config }) {
-  const [onClick] = useFunction(config.action)
+  const [onClick] = useHandler(config.action)
 
   return (
     <Button

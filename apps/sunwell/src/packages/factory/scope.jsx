@@ -55,13 +55,13 @@ const createModulesScope = (modules, state, assignState, stock) =>
 
 const createLocalScope = (module, state, assignState, stock) => {
   const { type, config } = module
-  const { createLocalVariables, initialState } = stock.modules.dict[type]
+  const { createVariables, initialState } = stock.modules.dict[type]
   const transition = (key, value) => assignState(module.id, key, value)
 
   return (
-    createLocalVariables &&
+    createVariables &&
     // purifyScope(
-    createLocalVariables(
+    createVariables(
       config,
       mergeRight(initialState, state[module.id]),
       transition

@@ -147,11 +147,11 @@ export const Configuration = function TableModuleConfiguration({ config }) {
 // used through "useValue" hook. If config value is literal then it will simple return it, if it's
 // an action - execute it.
 //
-// In case of "createLocalVariables" function, config elements might be functions itself with similar logic.
+// In case of "createVariables" function, config elements might be functions itself with similar logic.
 // For literals - will be returned their values, for actions - executed
 
 // TODO: remove parsing to int and have limit as integer in config instead
-export const createLocalVariables = (config, state, updateState) => ({
+export const createVariables = (config, state, updateState) => ({
   limit: +config.limit,
   // TODO: offset should be based on computed page value from config not from state
   offset: +config.limit * state.page,
