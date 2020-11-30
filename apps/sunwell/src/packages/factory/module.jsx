@@ -18,7 +18,7 @@ export function Module({ module, frame: Frame }) {
       <Component
         config={module.config}
         state={state}
-        scope={scope[module.id]}
+        scope={scope.modules[module.id]}
         layouts={module.layouts}
         components={{ Frame }}
         isEditing={isEditing}

@@ -37,7 +37,7 @@ export default ({ label, value = [], onChange }) => {
       <div>
         {actions.map((action) => (
           <div key={action.id} className={styles.action}>
-            <Action action={action}>
+            <Action action={action} actions={actions}>
               {(root, cut) => (
                 <Card
                   cut={cut}

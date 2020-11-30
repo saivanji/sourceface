@@ -1,47 +1,43 @@
 import React from "react"
-import { update, applySpec } from "ramda"
+import { update } from "ramda"
 import { Value } from "packages/toolkit"
 
-export function Root({ config: { variables = [] }, onConfigChange }) {
-  const addVariable = (variable) =>
-    onConfigChange("variables", [...variables, variable])
-  const changeVariable = (variable, i) =>
-    onConfigChange("variables", update(i, variable, variables))
+export function Root({ config: { definitions = [] }, onConfigChange }) {
+  const add = (definition) =>
+    onConfigChange("definitions", [...definitions, definition])
+  const change = (definition, i) =>
+    onConfigChange("definitions", update(i, definition, definitions))
 
+  // TODO: do not show variable after action name was removed
   return (
     <>
       <span>Debug</span>
-      {variables.map((variable, i) => (
+      {definitions.map((definition, i) => (
         <Value
           key={i}
-          value={variable}
-          onChange={(variable) => changeVariable(variable, i)}
+          value={definition}
+          onChange={(definition) => change(definition, i)}
         />
       ))}
-      <Value creationTitle="Add variable" onChange={addVariable} />
+      <Value creationTitle="Add" onChange={add} />
     </>
   )
 }
 
 export const serialize = (
-  { variables = [] },
+  { definitions = [] },
   relations,
-  { evaluate, render }
+  { createVariable }
 ) => {
-  return [
-    variables.map(
-      applySpec({
-        title: render,
-        value: evaluate,
-      })
-    ),
-  ]
+  return [definitions.map(createVariable)]
 }
 
-export const execute = () => (items) => {
-  for (let item of items) {
+export const execute = ({ runtime }) => (variables) => {
+  for (let variable of variables) {
     console.log(
-      `Variable: %c${item.title}. %cValue: %c${item.value}`,
+      `Variable: %c${variable.view}. %cValue: %c${JSON.stringify(
+        variable.get(runtime)
+      )}`,
       "color: blue",
       "color: black",
       "color: green"

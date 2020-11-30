@@ -4,7 +4,7 @@ import { useModule } from "../module"
 import { useScope } from "../scope"
 import { useEditor } from "../editor"
 import { useContainer } from "../container"
-import { evaluateVariable, renderVariable } from "../variables"
+import { createVariable } from "../variables"
 import { useFunctions } from "../functions"
 import { populateRelations } from "../action"
 
@@ -13,6 +13,8 @@ export const useHandler = (...input) => {
 
   // TODO: consider function arguments as input to the action
   return executions.map((fn) => (args) => fn())
+  // same as the above
+  // return executions
 }
 
 export const useValue = (...input) => {
@@ -83,27 +85,32 @@ const useData = (input, identify = false, restore = false) => {
       actionIds?.map((id) => module.actions.find((a) => a.id === id)) || []
 
     for (let action of actions) {
+      /**
+       * Skipping not existing actions
+       */
+      if (!action) {
+        continue
+      }
+
       const { config, type } = action
 
       const { serialize, execute, readCache, settings } = stock.actions.dict[
         type
       ]
-      const evaluate = (variable) =>
-        evaluateVariable(variable, scope, module.id)
-      const render = (variable) => renderVariable(variable, modules)
 
       const args = serialize(config, populateRelations(action), {
-        evaluate,
-        render,
+        createVariable: (definition) =>
+          createVariable(definition, module.id, scope, { modules, actions }),
       })
 
       if (identify) {
         identifier += JSON.stringify(args)
       }
-      sequence.push((onReload) =>
-        // TODO: merge prev action scope to "scope"
-        execute({ functions, onReload })(...args)
-      )
+      sequence.push([
+        action.id,
+        (runtime, onReload) =>
+          execute({ functions, runtime, onReload })(...args),
+      ])
 
       const cacheable = !!readCache
       const cached = cacheable && readCache(...args)
@@ -121,24 +128,35 @@ const useData = (input, identify = false, restore = false) => {
       }
     }
 
-    executions.push((onReload) => reduce((_, fn) => fn(onReload), sequence))
+    executions.push((onReload) =>
+      reduce(
+        (runtime, [, fn]) => fn(runtime || {}, onReload),
+        ([actionId]) => `action/${actionId}`,
+        sequence
+      )
+    )
     initial?.push(initialValue)
   }
 
   return [executions, identifier, initial]
 }
 
-// TODO: get data from on of the previous named modules instead of previous acc
-const reduce = async (fn, [head, ...tail], acc) => {
+const reduce = async (fn, createKey, [head, ...tail], acc = {}) => {
   if (!head) {
-    return acc
+    return acc.last
   }
 
-  const out = await fn(acc, head)
+  const last = await fn(acc.stack, head)
 
   if (!tail.length) {
-    return out
+    return last
   }
 
-  return reduce(fn, tail, out)
+  return reduce(fn, createKey, tail, {
+    stack: {
+      ...acc.stack,
+      [createKey(head)]: last,
+    },
+    last,
+  })
 }

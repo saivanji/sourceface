@@ -1,7 +1,15 @@
-import { keys } from "ramda"
+import { keys, values } from "ramda"
 
-export const createVariables = (moduleId, actionId, scope, modules) => {
-  return [...createModulesVariables(moduleId, modules, scope)]
+export const createDefinitions = (
+  moduleId,
+  actionId,
+  scope,
+  { modules, actions }
+) => {
+  return [
+    ...createModulesDefinitions(moduleId, modules, scope),
+    ...createActionsDefinitions(actionId, actions),
+  ]
 }
 
 export const defineVariable = (id) => {
@@ -21,6 +29,13 @@ export const defineVariable = (id) => {
       name: c,
     }
   }
+
+  if (a === "action") {
+    return {
+      type: "action",
+      actionId: b,
+    }
+  }
 }
 
 export const identifyVariable = (definition) => {
@@ -31,9 +46,13 @@ export const identifyVariable = (definition) => {
   if (definition.type === "external") {
     return `module/${definition.moduleId}/${definition.name}`
   }
+
+  if (definition.type === "action") {
+    return `action/${definition.actionId}`
+  }
 }
 
-export const renderVariable = (definition, modules) => {
+export const renderVariable = (definition, { modules, actions }) => {
   if (definition.type === "local") {
     return `[local] ${definition.name}`
   }
@@ -43,19 +62,46 @@ export const renderVariable = (definition, modules) => {
 
     return `[external] ${module.name}.${definition.name}`
   }
+
+  if (definition.type === "action") {
+    const action = actions.find((a) => a.id === definition.actionId)
+
+    return `[action] ${action.name}`
+  }
 }
 
-export const evaluateVariable = (definition, scope, moduleId) => {
+export const createVariable = (
+  definition,
+  moduleId,
+  globalScope,
+  { modules, actions }
+) => {
+  const data = evaluateVariable(definition, moduleId, globalScope)
+  const id = identifyVariable(definition)
+
+  return {
+    definition,
+    id,
+    view: renderVariable(definition, { modules, actions }),
+    get: (runtime) => runtime?.[id] || data,
+  }
+}
+
+export const evaluateVariable = (definition, moduleId, globalScope) => {
   if (definition.type === "local") {
-    return scope.modules[moduleId][definition.name]
+    return globalScope.modules[moduleId][definition.name]
   }
 
   if (definition.type === "external") {
-    return scope.modules[definition.moduleId][definition.name]
+    return globalScope.modules[definition.moduleId][definition.name]
+  }
+
+  if (definition.type === "action") {
+    return new Runtime(definition)
   }
 }
 
-const createModulesVariables = (moduleId, modules, scope) =>
+const createModulesDefinitions = (moduleId, modules, scope) =>
   modules.reduce((acc, m) => {
     const moduleScope = scope.modules[m.id]
 
@@ -76,17 +122,36 @@ const createModulesVariables = (moduleId, modules, scope) =>
             moduleId: m.id,
           }
 
-      const variable = {
-        view: renderVariable(definition, modules),
-        definition,
-        data: moduleScope[name],
-      }
-
-      return [...acc, variable]
+      return [...acc, definition]
     }, [])
 
     return [...acc, ...data]
   }, [])
+
+const createActionsDefinitions = (actionId, actions) => {
+  let result = []
+
+  for (let action of values(actions)) {
+    if (action.id === actionId) {
+      break
+    }
+
+    if (action.name) {
+      result.push({
+        type: "action",
+        actionId: action.id,
+      })
+    }
+  }
+
+  return result
+}
+
+class Runtime {
+  constructor(definition) {
+    this.definition = definition
+  }
+}
 
 // variable has
 // - id

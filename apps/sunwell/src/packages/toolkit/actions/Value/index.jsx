@@ -2,11 +2,13 @@ import React from "react"
 import {
   useScope,
   useEditor,
+  useAction,
   useConfiguration,
+  evaluateVariable,
   renderVariable,
   identifyVariable,
   defineVariable,
-  createVariables,
+  createDefinitions,
 } from "packages/factory"
 import Static from "../Static"
 
@@ -22,15 +24,19 @@ export default function Value({
   const { modules } = useEditor()
   const { module } = useConfiguration()
   const { scope } = useScope()
+  const { id: actionId, actions } = useAction()
 
   const editionTitle =
     value?.type === "literal"
       ? value.data
       : multiple
-      ? multipleSnippet(value, modules)
-      : value && renderVariable(value, modules)
+      ? multipleSnippet(value, modules, actions)
+      : value && renderVariable(value, { modules, actions })
   const snippetColor = value?.type === "literal" ? "beige" : value && "blue"
-  const variables = createVariables(module.id, null, scope, modules)
+  const definitions = createDefinitions(module.id, actionId, scope, {
+    modules,
+    actions,
+  })
 
   return (
     <Static
@@ -39,7 +45,7 @@ export default function Value({
       multiple={multiple}
       creationTitle={creationTitle}
       editionTitle={editionTitle}
-      items={variables}
+      items={definitions}
       value={
         value &&
         (multiple ? value.map(identifyVariable) : identifyVariable(value))
@@ -58,12 +64,17 @@ Value.Autocomplete = function ValueAutocomplete({
   multiple,
   ...props
 }) {
-  const map = (variable) => ({
-    value: identifyVariable(variable.definition),
-    title: variable.view,
-    variable,
+  const { modules } = useEditor()
+  const { module } = useConfiguration()
+  const { scope } = useScope()
+  const { actions } = useAction()
+
+  const map = (definition) => ({
+    value: identifyVariable(definition),
+    title: renderVariable(definition, { modules, actions }),
+    definition,
+    data: evaluateVariable(definition, module.id, scope),
   })
-  const customFilter = filter && (({ variable }) => filter(variable))
   const change = (value) => {
     onChange(
       value && (multiple ? value.map(defineVariable) : defineVariable(value))
@@ -74,7 +85,7 @@ Value.Autocomplete = function ValueAutocomplete({
     <Static.Autocomplete
       {...props}
       multiple={multiple}
-      filter={customFilter}
+      filter={filter}
       map={map}
       customSuggestion={(input) => `Use "${input}" as literal`}
       onChange={change}
@@ -82,7 +93,7 @@ Value.Autocomplete = function ValueAutocomplete({
   )
 }
 
-const multipleSnippet = (value, modules) =>
+const multipleSnippet = (value, modules, actions) =>
   value?.length === 1
-    ? renderVariable(value[0], modules)
+    ? renderVariable(value[0], { modules, actions })
     : `${value?.length || 0} items`

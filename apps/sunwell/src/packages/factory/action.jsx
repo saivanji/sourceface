@@ -6,14 +6,16 @@ import { useEditor } from "./editor"
 
 const context = createContext({})
 
-export function Action({ action, children }) {
+export function Action({ action, actions, children }) {
   const { stock } = useContainer()
   const { configureAction, changeRelation } = useEditor()
 
   const { Root, Cut } = stock.actions.dict[action.type]
 
   const props = {
+    id: action.id,
     config: action.config,
+    actions,
     listAll,
     relations: populateRelations(action, changeRelation),
     onRelationChange: (type, key, data) =>

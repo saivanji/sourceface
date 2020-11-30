@@ -1,4 +1,5 @@
 import React from "react"
+import { mapObjIndexed } from "ramda"
 import { Relation, Arguments } from "packages/toolkit"
 import request, { cache } from "./request"
 
@@ -86,24 +87,36 @@ export function Cut({
   )
 }
 
-export const serialize = (config, relations, { evaluate }) => {
+// TODO: name it differently, since it's not required to return serializable object(variable.get for example)
+export const serialize = (config, relations, { createVariable }) => {
   const command = relations[RELATION_TYPE]?.[FIELD]
   const staleIds = command?.stale.map((x) => x.id)
 
   const fields = config.fields?.reduce(
-    (acc, { key, definition }) => ({ ...acc, [key]: evaluate(definition) }),
+    (acc, { key, definition }) => ({
+      ...acc,
+      [key]: provideData(createVariable(definition)),
+    }),
     {}
   )
   const groups = config.groups?.reduce(
-    (acc, definition) => ({ ...acc, [definition.name]: evaluate(definition) }),
+    (acc, definition) => ({
+      ...acc,
+      [definition.name]: provideData(createVariable(definition)),
+    }),
     {}
   )
 
   return [command?.id, { ...fields, ...groups }, staleIds]
 }
 
-export const execute = ({ onReload }) => (commandId, args, staleIds) =>
-  request(commandId, args, staleIds, onReload)
+export const execute = ({ runtime, onReload }) => (commandId, args, staleIds) =>
+  request(
+    commandId,
+    mapObjIndexed(({ variable }) => variable.get(runtime), args),
+    staleIds,
+    onReload
+  )
 
 export const readCache = cache.get.bind(cache)
 
@@ -112,3 +125,8 @@ export const add = (config) => {}
 export const settings = {
   effect: true,
 }
+
+/**
+ * Providing data in order to be able serialize arguments for "useEffect"
+ */
+const provideData = (variable) => ({ variable, data: variable.get() })

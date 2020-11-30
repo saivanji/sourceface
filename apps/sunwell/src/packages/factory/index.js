@@ -1,8 +1,9 @@
 export {
-  createVariables,
+  createDefinitions,
   defineVariable,
   identifyVariable,
   renderVariable,
+  createVariable,
   evaluateVariable,
 } from "./variables"
 export { Container, useContainer } from "./container"
