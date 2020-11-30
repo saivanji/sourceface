@@ -47,4 +47,5 @@ export const execute = ({ runtime }) => (variables) => {
 
 export const settings = {
   effect: true,
+  nameless: true,
 }
