@@ -23,6 +23,12 @@ ReactDOM.render(
 )
 
 // TODO:
+// Consider having ability to execute the action pipeline before every module loads so we can populate the module with data from action.
+// It might work with nested modules(containers and modals) so we can execute operation for example and nested inputs will have data on first load
+// (that feature might be front-end only, can it theoretically be implemented on a specific module side?)
+// Should that feature be application-wise or only for container and modal?
+// It might be implemented application-wise as another non configurable configuration section
+//
 // Fix layouts/positions data structure.
 //
 // Module is having page_id instead of layout_id

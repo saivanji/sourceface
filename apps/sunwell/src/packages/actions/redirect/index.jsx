@@ -34,4 +34,5 @@ export const execute = ({ functions }) => (route) => {
 
 export const settings = {
   effect: true,
+  nameless: true,
 }

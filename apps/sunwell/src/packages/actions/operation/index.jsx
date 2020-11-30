@@ -122,6 +122,7 @@ export const readCache = cache.get.bind(cache)
 
 export const add = (config) => {}
 
+// TODO: have "effect" for nameless actions and "async" for asynchronous?
 export const settings = {
   effect: true,
 }
