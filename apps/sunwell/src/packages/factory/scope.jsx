@@ -25,12 +25,13 @@ export function Scope({ children }) {
    * accessing the module by it's id.
    */
   const dict = toDict(modules)
-  const modulesScope = createModulesScope(modules, state, assignState, stock)
 
   return (
     <context.Provider
       value={{
-        modulesScope,
+        scope: {
+          modules: createModulesScope(modules, state, assignState, stock),
+        },
         readState,
         assignState,
       }}

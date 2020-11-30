@@ -1,92 +1,70 @@
 import { keys } from "ramda"
-import { useEditor } from "./editor"
-import { useScope } from "./scope"
 
-// TODO: most likely functions should not be part of a scope. Since variables are values only?
+export const createVariables = (moduleId, actionId, scope, modules) => {
+  return [...createModulesVariables(moduleId, modules, scope)]
+}
 
-export const useVariables = (moduleId) => {
-  // TODO: do not have "useScope" here
-  const { modulesScope } = useScope()
-  const { modules } = useEditor()
+export const defineVariable = (id) => {
+  const [a, b, c] = id.split("/")
 
-  const define = (id) => {
-    const [a, b, c] = id.split("/")
-
-    if (a === "module" && b === "local") {
-      return {
-        type: "local",
-        name: c,
-      }
-    }
-
-    if (a === "module") {
-      return {
-        type: "external",
-        moduleId: b,
-        name: c,
-      }
+  if (a === "module" && b === "local") {
+    return {
+      type: "local",
+      name: c,
     }
   }
 
-  const identify = (definition) => {
-    if (definition.type === "local") {
-      return `module/local/${definition.name}`
+  if (a === "module") {
+    return {
+      type: "external",
+      moduleId: b,
+      name: c,
     }
-
-    if (definition.type === "external") {
-      return `module/${definition.moduleId}/${definition.name}`
-    }
-  }
-
-  const render = (definition) => {
-    if (definition.type === "local") {
-      return `[local] ${definition.name}`
-    }
-
-    if (definition.type === "external") {
-      const module = modules.find((m) => m.id === definition.moduleId)
-
-      return `[external] ${module.name}.${definition.name}`
-    }
-  }
-
-  // TODO: accept scope
-  const evaluate = (definition) => {
-    if (definition.type === "local") {
-      return modulesScope[moduleId][definition.name]
-    }
-
-    if (definition.type === "external") {
-      return modulesScope[definition.moduleId][definition.name]
-    }
-  }
-
-  const variables = createModulesVariables(
-    moduleId,
-    modules,
-    modulesScope,
-    render
-  )
-
-  return {
-    variables,
-    define,
-    identify,
-    render,
-    evaluate,
   }
 }
 
-const createModulesVariables = (selectedId, modules, modulesScope, render) =>
-  modules.reduce((acc, m) => {
-    const scope = modulesScope[m.id]
+export const identifyVariable = (definition) => {
+  if (definition.type === "local") {
+    return `module/local/${definition.name}`
+  }
 
-    if (!scope) {
+  if (definition.type === "external") {
+    return `module/${definition.moduleId}/${definition.name}`
+  }
+}
+
+export const renderVariable = (definition, modules) => {
+  if (definition.type === "local") {
+    return `[local] ${definition.name}`
+  }
+
+  if (definition.type === "external") {
+    const module = modules.find((m) => m.id === definition.moduleId)
+
+    return `[external] ${module.name}.${definition.name}`
+  }
+}
+
+export const evaluateVariable = (definition, scope, moduleId) => {
+  if (definition.type === "local") {
+    return scope.modules[moduleId][definition.name]
+  }
+
+  if (definition.type === "external") {
+    return scope.modules[definition.moduleId][definition.name]
+  }
+}
+
+const createModulesVariables = (moduleId, modules, scope) =>
+  modules.reduce((acc, m) => {
+    const moduleScope = scope.modules[m.id]
+
+    if (!moduleScope) {
       return acc
     }
 
-    const isLocal = m.id === selectedId
-    const data = keys(scope).reduce((acc, name) => {
+    const isLocal = m.id === moduleId
+    const data = keys(moduleScope).reduce((acc, name) => {
       const definition = isLocal
         ? {
             type: "local",
@@ -99,9 +77,9 @@ const createModulesVariables = (selectedId, modules, modulesScope, render) =>
           }
 
       const variable = {
-        view: render(definition),
+        view: renderVariable(definition, modules),
         definition,
-        data: scope[name],
+        data: moduleScope[name],
       }
 
       return [...acc, variable]

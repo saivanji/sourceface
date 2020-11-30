@@ -19,7 +19,7 @@ export function Root() {
   )
 }
 
-export const serialize = (config, relations, evaluate) => {
+export const serialize = (config, relations) => {
   const page = relations[RELATION_TYPE]?.[FIELD]
 
   return [page?.route]

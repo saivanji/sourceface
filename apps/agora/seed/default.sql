@@ -42,6 +42,7 @@ COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 --
 
 CREATE TYPE public.action AS ENUM (
+    'debug',
     'function',
     'operation',
     'redirect'
@@ -352,6 +353,7 @@ COPY public.actions (id, created_at, module_id, name, type, config, relations) F
 17ebb990-8d6f-44c7-b6b1-cf75a52be7db	2020-11-02 20:10:23.069048	1a3c0c29-a473-473d-b744-6e609154a14a	test	operation	{"queryId":9,"foo":"bar"}	{"commands":{"current": 9}}
 3df19c35-8f0a-4341-b2fb-acdae2053fb8	2020-11-23 13:05:49.424953	5dda5e74-7cba-4e4c-9db7-411dae2c6c0d	\N	redirect	{}	{"pages": {"current": 6}}
 7023e6eb-a127-4895-9915-ed35d2bba7b4	2020-11-23 20:58:02.31358	75d49b29-858e-4805-888b-aa31369d7a2b	\N	operation	{}	{"commands": {"current": 9}}
+de653fb3-ad4c-4d4b-b01a-618b94dd34f6	2020-11-24 21:42:38.591167	75d49b29-858e-4805-888b-aa31369d7a2b	\N	function	{"func": "release", "modules": ["3405d690-d444-4b86-91e4-d680aaada640", "5c557ec3-0744-4f8d-ae82-2335d566527d", "f61d2948-9132-4006-ad32-b27470f88bc9", "4a278a03-3343-467b-816f-292358ab07dc", "633210b9-b69a-46ac-8549-0f01c270156c"]}	{}
 \.
 
 
@@ -401,15 +403,15 @@ COPY public.migrations (data) FROM stdin;
 COPY public.modules (id, created_at, type, config, name, layout_id) FROM stdin;
 1a3c0c29-a473-473d-b744-6e609154a14a	2020-11-02 18:57:03.7921	table	{"data":["8d8557a2-3bd7-41d6-bace-e89a61be093f"],"count":["17ebb990-8d6f-44c7-b6b1-cf75a52be7db"],"limit":10,"pagination":true}	table_1	1a3c0c29-a473-473d-b744-6e609154a14b
 5dda5e74-7cba-4e4c-9db7-411dae2c6c0d	2020-11-23 13:05:37.041899	button	{"size": "regular", "text": "Create", "action": ["3df19c35-8f0a-4341-b2fb-acdae2053fb8"], "shouldFitContainer": false}	123	1a3c0c29-a473-473d-b744-6e609154a14b
-4a278a03-3343-467b-816f-292358ab07dc	2020-11-23 19:16:36.588669	input	{"validationMessage":"Validation failed","placeholder":"Address"}	address	3c7b3140-88a3-41be-880c-bff74755ce48
 04c08175-7961-4e22-9d33-cfe30943da8d	2020-11-23 19:16:36.589081	input	{"validationMessage":"Validation failed","placeholder":"Delivery type"}	delivery_type	3c7b3140-88a3-41be-880c-bff74755ce48
-633210b9-b69a-46ac-8549-0f01c270156c	2020-11-23 18:22:24.486775	input	{"placeholder": "Customer name", "validationMessage": "Validation failed"}	customer_name	3c7b3140-88a3-41be-880c-bff74755ce48
-f61d2948-9132-4006-ad32-b27470f88bc9	2020-11-23 19:16:36.600281	input	{"validationMessage":"Validation failed","placeholder":"Currency"}	currency	3c7b3140-88a3-41be-880c-bff74755ce48
-5c557ec3-0744-4f8d-ae82-2335d566527d	2020-11-23 19:16:36.590732	input	{"validationMessage":"Validation failed","placeholder":"Status"}	status	3c7b3140-88a3-41be-880c-bff74755ce48
 3405d690-d444-4b86-91e4-d680aaada640	2020-11-23 19:16:36.591114	input	{"validationMessage":"Validation failed","placeholder":"Payment type"}	payment_type	3c7b3140-88a3-41be-880c-bff74755ce48
 b62fd8b1-3d6b-4bd6-9a7a-49613a24b1c5	2020-11-23 19:16:36.591588	input	{"validationMessage":"Validation failed","placeholder":"Amount"}	amount	3c7b3140-88a3-41be-880c-bff74755ce48
 705b2bd8-160f-4fe0-a926-6a71b3724272	2020-11-23 19:18:58.835466	text	{"text":"Order creation","fontSize":"2xl","fontWeight":"semibold","alignmentX":"left","alignmentY":"baseline","decoration":"none","color":"#000"}	title	3c7b3140-88a3-41be-880c-bff74755ce48
-75d49b29-858e-4805-888b-aa31369d7a2b	2020-11-23 19:16:36.593492	button	{"text":"Create order","size":"regular","shouldFitContainer":false}\n	submit	3c7b3140-88a3-41be-880c-bff74755ce48
+75d49b29-858e-4805-888b-aa31369d7a2b	2020-11-23 19:16:36.593492	button	{"size": "regular", "text": "Create order", "action": ["de653fb3-ad4c-4d4b-b01a-618b94dd34f6"], "shouldFitContainer": false}	submit	3c7b3140-88a3-41be-880c-bff74755ce48
+4a278a03-3343-467b-816f-292358ab07dc	2020-11-23 19:16:36.588669	input	{"validationMessage":"Validation failed","placeholder":"Address"}	address	3c7b3140-88a3-41be-880c-bff74755ce48
+633210b9-b69a-46ac-8549-0f01c270156c	2020-11-23 18:22:24.486775	input	{"placeholder": "Customer name", "validationMessage": "Validation failed"}	customer_name	3c7b3140-88a3-41be-880c-bff74755ce48
+f61d2948-9132-4006-ad32-b27470f88bc9	2020-11-23 19:16:36.600281	input	{"validation": "^.+$", "placeholder": "Currency", "validationMessage": "Validation failed"}	currency	3c7b3140-88a3-41be-880c-bff74755ce48
+5c557ec3-0744-4f8d-ae82-2335d566527d	2020-11-23 19:16:36.590732	input	{"validation": "^.+$", "placeholder": "Status", "validationMessage": "Validation failed"}	status	3c7b3140-88a3-41be-880c-bff74755ce48
 \.
 
 

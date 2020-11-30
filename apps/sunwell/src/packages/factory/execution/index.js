@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react"
 import { mergeLeft } from "ramda"
 import { useModule } from "../module"
+import { useScope } from "../scope"
+import { useEditor } from "../editor"
 import { useContainer } from "../container"
-import { useVariables } from "../variables"
+import { evaluateVariable, renderVariable } from "../variables"
 import { useFunctions } from "../functions"
 import { populateRelations } from "../action"
 
@@ -65,7 +67,8 @@ export const useValue = (...input) => {
 const useData = (input, identify = false, restore = false) => {
   const { stock } = useContainer()
   const { module } = useModule()
-  const { evaluate } = useVariables(module.id)
+  const { modules } = useEditor()
+  const { scope } = useScope()
   const functions = useFunctions()
 
   let identifier = ""
@@ -85,8 +88,14 @@ const useData = (input, identify = false, restore = false) => {
       const { serialize, execute, readCache, settings } = stock.actions.dict[
         type
       ]
-      // TODO: provide scope to "evaluate"
-      const args = serialize(config, populateRelations(action), evaluate)
+      const evaluate = (variable) =>
+        evaluateVariable(variable, scope, module.id)
+      const render = (variable) => renderVariable(variable, modules)
+
+      const args = serialize(config, populateRelations(action), {
+        evaluate,
+        render,
+      })
 
       if (identify) {
         identifier += JSON.stringify(args)

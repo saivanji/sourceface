@@ -8,10 +8,9 @@ const context = createContext({})
 export function Module({ module, frame: Frame }) {
   const { stock } = useContainer()
   const { isEditing, configureModule } = useEditor()
-  const { readState, modulesScope } = useScope()
+  const { readState, scope } = useScope()
 
   const Component = stock.modules.dict[module.type].Root
-  const scope = modulesScope[module.id]
   const state = readState(module.id)
 
   return (
@@ -19,7 +18,7 @@ export function Module({ module, frame: Frame }) {
       <Component
         config={module.config}
         state={state}
-        scope={scope}
+        scope={scope[module.id]}
         layouts={module.layouts}
         components={{ Frame }}
         isEditing={isEditing}

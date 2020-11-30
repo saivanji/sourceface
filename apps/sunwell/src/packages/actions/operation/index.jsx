@@ -86,7 +86,7 @@ export function Cut({
   )
 }
 
-export const serialize = (config, relations, evaluate) => {
+export const serialize = (config, relations, { evaluate }) => {
   const command = relations[RELATION_TYPE]?.[FIELD]
   const staleIds = command?.stale.map((x) => x.id)
 

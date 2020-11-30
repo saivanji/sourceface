@@ -1,5 +1,13 @@
 import React from "react"
-import { useVariables, useConfiguration } from "packages/factory"
+import {
+  useScope,
+  useEditor,
+  useConfiguration,
+  renderVariable,
+  identifyVariable,
+  defineVariable,
+  createVariables,
+} from "packages/factory"
 import Static from "../Static"
 
 // TODO: remove icons, have only colors for variable types/literals. Display icons in dropdown instead.
@@ -11,15 +19,18 @@ export default function Value({
   creationTitle = "Add value",
   ...props
 }) {
-  const { variables, identify, render } = useVariables(module.id)
+  const { modules } = useEditor()
+  const { module } = useConfiguration()
+  const { scope } = useScope()
 
   const editionTitle =
     value?.type === "literal"
       ? value.data
       : multiple
-      ? multipleSnippet(value, render)
-      : value && render(value)
+      ? multipleSnippet(value, modules)
+      : value && renderVariable(value, modules)
   const snippetColor = value?.type === "literal" ? "beige" : value && "blue"
+  const variables = createVariables(module.id, null, scope, modules)
 
   return (
     <Static
@@ -29,7 +40,10 @@ export default function Value({
       creationTitle={creationTitle}
       editionTitle={editionTitle}
       items={variables}
-      value={value && (multiple ? value.map(identify) : identify(value))}
+      value={
+        value &&
+        (multiple ? value.map(identifyVariable) : identifyVariable(value))
+      }
       snippetColor={snippetColor}
       custom={literalAllowed}
     >
@@ -44,16 +58,16 @@ Value.Autocomplete = function ValueAutocomplete({
   multiple,
   ...props
 }) {
-  const { module } = useConfiguration()
-  const { identify, define } = useVariables(module.id)
   const map = (variable) => ({
-    value: identify(variable.definition),
+    value: identifyVariable(variable.definition),
     title: variable.view,
     variable,
   })
   const customFilter = filter && (({ variable }) => filter(variable))
   const change = (value) => {
-    onChange(value && (multiple ? value.map(define) : define(value)))
+    onChange(
+      value && (multiple ? value.map(defineVariable) : defineVariable(value))
+    )
   }
 
   return (
@@ -68,5 +82,7 @@ Value.Autocomplete = function ValueAutocomplete({
   )
 }
 
-const multipleSnippet = (value, render) =>
-  value?.length === 1 ? render(value[0]) : `${value?.length || 0} items`
+const multipleSnippet = (value, modules) =>
+  value?.length === 1
+    ? renderVariable(value[0], modules)
+    : `${value?.length || 0} items`

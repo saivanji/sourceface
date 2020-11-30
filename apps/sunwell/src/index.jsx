@@ -63,6 +63,7 @@ ReactDOM.render(
 // - be admin(management) app created from scratch and empty database (internal application for managing candidates hiring process for a startup)
 // - be a regular app created from scratch, where users in the admin are related with users from external db. (external hospital app where we can query appointments for the "admin app" user. where patients are a users of the "admin app")
 // Implement parallel action execution where we can execute multiple actions in one action step(will have n amount of vertical lines for n concurrent actions in the UI between the items with ability to choose current selected action for the ability to edit it by clicking on vertical line)
+// Handle multiple action pipiline branches. (parallel execution or error handling)
 //
 // Input module configuration
 // - validation is performed via regex. user can provide custom regex, or configure validation by choosing required, type(number only), limit, email and other settings and we will create corresponding regex for that(find a library)
