@@ -18,7 +18,7 @@ export const Root = function ButtonModule({ config }) {
     <Button
       shouldFitContainer={config.shouldFitContainer}
       size={config.size}
-      onClick={onClick}
+      onClick={() => onClick({ foo: "bar" })}
     >
       {config.text}
     </Button>
@@ -94,4 +94,8 @@ export const validationSchema = yup.object().shape({
 export const size = {
   w: 3,
   h: 1,
+}
+
+export const definitions = {
+  action: ["foo"],
 }

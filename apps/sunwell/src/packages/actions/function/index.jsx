@@ -55,14 +55,14 @@ export const serialize = (config) => {
   return [config.modules, config.func, {}]
 }
 
-export const execute = ({ functions }) => (moduleIds, func, args) => {
+export const execute = ({ functions, modules }) => (moduleIds, func, args) => {
   let errors = []
   let result = {}
 
   for (let moduleId of moduleIds) {
     try {
-      // TODO: have module name instead
-      result[moduleId] = functions.modules[moduleId][func](args)
+      const { name } = modules.find((m) => m.id === moduleId)
+      result[name] = functions.modules[moduleId][func](args)
     } catch (err) {
       errors.push(err)
     }

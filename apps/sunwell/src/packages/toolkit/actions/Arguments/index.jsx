@@ -47,6 +47,7 @@ export default function Arguments({
         <div className={styles.row}>
           {groups.map((definition, i) => (
             <Value
+              key={i}
               filter={filterGroupsEdition}
               value={definition}
               onChange={(definition) =>
@@ -68,7 +69,7 @@ export default function Arguments({
   )
 }
 
-const filterGroupsEdition = ({ data }) => isPlainObject(data)
+const filterGroupsEdition = ({ data }) => typeof data === "object"
 
 const filterGroupsCreation = (groups) => ({ definition, data }) =>
-  !groups.find(equals(definition)) && isPlainObject(data)
+  !groups.find(equals(definition)) && typeof data === "object"

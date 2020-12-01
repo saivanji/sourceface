@@ -17,6 +17,8 @@ export const useHandler = (...input) => {
   // return executions
 }
 
+// TODO: when going from normal to edit mode - loading indicator appears(which should not be there)
+// has something todo with initial cached value
 export const useValue = (...input) => {
   const [result, setResult] = useState({
     data: [],
@@ -66,6 +68,8 @@ export const useValue = (...input) => {
   return [result.data, result.loading, result.pristine, result.error]
 }
 
+// TODO: might not need to have "useData" in favor of having logic in a separate function and keeping other hooks in
+// "useFunction" and "useValue"
 const useData = (input, identify = false, restore = false) => {
   const { stock } = useContainer()
   const { module } = useModule()
@@ -109,12 +113,14 @@ const useData = (input, identify = false, restore = false) => {
       sequence.push([
         action.id,
         (runtime, onReload) =>
-          execute({ functions, runtime, onReload })(...args),
+          execute({ functions, modules, runtime, onReload })(...args),
       ])
 
       const cacheable = !!readCache
       const cached = cacheable && readCache(...args)
 
+      // TODO: what if action is "effect" and NOT "cacheable"?
+      // Might need to add that case in the condition below since it's not handled.
       if (cacheable && !cached) {
         initial = null
         continue
@@ -123,14 +129,17 @@ const useData = (input, identify = false, restore = false) => {
       if (initial) {
         initialValue =
           !settings?.effect && !cacheable
-            ? execute({ functions })(...args)
+            ? // TODO: should pass "runtime" here? Since it may affect the initial value when relying on variable
+              // from one of a previous actions.
+              // TODO: related to the issue of pristine table loading
+              execute({ functions, modules })(...args)
             : cached
       }
     }
 
     executions.push((onReload) =>
       reduce(
-        (runtime, [, fn]) => fn(runtime || {}, onReload),
+        (runtime, [, fn]) => fn(runtime, onReload),
         ([actionId]) => `action/${actionId}`,
         sequence
       )

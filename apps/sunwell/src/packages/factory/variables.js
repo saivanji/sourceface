@@ -84,6 +84,7 @@ export const createVariable = (
     id,
     view: renderVariable(definition, { modules, actions }),
     get: (runtime) => runtime?.[id] || data,
+    data,
   }
 }
 

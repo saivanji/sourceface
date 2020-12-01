@@ -95,39 +95,41 @@ export const serialize = (config, relations, { createVariable }) => {
   const fields = config.fields?.reduce(
     (acc, { key, definition }) => ({
       ...acc,
-      [key]: provideData(createVariable(definition)),
+      [key]: createVariable(definition),
     }),
     {}
   )
-  const groups = config.groups?.reduce(
-    (acc, definition) => ({
-      ...acc,
-      [definition.name]: provideData(createVariable(definition)),
-    }),
-    {}
-  )
+  const groups = config.groups?.map(createVariable)
 
-  return [command?.id, { ...fields, ...groups }, staleIds]
+  return [command?.id, fields, groups, staleIds]
 }
 
-export const execute = ({ runtime, onReload }) => (commandId, args, staleIds) =>
-  request(
+export const execute = ({ runtime, onReload }) => (
+  commandId,
+  fields,
+  groups,
+  staleIds
+) => {
+  return request(
     commandId,
-    mapObjIndexed(({ variable }) => variable.get(runtime), args),
+    createArgs(runtime, fields, groups),
     staleIds,
     onReload
   )
+}
 
 export const readCache = cache.get.bind(cache)
 
 export const add = (config) => {}
 
-// TODO: have "effect" for nameless actions and "async" for asynchronous?
 export const settings = {
   effect: true,
 }
 
-/**
- * Providing data in order to be able serialize arguments for "useEffect"
- */
-const provideData = (variable) => ({ variable, data: variable.get() })
+const createArgs = (runtime, fields, groups) => ({
+  ...mapObjIndexed((variable) => variable.get(runtime), fields),
+  ...groups?.reduce(
+    (acc, variable) => ({ ...acc, ...variable.get(runtime) }),
+    {}
+  ),
+})
