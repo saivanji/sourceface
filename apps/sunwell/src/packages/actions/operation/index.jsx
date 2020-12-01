@@ -118,7 +118,8 @@ export const execute = ({ runtime, onReload }) => (
   )
 }
 
-export const readCache = cache.get.bind(cache)
+export const readCache = ({ runtime }) => (commandId, fields, groups) =>
+  cache.get(commandId, createArgs(runtime, fields, groups))
 
 export const add = (config) => {}
 

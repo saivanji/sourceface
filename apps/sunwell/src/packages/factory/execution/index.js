@@ -17,8 +17,6 @@ export const useHandler = (...input) => {
   // return executions
 }
 
-// TODO: when going from normal to edit mode - loading indicator appears(which should not be there)
-// has something todo with initial cached value
 export const useValue = (...input) => {
   const [result, setResult] = useState({
     data: [],
@@ -83,6 +81,7 @@ const useData = (input, identify = false, restore = false) => {
 
   for (let actionIds of input) {
     let sequence = []
+    let runtime = {}
     let initialValue
 
     const actions =
@@ -117,11 +116,11 @@ const useData = (input, identify = false, restore = false) => {
       ])
 
       const cacheable = !!readCache
-      const cached = cacheable && readCache(...args)
+      const cached =
+        cacheable &&
+        (runtime[`action/${action.id}`] = readCache({ runtime })(...args))
 
-      // TODO: what if action is "effect" and NOT "cacheable"?
-      // Might need to add that case in the condition below since it's not handled.
-      if (cacheable && !cached) {
+      if ((cacheable && !cached) || (settings?.effect && !cacheable)) {
         initial = null
         continue
       }
@@ -129,10 +128,7 @@ const useData = (input, identify = false, restore = false) => {
       if (initial) {
         initialValue =
           !settings?.effect && !cacheable
-            ? // TODO: should pass "runtime" here? Since it may affect the initial value when relying on variable
-              // from one of a previous actions.
-              // TODO: related to the issue of pristine table loading
-              execute({ functions, modules })(...args)
+            ? execute({ functions, modules, runtime })(...args)
             : cached
       }
     }
