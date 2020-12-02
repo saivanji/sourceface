@@ -30,7 +30,7 @@ export default ({ field, label }) => {
       <div>
         {actions.map((action) => (
           <div key={action.id} className={styles.action}>
-            <Action action={action} actions={actions}>
+            <Action action={action}>
               {(root, cut) => (
                 <Card
                   cut={cut}

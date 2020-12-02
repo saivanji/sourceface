@@ -1,4 +1,5 @@
 import React, { createContext, useContext } from "react"
+import { mapObjIndexed } from "ramda"
 import { useContainer } from "./container"
 import { useEditor } from "./editor"
 import { useScope } from "./scope"
@@ -29,15 +30,12 @@ export const useFunctions = () => {
 }
 
 const createModuleFunctions = (modules, stock, scope, assignState) =>
-  modules.reduce(
-    (acc, module) => ({
-      ...acc,
-      [module.id]:
-        stock.modules.dict[module.type].createFunctions?.(
-          module.config,
-          scope.modules[module.id],
-          (key, value) => assignState(module.id, key, value)
-        ) || {},
-    }),
-    {}
+  mapObjIndexed(
+    ({ id, type, config }) =>
+      stock.modules.dict[type].createFunctions?.(
+        config,
+        scope.modules[id],
+        (key, value) => assignState(id, key, value)
+      ) || {},
+    modules
   )

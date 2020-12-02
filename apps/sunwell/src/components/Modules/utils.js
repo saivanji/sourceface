@@ -5,7 +5,7 @@ export const populateLayout = (layout, modules) => {
   let result = { id: layout.id, positions: {} }
 
   for (let moduleId of keys(layout.positions)) {
-    const module = modules.find((x) => x.id === moduleId)
+    const module = modules[moduleId]
 
     /**
      * Ignoring data inconsistency in case module was not found.

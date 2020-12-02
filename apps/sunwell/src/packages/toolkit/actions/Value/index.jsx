@@ -21,10 +21,10 @@ export default function Value({
   creationTitle = "Add value",
   ...props
 }) {
-  const { modules } = useEditor()
+  const { modules, actions } = useEditor()
   const { module } = useConfiguration()
   const { scope } = useScope()
-  const { id: actionId, actions } = useAction()
+  const { id: actionId } = useAction()
 
   const editionTitle =
     value?.type === "literal"
@@ -64,10 +64,9 @@ Value.Autocomplete = function ValueAutocomplete({
   multiple,
   ...props
 }) {
-  const { modules } = useEditor()
+  const { modules, actions } = useEditor()
   const { module } = useConfiguration()
   const { scope } = useScope()
-  const { actions } = useAction()
 
   const map = (definition) => ({
     value: identifyVariable(definition),

@@ -9,7 +9,7 @@ import { useEditor, useFunctions } from "packages/factory"
 // pages/operations?
 export function Root({ config, onConfigChange }) {
   // TODO: have Field/ActionField component to automatically handle value/onChange?
-  const { modules } = useEditor()
+  const { modules, selectors } = useEditor()
   const functions = useFunctions()
 
   const map = ({ id, name }) => ({ title: name, value: id })
@@ -18,10 +18,7 @@ export function Root({ config, onConfigChange }) {
   const selectFunc = (value) => onConfigChange("func", value)
   const len = config.modules?.length
   const editionTitle =
-    len &&
-    (len > 1
-      ? `${len} modules`
-      : modules.find((x) => x.id === config.modules[0]).name)
+    len && (len > 1 ? `${len} modules` : modules[config.modules[0]].name)
 
   return (
     <>
@@ -32,7 +29,7 @@ export function Root({ config, onConfigChange }) {
         editionTitle={editionTitle}
         value={config.modules}
         map={map}
-        items={modules}
+        items={selectors.modules()}
         onChange={selectModules}
       />
       {!!len && (
@@ -40,7 +37,7 @@ export function Root({ config, onConfigChange }) {
           <span>call</span>
           <Static
             value={config.func}
-            items={createSuggestions(config.modules, modules, functions)}
+            items={createSuggestions(config.modules, functions)}
             editionTitle={config.func}
             creationTitle="Function"
             onChange={selectFunc}
@@ -61,7 +58,7 @@ export const execute = ({ functions, modules }) => (moduleIds, func, args) => {
 
   for (let moduleId of moduleIds) {
     try {
-      const { name } = modules.find((m) => m.id === moduleId)
+      const { name } = modules[moduleId]
       result[name] = functions.modules[moduleId][func](args)
     } catch (err) {
       errors.push(err)
@@ -79,7 +76,7 @@ export const settings = {
   effect: true,
 }
 
-const createSuggestions = (moduleIds, modules, functions) => {
+const createSuggestions = (moduleIds, functions) => {
   return moduleIds.reduce((acc, id) => {
     const items = toSuggestions(functions.modules[id])
 

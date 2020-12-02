@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext } from "react"
-import { assocPath, mergeRight } from "ramda"
+import { mapObjIndexed, assocPath, mergeRight } from "ramda"
 import { useContainer } from "./container"
 import { useEditor } from "./editor"
 
@@ -11,7 +11,7 @@ export function Scope({ children }) {
   const [state, setState] = useState({})
 
   function readState(id) {
-    const { initialState } = stock.modules.dict[dict[id].type]
+    const { initialState } = stock.modules.dict[modules[id].type]
 
     return state[id] ?? initialState
   }
@@ -19,12 +19,6 @@ export function Scope({ children }) {
   function assignState(id, key, value) {
     setState(assocPath([id, key], value))
   }
-
-  /**
-   * Transforming modules list to the dictionary for the performance reasons of
-   * accessing the module by it's id.
-   */
-  const dict = toDict(modules)
 
   return (
     <context.Provider
@@ -46,12 +40,9 @@ export const useScope = () => {
 }
 
 const createModulesScope = (modules, state, assignState, stock) =>
-  modules.reduce(
-    (acc, module) => ({
-      ...acc,
-      [module.id]: createLocalScope(module, state, assignState, stock) || {},
-    }),
-    {}
+  mapObjIndexed(
+    (module) => createLocalScope(module, state, assignState, stock) || {},
+    modules
   )
 
 const createLocalScope = (module, state, assignState, stock) => {

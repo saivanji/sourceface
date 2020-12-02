@@ -71,7 +71,7 @@ export const useValue = (...fields) => {
 const useData = (fields, identify = false, restore = false) => {
   const { stock } = useContainer()
   const { module } = useModule()
-  const { modules, selectors } = useEditor()
+  const { modules, actions, selectors } = useEditor()
   const { scope } = useScope()
   const functions = useFunctions()
 
@@ -84,9 +84,7 @@ const useData = (fields, identify = false, restore = false) => {
     let runtime = {}
     let initialValue
 
-    const actions = selectors.actions(module.id, field)
-
-    for (let action of actions) {
+    for (let action of selectors.actions(module.id, field)) {
       /**
        * Skipping not existing actions
        */

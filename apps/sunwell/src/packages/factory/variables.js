@@ -58,15 +58,11 @@ export const renderVariable = (definition, { modules, actions }) => {
   }
 
   if (definition.type === "external") {
-    const module = modules.find((m) => m.id === definition.moduleId)
-
-    return `[external] ${module.name}.${definition.name}`
+    return `[external] ${modules[definition.moduleId].name}.${definition.name}`
   }
 
   if (definition.type === "action") {
-    const action = actions.find((a) => a.id === definition.actionId)
-
-    return `[action] ${action.name}`
+    return `[action] ${actions[definition.actionId].name}`
   }
 }
 
