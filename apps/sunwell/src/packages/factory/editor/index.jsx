@@ -20,8 +20,13 @@ export function Editor({ children, page }) {
   const [isSaving, save] = useSave(page, state, () => actions.edit(false))
 
   useEffect(() => {
-    if ((!state.isEditing && state.isDirty) || prevPage.current !== page) {
+    if (!state.isEditing && state.isDirty) {
       actions.reset(page)
+    }
+
+    if (prevPage.current !== page) {
+      actions.reset(page)
+      prevPage.current = page
     }
   }, [page, state.isEditing, state.isDirty])
 
@@ -29,10 +34,10 @@ export function Editor({ children, page }) {
     <context.Provider
       value={{
         save,
-        selectors: createSelectors(state),
+        isSaving,
         isEditing: state.isEditing,
         isDirty: state.isDirty,
-        isSaving,
+        selectors: createSelectors(state),
         layout: state.entities.layouts[state.result.layout],
         modules: state.entities.modules,
         actions: state.entities.actions,
