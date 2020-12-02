@@ -1,4 +1,4 @@
-import { omit, without } from "ramda"
+import { omit, without, values } from "ramda"
 import { normalize } from "normalizr"
 import schema from "./schema"
 
@@ -178,12 +178,15 @@ function modules(state = {}, { type, payload }) {
 function actions(state = {}, { type, payload }) {
   switch (type) {
     case "createAction": {
-      const { actionId, type, config } = payload
+      const { actionId, field, type, config } = payload
+      const order = values(state).filter((a) => a.field !== field).length
 
       return {
         ...state,
         [actionId]: {
           id: actionId,
+          order,
+          field,
           type,
           config,
           relations: {},

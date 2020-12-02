@@ -20,6 +20,7 @@ export const root = `
         config
         actions {
           id
+          order
           field
           type
           name

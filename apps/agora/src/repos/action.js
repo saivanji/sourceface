@@ -2,8 +2,27 @@ import { keys } from "ramda"
 import { pgp, mergeableColumn } from "../postgres"
 
 export const one = (actionId, pg) => pg.one(sql.one, [actionId])
-export const create = (actionId, moduleId, type, name, config, relations, pg) =>
-  pg.one(sql.create, [actionId, moduleId, type, name, config, relations])
+export const create = (
+  actionId,
+  moduleId,
+  order,
+  field,
+  type,
+  name,
+  config,
+  relations,
+  pg
+) =>
+  pg.one(sql.create, [
+    actionId,
+    moduleId,
+    order,
+    field,
+    type,
+    name,
+    config,
+    relations,
+  ])
 export const update = (actionId, fields, pg) =>
   pg.one(sql.update(fields), [actionId])
 export const remove = (actionId, pg) => pg.none(sql.remove, [actionId])
@@ -15,8 +34,8 @@ const sql = {
     SELECT * FROM actions WHERE id = $1
   `,
   create: `
-    INSERT INTO actions (id, module_id, type, name, config, relations)
-    VALUES ($1, $2, $3, $4, $5, $6) RETURNING *
+    INSERT INTO actions (id, module_id, "order", field, type, name, config, relations)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *
   `,
   remove: `
     DELETE FROM actions WHERE id = $1

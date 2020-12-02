@@ -1,6 +1,7 @@
 type Action {
   id: UUID!
   createdAt: DateTime!
+  order: Int!
   field: String!
   type: ActionType!
   name: String
@@ -21,7 +22,8 @@ extend type Mutation {
   createAction(
     actionId: UUID!
     moduleId: UUID!
-    # field: String!
+    order: Int!
+    field: String!
     type: ActionType!
     name: String
     config: JSONObject!

@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useRef,
 } from "react"
+import { sort } from "ramda"
 import { denormalize } from "normalizr"
 import { module as moduleSchema } from "./schema"
 import { useActions } from "./actions"
@@ -52,11 +53,14 @@ export function Editor({ children, page }) {
 
 const createSelectors = (state) => ({
   actions: (moduleId, field) =>
-    denormalize(
-      state.entities.modules[moduleId],
-      moduleSchema,
-      state.entities
-    ).actions.filter((a) => a.field === field),
+    sort(
+      (a, b) => a.order - b.order,
+      denormalize(
+        state.entities.modules[moduleId],
+        moduleSchema,
+        state.entities
+      ).actions.filter((a) => a.field === field)
+    ),
   modules: () =>
     denormalize(state.result.modules, [moduleSchema], state.entities),
 })

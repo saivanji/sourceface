@@ -49,12 +49,14 @@ const definitions = {
     {
       actionId: "UUID",
       moduleId: "UUID",
+      order: "Int",
+      field: "String",
       type: "ActionType",
       name: "String",
       config: "JSONObject",
       relations: "JSONObject",
     },
-    ["id", "type", "name", "config", "relations"],
+    ["id", "order", "field", "type", "name", "config", "relations"],
   ],
   updateAction: [
     {
@@ -360,6 +362,8 @@ const createChanges = (initialState, state) => {
       result[identifier] = {
         ...result[identifier],
         actionId,
+        order: rhs.order,
+        field: rhs.field,
         type: rhs.type,
         name: rhs.name,
         config: rhs.config,

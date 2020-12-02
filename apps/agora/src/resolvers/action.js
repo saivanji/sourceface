@@ -2,10 +2,20 @@ import * as actionRepo from "repos/action"
 
 const createAction = async (
   parent,
-  { actionId, moduleId, type, name, config, relations },
+  { actionId, moduleId, order, field, type, name, config, relations },
   { pg }
 ) =>
-  await actionRepo.create(actionId, moduleId, type, name, config, relations, pg)
+  await actionRepo.create(
+    actionId,
+    moduleId,
+    order,
+    field,
+    type,
+    name,
+    config,
+    relations,
+    pg
+  )
 
 const updateAction = (
   parent,

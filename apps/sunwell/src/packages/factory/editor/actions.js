@@ -73,11 +73,11 @@ export function useActions(state, dispatch) {
     })
   }
 
-  function createAction(moduleId, type) {
+  function createAction(moduleId, field, type) {
     const actionId = uuid()
     dispatch({
       type: "createAction",
-      payload: { actionId, moduleId, type, config: {} },
+      payload: { actionId, moduleId, field, type, config: {} },
     })
     return actionId
   }

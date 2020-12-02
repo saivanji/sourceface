@@ -142,6 +142,7 @@ CREATE TABLE public.actions (
     config json NOT NULL,
     relations json,
     field text NOT NULL,
+    "order" integer NOT NULL,
     CONSTRAINT actions_key_check CHECK ((field <> ''::text)),
     CONSTRAINT actions_name_check CHECK ((name <> ''::text))
 );
@@ -350,15 +351,14 @@ ALTER TABLE ONLY public.sources ALTER COLUMN id SET DEFAULT nextval('public.sour
 -- Data for Name: actions; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-COPY public.actions (id, created_at, module_id, name, type, config, relations, field) FROM stdin;
-17ebb990-8d6f-44c7-b6b1-cf75a52be7db	2020-11-02 20:10:23.069048	1a3c0c29-a473-473d-b744-6e609154a14a	test	operation	{"queryId":9,"foo":"bar"}	{"commands":{"current": 9}}	count
-8d8557a2-3bd7-41d6-bace-e89a61be093f	2020-11-02 19:54:30.655329	1a3c0c29-a473-473d-b744-6e609154a14a	\N	operation	{"queryId":10,"fields":[{"key":"limit","definition":{"type":"local","name":"limit"}},{"key":"offset","definition":{"type":"local","name":"offset"}}]}	{"commands":{"current": 10}}	data
-7023e6eb-a127-4895-9915-ed35d2bba7b4	2020-11-23 20:58:02.31358	75d49b29-858e-4805-888b-aa31369d7a2b	\N	operation	{}	{"commands": {"current": 9}}	action
-21777d35-c0fc-4801-8611-d5ecaa174475	2020-11-30 20:45:05.525613	75d49b29-858e-4805-888b-aa31369d7a2b	\N	debug	{"definitions":[{"type":"action","actionId":"de653fb3-ad4c-4d4b-b01a-618b94dd34f6"}]}	{}	action
-de653fb3-ad4c-4d4b-b01a-618b94dd34f6	2020-11-24 21:42:38.591167	75d49b29-858e-4805-888b-aa31369d7a2b	form	function	{"func": "release", "modules": ["5c557ec3-0744-4f8d-ae82-2335d566527d", "f61d2948-9132-4006-ad32-b27470f88bc9", "04c08175-7961-4e22-9d33-cfe30943da8d", "3405d690-d444-4b86-91e4-d680aaada640", "b62fd8b1-3d6b-4bd6-9a7a-49613a24b1c5", "4a278a03-3343-467b-816f-292358ab07dc", "633210b9-b69a-46ac-8549-0f01c270156c"]}	{}	action
-3bf7e19a-935b-4bf0-9dd9-cf0cf512c585	2020-12-01 13:24:01.700545	75d49b29-858e-4805-888b-aa31369d7a2b	\N	operation	{"groups": [{"type": "action", "actionId": "de653fb3-ad4c-4d4b-b01a-618b94dd34f6"}]}	{"commands":{"current":8}}	action
-3f6488aa-91ca-43d4-9ba6-16b69864c6df	2020-12-01 13:52:24.832192	75d49b29-858e-4805-888b-aa31369d7a2b	\N	redirect	{}	{"pages":{"current":4}}	action
-3df19c35-8f0a-4341-b2fb-acdae2053fb8	2020-11-23 13:05:49.424953	5dda5e74-7cba-4e4c-9db7-411dae2c6c0d	\N	redirect	{}	{"pages": {"current": 6}}	action
+COPY public.actions (id, created_at, module_id, name, type, config, relations, field, "order") FROM stdin;
+de653fb3-ad4c-4d4b-b01a-618b94dd34f6	2020-11-24 21:42:38.591167	75d49b29-858e-4805-888b-aa31369d7a2b	form	function	{"func": "release", "modules": ["5c557ec3-0744-4f8d-ae82-2335d566527d", "f61d2948-9132-4006-ad32-b27470f88bc9", "04c08175-7961-4e22-9d33-cfe30943da8d", "3405d690-d444-4b86-91e4-d680aaada640", "b62fd8b1-3d6b-4bd6-9a7a-49613a24b1c5", "4a278a03-3343-467b-816f-292358ab07dc", "633210b9-b69a-46ac-8549-0f01c270156c"]}	{}	action	0
+21777d35-c0fc-4801-8611-d5ecaa174475	2020-11-30 20:45:05.525613	75d49b29-858e-4805-888b-aa31369d7a2b	\N	debug	{"definitions":[{"type":"action","actionId":"de653fb3-ad4c-4d4b-b01a-618b94dd34f6"}]}	{}	action	1
+3bf7e19a-935b-4bf0-9dd9-cf0cf512c585	2020-12-01 13:24:01.700545	75d49b29-858e-4805-888b-aa31369d7a2b	\N	operation	{"groups": [{"type": "action", "actionId": "de653fb3-ad4c-4d4b-b01a-618b94dd34f6"}]}	{"commands":{"current":8}}	action	2
+3f6488aa-91ca-43d4-9ba6-16b69864c6df	2020-12-01 13:52:24.832192	75d49b29-858e-4805-888b-aa31369d7a2b	\N	redirect	{}	{"pages":{"current":4}}	action	3
+3df19c35-8f0a-4341-b2fb-acdae2053fb8	2020-11-23 13:05:49.424953	5dda5e74-7cba-4e4c-9db7-411dae2c6c0d	\N	redirect	{}	{"pages": {"current": 6}}	action	0
+17ebb990-8d6f-44c7-b6b1-cf75a52be7db	2020-11-02 20:10:23.069048	1a3c0c29-a473-473d-b744-6e609154a14a	test	operation	{"queryId":9,"foo":"bar"}	{"commands":{"current": 9}}	count	0
+8d8557a2-3bd7-41d6-bace-e89a61be093f	2020-11-02 19:54:30.655329	1a3c0c29-a473-473d-b744-6e609154a14a	\N	operation	{"queryId":10,"fields":[{"key":"limit","definition":{"type":"local","name":"limit"}},{"key":"offset","definition":{"type":"local","name":"offset"}}]}	{"commands":{"current": 10}}	data	0
 \.
 
 
@@ -550,6 +550,14 @@ ALTER TABLE ONLY public.sources
 
 ALTER TABLE ONLY public.stale_commands
     ADD CONSTRAINT stale_commands_command_id_stale_id_key UNIQUE (command_id, stale_id);
+
+
+--
+-- Name: actions unique_order_module_id_field; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.actions
+    ADD CONSTRAINT unique_order_module_id_field UNIQUE ("order", module_id, field);
 
 
 --

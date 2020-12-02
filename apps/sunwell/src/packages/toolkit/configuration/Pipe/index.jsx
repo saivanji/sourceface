@@ -16,7 +16,7 @@ export default ({ field, label }) => {
   const { module } = useConfiguration()
   const { selectors, createAction, removeAction, renameAction } = useEditor()
 
-  const create = (type) => createAction(module.id, type)
+  const create = (type) => createAction(module.id, field, type)
   const remove = (actionId) => removeAction(actionId)
 
   const actions = selectors.actions(module.id, field)
