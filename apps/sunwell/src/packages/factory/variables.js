@@ -1,14 +1,15 @@
-import { keys, values } from "ramda"
+import { keys } from "ramda"
 
 export const createDefinitions = (
   moduleId,
   actionId,
   scope,
-  { modules, actions }
+  modulesList,
+  actionsList
 ) => {
   return [
-    ...createModulesDefinitions(moduleId, modules, scope),
-    ...createActionsDefinitions(actionId, actions),
+    ...createModulesDefinitions(moduleId, modulesList, scope),
+    ...createActionsDefinitions(actionId, actionsList),
   ]
 }
 
@@ -98,8 +99,8 @@ export const evaluateVariable = (definition, moduleId, globalScope) => {
   }
 }
 
-const createModulesDefinitions = (moduleId, modules, scope) =>
-  modules.reduce((acc, m) => {
+const createModulesDefinitions = (moduleId, modulesList, scope) =>
+  modulesList.reduce((acc, m) => {
     const moduleScope = scope.modules[m.id]
 
     if (!moduleScope) {
@@ -125,10 +126,10 @@ const createModulesDefinitions = (moduleId, modules, scope) =>
     return [...acc, ...data]
   }, [])
 
-const createActionsDefinitions = (actionId, actions) => {
+const createActionsDefinitions = (actionId, actionsList) => {
   let result = []
 
-  for (let action of values(actions)) {
+  for (let action of actionsList) {
     if (action.id === actionId) {
       break
     }

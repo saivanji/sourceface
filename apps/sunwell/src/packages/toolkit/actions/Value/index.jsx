@@ -21,10 +21,10 @@ export default function Value({
   creationTitle = "Add value",
   ...props
 }) {
-  const { modules, actions } = useEditor()
+  const { selectors, modules, actions } = useEditor()
   const { module } = useConfiguration()
   const { scope } = useScope()
-  const { id: actionId } = useAction()
+  const { id: actionId, field } = useAction()
 
   const editionTitle =
     value?.type === "literal"
@@ -33,10 +33,13 @@ export default function Value({
       ? multipleSnippet(value, modules, actions)
       : value && renderVariable(value, { modules, actions })
   const snippetColor = value?.type === "literal" ? "beige" : value && "blue"
-  const definitions = createDefinitions(module.id, actionId, scope, {
-    modules,
-    actions,
-  })
+  const definitions = createDefinitions(
+    module.id,
+    actionId,
+    scope,
+    selectors.modules(),
+    selectors.actions(module.id, field)
+  )
 
   return (
     <Static

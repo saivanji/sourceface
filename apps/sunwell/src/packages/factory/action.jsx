@@ -15,6 +15,7 @@ export function Action({ action, children }) {
   const props = {
     id: action.id,
     config: action.config,
+    field: action.field,
     listAll,
     relations: populateRelations(action, changeRelation),
     onRelationChange: (type, key, data) =>
