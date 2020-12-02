@@ -359,6 +359,7 @@ de653fb3-ad4c-4d4b-b01a-618b94dd34f6	2020-11-24 21:42:38.591167	75d49b29-858e-48
 3df19c35-8f0a-4341-b2fb-acdae2053fb8	2020-11-23 13:05:49.424953	5dda5e74-7cba-4e4c-9db7-411dae2c6c0d	\N	redirect	{}	{"pages": {"current": 6}}	action	0
 17ebb990-8d6f-44c7-b6b1-cf75a52be7db	2020-11-02 20:10:23.069048	1a3c0c29-a473-473d-b744-6e609154a14a	test	operation	{"queryId":9,"foo":"bar"}	{"commands":{"current": 9}}	count	0
 8d8557a2-3bd7-41d6-bace-e89a61be093f	2020-11-02 19:54:30.655329	1a3c0c29-a473-473d-b744-6e609154a14a	\N	operation	{"queryId":10,"fields":[{"key":"limit","definition":{"type":"local","name":"limit"}},{"key":"offset","definition":{"type":"local","name":"offset"}}]}	{"commands":{"current": 10}}	data	0
+f1361737-544f-4674-8b7e-e9b69b718ceb	2020-12-02 21:24:43.386524	65f174dc-8881-4245-bc68-7a7fd87b6de9	\N	debug	{}	{}	action	0
 \.
 
 
@@ -387,8 +388,8 @@ SELECT pg_catalog.setval('public.commands_id_seq', 10, true);
 
 COPY public.layouts (id, created_at, positions) FROM stdin;
 a3f2d2a9-e588-47be-853e-975ab124236b	2020-11-18 18:52:26.794869	{}
-3c7b3140-88a3-41be-880c-bff74755ce48	2020-11-23 18:04:40.252231	{"04c08175-7961-4e22-9d33-cfe30943da8d": {"h": 1, "w": 4, "x": 0, "y": 3}, "3405d690-d444-4b86-91e4-d680aaada640": {"h": 1, "w": 4, "x": 0, "y": 5}, "4a278a03-3343-467b-816f-292358ab07dc": {"h": 1, "w": 4, "x": 0, "y": 2}, "5c557ec3-0744-4f8d-ae82-2335d566527d": {"h": 1, "w": 4, "x": 0, "y": 4}, "633210b9-b69a-46ac-8549-0f01c270156c": {"h": 1, "w": 4, "x": 0, "y": 1}, "705b2bd8-160f-4fe0-a926-6a71b3724272": {"h": 1, "w": 4, "x": 0, "y": 0}, "75d49b29-858e-4805-888b-aa31369d7a2b": {"h": 1, "w": 3, "x": 0, "y": 8}, "b62fd8b1-3d6b-4bd6-9a7a-49613a24b1c5": {"h": 1, "w": 4, "x": 0, "y": 6}, "f61d2948-9132-4006-ad32-b27470f88bc9": {"h": 1, "w": 4, "x": 0, "y": 7}}
 1a3c0c29-a473-473d-b744-6e609154a14b	2020-11-02 18:15:37.692755	{"0e1ef8c6-d002-4e61-a1ce-7c7881f76c4f": {"h": 1, "w": 3, "x": 0, "y": 2}, "167c6d43-d066-4c31-9161-acc24de21abe": {"h": 1, "w": 3, "x": 7, "y": 1}, "1762f632-ee43-4571-9d81-a52a20c0074a": {"h": 1, "w": 3, "x": 7, "y": 3}, "18f429f3-68be-42f5-bf9d-ef70264c553f": {"h": 1, "w": 3, "x": 0, "y": 0}, "1a3c0c29-a473-473d-b744-6e609154a14a": {"h": 12, "w": 10, "x": 0, "y": 1}, "40147c57-cff4-4825-91ff-b74826ecc404": {"h": 1, "w": 3, "x": 0, "y": 0}, "425cb69b-0d31-43d4-9595-2100b4ca6d3b": {"h": 1, "w": 3, "x": 0, "y": 0}, "478213fd-856e-4771-86bc-40eed50ec34e": {"h": 1, "w": 3, "x": 7, "y": 3}, "4858d807-1269-479b-988c-f89bbfaa3567": {"h": 1, "w": 3, "x": 4, "y": 1}, "5dda5e74-7cba-4e4c-9db7-411dae2c6c0d": {"h": 1, "w": 2, "x": 8, "y": 0}, "60c4f48d-728e-48d5-a72f-4aa6cc8d0649": {"h": 1, "w": 3, "x": 7, "y": 0}, "7242c7e1-8816-43a4-8ba4-228eb5bc873b": {"h": 1, "w": 3, "x": 3, "y": 1}, "743e7170-7d02-4073-8709-cb79d9bcff31": {"h": 1, "w": 3, "x": 7, "y": 1}, "af6f58a4-8ae5-46d1-96b1-b7dc1547ea18": {"h": 1, "w": 3, "x": 0, "y": 0}, "bcc533f8-02d6-4454-98b4-289decdedbba": {"h": 1, "w": 3, "x": 7, "y": 0}, "bd76d4cb-efa3-4f20-b7df-0087cdddff6e": {"h": 1, "w": 3, "x": 6, "y": 0}, "c651babc-8c6a-4234-b402-a71c52941ec7": {"h": 1, "w": 3, "x": 0, "y": 0}, "c80f40e5-9feb-4f91-ba97-800d3624fbe4": {"h": 1, "w": 3, "x": 6, "y": 3}, "c96d1984-e787-4e03-8e26-7071dd4ed3d1": {"h": 1, "w": 3, "x": 7, "y": 0}, "cd95c664-2081-4e73-858f-6fcdc1bf0d85": {"h": 1, "w": 3, "x": 7, "y": 0}, "cf3cdfe3-de28-497d-a912-686f6247b951": {"h": 1, "w": 3, "x": 3, "y": 1}, "d10a9247-b116-4d58-9787-c3aafc9f40e3": {"h": 1, "w": 3, "x": 4, "y": 3}, "e6fc336d-aa2d-4aab-9897-fec3f2ef15e1": {"h": 1, "w": 3, "x": 7, "y": 1}, "e91a5239-e09b-4ce5-86b8-433d5e331705": {"h": 1, "w": 3, "x": 0, "y": 3}}
+3c7b3140-88a3-41be-880c-bff74755ce48	2020-11-23 18:04:40.252231	{"04c08175-7961-4e22-9d33-cfe30943da8d": {"h": 1, "w": 4, "x": 0, "y": 3}, "3405d690-d444-4b86-91e4-d680aaada640": {"h": 1, "w": 4, "x": 0, "y": 5}, "41df8b51-f7da-46bf-a090-0375d43c503a": {"h": 1, "w": 3, "x": 2, "y": 10}, "4a278a03-3343-467b-816f-292358ab07dc": {"h": 1, "w": 4, "x": 0, "y": 2}, "5c557ec3-0744-4f8d-ae82-2335d566527d": {"h": 1, "w": 4, "x": 0, "y": 4}, "633210b9-b69a-46ac-8549-0f01c270156c": {"h": 1, "w": 4, "x": 0, "y": 1}, "65f174dc-8881-4245-bc68-7a7fd87b6de9": {"h": 1, "w": 3, "x": 2, "y": 10}, "705b2bd8-160f-4fe0-a926-6a71b3724272": {"h": 1, "w": 4, "x": 0, "y": 0}, "75d49b29-858e-4805-888b-aa31369d7a2b": {"h": 1, "w": 3, "x": 0, "y": 8}, "b62fd8b1-3d6b-4bd6-9a7a-49613a24b1c5": {"h": 1, "w": 4, "x": 0, "y": 6}, "f61d2948-9132-4006-ad32-b27470f88bc9": {"h": 1, "w": 4, "x": 0, "y": 7}}
 \.
 
 
@@ -406,8 +407,8 @@ COPY public.migrations (data) FROM stdin;
 --
 
 COPY public.modules (id, created_at, type, config, name, layout_id) FROM stdin;
-1a3c0c29-a473-473d-b744-6e609154a14a	2020-11-02 18:57:03.7921	table	{"data":["8d8557a2-3bd7-41d6-bace-e89a61be093f"],"count":["17ebb990-8d6f-44c7-b6b1-cf75a52be7db"],"limit":10,"pagination":true}	table_1	1a3c0c29-a473-473d-b744-6e609154a14b
-5dda5e74-7cba-4e4c-9db7-411dae2c6c0d	2020-11-23 13:05:37.041899	button	{"size": "regular", "text": "Create", "action": ["3df19c35-8f0a-4341-b2fb-acdae2053fb8"], "shouldFitContainer": false}	123	1a3c0c29-a473-473d-b744-6e609154a14b
+1a3c0c29-a473-473d-b744-6e609154a14a	2020-11-02 18:57:03.7921	table	{"limit":10,"pagination":true}	table_1	1a3c0c29-a473-473d-b744-6e609154a14b
+5dda5e74-7cba-4e4c-9db7-411dae2c6c0d	2020-11-23 13:05:37.041899	button	{"size": "regular", "text": "Create", "shouldFitContainer": false}	123	1a3c0c29-a473-473d-b744-6e609154a14b
 04c08175-7961-4e22-9d33-cfe30943da8d	2020-11-23 19:16:36.589081	input	{"validationMessage":"Validation failed","placeholder":"Delivery type"}	delivery_type	3c7b3140-88a3-41be-880c-bff74755ce48
 3405d690-d444-4b86-91e4-d680aaada640	2020-11-23 19:16:36.591114	input	{"validationMessage":"Validation failed","placeholder":"Payment type"}	payment_type	3c7b3140-88a3-41be-880c-bff74755ce48
 b62fd8b1-3d6b-4bd6-9a7a-49613a24b1c5	2020-11-23 19:16:36.591588	input	{"validationMessage":"Validation failed","placeholder":"Amount"}	amount	3c7b3140-88a3-41be-880c-bff74755ce48
@@ -416,7 +417,8 @@ b62fd8b1-3d6b-4bd6-9a7a-49613a24b1c5	2020-11-23 19:16:36.591588	input	{"validati
 633210b9-b69a-46ac-8549-0f01c270156c	2020-11-23 18:22:24.486775	input	{"placeholder": "Customer name", "validationMessage": "Validation failed"}	customer_name	3c7b3140-88a3-41be-880c-bff74755ce48
 f61d2948-9132-4006-ad32-b27470f88bc9	2020-11-23 19:16:36.600281	input	{"validation": "^.+$", "placeholder": "Currency", "validationMessage": "Validation failed"}	currency	3c7b3140-88a3-41be-880c-bff74755ce48
 5c557ec3-0744-4f8d-ae82-2335d566527d	2020-11-23 19:16:36.590732	input	{"validation": "^.+$", "placeholder": "Status", "validationMessage": "Validation failed"}	status	3c7b3140-88a3-41be-880c-bff74755ce48
-75d49b29-858e-4805-888b-aa31369d7a2b	2020-11-23 19:16:36.593492	button	{"size": "regular", "text": "Create order", "action": ["de653fb3-ad4c-4d4b-b01a-618b94dd34f6", "b35ac376-faa8-4065-a80c-ce2efd44a0a4", "21777d35-c0fc-4801-8611-d5ecaa174475", "3bf7e19a-935b-4bf0-9dd9-cf0cf512c585", "3f6488aa-91ca-43d4-9ba6-16b69864c6df"], "shouldFitContainer": false}	submit	3c7b3140-88a3-41be-880c-bff74755ce48
+75d49b29-858e-4805-888b-aa31369d7a2b	2020-11-23 19:16:36.593492	button	{"size": "regular", "text": "Create order", "shouldFitContainer": false}	submit	3c7b3140-88a3-41be-880c-bff74755ce48
+65f174dc-8881-4245-bc68-7a7fd87b6de9	2020-12-02 21:24:43.345221	button	{"text":"Click me","size":"regular","shouldFitContainer":false}	click	3c7b3140-88a3-41be-880c-bff74755ce48
 \.
 
 
