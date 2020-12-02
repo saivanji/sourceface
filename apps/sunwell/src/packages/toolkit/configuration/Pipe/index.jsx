@@ -1,6 +1,5 @@
 import React from "react"
 import cx from "classnames"
-import { without } from "ramda"
 import { Autocomplete, Button, Toggle } from "@sourceface/components"
 import {
   useContainer,
@@ -12,21 +11,15 @@ import Add from "assets/add.svg"
 import Card from "./Card"
 import styles from "./index.scss"
 
-export default ({ label, value = [], onChange }) => {
+// TODO: do not have it as field
+export default ({ field, label }) => {
   const { module } = useConfiguration()
   const { selectors, createAction, removeAction, renameAction } = useEditor()
 
-  const create = (type) => {
-    const actionId = createAction(module.id, type)
-    onChange([...value, actionId])
-  }
+  const create = (type) => createAction(module.id, type)
+  const remove = (actionId) => removeAction(actionId)
 
-  const remove = (actionId) => {
-    removeAction(actionId)
-    onChange(without([actionId], value))
-  }
-
-  const actions = selectors.actions(value)
+  const actions = selectors.actions(module.id, field)
 
   // TODO: implement toggling of existing actions?
   return !actions.length ? (

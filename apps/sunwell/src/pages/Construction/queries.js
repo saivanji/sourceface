@@ -20,6 +20,7 @@ export const root = `
         config
         actions {
           id
+          field
           type
           name
           config

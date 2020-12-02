@@ -26,10 +26,7 @@ export const Root = function TableModule({
   config,
   scope: { limit, offset, page },
 }) {
-  const [[rows, count], loading, pristine, error] = useValue(
-    config.data,
-    config.count
-  )
+  const [[rows, count], loading, pristine, error] = useValue("data", "count")
 
   const changePage = useTransition("page")
 
@@ -108,7 +105,7 @@ export const Configuration = function TableModuleConfiguration({ config }) {
     <>
       <Section title="Basic">
         <Row>
-          <Field label="Data" name="data" component={Pipe} />
+          <Pipe field="data" label="Data" />
         </Row>
       </Section>
       <Section title="Pagination">
@@ -118,15 +115,10 @@ export const Configuration = function TableModuleConfiguration({ config }) {
         {config.pagination && (
           <>
             <Row>
-              <Field label="Total count" name="count" component={Pipe} />
+              <Pipe field="count" label="Total count" />
             </Row>
             <Row>
-              <Field
-                label="Current page"
-                name="currentPage"
-                type="text"
-                component={Pipe}
-              />
+              <Pipe label="Current page" field="currentPage" />
             </Row>
             <Row>
               <Label title="Items per page">

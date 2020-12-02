@@ -12,7 +12,7 @@ import { useHandler } from "packages/factory"
 import { Field, Pipe } from "packages/toolkit"
 
 export const Root = function ButtonModule({ config }) {
-  const [onClick] = useHandler(config.action)
+  const [onClick] = useHandler("action")
 
   return (
     <Button
@@ -44,9 +44,7 @@ export const Configuration = function ButtonModuleConfiguration() {
         </Label>
       </Row>
       <Row>
-        <Label title="Action">
-          <Field name="action" component={Pipe} />
-        </Label>
+        <Pipe field="action" label="Action" />
       </Row>
       <Row>
         <Field

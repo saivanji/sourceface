@@ -8,6 +8,7 @@ export const up = () =>
         id uuid PRIMARY KEY,
         created_at timestamp NOT NULL DEFAULT NOW(),
         module_id uuid NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
+        field text NOT NULL CHECK (field <> ''),
         name text CHECK (name <> ''),
         type action NOT NULL,
         config json NOT NULL,

@@ -8,8 +8,8 @@ import { createVariable } from "../variables"
 import { useFunctions } from "../functions"
 import { populateRelations } from "../action"
 
-export const useHandler = (...input) => {
-  const [executions] = useData(input)
+export const useHandler = (...fields) => {
+  const [executions] = useData(fields)
 
   // TODO: consider function arguments as input to the action
   return executions.map((fn) => (args) => fn())
@@ -17,7 +17,7 @@ export const useHandler = (...input) => {
   // return executions
 }
 
-export const useValue = (...input) => {
+export const useValue = (...fields) => {
   const [result, setResult] = useState({
     data: [],
     error: null,
@@ -27,7 +27,7 @@ export const useValue = (...input) => {
   })
 
   const [executions, identifier, initial] = useData(
-    input,
+    fields,
     true,
     result.pristine
   )
@@ -68,10 +68,10 @@ export const useValue = (...input) => {
 
 // TODO: might not need to have "useData" in favor of having logic in a separate function and keeping other hooks in
 // "useFunction" and "useValue"
-const useData = (input, identify = false, restore = false) => {
+const useData = (fields, identify = false, restore = false) => {
   const { stock } = useContainer()
   const { module } = useModule()
-  const { modules } = useEditor()
+  const { modules, selectors } = useEditor()
   const { scope } = useScope()
   const functions = useFunctions()
 
@@ -79,13 +79,12 @@ const useData = (input, identify = false, restore = false) => {
   let executions = []
   let initial = restore ? [] : null
 
-  for (let actionIds of input) {
+  for (let field of fields) {
     let sequence = []
     let runtime = {}
     let initialValue
 
-    const actions =
-      actionIds?.map((id) => module.actions.find((a) => a.id === id)) || []
+    const actions = selectors.actions(module.id, field)
 
     for (let action of actions) {
       /**
