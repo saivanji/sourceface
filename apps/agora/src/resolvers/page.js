@@ -6,9 +6,6 @@ const page = async (parent, { path }, { pg }) =>
 const pages = (parent, { query, limit = 10, offset = 0 }, { pg }) =>
   pageRepo.list(query, limit, offset, pg)
 
-const layout = async ({ layoutId }, args, ctx) =>
-  ctx.loaders.layout.load(layoutId)
-
 const modules = async (parent, args, ctx) =>
   ctx.loaders.modulesByPage.load(parent.id)
 
@@ -20,7 +17,6 @@ export default {
     pages,
   },
   Page: {
-    layout,
     modules,
     trail,
   },

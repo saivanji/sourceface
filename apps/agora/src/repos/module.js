@@ -2,11 +2,22 @@ import { keys } from "ramda"
 import { pgp, mergeableColumn } from "../postgres"
 
 export const one = (moduleId, pg) => pg.one(sql.one, [moduleId])
-export const create = (moduleId, layoutId, type, name, config, pg) =>
-  pg.one(sql.create, [moduleId, layoutId, type, name, config])
-export const update = (moduleId, fields, pg) =>
-  pg.one(sql.update(fields), [moduleId])
+export const create = (
+  moduleId,
+  parentId,
+  pageId,
+  type,
+  name,
+  config,
+  position,
+  pg
+) =>
+  pg.one(sql.create, [moduleId, parentId, pageId, type, name, config, position])
+export const update = (moduleId, data, pg) =>
+  pg.one(sql.update({ id: moduleId, ...data }))
+export const updateMany = (data, pg) => pg.many(sql.update(data))
 export const remove = (moduleId, pg) => pg.none(sql.remove, [moduleId])
+export const listByIds = (ids, pg) => pg.manyOrNone(sql.listByIds, [ids])
 export const listByPageIds = (pageIds, pg) =>
   pg.manyOrNone(sql.listByPageIds, [pageIds])
 
@@ -15,39 +26,33 @@ const sql = {
     SELECT * FROM modules WHERE id = $1
   `,
   create: `
-    INSERT INTO modules (id, layout_id, type, name, config)
-    VALUES ($1, $2, $3, $4, $5)
+    INSERT INTO modules (id, parent_id, page_id, type, name, config, position)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
     RETURNING *
   `,
   remove: `
     DELETE FROM modules WHERE id = $1
   `,
-  listByPageIds: `
-    WITH recursive cte AS (
-      SELECT m.*, pg.id AS page_id FROM modules AS m
-      INNER JOIN pages AS pg ON pg.layout_id = m.layout_id
-      WHERE pg.id IN ($1:csv)
-
-      UNION ALL
-
-      SELECT m.*, cte.page_id FROM modules AS m
-      INNER JOIN modules_layouts AS ml ON ml.layout_id = m.layout_id
-      INNER JOIN cte ON cte.id = ml.module_id
-    ) SELECT * FROM cte
+  listByIds: `
+    SELECT * FROM modules WHERE id IN ($1:csv)
   `,
-  update: (fields) =>
+  listByPageIds: `
+    SELECT * FROM modules WHERE page_id IN ($1:csv)
+  `,
+  update: (data) =>
     pgp.helpers.update(
-      fields,
-      new pgp.helpers.ColumnSet(
-        keys(fields).map((key) =>
+      data,
+      new pgp.helpers.ColumnSet([
+        "?id",
+        ...keys(data).map((key) =>
           key === "config" ? mergeableColumn(key) : key
-        )
-      ),
+        ),
+      ]),
       "modules",
       {
         emptyUpdate: sql.one,
       }
-    ) + " WHERE id = $1 RETURNING *",
+    ) + " RETURNING *",
 }
 
 // SELECT $1 AS id, $2 AS type, $3 AS config, $4 AS position_id,

@@ -2,18 +2,14 @@ import React, { forwardRef } from "react"
 import { identity } from "ramda"
 import { Module, useEditor } from "packages/factory"
 import Grill from "packages/grid"
-import { populateLayout } from "./utils"
+import { createLayout } from "./utils"
 import { useChangeGrid } from "./callbacks"
 import styles from "./index.scss"
 
 export default function Modules({ renderItem = identity }) {
-  const { layout, modules } = useEditor()
+  const { modules } = useEditor()
 
-  return !layout ? (
-    "Loading..."
-  ) : (
-    <Frame renderItem={renderItem} layout={populateLayout(layout, modules)} />
-  )
+  return <Frame renderItem={renderItem} layout={createLayout(modules)} />
 }
 
 // TODO: get some props from context provided from Editor? (explore git history for the additional context)
@@ -29,7 +25,7 @@ function Frame({ layout, renderItem }) {
       rows={50}
       cols={10}
       rowHeight={60}
-      layout={layout.positions}
+      layout={layout}
       isStatic={!isEditing}
       onChange={changeGrid}
       components={{

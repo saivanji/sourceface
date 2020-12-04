@@ -9,11 +9,13 @@ import {
 } from "urql"
 import { devtoolsExchange } from "@urql/devtools"
 import { cacheExchange } from "@urql/exchange-graphcache"
-import { populateExchange } from "@urql/exchange-populate"
+// import { populateExchange } from "@urql/exchange-populate"
 import { introspection } from "@sourceface/schema"
 import * as updates from "./updates"
 
 const endpoint = "http://localhost:5001/graphql"
+
+console.log(introspection)
 
 // TODO: move to schema/client package? so we can reuse schema client logic by other clients(mobile app)
 // TODO: import mutations definitions
@@ -23,9 +25,10 @@ const client = createClient({
   exchanges: [
     devtoolsExchange,
     dedupExchange,
-    populateExchange({
-      schema: introspection,
-    }),
+    // TODO: commenting since it's causing "Found no flat schema type when one was expected" error
+    // populateExchange({
+    //   schema: introspection,
+    // }),
     cacheExchange({
       schema: introspection,
       updates: {

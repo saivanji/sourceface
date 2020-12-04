@@ -4,7 +4,6 @@ type Page {
   route: String!
   title: String!
   trail: [Page!]!
-  layout: Layout!
   modules: [Module!]!
 }
 
@@ -21,6 +20,5 @@ extend type Query {
 }
 
 extend type Mutation {
-  # TODO: make sure all layouts related to that page are removed as well
   removePage(pageId: Int!): Boolean
 }

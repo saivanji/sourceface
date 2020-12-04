@@ -9,15 +9,13 @@ export const root = `
         route
         title
       }
-      layout {
-        id
-        positions
-      }
       modules {
         id
+        parentId
         name
         type
         config
+        position
         actions {
           id
           order
@@ -38,10 +36,6 @@ export const root = `
               id
             }
           }
-        }
-        layouts {
-          id
-          positions
         }
       }
     }

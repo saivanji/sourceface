@@ -6,27 +6,42 @@ enum ModuleType {
   text
 }
 
+input ModuleInput {
+  moduleId: UUID!
+  parentId: UUID
+  name: String
+  config: JSONObject
+  position: JSONObject
+}
+
 type Module {
   id: UUID!
   createdAt: DateTime!
+  parentId: UUID
   name: String!
   type: ModuleType!
   config: JSONObject!
+  position: JSONObject
   actions: [Action!]!
-  layouts: [Layout!]!
 }
 
 extend type Mutation {
   createModule(
     moduleId: UUID!
-    layoutId: UUID!
-    position: JSONObject!
+    parentId: UUID
+    pageId: Int!
     type: ModuleType!
     name: String!
     config: JSONObject!
+    position: JSONObject
   ): Module!
-  updateModule(moduleId: UUID!, name: String, config: JSONObject): Module!
-  # TODO: make sure all related child layouts are removed as well
-  # TODO: make sure module position is removed on assigned layout
+  updateModule(
+    moduleId: UUID!
+    parentId: UUID
+    name: String
+    config: JSONObject
+    position: JSONObject
+  ): Module!
+  updateModules(modules: [ModuleInput!]!): [Module!]!
   removeModule(moduleId: UUID!): Boolean
 }

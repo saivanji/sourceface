@@ -1,38 +1,37 @@
 import * as moduleRepo from "repos/module"
-import * as layoutRepo from "repos/layout"
-
-// TODO: have updateModuleConfig mutation to make updates on a config to avoid
-// concurrency issues(will need change front-end code accordingly and handle object
-// setting, array filtering/appending on Postgres side)
-// (moduleId: UUID!, key: String!, kind: 'set' | 'remove' | 'append', value: JSONObject!)
 
 const createModule = async (
   parent,
-  { moduleId, layoutId, position, type, name, config },
+  { moduleId, parentId, pageId, type, name, config, position },
   { pg }
 ) =>
-  pg.tx(async (t) => {
-    await layoutRepo.insertPositions(layoutId, { [moduleId]: position }, t)
+  moduleRepo.create(
+    moduleId,
+    parentId,
+    pageId,
+    type,
+    name,
+    config,
+    position,
+    pg
+  )
 
-    return moduleRepo.create(moduleId, layoutId, type, name, config, t)
-  })
-
-const updateModule = async (parent, { moduleId, name, config }, { pg }) => {
+const updateModule = async (parent, { moduleId, ...fields }, { pg }) => {
   // TODO: perform validation of config input data depending on module type
   // also check on validationSchema whether it has "key" user tries to update
   // define specific module config types with scalars(bounded with validationSchemas)?
 
-  const fields = {
-    ...(name && { name }),
-    ...(config && { config }),
-  }
-
   return moduleRepo.update(moduleId, fields, pg)
 }
 
-const removeModule = async (parent, { moduleId }, { pg }) => {
-  // TODO: remove module from the assigned layout.(get layout_id from delete statement)
+const updateModules = async (parent, { modules }, { pg }) => {
+  return moduleRepo.updateMany(
+    modules.map(({ moduleId, ...rest }) => ({ id: moduleId, ...rest })),
+    pg
+  )
+}
 
+const removeModule = async (parent, { moduleId }, { pg }) => {
   await moduleRepo.remove(moduleId, pg)
 
   return true
@@ -41,17 +40,14 @@ const removeModule = async (parent, { moduleId }, { pg }) => {
 const actions = (parent, args, ctx) =>
   ctx.loaders.actionsByModule.load(parent.id)
 
-const layouts = (parent, args, ctx) =>
-  ctx.loaders.layoutsByModule.load(parent.id)
-
 export default {
   Mutation: {
     createModule,
     updateModule,
+    updateModules,
     removeModule,
   },
   Module: {
     actions,
-    layouts,
   },
 }
