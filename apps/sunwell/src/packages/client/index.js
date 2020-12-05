@@ -15,8 +15,6 @@ import * as updates from "./updates"
 
 const endpoint = "http://localhost:5001/graphql"
 
-console.log(introspection)
-
 // TODO: move to schema/client package? so we can reuse schema client logic by other clients(mobile app)
 // TODO: import mutations definitions
 const client = createClient({

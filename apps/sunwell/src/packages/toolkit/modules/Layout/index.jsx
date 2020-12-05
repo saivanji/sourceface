@@ -16,12 +16,14 @@ export default function Layout({ renderItem = identity }) {
   const { modules, isEditing } = useEditor()
   const changeGrid = useChangeGrid(parentId)
 
+  const layout = createLayout(parentId, modules)
+
   return (
     <Grill
       rows={50}
       cols={10}
       rowHeight={60}
-      layout={createLayout(parentId, modules)}
+      layout={layout}
       isStatic={!isEditing}
       onChange={changeGrid}
       components={{

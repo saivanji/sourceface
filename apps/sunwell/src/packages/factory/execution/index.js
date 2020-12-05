@@ -88,6 +88,7 @@ const useData = (fields, identify = false, restore = false) => {
       /**
        * Skipping not existing actions
        */
+      // TODO: should we keep it since all data will be integrient?
       if (!action) {
         continue
       }

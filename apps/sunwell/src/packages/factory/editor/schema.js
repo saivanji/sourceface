@@ -8,6 +8,4 @@ export const action = new schema.Entity("actions", {
 })
 export const module = new schema.Entity("modules", { actions: [action] })
 
-export default {
-  modules: [module],
-}
+export default [module]

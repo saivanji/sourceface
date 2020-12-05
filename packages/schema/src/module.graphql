@@ -18,6 +18,7 @@ type Module {
   id: UUID!
   createdAt: DateTime!
   parentId: UUID
+  pageId: Int!
   name: String!
   type: ModuleType!
   config: JSONObject!

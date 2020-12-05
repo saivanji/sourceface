@@ -1,8 +1,8 @@
-import { omit, without, values } from "ramda"
+import { omit, without, values, mergeDeepRight } from "ramda"
 import { normalize } from "normalizr"
 import schema from "./schema"
 
-export const init = (page) => normalize(page, schema)
+export const init = (data) => normalize(data, schema)
 
 export default (state = {}, action) => {
   if (action.type === "reset") {
@@ -54,15 +54,17 @@ function referenceEntity(state = {}, { type, payload }) {
 function modules(state = {}, { type, payload }) {
   switch (type) {
     case "createModule": {
-      const { moduleId, type, name, config } = payload
+      const { moduleId, parentId, type, name, config, position } = payload
 
       return {
         ...state,
         [moduleId]: {
           id: moduleId,
+          parentId,
           type,
           name,
           config,
+          position,
           actions: [],
         },
       }
@@ -93,6 +95,10 @@ function modules(state = {}, { type, payload }) {
           name,
         },
       }
+    }
+
+    case "updateModules": {
+      return mergeDeepRight(state, payload)
     }
 
     case "removeModule":
@@ -220,20 +226,13 @@ function actions(state = {}, { type, payload }) {
   }
 }
 
-function result(state = {}, { type, payload }) {
+function result(state = [], { type, payload }) {
   switch (type) {
     case "createModule":
-      return {
-        ...state,
-        modules: [...state.modules, payload.moduleId],
-      }
+      return [...state, payload.moduleId]
 
-    case "removeModule": {
-      return {
-        ...state,
-        modules: without([payload.moduleId], state.modules),
-      }
-    }
+    case "removeModule":
+      return without([payload.moduleId], state)
 
     default:
       return state

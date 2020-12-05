@@ -21,10 +21,7 @@ export default function Value({
   creationTitle = "Add value",
   ...props
 }) {
-  const { selectors, modules, actions } = useEditor()
-  const { module } = useConfiguration()
-  const { scope } = useScope()
-  const { id: actionId, field } = useAction()
+  const { modules, actions } = useEditor()
 
   const editionTitle =
     value?.type === "literal"
@@ -33,13 +30,6 @@ export default function Value({
       ? multipleSnippet(value, modules, actions)
       : value && renderVariable(value, { modules, actions })
   const snippetColor = value?.type === "literal" ? "beige" : value && "blue"
-  const definitions = createDefinitions(
-    module.id,
-    actionId,
-    scope,
-    selectors.modules(),
-    selectors.actions(module.id, field)
-  )
 
   return (
     <Static
@@ -48,7 +38,6 @@ export default function Value({
       multiple={multiple}
       creationTitle={creationTitle}
       editionTitle={editionTitle}
-      items={definitions}
       value={
         value &&
         (multiple ? value.map(identifyVariable) : identifyVariable(value))
@@ -67,9 +56,18 @@ Value.Autocomplete = function ValueAutocomplete({
   multiple,
   ...props
 }) {
-  const { modules, actions } = useEditor()
+  const { selectors, modules, actions } = useEditor()
   const { module } = useConfiguration()
   const { scope } = useScope()
+  const { id: actionId, field } = useAction()
+
+  const definitions = createDefinitions(
+    module.id,
+    actionId,
+    scope,
+    selectors.modules(),
+    selectors.actions(module.id, field)
+  )
 
   const map = (definition) => ({
     value: identifyVariable(definition),
@@ -77,6 +75,7 @@ Value.Autocomplete = function ValueAutocomplete({
     definition,
     data: evaluateVariable(definition, module.id, scope),
   })
+
   const change = (value) => {
     onChange(
       value && (multiple ? value.map(defineVariable) : defineVariable(value))
@@ -86,6 +85,7 @@ Value.Autocomplete = function ValueAutocomplete({
   return (
     <Static.Autocomplete
       {...props}
+      items={definitions}
       multiple={multiple}
       filter={filter}
       map={map}

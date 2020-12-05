@@ -18,23 +18,13 @@ export function useActions(state, dispatch) {
     dispatch({ type: "edit", payload: isEditing })
   }
 
-  function updateLayout(layoutId, positions) {
-    dispatch({
-      type: "updateLayout",
-      payload: {
-        layoutId,
-        positions,
-      },
-    })
-  }
-
-  function createModule(layoutId, type, position) {
+  function createModule(parentId, type, position) {
     const moduleId = uuid()
     dispatch({
       type: "createModule",
       payload: {
-        layoutId,
         moduleId,
+        parentId,
         config: stock.modules.dict[type].defaultConfig,
         type,
         name,
@@ -62,14 +52,17 @@ export function useActions(state, dispatch) {
     })
   }
 
+  function updateModules(data) {
+    dispatch({
+      type: "updateModules",
+      payload: data,
+    })
+  }
+
   function removeModule(moduleId) {
-    const layoutId = utils.findLayoutIdByModule(
-      moduleId,
-      state.entities.layouts
-    )
     dispatch({
       type: "removeModule",
-      payload: { moduleId, layoutId },
+      payload: { moduleId },
     })
   }
 
@@ -118,10 +111,10 @@ export function useActions(state, dispatch) {
     select,
     reset,
     edit,
-    updateLayout,
     createModule,
     configureModule,
     renameModule,
+    updateModules,
     removeModule,
     createAction,
     configureAction,

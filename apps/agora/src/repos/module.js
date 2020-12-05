@@ -1,5 +1,4 @@
-import { keys } from "ramda"
-import { pgp, mergeableColumn } from "../postgres"
+import { mergeableColumn, castColumn, updateQuery } from "../postgres"
 
 export const one = (moduleId, pg) => pg.one(sql.one, [moduleId])
 export const create = (
@@ -40,19 +39,11 @@ const sql = {
     SELECT * FROM modules WHERE page_id IN ($1:csv)
   `,
   update: (data) =>
-    pgp.helpers.update(
-      data,
-      new pgp.helpers.ColumnSet([
-        "?id",
-        ...keys(data).map((key) =>
-          key === "config" ? mergeableColumn(key) : key
-        ),
-      ]),
-      "modules",
-      {
-        emptyUpdate: sql.one,
-      }
-    ) + " RETURNING *",
+    updateQuery("id", "modules", data, {
+      parentId: castColumn("uuid"),
+      position: castColumn("json"),
+      config: mergeableColumn,
+    }) + " RETURNING *",
 }
 
 // SELECT $1 AS id, $2 AS type, $3 AS config, $4 AS position_id,

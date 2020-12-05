@@ -1,14 +1,14 @@
 import { useState } from "react"
-import { toPairs, isNil } from "ramda"
+import { toPairs, isNil, values, mergeDeepRight } from "ramda"
 import deepDiff from "deep-diff"
 import { client } from "packages/client"
 import reducer, { init } from "./reducer"
 
-export const useSave = (initialPage, state, onSuccess) => {
+export const useSave = (page, state, onSuccess) => {
   const [isSaving, setSaving] = useState(false)
   const save = async () => {
-    const initialState = reducer(init(initialPage), {})
-    const mutations = structure(createChanges(initialState, state))
+    const initialState = reducer(init(page.modules), {})
+    const mutations = structure(createChanges(page.id, initialState, state))
 
     setSaving(true)
     await send(mutations)
@@ -24,13 +24,14 @@ const definitions = {
   createModule: [
     {
       moduleId: "UUID",
-      layoutId: "UUID",
+      parentId: "UUID",
+      pageId: "Int",
       type: "ModuleType",
       name: "String",
       config: "JSONObject",
       position: "JSONObject",
     },
-    ["id", "type", "name", "config"],
+    ["id", "parentId", "pageId", "type", "name", "config", "position"],
   ],
   updateModule: [
     {
@@ -39,6 +40,12 @@ const definitions = {
       config: "JSONObject",
     },
     ["id", "name", "config"],
+  ],
+  updateModules: [
+    {
+      modules: "[ModuleInput!]",
+    },
+    ["id", "parentId", "position"],
   ],
   removeModule: [
     {
@@ -71,13 +78,6 @@ const definitions = {
     {
       actionId: "UUID",
     },
-  ],
-  updateLayout: [
-    {
-      layoutId: "UUID",
-      positions: "JSONObject",
-    },
-    ["id", "positions"],
   ],
 }
 
@@ -235,7 +235,7 @@ const insert = (identifier, [head, ...tail], data) => {
   return [head, ...insert(identifier, tail, data)]
 }
 
-const createChanges = (initialState, state) => {
+const createChanges = (pageId, initialState, state) => {
   const diff = deepDiff(initialState.entities, state.entities) || []
 
   let result = {}
@@ -251,9 +251,12 @@ const createChanges = (initialState, state) => {
       result[identifier] = {
         ...result[identifier],
         moduleId,
+        parentId: rhs.parentId,
+        pageId,
         type: rhs.type,
         name: rhs.name,
         config: rhs.config,
+        position: rhs.position,
       }
 
       for (let actionId of rhs.actions) {
@@ -263,26 +266,6 @@ const createChanges = (initialState, state) => {
           ...result[identifier],
           moduleId,
         }
-      }
-    }
-
-    /**
-     * Create module(assign position to layout)
-     */
-    if (
-      kind === "N" &&
-      path[0] === "layouts" &&
-      path[2] === "positions" &&
-      path.length === 4
-    ) {
-      const layoutId = path[1]
-      const moduleId = path[3]
-      const identifier = identify("createModule", moduleId)
-
-      result[identifier] = {
-        ...result[identifier],
-        layoutId,
-        position: rhs,
       }
     }
 
@@ -315,6 +298,44 @@ const createChanges = (initialState, state) => {
     }
 
     /**
+     * Update module positions
+     */
+    if (
+      kind === "E" &&
+      path[0] === "modules" &&
+      ((path[2] === "parentId" && path.length === 3) ||
+        (path[2] === "position" && path.length === 4))
+    ) {
+      const changingParentId = path[2] === "parentId"
+      const moduleId = path[1]
+      const field = path[3]
+      const identifier = identify("updateModules", 0)
+
+      const initialModule = state.entities.modules[moduleId]
+      const prevUpdates = toDict(result[identifier]?.modules, "moduleId")
+
+      result[identifier] = {
+        modules: values(
+          mergeDeepRight(prevUpdates, {
+            [moduleId]: {
+              moduleId,
+              parentId: changingParentId
+                ? rhs
+                : prevUpdates[moduleId]?.parentId || initialModule.parentId,
+              position: {
+                ...initialModule.position,
+                ...prevUpdates[moduleId]?.position,
+                ...(!changingParentId && {
+                  [field]: rhs,
+                }),
+              },
+            },
+          })
+        ),
+      }
+    }
+
+    /**
      * Remove module
      */
     if (kind === "D" && path[0] === "modules" && path.length === 2) {
@@ -323,32 +344,6 @@ const createChanges = (initialState, state) => {
 
       result[identifier] = {
         moduleId,
-      }
-    }
-
-    /**
-     * Update layout position
-     */
-    if (
-      kind === "E" &&
-      path[0] === "layouts" &&
-      path[2] === "positions" &&
-      path.length === 5
-    ) {
-      const layoutId = path[1]
-      const positionId = path[3]
-      const field = path[4]
-      const identifier = identify("updateLayout", layoutId)
-
-      result[identifier] = {
-        layoutId,
-        positions: {
-          ...result[identifier]?.positions,
-          [positionId]: {
-            ...result[identifier]?.positions[positionId],
-            [field]: rhs,
-          },
-        },
       }
     }
 
@@ -439,3 +434,6 @@ const createChanges = (initialState, state) => {
 const identify = (name, id) => `${name}/${id}`
 
 const getName = (identifier) => identifier.split("/")[0]
+
+const toDict = (list = [], field) =>
+  list.reduce((acc, x) => ({ ...acc, [x[field]]: x }), {})

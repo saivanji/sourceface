@@ -1,9 +1,9 @@
 import { SORTABLE_INNER, SORTABLE_OUTER } from "packages/grid"
 import { useEditor } from "packages/factory"
-import { sanitizePosition } from "./utils"
+import { sanitizePosition, createUpdates } from "./utils"
 
 export const useChangeGrid = (parentId) => {
-  const { createModule, select } = useEditor()
+  const { createModule, select, updateModules } = useEditor()
 
   // TODO: handle "leave" event
   return (event) => {
@@ -15,7 +15,7 @@ export const useChangeGrid = (parentId) => {
       ["sort", "resize"].includes(event.name) ||
       (event.name === "enter" && event.sourceType === SORTABLE_INNER)
     ) {
-      // restack(parentId, createModulesUpdate(event.layout))
+      updateModules(createUpdates(parentId, event.layout))
       return
     }
 

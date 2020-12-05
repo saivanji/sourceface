@@ -1,4 +1,5 @@
 import pgPromise from "pg-promise"
+import { keys } from "ramda"
 import moment from "moment"
 import humps from "humps"
 
@@ -17,6 +18,26 @@ export const mergeableColumn = (name) => ({
   init: ({ value }) =>
     `jsonb_recursive_merge(${name}::jsonb, '${JSON.stringify(value)}'::jsonb)`,
 })
+
+export const castColumn = (type) => (name) => ({ name, cast: type })
+
+export const updateQuery = (idName, tableName, data, modifiers) =>
+  pgp.helpers.update(
+    humps.decamelizeKeys(data),
+    createColumns(idName, data, modifiers),
+    tableName
+  ) + (data instanceof Array ? " WHERE v.id::uuid = t.id" : "")
+
+const createColumns = (idName, data, modifiers = {}) =>
+  new pgp.helpers.ColumnSet([
+    `?${idName}`,
+    ...keys(data instanceof Array ? data[0] : data)
+      .filter((key) => key !== idName)
+      .map((key) => {
+        const rawKey = humps.decamelize(key)
+        return modifiers[key] ? modifiers[key](rawKey) : rawKey
+      }),
+  ])
 
 // transforming js Date to ISO string
 pgp.pg.types.setTypeParser(1114, (s) => moment(s).toISOString())

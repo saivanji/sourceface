@@ -21,22 +21,28 @@ const stock = { modules: modulesStock, actions: actionsStock }
 // TODO: implement global loader with geometric shapes. There is no reason of displaying anything from the application
 // since the app is not usable
 export default () => {
+  const history = useHistory()
   const { path } = useParams()
   const [result] = useQuery({
     query: queries.root,
     variables: { path },
   })
 
+  const effects = createEffects(history)
+
   const page = result.data?.page
 
-  return !page ? "Loading..." : <Page path={path} page={page} />
+  return !page ? (
+    "Loading..."
+  ) : (
+    <Container page={page} effects={effects} stock={stock}>
+      <Page path={path} page={page} />
+    </Container>
+  )
 }
 
 function Page({ path, page }) {
-  const history = useHistory()
   const { isEditing, edit } = useEditor()
-
-  const effects = createEffects(history)
 
   // TODO: replace params of route instead of passign route as link.
   // TODO: improve
@@ -49,18 +55,16 @@ function Page({ path, page }) {
 
   return (
     <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
-      <Container page={page} effects={effects} stock={stock}>
-        {isEditing ? (
-          <Editor />
-        ) : (
-          <Shell
-            path={[{ title: "Content", to: "/e" }, ...breadcrumbs]}
-            actions={<button onClick={() => edit(true)}>Edit</button>}
-          >
-            <Layout />
-          </Shell>
-        )}
-      </Container>
+      {isEditing ? (
+        <Editor />
+      ) : (
+        <Shell
+          path={[{ title: "Content", to: "/e" }, ...breadcrumbs]}
+          actions={<button onClick={() => edit(true)}>Edit</button>}
+        >
+          <Layout />
+        </Shell>
+      )}
     </DndProvider>
   )
 }

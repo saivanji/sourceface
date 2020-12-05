@@ -14,20 +14,19 @@ import { useSave } from "./persistence"
 
 const context = createContext({})
 
-// TODO: get "modules" instead of "page"
 export function Editor({ children, page }) {
   const prevPage = useRef(page)
-  const [state, dispatch] = useReducer(reducer, page, init)
-  const actions = useActions(state, dispatch, page)
+  const [state, dispatch] = useReducer(reducer, page.modules, init)
+  const actions = useActions(state, dispatch)
   const [isSaving, save] = useSave(page, state, () => actions.edit(false))
 
   useEffect(() => {
     if (!state.isEditing && state.isDirty) {
-      actions.reset(page)
+      actions.reset(page.modules)
     }
 
     if (prevPage.current !== page) {
-      actions.reset(page)
+      actions.reset(page.modules)
       prevPage.current = page
     }
   }, [page, state.isEditing, state.isDirty])

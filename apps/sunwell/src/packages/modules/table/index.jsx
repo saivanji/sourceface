@@ -51,7 +51,7 @@ export const Root = function TableModule({
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
-          {rows.map((row) => (
+          {rows?.map((row) => (
             <Table.Tr key={row.id}>
               <Table.Td>{row.id}</Table.Td>
               <Table.Td>
@@ -71,7 +71,7 @@ export const Root = function TableModule({
             </Table.Tr>
           ))}
         </Table.Tbody>
-        {config.pagination && limit !== 0 && (
+        {config.pagination && count && limit !== 0 && (
           <Table.Tfoot>
             <Table.Tr>
               <Table.Td colSpan={9}>

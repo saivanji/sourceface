@@ -5,7 +5,7 @@ import { useEditor } from "./editor"
 
 const context = createContext({})
 
-export function Module({ module, frame: Frame }) {
+export function Module({ module }) {
   const { stock } = useContainer()
   const { isEditing, configureModule } = useEditor()
   const { readState, scope } = useScope()
@@ -19,8 +19,6 @@ export function Module({ module, frame: Frame }) {
         config={module.config}
         state={state}
         scope={scope.modules[module.id]}
-        layouts={module.layouts}
-        components={{ Frame }}
         isEditing={isEditing}
         onConfigChange={(key, value) => configureModule(module.id, key, value)}
       />

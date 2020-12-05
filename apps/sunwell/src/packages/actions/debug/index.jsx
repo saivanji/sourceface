@@ -32,6 +32,8 @@ export const serialize = (
   return [definitions.map(createVariable)]
 }
 
+// TODO: might need to return the result of previous evaluation not to
+// break when used in the end of a pipe
 export const execute = ({ runtime }) => (variables) => {
   for (let variable of variables) {
     console.log(
