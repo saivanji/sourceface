@@ -1,17 +1,12 @@
 import React from "react"
-import * as yup from "yup"
+import { Layout } from "packages/toolkit"
 import styles from "./index.scss"
 
-export const Root = function ContainerModule({
-  config,
-  layouts,
-  components: { Frame },
-}) {
-  const layout = layouts.find((x) => x.id === config.layoutId)
-
+// TODO: how module can have multiple layouts? have "group" module field?
+export const Root = function ContainerModule() {
   return (
     <div className={styles.root}>
-      <Frame layout={layout} />
+      <Layout />
     </div>
   )
 }
@@ -21,10 +16,6 @@ export const Configuration = function ContainerModuleConfiguration() {
 }
 
 export const defaultConfig = {}
-
-export const validationSchema = yup.object().shape({
-  layoutId: yup.number().required(),
-})
 
 export const size = {
   w: 6,

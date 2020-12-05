@@ -1,31 +1,27 @@
 import React, { forwardRef } from "react"
 import { identity } from "ramda"
-import { Module, useEditor } from "packages/factory"
+import { Module, useEditor, useModule } from "packages/factory"
 import Grill from "packages/grid"
 import { createLayout } from "./utils"
 import { useChangeGrid } from "./callbacks"
 import styles from "./index.scss"
 
-export default function Modules({ renderItem = identity }) {
-  const { modules } = useEditor()
-
-  return <Frame renderItem={renderItem} layout={createLayout(modules)} />
-}
-
 // TODO: get some props from context provided from Editor? (explore git history for the additional context)
 // since that component is used inside another modules and there is no another way to get this data
 //
 // Use context only in that file. Use provider in Modules and consume data in Frame?
-function Frame({ layout, renderItem }) {
-  const { isEditing } = useEditor()
-  const changeGrid = useChangeGrid(layout)
+
+export default function Layout({ renderItem = identity }) {
+  const { parentId = null } = useModule()
+  const { modules, isEditing } = useEditor()
+  const changeGrid = useChangeGrid(parentId)
 
   return (
     <Grill
       rows={50}
       cols={10}
       rowHeight={60}
-      layout={layout}
+      layout={createLayout(parentId, modules)}
       isStatic={!isEditing}
       onChange={changeGrid}
       components={{
@@ -37,7 +33,7 @@ function Frame({ layout, renderItem }) {
       renderItem={(module) =>
         renderItem(
           <div className={styles.module}>
-            <Module module={module} frame={Frame} />
+            <Module module={module} />
           </div>,
           module.id
         )

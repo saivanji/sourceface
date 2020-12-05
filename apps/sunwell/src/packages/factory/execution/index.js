@@ -70,7 +70,7 @@ export const useValue = (...fields) => {
 // "useFunction" and "useValue"
 const useData = (fields, identify = false, restore = false) => {
   const { stock } = useContainer()
-  const { module } = useModule()
+  const { id: moduleId } = useModule()
   const { modules, actions, selectors } = useEditor()
   const { scope } = useScope()
   const functions = useFunctions()
@@ -84,7 +84,7 @@ const useData = (fields, identify = false, restore = false) => {
     let runtime = {}
     let initialValue
 
-    for (let action of selectors.actions(module.id, field)) {
+    for (let action of selectors.actions(moduleId, field)) {
       /**
        * Skipping not existing actions
        */
@@ -100,7 +100,7 @@ const useData = (fields, identify = false, restore = false) => {
 
       const args = serialize(config, populateRelations(action), {
         createVariable: (definition) =>
-          createVariable(definition, module.id, scope, { modules, actions }),
+          createVariable(definition, moduleId, scope, { modules, actions }),
       })
 
       if (identify) {

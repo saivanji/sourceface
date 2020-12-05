@@ -6,9 +6,10 @@ import { TouchBackend } from "react-dnd-touch-backend"
 import { useParams, useHistory } from "react-router-dom"
 import { useQuery } from "packages/client"
 import { Container, useEditor } from "packages/factory"
+import { Layout } from "packages/toolkit"
 import * as modulesStock from "packages/modules"
 import * as actionsStock from "packages/actions"
-import { Shell, Editor, Modules } from "components/index"
+import { Shell, Editor } from "components/index"
 import * as queries from "./queries"
 import createEffects from "./createEffects"
 
@@ -56,7 +57,7 @@ function Page({ path, page }) {
             path={[{ title: "Content", to: "/e" }, ...breadcrumbs]}
             actions={<button onClick={() => edit(true)}>Edit</button>}
           >
-            <Modules />
+            <Layout />
           </Shell>
         )}
       </Container>

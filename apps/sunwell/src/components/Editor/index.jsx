@@ -2,9 +2,9 @@ import React, { useRef, cloneElement } from "react"
 import cx from "classnames"
 import { useClickOutside } from "hooks/index"
 import Configuration from "../Configuration"
-import Stock from "../Stock"
-import Modules from "../Modules"
 import { useEditor } from "packages/factory"
+import { Layout } from "packages/toolkit"
+import Stock from "../Stock"
 import styles from "./index.scss"
 
 // near the orders page will be a button opening a modal to edit current page properties(url, etc?)
@@ -33,7 +33,7 @@ export default function Editor() {
       </div>
       <div ref={bodyRef} className={styles.body}>
         <div className={styles.content}>
-          <Modules
+          <Layout
             renderItem={(node, id) => (
               <EditableModule scopeRef={bodyRef} id={id}>
                 {node}

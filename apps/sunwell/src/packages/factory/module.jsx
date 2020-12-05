@@ -14,7 +14,7 @@ export function Module({ module, frame: Frame }) {
   const state = readState(module.id)
 
   return (
-    <context.Provider value={{ module }}>
+    <context.Provider value={module}>
       <Component
         config={module.config}
         state={state}
@@ -34,7 +34,7 @@ export const useModule = () => {
 
 export const useTransition = function StateTransition(key) {
   const { assignState } = useScope()
-  const { module } = useModule()
+  const { id: moduleId } = useModule()
 
-  return (value) => assignState(module.id, key, value)
+  return (value) => assignState(moduleId, key, value)
 }

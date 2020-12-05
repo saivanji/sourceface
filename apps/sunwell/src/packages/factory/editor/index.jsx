@@ -14,6 +14,7 @@ import { useSave } from "./persistence"
 
 const context = createContext({})
 
+// TODO: get "modules" instead of "page"
 export function Editor({ children, page }) {
   const prevPage = useRef(page)
   const [state, dispatch] = useReducer(reducer, page, init)
@@ -39,7 +40,6 @@ export function Editor({ children, page }) {
         isEditing: state.isEditing,
         isDirty: state.isDirty,
         selectors: createSelectors(state),
-        layout: state.entities.layouts[state.result.layout],
         modules: state.entities.modules,
         actions: state.entities.actions,
         selected: state.entities.modules[state.selection],

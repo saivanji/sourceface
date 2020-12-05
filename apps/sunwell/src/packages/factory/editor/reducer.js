@@ -13,7 +13,6 @@ export default (state = {}, action) => {
     entities: {
       pages: referenceEntity(state.entities.pages, action),
       commands: referenceEntity(state.entities.commands, action),
-      layouts: layouts(state.entities.layouts, action),
       modules: modules(state.entities.modules, action),
       actions: actions(state.entities.actions, action),
     },
@@ -52,52 +51,6 @@ function referenceEntity(state = {}, { type, payload }) {
   }
 }
 
-function layouts(state = {}, { type, payload }) {
-  switch (type) {
-    case "updateLayout": {
-      const { layoutId, positions } = payload
-
-      return {
-        ...state,
-        [layoutId]: {
-          id: layoutId,
-          positions,
-        },
-      }
-    }
-
-    case "createModule": {
-      const { moduleId, layoutId, position } = payload
-
-      return {
-        ...state,
-        [layoutId]: {
-          ...state[layoutId],
-          positions: {
-            ...state[layoutId].positions,
-            [moduleId]: position,
-          },
-        },
-      }
-    }
-
-    case "removeModule": {
-      const { moduleId, layoutId } = payload
-
-      return {
-        ...state,
-        [layoutId]: {
-          ...state[layoutId],
-          positions: omit([moduleId], state[layoutId].positions),
-        },
-      }
-    }
-
-    default:
-      return state
-  }
-}
-
 function modules(state = {}, { type, payload }) {
   switch (type) {
     case "createModule": {
@@ -111,7 +64,6 @@ function modules(state = {}, { type, payload }) {
           name,
           config,
           actions: [],
-          layouts: [],
         },
       }
     }
