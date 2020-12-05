@@ -6,9 +6,21 @@ type Action {
   type: ActionType!
   name: String
   config: JSONObject!
-  relations: JSONObject!
-  pages: [Page!]!
-  commands: [Command!]!
+  references: [Reference!]!
+}
+
+type Reference {
+  field: String!
+  type: ReferenceType!
+  data: ReferenceData!
+}
+
+union ReferenceData = Page | Command | Module
+
+enum ReferenceType {
+  page
+  command
+  module
 }
 
 enum ActionType {
@@ -36,4 +48,7 @@ extend type Mutation {
     relations: JSONObject
   ): Action!
   removeAction(actionId: UUID!): Boolean!
+  assocPage(actionId: UUID!, pageId: Int!): Page!
+  dissocPage(actionId: UUID!, pageId: Int!): Boolean!
+  assocOperation(actionId: UUID!, operationId: Int!): Command!
 }
