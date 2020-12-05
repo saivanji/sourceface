@@ -17,10 +17,37 @@ export const up = () =>
         UNIQUE ("order", module_id, field)
       )
     `)
+    await t.none(`
+      CREATE TABLE actions_pages(
+        action_id uuid NOT NULL REFERENCES actions(id) ON DELETE CASCADE,
+        page_id uuid NOT NULL REFERENCES pages(id) ON DELETE RESTRICT,
+      )
+    `)
+    await t.none(`
+      CREATE TABLE actions_operations(
+        action_id uuid NOT NULL REFERENCES actions(id) ON DELETE CASCADE,
+        operation_id uuid NOT NULL REFERENCES commands(id) ON DELETE RESTRICT,
+      )
+    `)
+    await t.none(`
+      CREATE TABLE actions_modules(
+        action_id uuid NOT NULL REFERENCES actions(id) ON DELETE CASCADE,
+        module_id uuid NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
+      )
+    `)
   })
 
 export const down = () =>
   global.pg.tx(async (t) => {
+    await t.none(`
+      DROP TABLE actions_modules
+    `)
+    await t.none(`
+      DROP TABLE actions_operations
+    `)
+    await t.none(`
+      DROP TABLE actions_pages
+    `)
     await t.none(`
       DROP TABLE actions
     `)
