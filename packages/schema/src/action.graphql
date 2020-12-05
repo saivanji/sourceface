@@ -51,4 +51,7 @@ extend type Mutation {
   assocPage(actionId: UUID!, pageId: Int!): Page!
   dissocPage(actionId: UUID!, pageId: Int!): Boolean!
   assocOperation(actionId: UUID!, operationId: Int!): Command!
+  dissocOperation(actionId: UUID!, operationId: Int!): Boolean!
+  assocModule(actionId: UUID!, moduleId: UUID!): Module!
+  dissocModule(actionId: UUID!, moduleId: UUID!): Boolean!
 }
