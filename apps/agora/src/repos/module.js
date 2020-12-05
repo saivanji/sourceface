@@ -1,4 +1,4 @@
-import { mergeableColumn, castColumn, updateQuery } from "../postgres"
+import { pgp, mergeableColumn, castColumn, updateQuery } from "../postgres"
 
 export const one = (moduleId, pg) => pg.one(sql.one, [moduleId])
 export const create = (
@@ -14,7 +14,7 @@ export const create = (
   pg.one(sql.create, [moduleId, parentId, pageId, type, name, config, position])
 export const update = (moduleId, data, pg) =>
   pg.one(sql.update({ id: moduleId, ...data }))
-export const updateMany = (data, pg) => pg.many(sql.update(data))
+export const updateMany = (data, pg) => pg.many(sql.updateMany(data))
 export const remove = (moduleId, pg) => pg.none(sql.remove, [moduleId])
 export const listByIds = (ids, pg) => pg.manyOrNone(sql.listByIds, [ids])
 export const listByPageIds = (pageIds, pg) =>
@@ -39,11 +39,18 @@ const sql = {
     SELECT * FROM modules WHERE page_id IN ($1:csv)
   `,
   update: (data) =>
+    updateQuery("id", "modules", data, { config: mergeableColumn }) +
+    pgp.as.format(" WHERE id = ${id}", data) +
+    " RETURNING *",
+  updateMany: (data) =>
     updateQuery("id", "modules", data, {
+      config: mergeableColumn,
+      /**
+       * It seems during batch updates such types has to be casted explicitly.
+       */
       parentId: castColumn("uuid"),
       position: castColumn("json"),
-      config: mergeableColumn,
-    }) + " RETURNING *",
+    }) + " WHERE v.id::uuid = t.id RETURNING *",
 }
 
 // SELECT $1 AS id, $2 AS type, $3 AS config, $4 AS position_id,

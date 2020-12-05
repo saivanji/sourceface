@@ -57,6 +57,9 @@ ReactDOM.render(
 //
 // Have connection between action relations json and actual postgres data to maintain data integrity. Also keep that approach in the rest application parts where we reference entities inside of a json
 //
+//
+// User should be able to click+move empty area to capture selection rectangle and select multiple modules
+//
 // use case - user need to be able to create postgres table in the app. either with "arbitrary query" for example(with predefined queries for table etc), or have a feature to manage source entities in addition to queries.
 //
 // Implement version forking in the app where app might have multiple versions and we can create new version based on the existing one by copying it's database with data to a new db. For the case when user need to implement

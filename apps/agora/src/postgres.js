@@ -21,23 +21,20 @@ export const mergeableColumn = (name) => ({
 
 export const castColumn = (type) => (name) => ({ name, cast: type })
 
-export const updateQuery = (idName, tableName, data, modifiers) =>
+export const updateQuery = (idName, tableName, data, modifiers = {}) =>
   pgp.helpers.update(
     humps.decamelizeKeys(data),
-    createColumns(idName, data, modifiers),
+    new pgp.helpers.ColumnSet([
+      `?${idName}`,
+      ...keys(data instanceof Array ? data[0] : data)
+        .filter((key) => key !== idName)
+        .map((key) => {
+          const rawKey = humps.decamelize(key)
+          return modifiers[key] ? modifiers[key](rawKey) : rawKey
+        }),
+    ]),
     tableName
-  ) + (data instanceof Array ? " WHERE v.id::uuid = t.id" : "")
-
-const createColumns = (idName, data, modifiers = {}) =>
-  new pgp.helpers.ColumnSet([
-    `?${idName}`,
-    ...keys(data instanceof Array ? data[0] : data)
-      .filter((key) => key !== idName)
-      .map((key) => {
-        const rawKey = humps.decamelize(key)
-        return modifiers[key] ? modifiers[key](rawKey) : rawKey
-      }),
-  ])
+  )
 
 // transforming js Date to ISO string
 pgp.pg.types.setTypeParser(1114, (s) => moment(s).toISOString())
