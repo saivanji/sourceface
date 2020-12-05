@@ -12,7 +12,7 @@ import styles from "./index.scss"
 // Use context only in that file. Use provider in Modules and consume data in Frame?
 
 export default function Layout({ renderItem = identity }) {
-  const { parentId = null } = useModule()
+  const { id: parentId = null } = useModule()
   const { modules, isEditing } = useEditor()
   const changeGrid = useChangeGrid(parentId)
 

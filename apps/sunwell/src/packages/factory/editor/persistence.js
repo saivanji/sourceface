@@ -121,6 +121,13 @@ const returns = (value) =>
     ? `{${value.join(", ")}}`
     : ""
 
+// TODO: container module creation mutation should be sent before positions update(or children create) mutation of the modules which are children of creating module.
+// Keep in mind multiple level nesting. When creating multiple container modules one inside of another, should send mutations from parent to child:
+// Parent 1 create
+// Children of parent 1 update(or create)
+// Parent 2 create(inside of children 1)
+// Children of parent 2 update(or create)
+// Parent 3 create(inside of children 2) and so on
 const structure = (changes) => {
   const deps = {
     createAction: {
