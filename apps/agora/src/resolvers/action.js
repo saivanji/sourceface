@@ -2,7 +2,7 @@ import * as actionRepo from "repos/action"
 
 const createAction = async (
   parent,
-  { actionId, moduleId, order, field, type, name, config, relations },
+  { actionId, moduleId, order, field, type, name, config },
   { pg }
 ) =>
   await actionRepo.create(
@@ -13,23 +13,10 @@ const createAction = async (
     type,
     name,
     config,
-    relations,
     pg
   )
 
-const updateAction = (
-  parent,
-  { actionId, name, config, relations },
-  { pg }
-) => {
-  const fields = {
-    ...(name && { name }),
-    ...(config && { config }),
-    ...(relations && {
-      relations,
-    }),
-  }
-
+const updateAction = (parent, { actionId, ...fields }, { pg }) => {
   return actionRepo.update(actionId, fields, pg)
 }
 
@@ -38,11 +25,19 @@ const removeAction = async (parent, { actionId }, { pg }) => {
   return true
 }
 
-const pages = (parent, args, ctx) =>
-  ctx.loaders.pagesByRelations.load(parent.relations)
+const references = async (parent, args, ctx) => {
+  const [pages, operations, modules] = await Promise.all([
+    ctx.loaders.pagesReferencesByAction.load(parent.id),
+    ctx.loaders.operationsReferencesByAction.load(parent.id),
+    ctx.loaders.modulesReferencesByAction.load(parent.id),
+  ])
 
-const commands = (parent, args, ctx) =>
-  ctx.loaders.commandsByRelations.load(parent.relations)
+  return {
+    pages,
+    operations,
+    modules,
+  }
+}
 
 export default {
   Mutation: {
@@ -51,7 +46,6 @@ export default {
     removeAction,
   },
   Action: {
-    pages,
-    commands,
+    references,
   },
 }

@@ -13,26 +13,31 @@ export const up = () =>
         name text CHECK (name <> ''),
         type action NOT NULL,
         config json NOT NULL,
-        relations json NOT NULL,
         UNIQUE ("order", module_id, field)
       )
     `)
     await t.none(`
       CREATE TABLE actions_pages(
         action_id uuid NOT NULL REFERENCES actions(id) ON DELETE CASCADE,
-        page_id uuid NOT NULL REFERENCES pages(id) ON DELETE RESTRICT,
+        page_id int NOT NULL REFERENCES pages(id) ON DELETE RESTRICT,
+        field text NOT NULL CHECK (field <> ''),
+        UNIQUE (action_id, field)
       )
     `)
     await t.none(`
       CREATE TABLE actions_operations(
         action_id uuid NOT NULL REFERENCES actions(id) ON DELETE CASCADE,
-        operation_id uuid NOT NULL REFERENCES commands(id) ON DELETE RESTRICT,
+        operation_id int NOT NULL REFERENCES commands(id) ON DELETE RESTRICT,
+        field text NOT NULL CHECK (field <> ''),
+        UNIQUE (action_id, field)
       )
     `)
     await t.none(`
       CREATE TABLE actions_modules(
         action_id uuid NOT NULL REFERENCES actions(id) ON DELETE CASCADE,
         module_id uuid NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
+        field text NOT NULL CHECK (field <> ''),
+        UNIQUE (action_id, field)
       )
     `)
   })

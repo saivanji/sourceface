@@ -1,0 +1,33 @@
+type References {
+  pages: [PageReference!]
+  operations: [OperationReference!]
+  modules: [ModuleReference!]
+}
+
+type PageReference {
+  field: String!
+  page: Page!
+}
+
+type OperationReference {
+  field: String!
+  operation: Command!
+}
+
+type ModuleReference {
+  field: String!
+  module: Module!
+}
+
+extend type Mutation {
+  referActionPage(actionId: UUID!, pageId: Int!, field: String): Boolean!
+  unreferActionPage(actionId: UUID!, field: String!): Boolean!
+  referActionOperation(
+    actionId: UUID!
+    operationId: Int!
+    field: String
+  ): Boolean!
+  unreferActionOperation(actionId: UUID!, field: String!): Boolean!
+  referActionModule(actionId: UUID!, moduleId: UUID!, field: String!): Boolean!
+  unreferActionModule(actionId: UUID!, field: String!): Boolean!
+}

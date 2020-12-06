@@ -40,8 +40,7 @@ const sql = {
   `,
   update: (data) =>
     updateQuery("id", "modules", data, { config: mergeableColumn }) +
-    pgp.as.format(" WHERE id = ${id}", data) +
-    " RETURNING *",
+    pgp.as.format(" WHERE id = ${id} RETURNING *", data),
   updateMany: (data) =>
     updateQuery("id", "modules", data, {
       config: mergeableColumn,

@@ -140,7 +140,6 @@ CREATE TABLE public.actions (
     name text,
     type public.action NOT NULL,
     config json NOT NULL,
-    relations json,
     field text NOT NULL,
     "order" integer NOT NULL,
     CONSTRAINT actions_key_check CHECK ((field <> ''::text)),
@@ -149,6 +148,48 @@ CREATE TABLE public.actions (
 
 
 ALTER TABLE public.actions OWNER TO admin;
+
+--
+-- Name: actions_modules; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.actions_modules (
+    action_id uuid NOT NULL,
+    module_id uuid NOT NULL,
+    field text NOT NULL,
+    CONSTRAINT actions_modules_field_check CHECK ((field <> ''::text))
+);
+
+
+ALTER TABLE public.actions_modules OWNER TO admin;
+
+--
+-- Name: actions_operations; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.actions_operations (
+    action_id uuid NOT NULL,
+    operation_id integer NOT NULL,
+    field text NOT NULL,
+    CONSTRAINT actions_operations_field_check CHECK ((field <> ''::text))
+);
+
+
+ALTER TABLE public.actions_operations OWNER TO admin;
+
+--
+-- Name: actions_pages; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.actions_pages (
+    action_id uuid NOT NULL,
+    page_id integer NOT NULL,
+    field text NOT NULL,
+    CONSTRAINT actions_pages_field_check CHECK ((field <> ''::text))
+);
+
+
+ALTER TABLE public.actions_pages OWNER TO admin;
 
 --
 -- Name: commands; Type: TABLE; Schema: public; Owner: admin
@@ -327,7 +368,33 @@ ALTER TABLE ONLY public.sources ALTER COLUMN id SET DEFAULT nextval('public.sour
 -- Data for Name: actions; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-COPY public.actions (id, created_at, module_id, name, type, config, relations, field, "order") FROM stdin;
+COPY public.actions (id, created_at, module_id, name, type, config, field, "order") FROM stdin;
+9ab1d4cf-e501-4fa8-b0ef-a861af55f6cb	2020-12-05 12:44:52.630975	1a3c0c29-a473-473d-b744-6e609154a14a	\N	operation	{"fields": [{"key": "limit", "definition": {"name": "limit", "type": "local"}}, {"key": "offset", "definition": {"name": "offset", "type": "local"}}], "groups": []}	data	0
+59407f11-55a0-4968-9c7c-17d5702c1e81	2020-12-05 12:44:52.630632	1a3c0c29-a473-473d-b744-6e609154a14a	\N	operation	{}	count	1
+\.
+
+
+--
+-- Data for Name: actions_modules; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+COPY public.actions_modules (action_id, module_id, field) FROM stdin;
+\.
+
+
+--
+-- Data for Name: actions_operations; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+COPY public.actions_operations (action_id, operation_id, field) FROM stdin;
+\.
+
+
+--
+-- Data for Name: actions_pages; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+COPY public.actions_pages (action_id, page_id, field) FROM stdin;
 \.
 
 
@@ -364,7 +431,8 @@ COPY public.migrations (data) FROM stdin;
 --
 
 COPY public.modules (id, created_at, type, config, name, page_id, parent_id, "position") FROM stdin;
-1a3c0c29-a473-473d-b744-6e609154a14a	2020-12-04 21:40:09.514037	table	{"limit":10,"pagination":true}	table_1	8	\N	{"h": 12, "w": 10, "x": 0, "y": 1}
+38ec786b-2157-4f99-a964-8300363b9da4	2020-12-05 15:16:40.457933	button	{"text":"Click me","size":"regular","shouldFitContainer":false}	button	8	\N	{"h":1,"w":2,"x":8,"y":0}
+1a3c0c29-a473-473d-b744-6e609154a14a	2020-12-04 21:40:09.514037	table	{"limit":10,"pagination":true}	table_1	8	\N	{"h":12,"w":10,"x":0,"y":1}
 \.
 
 
@@ -409,6 +477,30 @@ COPY public.stale_commands (command_id, stale_id) FROM stdin;
 8	10
 8	9
 \.
+
+
+--
+-- Name: actions_modules actions_modules_action_id_field_key; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.actions_modules
+    ADD CONSTRAINT actions_modules_action_id_field_key UNIQUE (action_id, field);
+
+
+--
+-- Name: actions_operations actions_operations_action_id_field_key; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.actions_operations
+    ADD CONSTRAINT actions_operations_action_id_field_key UNIQUE (action_id, field);
+
+
+--
+-- Name: actions_pages actions_pages_action_id_field_key; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.actions_pages
+    ADD CONSTRAINT actions_pages_action_id_field_key UNIQUE (action_id, field);
 
 
 --
@@ -489,6 +581,54 @@ ALTER TABLE ONLY public.modules
 
 ALTER TABLE ONLY public.actions
     ADD CONSTRAINT actions_module_id_fkey FOREIGN KEY (module_id) REFERENCES public.modules(id) ON DELETE CASCADE;
+
+
+--
+-- Name: actions_modules actions_modules_action_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.actions_modules
+    ADD CONSTRAINT actions_modules_action_id_fkey FOREIGN KEY (action_id) REFERENCES public.actions(id) ON DELETE CASCADE;
+
+
+--
+-- Name: actions_modules actions_modules_module_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.actions_modules
+    ADD CONSTRAINT actions_modules_module_id_fkey FOREIGN KEY (module_id) REFERENCES public.modules(id) ON DELETE CASCADE;
+
+
+--
+-- Name: actions_operations actions_operations_action_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.actions_operations
+    ADD CONSTRAINT actions_operations_action_id_fkey FOREIGN KEY (action_id) REFERENCES public.actions(id) ON DELETE CASCADE;
+
+
+--
+-- Name: actions_operations actions_operations_operation_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.actions_operations
+    ADD CONSTRAINT actions_operations_operation_id_fkey FOREIGN KEY (operation_id) REFERENCES public.commands(id) ON DELETE RESTRICT;
+
+
+--
+-- Name: actions_pages actions_pages_action_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.actions_pages
+    ADD CONSTRAINT actions_pages_action_id_fkey FOREIGN KEY (action_id) REFERENCES public.actions(id) ON DELETE CASCADE;
+
+
+--
+-- Name: actions_pages actions_pages_page_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.actions_pages
+    ADD CONSTRAINT actions_pages_page_id_fkey FOREIGN KEY (page_id) REFERENCES public.pages(id) ON DELETE RESTRICT;
 
 
 --

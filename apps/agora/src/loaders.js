@@ -1,9 +1,9 @@
 import DataLoader from "dataloader"
-import { load, compare } from "utils/relations"
 import * as actionRepo from "repos/action"
 import * as commandRepo from "repos/command"
 import * as moduleRepo from "repos/module"
 import * as pageRepo from "repos/page"
+import * as referenceRepo from "repos/reference"
 
 export default (pg) => {
   const modulesByPage = new DataLoaderHasMany(
@@ -22,13 +22,17 @@ export default (pg) => {
     (ids) => commandRepo.staleByCommandIds(ids, pg),
     "commandId"
   )
-  const commandsByRelations = new DataLoaderHasMany(
-    load((ids) => commandRepo.listByIds(ids, pg), "commands"),
-    compare
+  const pagesReferencesByAction = new DataLoaderHasMany(
+    (ids) => referenceRepo.listPagesByActionIds(ids, pg),
+    "actionId"
   )
-  const pagesByRelations = new DataLoaderHasMany(
-    load((ids) => pageRepo.listByIds(ids, pg), "pages"),
-    compare
+  const operationsReferencesByAction = new DataLoaderHasMany(
+    (ids) => referenceRepo.listOperationsByActionIds(ids, pg),
+    "actionId"
+  )
+  const modulesReferencesByAction = new DataLoaderHasMany(
+    (ids) => referenceRepo.listModulesByActionIds(ids, pg),
+    "actionId"
   )
 
   return {
@@ -36,8 +40,9 @@ export default (pg) => {
     modulesByPage,
     trailByPage,
     staleByCommand,
-    commandsByRelations,
-    pagesByRelations,
+    pagesReferencesByAction,
+    operationsReferencesByAction,
+    modulesReferencesByAction,
   }
 }
 

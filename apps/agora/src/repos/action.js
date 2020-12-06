@@ -1,5 +1,4 @@
-import { keys } from "ramda"
-import { pgp, mergeableColumn } from "../postgres"
+import { pgp, updateQuery, mergeableColumn } from "../postgres"
 
 export const one = (actionId, pg) => pg.one(sql.one, [actionId])
 export const create = (
@@ -10,19 +9,8 @@ export const create = (
   type,
   name,
   config,
-  relations,
   pg
-) =>
-  pg.one(sql.create, [
-    actionId,
-    moduleId,
-    order,
-    field,
-    type,
-    name,
-    config,
-    relations,
-  ])
+) => pg.one(sql.create, [actionId, moduleId, order, field, type, name, config])
 export const update = (actionId, fields, pg) =>
   pg.one(sql.update(fields), [actionId])
 export const remove = (actionId, pg) => pg.none(sql.remove, [actionId])
@@ -34,8 +22,8 @@ const sql = {
     SELECT * FROM actions WHERE id = $1
   `,
   create: `
-    INSERT INTO actions (id, module_id, "order", field, type, name, config, relations)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *
+    INSERT INTO actions (id, module_id, "order", field, type, name, config)
+    VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *
   `,
   remove: `
     DELETE FROM actions WHERE id = $1
@@ -43,17 +31,7 @@ const sql = {
   listByModuleIds: `
     SELECT * FROM actions WHERE module_id IN ($1:csv)
   `,
-  update: (fields) =>
-    pgp.helpers.update(
-      fields,
-      new pgp.helpers.ColumnSet(
-        keys(fields).map((key) =>
-          ["config", "relations"].includes(key) ? mergeableColumn(key) : key
-        )
-      ),
-      "actions",
-      {
-        emptyUpdate: sql.one,
-      }
-    ) + " WHERE id = $1 RETURNING *",
+  update: (data) =>
+    updateQuery("id", "actions", data, { config: mergeableColumn }) +
+    pgp.as.format(" WHERE id = ${id} RETURNING *", data),
 }

@@ -23,17 +23,33 @@ export const root = `
           type
           name
           config
-          relations
-          pages {
-            id
-            title
-            route
-          }
-          commands {
-            id
-            name
-            stale {
-              id
+          references {
+            pages {
+              field
+              page {
+                id
+                title
+                route
+              }
+            }
+            operations {
+              field
+              operation {
+                id
+                name
+                stale {
+                  id
+                }
+              }
+            }
+            modules {
+              field
+              module {
+                id
+                name
+                type
+                config
+              }
             }
           }
         }
