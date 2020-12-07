@@ -21,6 +21,8 @@ export default ({ field, label }) => {
 
   const actions = selectors.actions(module.id, field)
 
+  console.log(actions)
+
   // TODO: implement toggling of existing actions?
   return !actions.length ? (
     <Label title={label} onCreate={create} />

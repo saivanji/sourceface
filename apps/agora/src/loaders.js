@@ -23,15 +23,15 @@ export default (pg) => {
     "commandId"
   )
   const pagesReferencesByAction = new DataLoaderHasMany(
-    (ids) => referenceRepo.listPagesByActionIds(ids, pg),
+    (ids) => referenceRepo.listByActionIds(ids, "pages", pg),
     "actionId"
   )
   const operationsReferencesByAction = new DataLoaderHasMany(
-    (ids) => referenceRepo.listOperationsByActionIds(ids, pg),
+    (ids) => referenceRepo.listByActionIds(ids, "operations", pg),
     "actionId"
   )
   const modulesReferencesByAction = new DataLoaderHasMany(
-    (ids) => referenceRepo.listModulesByActionIds(ids, pg),
+    (ids) => referenceRepo.listByActionIds(ids, "modules", pg),
     "actionId"
   )
 

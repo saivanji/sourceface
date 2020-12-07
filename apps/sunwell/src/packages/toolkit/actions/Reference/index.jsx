@@ -13,7 +13,7 @@ export default function Reference({
   editionTitle,
 }) {
   const { references, onReferenceChange } = useAction()
-  const data = getReference(type, field, references, multiple)
+  const data = getReference(type, field, references)
 
   const map = (data) => ({
     value: data.id,

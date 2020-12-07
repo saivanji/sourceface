@@ -1,62 +1,47 @@
-export const listPagesByActionIds = (actionIds, pg) =>
-  pg.manyOrNone(sql.listPagesByActionIds, [actionIds])
-export const referActionPage = (actionId, pageId, field, pg) =>
-  pg.none(sql.referActionPage, [actionId, pageId, field])
-export const unreferActionPage = (actionId, field, pg) =>
-  pg.none(sql.unreferActionPage, [actionId, field])
-
-export const listOperationsByActionIds = (actionIds, pg) =>
-  pg.manyOrNone(sql.listOperationsByActionIds, [actionIds])
-export const referActionOperation = (actionId, operationId, field, pg) =>
-  pg.none(sql.referActionOperation, [actionId, operationId, field])
-export const unreferActionOperation = (actionId, field, pg) =>
-  pg.none(sql.unreferActionOperation, [actionId, field])
-
-export const listModulesByActionIds = (actionIds, pg) =>
-  pg.manyOrNone(sql.listModulesByActionIds, [actionIds])
-export const referActionModule = (actionId, moduleId, field, pg) =>
-  pg.none(sql.referActionModule, [actionId, moduleId, field])
-export const unreferActionModule = (actionId, field, pg) =>
-  pg.none(sql.unreferActionModule, [actionId, field])
+export const listByActionIds = async (actionIds, tableName, pg) =>
+  transformList(
+    await pg.manyOrNone(sql.listByActionIds, [
+      actionIds,
+      tableName,
+      `actions_${tableName}`,
+    ])
+  )
+export const referAction = (actionId, referenceId, field, tableName, pg) =>
+  pg.none(sql.referAction, [actionId, referenceId, field, tableName])
+export const unreferAction = (actionId, field, tableName, pg) =>
+  pg.none(sql.unreferAction, [actionId, field, tableName])
+export const unreferAllActions = (actionId, field, tableName, pg) =>
+  pg.none(sql.unreferAllActions, [actionId, `${field}/`, tableName])
 
 const sql = {
-  listPagesByActionIds: `
-    SELECT ap.action_id, ap.field, row_to_json(p.*) AS data
-    FROM actions_pages AS ap
-    LEFT JOIN pages AS p ON (p.id = ap.page_id)
-    WHERE ap.action_id IN ($1:csv)
+  listByActionIds: `
+    SELECT
+      t.action_id,
+      regexp_replace(field, '(.*)/(.*)', '\\1') as key,
+      json_agg(s.*) AS data, 
+      t.field LIKE '%/%' AS is_many
+    FROM $3:name AS t
+    LEFT JOIN $2:name AS s ON (s.id = t.reference_id)
+    WHERE t.action_id IN ($1:csv)
+    GROUP BY t.action_id, is_many, key
   `,
-  referActionPage: `
-    INSERT INTO actions_pages (action_id, page_id, field)
-    VALUES ($1, $2, $3)
+  referAction: `
+    INSERT INTO $4:name (action_id, reference_id, field)
+    VALUES ($1, $2, $3, $4)
   `,
-  unreferActionPage: `
-    DELETE FROM actions_pages WHERE action_id = $1 AND field = $2
+  unreferAction: `
+    DELETE FROM $3:name WHERE action_id = $1 AND field = $2
   `,
-  listOperationsByActionIds: `
-    SELECT ao.action_id, ao.field, row_to_json(c.*) AS data
-    FROM actions_operations AS ao
-    LEFT JOIN commands AS c ON (c.id = ao.operation_id)
-    WHERE ao.action_id IN ($1:csv)
-  `,
-  referActionOperation: `
-    INSERT INTO actions_operations (action_id, operation_id, field)
-    VALUES ($1, $2, $3)
-  `,
-  unreferActionOperation: `
-    DELETE FROM actions_operations WHERE action_id = $1 AND field = $2
-  `,
-  listModulesByActionIds: `
-    SELECT am.action_id, am.field, row_to_json(m.*) AS data
-    FROM actions_modules AS am
-    LEFT JOIN modules AS m ON (m.id = am.module_id)
-    WHERE am.action_id IN ($1:csv)
-  `,
-  referActionModule: `
-    INSERT INTO actions_modules (action_id, module_id, field)
-    VALUES ($1, $2, $3)
-  `,
-  unreferActionModule: `
-    DELETE FROM actions_modules WHERE action_id = $1 AND field = $2
+  unreferAllActions: `
+    DELETE FROM $3:name WHERE action_id = $1 AND field ~ $2
   `,
 }
+
+// TODO: join one and many in one object in case we have both presented
+export const transformList = (items) =>
+  items.map((x) => ({
+    actionId: x.actionId,
+    field: x.key,
+    one: x.isMany ? null : x.data[0],
+    many: !x.isMany ? null : x.data,
+  }))

@@ -1,54 +1,72 @@
 export const root = `
+  fragment page on Page {
+    id
+    title
+    route
+  }
+
+  fragment operation on Command {
+    id
+    name
+    stale {
+      id
+    }
+  }
+
+  fragment module on Module {
+    id
+    parentId
+    name
+    type
+    config
+    position
+  }
+
+  fragment action on Action {
+    id
+    order
+    field
+    type
+    name
+    config
+  }
+
   query($path: String!) {
     page(path: $path) {
-      id
-      title
-      route
+      ...page
       trail {
-        id
-        route
-        title
+        ...page
       }
       modules {
-        id
-        parentId
-        name
-        type
-        config
-        position
+        ...module
         actions {
-          id
-          order
-          field
-          type
-          name
-          config
+          ...action
           references {
             pages {
               field
-              data {
-                id
-                title
-                route
+              one {
+                ...page
+              }
+              many {
+                ...page
               }
             }
             operations {
               field
-              data {
-                id
-                name
-                stale {
-                  id
-                }
+              one {
+                ...operation
+              }
+              many {
+                ...operation
               }
             }
             modules {
               field
-              data {
-                id
-                name
-                type
-                config
+              one {
+                ...module
+              }
+              many {
+                ...module
               }
             }
           }

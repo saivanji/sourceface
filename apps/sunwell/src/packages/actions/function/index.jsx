@@ -19,7 +19,7 @@ export function Root({ config, onConfigChange }) {
   const { references } = useAction()
   const functions = useFunctions()
 
-  const selection = getReference(REFERENCE_TYPE, FIELD, references, true)
+  const selection = getReference(REFERENCE_TYPE, FIELD, references)
 
   // console.log(selection, references, REFERENCE_TYPE, FIELD)
 

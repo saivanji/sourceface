@@ -1,7 +1,6 @@
-import { omit, without, assoc, values, mergeDeepRight } from "ramda"
+import { omit, without, values, mergeDeepRight } from "ramda"
 import { normalize } from "normalizr"
 import schema from "./schema"
-import { toDict } from "./utils"
 
 export const init = (data) => normalize(data, schema)
 
@@ -26,47 +25,34 @@ export default (state = {}, action) => {
   }
 }
 
-function pages(state = {}, { type, payload }) {
-  switch (type) {
-    case "changeReference": {
-      const { type, data } = payload
+const createReferenceReducer = (field) => {
+  const merge = (state, x) => mergeDeepRight(state, { [x.id]: x })
 
-      /**
-       * Do not updating entities state when removing reference.
-       */
-      if (!data || type !== "pages") return state
+  return function (state = {}, { type, payload }) {
+    switch (type) {
+      case "changeReference": {
+        const { type, data } = payload
 
-      return {
-        ...state,
-        [data.id]: data,
+        /**
+         * Do not updating entities state when removing reference.
+         */
+        if (!data || type !== field) return state
+
+        if (data instanceof Array) {
+          return data.reduce(merge, state)
+        }
+
+        return merge(state, data)
       }
-    }
 
-    default:
-      return state
+      default:
+        return state
+    }
   }
 }
 
-function commands(state = {}, { type, payload }) {
-  switch (type) {
-    case "changeReference": {
-      const { type, data } = payload
-
-      /**
-       * Do not updating entities state when removing reference.
-       */
-      if (!data || type !== "operations") return state
-
-      return {
-        ...state,
-        [data.id]: data,
-      }
-    }
-
-    default:
-      return state
-  }
-}
+const pages = createReferenceReducer("pages")
+const commands = createReferenceReducer("operations")
 
 function modules(state = {}, { type, payload }) {
   switch (type) {
@@ -188,31 +174,29 @@ function actions(state = {}, { type, payload }) {
       }
     }
 
-    // TODO: implement support for changing multiple references in reducer. Since it will not be possible to override multiple
-    // selection
     case "changeReference": {
+      // TODO: handle correctly
+
       const { actionId, type, field, data } = payload
-      const items = toDict("field", state[actionId].references[type])
+      const value =
+        data instanceof Array
+          ? data.map((x) => x.id)
+          : { id: data.id, schema: "single" }
 
-      if (!(data instanceof Array)) {
-        const result = !data
-          ? omit([field], items)
-          : assoc(field, { field, data: data.id }, items)
+      const filtered = state[actionId].references[type].filter(
+        (r) => r.field !== field
+      )
 
-        return {
-          ...state,
-          [actionId]: {
-            ...state[actionId],
-            references: {
-              ...state[actionId].references,
-              [type]: values(result),
-            },
+      return {
+        ...state,
+        [actionId]: {
+          ...state[actionId],
+          references: {
+            ...state[actionId].references,
+            [type]: !data ? filtered : [...filtered, { field, data: value }],
           },
-        }
+        },
       }
-
-      // TODO: handle array update
-      return {}
     }
 
     case "renameAction": {

@@ -1,50 +1,51 @@
 import * as referenceRepo from "repos/reference"
 
-const referActionPage = async (parent, { actionId, pageId, field }, { pg }) => {
-  await referenceRepo.referActionPage(actionId, pageId, field, pg)
-  return true
-}
-
-const unreferActionPage = async (parent, { actionId, field }, { pg }) => {
-  await referenceRepo.unreferActionPage(actionId, field, pg)
-  return true
-}
-
-const referActionOperation = async (
+const referAction = (type, single, multiple) => async (
   parent,
-  { actionId, operationId, field },
+  { actionId, field, ...rest },
   { pg }
 ) => {
-  await referenceRepo.referActionOperation(actionId, operationId, field, pg)
-  return true
+  if (field.includes("/")) {
+    throw new Error("/ is not allowed")
+  }
+
+  if (rest[single]) {
+    await referenceRepo.referAction(actionId, rest[single], field, type, pg)
+
+    return true
+  }
+
+  if (rest[multiple]) {
+    await pg.tx(async (t) => {
+      await referenceRepo.unreferAllActions(actionId, field, type, t)
+
+      for (let [i, id] of rest[multiple].entries()) {
+        await referenceRepo.referAction(actionId, id, `${field}/${i}`, type, t)
+      }
+    })
+
+    return true
+  }
+
+  return false
 }
 
-const unreferActionOperation = async (parent, { actionId, field }, { pg }) => {
-  await referenceRepo.unreferActionOperation(actionId, field, pg)
-  return true
-}
-
-const referActionModule = async (
-  parent,
-  { actionId, moduleId, field },
-  { pg }
-) => {
-  await referenceRepo.referActionModule(actionId, moduleId, field, pg)
-  return true
-}
-
-const unreferActionModule = async (parent, { actionId, field }, { pg }) => {
-  await referenceRepo.unreferActionModule(actionId, field, pg)
+const unreferAction = (type) => async (parent, { actionId, field }, { pg }) => {
+  await referenceRepo.unreferAction(actionId, field, type, pg)
   return true
 }
 
 export default {
   Mutation: {
-    referActionPage,
-    unreferActionPage,
-    referActionOperation,
-    unreferActionOperation,
-    referActionModule,
-    unreferActionModule,
+    referActionPage: referAction("pages", "pageId", "pageIds"),
+    unreferActionPage: unreferAction("pages"),
+    referActionOperation: referAction(
+      "commands",
+      "operationId",
+      "operationIds"
+    ),
+    unreferActionOperation: unreferAction("commands"),
+    referActionModule: referAction("modules", "moduleId", "moduleIds"),
+    unreferActionModule: unreferAction("modules"),
   },
 }

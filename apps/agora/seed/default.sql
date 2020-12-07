@@ -192,10 +192,10 @@ CREATE TABLE public.actions_pages (
 ALTER TABLE public.actions_pages OWNER TO admin;
 
 --
--- Name: commands; Type: TABLE; Schema: public; Owner: admin
+-- Name: operations; Type: TABLE; Schema: public; Owner: admin
 --
 
-CREATE TABLE public.commands (
+CREATE TABLE public.operations (
     id integer NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL,
     name text NOT NULL,
@@ -205,7 +205,7 @@ CREATE TABLE public.commands (
 );
 
 
-ALTER TABLE public.commands OWNER TO admin;
+ALTER TABLE public.operations OWNER TO admin;
 
 --
 -- Name: commands_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
@@ -225,7 +225,7 @@ ALTER TABLE public.commands_id_seq OWNER TO admin;
 -- Name: commands_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
 --
 
-ALTER SEQUENCE public.commands_id_seq OWNED BY public.commands.id;
+ALTER SEQUENCE public.commands_id_seq OWNED BY public.operations.id;
 
 
 --
@@ -332,22 +332,22 @@ ALTER SEQUENCE public.sources_id_seq OWNED BY public.sources.id;
 
 
 --
--- Name: stale_commands; Type: TABLE; Schema: public; Owner: admin
+-- Name: stale_operations; Type: TABLE; Schema: public; Owner: admin
 --
 
-CREATE TABLE public.stale_commands (
+CREATE TABLE public.stale_operations (
     command_id integer NOT NULL,
     stale_id integer NOT NULL
 );
 
 
-ALTER TABLE public.stale_commands OWNER TO admin;
+ALTER TABLE public.stale_operations OWNER TO admin;
 
 --
--- Name: commands id; Type: DEFAULT; Schema: public; Owner: admin
+-- Name: operations id; Type: DEFAULT; Schema: public; Owner: admin
 --
 
-ALTER TABLE ONLY public.commands ALTER COLUMN id SET DEFAULT nextval('public.commands_id_seq'::regclass);
+ALTER TABLE ONLY public.operations ALTER COLUMN id SET DEFAULT nextval('public.commands_id_seq'::regclass);
 
 
 --
@@ -401,18 +401,6 @@ COPY public.actions_pages (action_id, page_id, field) FROM stdin;
 
 
 --
--- Data for Name: commands; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-COPY public.commands (id, created_at, name, source_id, config) FROM stdin;
-7	2020-10-25 15:41:01.204099	listOrders	1	{"value": "SELECT * FROM orders WHERE customer_name LIKE '{{search}}%' ORDER BY created_at DESC LIMIT {{limit}} OFFSET {{offset}}", "result": "many"}
-8	2020-10-25 15:41:01.204099	createOrder	1	{"value": "INSERT INTO orders (customer_name, address, delivery_type, status, payment_type, amount, currency) VALUES ('{{customer_name}}', '{{address}}', '{{delivery_type}}', '{{status}}', '{{payment_type}}', {{amount}}, '{{currency}}') RETURNING *", "result": "single"}
-9	2020-10-25 15:41:01.204099	countOrders	1	{"value":"SELECT count(id)::integer FROM orders","result":"single","compute":"result => result.count"}
-10	2020-11-07 13:05:01.444378	getOrders	1	{"value": "SELECT * FROM orders ORDER BY created_at DESC LIMIT {{limit}} OFFSET {{offset}}", "result": "many"}
-\.
-
-
---
 -- Name: commands_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
@@ -435,6 +423,18 @@ COPY public.migrations (data) FROM stdin;
 COPY public.modules (id, created_at, type, config, name, page_id, parent_id, "position") FROM stdin;
 38ec786b-2157-4f99-a964-8300363b9da4	2020-12-05 15:16:40.457933	button	{"text":"Click me","size":"regular","shouldFitContainer":false}	button	8	\N	{"h":1,"w":2,"x":8,"y":0}
 1a3c0c29-a473-473d-b744-6e609154a14a	2020-12-04 21:40:09.514037	table	{"limit":10,"pagination":true}	table_1	8	\N	{"h":12,"w":10,"x":0,"y":1}
+\.
+
+
+--
+-- Data for Name: operations; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+COPY public.operations (id, created_at, name, source_id, config) FROM stdin;
+7	2020-10-25 15:41:01.204099	listOrders	1	{"value": "SELECT * FROM orders WHERE customer_name LIKE '{{search}}%' ORDER BY created_at DESC LIMIT {{limit}} OFFSET {{offset}}", "result": "many"}
+8	2020-10-25 15:41:01.204099	createOrder	1	{"value": "INSERT INTO orders (customer_name, address, delivery_type, status, payment_type, amount, currency) VALUES ('{{customer_name}}', '{{address}}', '{{delivery_type}}', '{{status}}', '{{payment_type}}', {{amount}}, '{{currency}}') RETURNING *", "result": "single"}
+9	2020-10-25 15:41:01.204099	countOrders	1	{"value":"SELECT count(id)::integer FROM orders","result":"single","compute":"result => result.count"}
+10	2020-11-07 13:05:01.444378	getOrders	1	{"value": "SELECT * FROM orders ORDER BY created_at DESC LIMIT {{limit}} OFFSET {{offset}}", "result": "many"}
 \.
 
 
@@ -472,10 +472,10 @@ SELECT pg_catalog.setval('public.sources_id_seq', 1, true);
 
 
 --
--- Data for Name: stale_commands; Type: TABLE DATA; Schema: public; Owner: admin
+-- Data for Name: stale_operations; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-COPY public.stale_commands (command_id, stale_id) FROM stdin;
+COPY public.stale_operations (command_id, stale_id) FROM stdin;
 8	10
 8	9
 \.
@@ -514,10 +514,10 @@ ALTER TABLE ONLY public.actions
 
 
 --
--- Name: commands commands_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+-- Name: operations commands_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
-ALTER TABLE ONLY public.commands
+ALTER TABLE ONLY public.operations
     ADD CONSTRAINT commands_pkey PRIMARY KEY (id);
 
 
@@ -554,10 +554,10 @@ ALTER TABLE ONLY public.sources
 
 
 --
--- Name: stale_commands stale_commands_command_id_stale_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
+-- Name: stale_operations stale_commands_command_id_stale_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
-ALTER TABLE ONLY public.stale_commands
+ALTER TABLE ONLY public.stale_operations
     ADD CONSTRAINT stale_commands_command_id_stale_id_key UNIQUE (command_id, stale_id);
 
 
@@ -614,7 +614,7 @@ ALTER TABLE ONLY public.actions_operations
 --
 
 ALTER TABLE ONLY public.actions_operations
-    ADD CONSTRAINT actions_operations_operation_id_fkey FOREIGN KEY (operation_id) REFERENCES public.commands(id) ON DELETE RESTRICT;
+    ADD CONSTRAINT actions_operations_operation_id_fkey FOREIGN KEY (operation_id) REFERENCES public.operations(id) ON DELETE RESTRICT;
 
 
 --
@@ -634,10 +634,10 @@ ALTER TABLE ONLY public.actions_pages
 
 
 --
--- Name: commands commands_source_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+-- Name: operations commands_source_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
-ALTER TABLE ONLY public.commands
+ALTER TABLE ONLY public.operations
     ADD CONSTRAINT commands_source_id_fkey FOREIGN KEY (source_id) REFERENCES public.sources(id) ON DELETE CASCADE;
 
 
@@ -658,19 +658,19 @@ ALTER TABLE ONLY public.modules
 
 
 --
--- Name: stale_commands stale_commands_command_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+-- Name: stale_operations stale_commands_command_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
-ALTER TABLE ONLY public.stale_commands
-    ADD CONSTRAINT stale_commands_command_id_fkey FOREIGN KEY (command_id) REFERENCES public.commands(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.stale_operations
+    ADD CONSTRAINT stale_commands_command_id_fkey FOREIGN KEY (command_id) REFERENCES public.operations(id) ON DELETE CASCADE;
 
 
 --
--- Name: stale_commands stale_commands_stale_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+-- Name: stale_operations stale_commands_stale_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
-ALTER TABLE ONLY public.stale_commands
-    ADD CONSTRAINT stale_commands_stale_id_fkey FOREIGN KEY (stale_id) REFERENCES public.commands(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.stale_operations
+    ADD CONSTRAINT stale_commands_stale_id_fkey FOREIGN KEY (stale_id) REFERENCES public.operations(id) ON DELETE CASCADE;
 
 
 --

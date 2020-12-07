@@ -19,7 +19,7 @@ export const up = () =>
     await t.none(`
       CREATE TABLE actions_pages(
         action_id uuid NOT NULL REFERENCES actions(id) ON DELETE CASCADE,
-        page_id int NOT NULL REFERENCES pages(id) ON DELETE RESTRICT,
+        reference_id int NOT NULL REFERENCES pages(id) ON DELETE RESTRICT,
         field text NOT NULL CHECK (field <> ''),
         UNIQUE (action_id, field)
       )
@@ -27,7 +27,7 @@ export const up = () =>
     await t.none(`
       CREATE TABLE actions_operations(
         action_id uuid NOT NULL REFERENCES actions(id) ON DELETE CASCADE,
-        operation_id int NOT NULL REFERENCES commands(id) ON DELETE RESTRICT,
+        reference_id int NOT NULL REFERENCES commands(id) ON DELETE RESTRICT,
         field text NOT NULL CHECK (field <> ''),
         UNIQUE (action_id, field)
       )
@@ -35,7 +35,7 @@ export const up = () =>
     await t.none(`
       CREATE TABLE actions_modules(
         action_id uuid NOT NULL REFERENCES actions(id) ON DELETE CASCADE,
-        module_id uuid NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
+        reference_id uuid NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
         field text NOT NULL CHECK (field <> ''),
         UNIQUE (action_id, field)
       )
