@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import cx from "classnames"
 import styles from "./index.scss"
 import { useItems } from "./hooks"
-import { listSuggestions } from "./utils"
+import { listSuggestions, transformToOriginal } from "./utils"
 
 // TODO: implement multiselect so it can be used for choosing multiple modules in
 // some actions(for example in the form submission case)
@@ -30,13 +30,19 @@ export default function Autocomplete({
 
   const change = (currentValue, original, isSelected) => {
     if (multiple && isSelected) {
-      onChange(value.filter((x) => x !== currentValue))
+      const selection = value.filter((x) => x !== currentValue)
+      const original = transformToOriginal(selection, data, map)
+
+      onChange(selection, original)
 
       return
     }
 
     if (multiple && !isSelected) {
-      onChange([...value, currentValue])
+      const selection = [...value, currentValue]
+      const original = transformToOriginal(selection, data, map)
+
+      onChange(selection, original)
 
       return
     }

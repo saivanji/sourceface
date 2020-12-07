@@ -1,26 +1,27 @@
 import React from "react"
-import { Relation } from "packages/toolkit"
+import { Reference } from "packages/toolkit"
+import { getReference } from "packages/factory"
 
 const FIELD = "current"
-const RELATION_TYPE = "pages"
+const REFERENCE_TYPE = "pages"
 
 // TODO: use actual page names instead of paths and provide params similar way we provide arguments to a function
 export function Root() {
   return (
     <>
       <span>Redirect to</span>
-      <Relation
-        type={RELATION_TYPE}
+      <Reference
+        type={REFERENCE_TYPE}
         field={FIELD}
-        titleField="title"
+        titleKey="title"
         creationTitle="Choose page"
       />
     </>
   )
 }
 
-export const serialize = (config, relations) => {
-  const page = relations[RELATION_TYPE]?.[FIELD]
+export const serialize = (config, references) => {
+  const page = getReference(REFERENCE_TYPE, FIELD, references)
 
   return [page?.route]
 }

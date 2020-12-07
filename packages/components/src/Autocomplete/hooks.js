@@ -1,5 +1,6 @@
 import { useRef, useReducer, useEffect } from "react"
 
+// TODO: in case of pagination, have variable to control current page but keep all loaded items in state
 export const useItems = (items, search, page) => {
   const [{ isLoading, ...state }, dispatch] = useReducer(reducer, {
     isLoading: false,

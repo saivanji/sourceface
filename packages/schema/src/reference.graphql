@@ -6,17 +6,17 @@ type References {
 
 type PageReference {
   field: String!
-  page: Page!
+  data: Page!
 }
 
 type OperationReference {
   field: String!
-  operation: Command!
+  data: Command!
 }
 
 type ModuleReference {
   field: String!
-  module: Module!
+  data: Module!
 }
 
 extend type Mutation {

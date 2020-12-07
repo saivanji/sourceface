@@ -14,3 +14,6 @@ export function listSuggestions(fn, value, items, map, filter, multiple) {
         ]
   }, [])
 }
+
+export const transformToOriginal = (selection, data, map) =>
+  selection.map((x) => data.find((y) => map(y).value === x))

@@ -26,7 +26,7 @@ export const root = `
           references {
             pages {
               field
-              page {
+              data {
                 id
                 title
                 route
@@ -34,7 +34,7 @@ export const root = `
             }
             operations {
               field
-              operation {
+              data {
                 id
                 name
                 stale {
@@ -44,7 +44,7 @@ export const root = `
             }
             modules {
               field
-              module {
+              data {
                 id
                 name
                 type

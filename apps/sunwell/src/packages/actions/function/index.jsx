@@ -1,52 +1,60 @@
 import React from "react"
 import { keys, innerJoin } from "ramda"
-import { Static } from "packages/toolkit"
-import { useEditor, useFunctions } from "packages/factory"
+import { Reference, Static } from "packages/toolkit"
+import {
+  getReference,
+  useAction,
+  useEditor,
+  useFunctions,
+} from "packages/factory"
 
 // TODO: rename to "moduleFunction"?
 
-// TODO: should module be relations of an action the same way we have pages/operations? Why relations was introduced for
-// pages/operations?
+const REFERENCE_TYPE = "modules"
+const FIELD = "selected"
+
 export function Root({ config, onConfigChange }) {
   // TODO: have Field/ActionField component to automatically handle value/onChange?
-  const { modules, selectors } = useEditor()
+  const { selectors } = useEditor()
+  const { references } = useAction()
   const functions = useFunctions()
 
-  const map = ({ id, name }) => ({ title: name, value: id })
+  const selection = getReference(REFERENCE_TYPE, FIELD, references, true)
 
-  const selectModules = (value) => onConfigChange("modules", value)
+  // console.log(selection, references, REFERENCE_TYPE, FIELD)
+
   const selectFunc = (value) => onConfigChange("func", value)
-  const len = config.modules?.length
   const editionTitle =
-    len && (len > 1 ? `${len} modules` : modules[config.modules[0]].name)
+    selection.length > 1 ? `${selection.length} modules` : selection[0]?.name
 
   return (
     <>
       <span>For</span>
-      <Static
+      <Reference
         multiple
+        type={REFERENCE_TYPE}
+        titleKey="name"
         creationTitle="Modules"
+        field={FIELD}
         editionTitle={editionTitle}
-        value={config.modules}
-        map={map}
         items={selectors.modules()}
-        onChange={selectModules}
       />
-      {!!len && (
-        <>
-          <span>call</span>
-          <Static
-            value={config.func}
-            items={createSuggestions(config.modules, functions)}
-            editionTitle={config.func}
-            creationTitle="Function"
-            onChange={selectFunc}
-          />
-        </>
-      )}
     </>
   )
 }
+
+//       {!!selection.length && (
+//         <>
+//           <span>call</span>
+//           <Static
+//             value={config.func}
+//             items={createSuggestions(config.modules, functions)}
+//             editionTitle={config.func}
+//             creationTitle="Function"
+//             onChange={selectFunc}
+//           />
+//         </>
+//       )}
 
 export const serialize = (config) => {
   return [config.modules, config.func, {}]

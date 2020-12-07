@@ -6,7 +6,6 @@ import { useEditor } from "../editor"
 import { useContainer } from "../container"
 import { createVariable } from "../variables"
 import { useFunctions } from "../functions"
-import { populateRelations } from "../action"
 
 export const useHandler = (...fields) => {
   const [executions] = useData(fields)
@@ -99,7 +98,7 @@ const useData = (fields, identify = false, restore = false) => {
         type
       ]
 
-      const args = serialize(config, populateRelations(action), {
+      const args = serialize(config, action.references, {
         createVariable: (definition) =>
           createVariable(definition, moduleId, scope, { modules, actions }),
       })

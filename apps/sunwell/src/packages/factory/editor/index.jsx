@@ -60,8 +60,7 @@ const createSelectors = (state) => ({
         state.entities
       ).actions.filter((a) => a.field === field)
     ),
-  modules: () =>
-    denormalize(state.result.modules, [moduleSchema], state.entities),
+  modules: () => denormalize(state.result, [moduleSchema], state.entities),
 })
 
 export const useEditor = () => {

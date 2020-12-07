@@ -82,11 +82,25 @@ export function useActions(state, dispatch) {
     })
   }
 
-  function changeRelation(actionId, type, key, data) {
-    dispatch({
-      type: "changeRelation",
-      payload: { actionId, type, key, data },
-    })
+  function changeReference(actionId, type, field, data) {
+    if (field.includes("/")) {
+      throw new Error("/ is not allowed in a field name")
+    }
+
+    if (!(data instanceof Array)) {
+      dispatch({
+        type: "changeReference",
+        payload: { actionId, type, field, data },
+      })
+      return
+    }
+
+    for (let [i, item] of data.entries()) {
+      dispatch({
+        type: "changeReference",
+        payload: { actionId, type, field: `${field}/${i}`, data: item },
+      })
+    }
   }
 
   function renameAction(actionId, name) {
@@ -118,7 +132,7 @@ export function useActions(state, dispatch) {
     removeModule,
     createAction,
     configureAction,
-    changeRelation,
+    changeReference,
     renameAction,
     removeAction,
   }

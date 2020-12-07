@@ -3,6 +3,7 @@ import { toPairs, isNil, values, mergeDeepRight } from "ramda"
 import deepDiff from "deep-diff"
 import { client } from "packages/client"
 import reducer, { init } from "./reducer"
+import { toDict } from "./utils"
 
 export const useSave = (page, state, onSuccess) => {
   const [isSaving, setSaving] = useState(false)
@@ -319,7 +320,7 @@ const createChanges = (pageId, initialState, state) => {
       const identifier = identify("updateModules", 0)
 
       const initialModule = state.entities.modules[moduleId]
-      const prevUpdates = toDict(result[identifier]?.modules, "moduleId")
+      const prevUpdates = toDict("moduleId", result[identifier]?.modules)
 
       result[identifier] = {
         modules: values(
@@ -441,6 +442,3 @@ const createChanges = (pageId, initialState, state) => {
 const identify = (name, id) => `${name}/${id}`
 
 const getName = (identifier) => identifier.split("/")[0]
-
-const toDict = (list = [], field) =>
-  list.reduce((acc, x) => ({ ...acc, [x[field]]: x }), {})

@@ -4,7 +4,7 @@ export {
   Arguments,
   Pair,
   Placeholder,
-  Relation,
+  Reference,
   Section,
   Snippet,
   Static,

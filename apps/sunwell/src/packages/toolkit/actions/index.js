@@ -1,7 +1,7 @@
 export { default as Arguments } from "./Arguments"
 export { default as Pair } from "./Pair"
 export { default as Placeholder } from "./Placeholder"
-export { default as Relation } from "./Relation"
+export { default as Reference } from "./Reference"
 export { default as Section } from "./Snippet"
 export { default as Snippet } from "./Snippet"
 export { default as Static } from "./Static"

@@ -1,6 +1,7 @@
 import React from "react"
 import { mapObjIndexed } from "ramda"
-import { Relation, Arguments } from "packages/toolkit"
+import { Reference, Arguments } from "packages/toolkit"
+import { getReference } from "packages/factory"
 import request, { cache } from "./request"
 
 // TODO: when adding a new action, user will choose from multiple sub categories. For some modules will be the only one option(query, redirect),
@@ -48,16 +49,16 @@ import request, { cache } from "./request"
 // 4. Consider not collapsing actions, since it might be not much of them
 
 const FIELD = "current"
-const RELATION_TYPE = "commands"
+const REFERENCE_TYPE = "operations"
 
 export function Root() {
   return (
     <>
       <span>Execute</span>
-      <Relation
-        type={RELATION_TYPE}
+      <Reference
+        type={REFERENCE_TYPE}
         field={FIELD}
-        titleField="name"
+        titleKey="name"
         creationTitle="Add operation"
       />
       query
@@ -66,11 +67,11 @@ export function Root() {
 }
 
 export function Cut({
-  relations,
+  references,
   config: { groups = [], fields = [] },
   onConfigChange,
 }) {
-  const command = relations[RELATION_TYPE]?.[FIELD]
+  const command = getReference(REFERENCE_TYPE, FIELD, references)
   // TODO: set only config fields for Arguments and not provide handlers?
   const changeFields = (fields) => onConfigChange("fields", fields)
   const changeGroups = (groups) => onConfigChange("groups", groups)
@@ -88,8 +89,8 @@ export function Cut({
 }
 
 // TODO: name it differently, since it's not required to return serializable object(variable.get for example)
-export const serialize = (config, relations, { createVariable }) => {
-  const command = relations[RELATION_TYPE]?.[FIELD]
+export const serialize = (config, references, { createVariable }) => {
+  const command = getReference(REFERENCE_TYPE, FIELD, references)
   const staleIds = command?.stale.map((x) => x.id)
 
   const fields = config.fields?.reduce(

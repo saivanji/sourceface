@@ -26,7 +26,7 @@ export function Root({ config: { definitions = [] }, onConfigChange }) {
 
 export const serialize = (
   { definitions = [] },
-  relations,
+  references,
   { createVariable }
 ) => {
   return [definitions.map(createVariable)]
