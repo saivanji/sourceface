@@ -379,6 +379,7 @@ COPY public.actions (id, created_at, module_id, name, type, config, field, "orde
 --
 
 COPY public.actions_modules (action_id, module_id, field) FROM stdin;
+9ab1d4cf-e501-4fa8-b0ef-a861af55f6cb	38ec786b-2157-4f99-a964-8300363b9da4	foo
 \.
 
 
@@ -395,6 +396,7 @@ COPY public.actions_operations (action_id, operation_id, field) FROM stdin;
 --
 
 COPY public.actions_pages (action_id, page_id, field) FROM stdin;
+9ab1d4cf-e501-4fa8-b0ef-a861af55f6cb	8	foo
 \.
 
 
