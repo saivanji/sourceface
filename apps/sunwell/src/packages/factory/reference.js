@@ -1,47 +1,16 @@
-import { compose, map, sort, toPairs, path } from "ramda"
+import { path } from "ramda"
 import { client } from "packages/client"
 
-export const getReference = (type, field, references, multiple) => {
-  if (!multiple) {
-    return references[type].find((r) => r.field === field)?.data
-  }
+export const getReference = (type, field, data) => {
+  const found = data[mapping[type]].find((r) => r.field === field)
 
-  const unsorted = references[type].reduce((acc, r) => {
-    const [f, i] = r.field.split("/")
-
-    if (!i || field !== f) {
-      return acc
-    }
-
-    return { ...acc, [i]: r.data }
-  }, {})
-
-  return compose(
-    map((x) => x[1]),
-    sort((a, b) => a[0] - b[0]),
-    toPairs
-  )(unsorted)
+  return found?.one || found?.many
 }
 
-export const removeReference = (type, field, references, multiple) => {
-  if (!multiple) {
-    return references[type].filter((r) => r.field !== field)
-  }
-
-  return references[type].filter((r) => {
-    const [f, i] = r.field.split("/")
-
-    return !i || field !== f
-  })
-}
-
-export const addReference = (data, type, field, references, multiple) => {
-  if (!multiple) {
-    return [...references[type], { field, data }]
-  }
-
-  // TODO:
-  return
+export const mapping = {
+  pages: "pagesRefs",
+  operations: "operationsRefs",
+  modules: "modulesRefs",
 }
 
 export const listReferences = (type, input) =>

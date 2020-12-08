@@ -6,7 +6,9 @@ type Action {
   type: ActionType!
   name: String
   config: JSONObject!
-  references: References!
+  pagesRefs: [PageReference!]
+  operationsRefs: [OperationReference!]
+  modulesRefs: [ModuleReference!]
 }
 
 enum ActionType {

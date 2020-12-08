@@ -20,8 +20,8 @@ export function Root() {
   )
 }
 
-export const serialize = (config, references) => {
-  const page = getReference(REFERENCE_TYPE, FIELD, references)
+export const serialize = (config, action) => {
+  const page = getReference(REFERENCE_TYPE, FIELD, action)
 
   return [page?.route]
 }

@@ -29,6 +29,14 @@ const client = createClient({
     // }),
     cacheExchange({
       schema: introspection,
+      keys: {
+        /**
+         * Preventing normalization for the references since they have no unique identifier.
+         */
+        PageReference: () => null,
+        OperationReference: () => null,
+        ModuleReference: () => null,
+      },
       updates: {
         Mutation: updates,
       },

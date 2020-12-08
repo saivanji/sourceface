@@ -12,8 +12,8 @@ export default function Reference({
   creationTitle,
   editionTitle,
 }) {
-  const { references, onReferenceChange } = useAction()
-  const data = getReference(type, field, references)
+  const { action, onReferenceChange } = useAction()
+  const data = getReference(type, field, action)
 
   const map = (data) => ({
     value: data.id,
@@ -30,7 +30,7 @@ export default function Reference({
       multiple={multiple}
       creationTitle={creationTitle}
       editionTitle={data && (editionTitle || map(data).title)}
-      value={multiple ? data.map(prop("id")) : data?.id}
+      value={multiple ? data?.map(prop("id")) : data?.id}
       onChange={(_, data) => onReferenceChange(type, field, data)}
       items={items || listItems}
     />

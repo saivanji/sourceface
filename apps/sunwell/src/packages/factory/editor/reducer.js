@@ -1,5 +1,6 @@
 import { omit, without, values, mergeDeepRight } from "ramda"
 import { normalize } from "normalizr"
+import * as ref from "../reference"
 import schema from "./schema"
 
 export const init = (data) => normalize(data, schema)
@@ -150,11 +151,9 @@ function actions(state = {}, { type, payload }) {
           field,
           type,
           config,
-          references: {
-            pages: [],
-            commands: [],
-            modules: [],
-          },
+          pagesRefs: [],
+          commandsRefs: [],
+          modulesRefs: [],
         },
       }
     }
@@ -175,15 +174,13 @@ function actions(state = {}, { type, payload }) {
     }
 
     case "changeReference": {
-      // TODO: handle correctly
-
       const { actionId, type, field, data } = payload
-      const value =
+      const result =
         data instanceof Array
-          ? data.map((x) => x.id)
-          : { id: data.id, schema: "single" }
+          ? { many: data.map((x) => x.id) }
+          : { one: data.id }
 
-      const filtered = state[actionId].references[type].filter(
+      const filtered = state[actionId][ref.mapping[type]].filter(
         (r) => r.field !== field
       )
 
@@ -191,10 +188,9 @@ function actions(state = {}, { type, payload }) {
         ...state,
         [actionId]: {
           ...state[actionId],
-          references: {
-            ...state[actionId].references,
-            [type]: !data ? filtered : [...filtered, { field, data: value }],
-          },
+          [ref.mapping[type]]: !data
+            ? filtered
+            : [...filtered, { field, ...result }],
         },
       }
     }

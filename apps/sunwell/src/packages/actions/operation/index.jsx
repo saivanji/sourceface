@@ -66,12 +66,9 @@ export function Root() {
   )
 }
 
-export function Cut({
-  references,
-  config: { groups = [], fields = [] },
-  onConfigChange,
-}) {
-  const command = getReference(REFERENCE_TYPE, FIELD, references)
+export function Cut({ action, onConfigChange }) {
+  const { groups = [], fields = [] } = action.config
+  const command = getReference(REFERENCE_TYPE, FIELD, action)
   // TODO: set only config fields for Arguments and not provide handlers?
   const changeFields = (fields) => onConfigChange("fields", fields)
   const changeGroups = (groups) => onConfigChange("groups", groups)
@@ -89,8 +86,8 @@ export function Cut({
 }
 
 // TODO: name it differently, since it's not required to return serializable object(variable.get for example)
-export const serialize = (config, references, { createVariable }) => {
-  const command = getReference(REFERENCE_TYPE, FIELD, references)
+export const serialize = (config, action, { createVariable }) => {
+  const command = getReference(REFERENCE_TYPE, FIELD, action)
   const staleIds = command?.stale.map((x) => x.id)
 
   const fields = config.fields?.reduce(

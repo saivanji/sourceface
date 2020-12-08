@@ -1,17 +1,13 @@
-export const listByActionIds = async (actionIds, tableName, pg) =>
+export const listByActionIds = async (actionIds, type, pg) =>
   transformList(
-    await pg.manyOrNone(sql.listByActionIds, [
-      actionIds,
-      tableName,
-      `actions_${tableName}`,
-    ])
+    await pg.manyOrNone(sql.listByActionIds, [actionIds, type, tableName(type)])
   )
-export const referAction = (actionId, referenceId, field, tableName, pg) =>
-  pg.none(sql.referAction, [actionId, referenceId, field, tableName])
-export const unreferAction = (actionId, field, tableName, pg) =>
-  pg.none(sql.unreferAction, [actionId, field, tableName])
-export const unreferAllActions = (actionId, field, tableName, pg) =>
-  pg.none(sql.unreferAllActions, [actionId, `${field}/`, tableName])
+export const referAction = (actionId, referenceId, field, type, pg) =>
+  pg.none(sql.referAction, [actionId, referenceId, field, tableName(type)])
+export const unreferAction = (actionId, field, type, pg) =>
+  pg.none(sql.unreferAction, [actionId, field, tableName(type)])
+export const unreferAllActions = (actionId, field, type, pg) =>
+  pg.none(sql.unreferAllActions, [actionId, `${field}/`, tableName(type)])
 
 const sql = {
   listByActionIds: `
@@ -37,11 +33,12 @@ const sql = {
   `,
 }
 
-// TODO: join one and many in one object in case we have both presented
-export const transformList = (items) =>
+const transformList = (items) =>
   items.map((x) => ({
     actionId: x.actionId,
     field: x.key,
     one: x.isMany ? null : x.data[0],
     many: !x.isMany ? null : x.data,
   }))
+
+const tableName = (name) => `actions_${name}_refs`

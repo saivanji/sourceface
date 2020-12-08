@@ -59,14 +59,14 @@ Value.Autocomplete = function ValueAutocomplete({
   const { selectors, modules, actions } = useEditor()
   const { module } = useConfiguration()
   const { scope } = useScope()
-  const { id: actionId, field } = useAction()
+  const { action } = useAction()
 
   const definitions = createDefinitions(
     module.id,
-    actionId,
+    action.id,
     scope,
     selectors.modules(),
-    selectors.actions(module.id, field)
+    selectors.actions(module.id, action.field)
   )
 
   const map = (definition) => ({

@@ -98,7 +98,7 @@ const useData = (fields, identify = false, restore = false) => {
         type
       ]
 
-      const args = serialize(config, action.references, {
+      const args = serialize(config, action, {
         createVariable: (definition) =>
           createVariable(definition, moduleId, scope, { modules, actions }),
       })

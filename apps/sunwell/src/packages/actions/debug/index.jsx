@@ -2,7 +2,8 @@ import React from "react"
 import { update } from "ramda"
 import { Value } from "packages/toolkit"
 
-export function Root({ config: { definitions = [] }, onConfigChange }) {
+export function Root({ action, onConfigChange }) {
+  const { definitions = [] } = action.config
   const add = (definition) =>
     onConfigChange("definitions", [...definitions, definition])
   const change = (definition, i) =>
@@ -24,11 +25,7 @@ export function Root({ config: { definitions = [] }, onConfigChange }) {
   )
 }
 
-export const serialize = (
-  { definitions = [] },
-  references,
-  { createVariable }
-) => {
+export const serialize = ({ definitions = [] }, action, { createVariable }) => {
   return [definitions.map(createVariable)]
 }
 

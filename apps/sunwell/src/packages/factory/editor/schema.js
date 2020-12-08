@@ -4,11 +4,9 @@ export const module = new schema.Entity("modules")
 export const command = new schema.Entity("commands")
 export const page = new schema.Entity("pages")
 export const action = new schema.Entity("actions", {
-  references: {
-    pages: [{ one: page, many: [page] }],
-    operations: [{ one: command, many: [command] }],
-    modules: [{ one: module, many: [module] }],
-  },
+  pagesRefs: [{ one: page, many: [page] }],
+  operationsRefs: [{ one: command, many: [command] }],
+  modulesRefs: [{ one: module, many: [module] }],
 })
 
 /**

@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from "react"
-import { useContainer } from "../container"
-import { useEditor } from "../editor"
+import { useContainer } from "./container"
+import { useEditor } from "./editor"
 
 const context = createContext({})
 
@@ -11,10 +11,7 @@ export function Action({ action, children }) {
   const { Root, Cut } = stock.actions.dict[action.type]
 
   const props = {
-    id: action.id,
-    config: action.config,
-    field: action.field,
-    references: action.references,
+    action,
     onReferenceChange: (type, key, data) =>
       changeReference(action.id, type, key, data),
     onConfigChange: (key, value) => configureAction(action.id, key, value),

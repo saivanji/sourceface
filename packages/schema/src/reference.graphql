@@ -1,9 +1,3 @@
-type References {
-  pages: [PageReference!]
-  operations: [OperationReference!]
-  modules: [ModuleReference!]
-}
-
 type PageReference {
   field: String!
   one: Page

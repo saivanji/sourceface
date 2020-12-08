@@ -41,33 +41,31 @@ export const root = `
         ...module
         actions {
           ...action
-          references {
-            pages {
-              field
-              one {
-                ...page
-              }
-              many {
-                ...page
-              }
+          pagesRefs {
+            field
+            one {
+              ...page
             }
-            operations {
-              field
-              one {
-                ...operation
-              }
-              many {
-                ...operation
-              }
+            many {
+              ...page
             }
-            modules {
-              field
-              one {
-                ...module
-              }
-              many {
-                ...module
-              }
+          }
+          operationsRefs {
+            field
+            one {
+              ...operation
+            }
+            many {
+              ...operation
+            }
+          }
+          modulesRefs {
+            field
+            one {
+              ...module
+            }
+            many {
+              ...module
             }
           }
         }

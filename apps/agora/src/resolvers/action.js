@@ -25,19 +25,14 @@ const removeAction = async (parent, { actionId }, { pg }) => {
   return true
 }
 
-const references = async (parent, args, ctx) => {
-  const [pages, operations, modules] = await Promise.all([
-    ctx.loaders.pagesReferencesByAction.load(parent.id),
-    ctx.loaders.operationsReferencesByAction.load(parent.id),
-    ctx.loaders.modulesReferencesByAction.load(parent.id),
-  ])
+const pagesRefs = async (parent, args, ctx) =>
+  ctx.loaders.pagesReferencesByAction.load(parent.id)
 
-  return {
-    pages,
-    operations,
-    modules,
-  }
-}
+const operationsRefs = async (parent, args, ctx) =>
+  ctx.loaders.operationsReferencesByAction.load(parent.id)
+
+const modulesRefs = async (parent, args, ctx) =>
+  ctx.loaders.modulesReferencesByAction.load(parent.id)
 
 export default {
   Mutation: {
@@ -46,6 +41,8 @@ export default {
     removeAction,
   },
   Action: {
-    references,
+    pagesRefs,
+    operationsRefs,
+    modulesRefs,
   },
 }

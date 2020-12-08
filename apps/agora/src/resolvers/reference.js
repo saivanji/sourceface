@@ -31,6 +31,7 @@ const referAction = (type, single, multiple) => async (
 }
 
 const unreferAction = (type) => async (parent, { actionId, field }, { pg }) => {
+  // TODO: unrefer all actions if field is an array
   await referenceRepo.unreferAction(actionId, field, type, pg)
   return true
 }

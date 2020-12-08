@@ -1,3 +1,5 @@
+const references = ["pages", "operations", "modules"]
+
 export const up = () =>
   global.pg.tx(async (t) => {
     await t.none(`
@@ -16,43 +18,27 @@ export const up = () =>
         UNIQUE ("order", module_id, field)
       )
     `)
-    await t.none(`
-      CREATE TABLE actions_pages(
-        action_id uuid NOT NULL REFERENCES actions(id) ON DELETE CASCADE,
-        reference_id int NOT NULL REFERENCES pages(id) ON DELETE RESTRICT,
-        field text NOT NULL CHECK (field <> ''),
-        UNIQUE (action_id, field)
-      )
-    `)
-    await t.none(`
-      CREATE TABLE actions_operations(
-        action_id uuid NOT NULL REFERENCES actions(id) ON DELETE CASCADE,
-        reference_id int NOT NULL REFERENCES commands(id) ON DELETE RESTRICT,
-        field text NOT NULL CHECK (field <> ''),
-        UNIQUE (action_id, field)
-      )
-    `)
-    await t.none(`
-      CREATE TABLE actions_modules(
-        action_id uuid NOT NULL REFERENCES actions(id) ON DELETE CASCADE,
-        reference_id uuid NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
-        field text NOT NULL CHECK (field <> ''),
-        UNIQUE (action_id, field)
-      )
-    `)
+
+    for (let name of references) {
+      await t.none(`
+        CREATE TABLE actions_${name}_refs(
+          action_id uuid NOT NULL REFERENCES actions(id) ON DELETE CASCADE,
+          reference_id int NOT NULL REFERENCES ${name}(id) ON DELETE RESTRICT,
+          field text NOT NULL CHECK (field ~ '^[a-zA-Z]+(/[0-9]+)?$'),
+          UNIQUE (action_id, field)
+        )
+      `)
+    }
   })
 
 export const down = () =>
   global.pg.tx(async (t) => {
-    await t.none(`
-      DROP TABLE actions_modules
-    `)
-    await t.none(`
-      DROP TABLE actions_operations
-    `)
-    await t.none(`
-      DROP TABLE actions_pages
-    `)
+    for (let name of references) {
+      await t.none(`
+        DROP TABLE actions_${name}_refs
+      `)
+    }
+
     await t.none(`
       DROP TABLE actions
     `)
