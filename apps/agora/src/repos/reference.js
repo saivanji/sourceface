@@ -2,10 +2,10 @@ export const listByActionIds = async (actionIds, type, pg) =>
   transformList(
     await pg.manyOrNone(sql.listByActionIds, [actionIds, type, tableName(type)])
   )
-export const referAction = (actionId, referenceId, field, type, pg) =>
-  pg.none(sql.referAction, [actionId, referenceId, field, tableName(type)])
-export const unreferAllActions = (actionId, field, type, pg) =>
-  pg.none(sql.unreferAllActions, [actionId, field, tableName(type)])
+export const refer = (actionId, referenceId, field, type, pg) =>
+  pg.none(sql.refer, [actionId, referenceId, field, tableName(type)])
+export const unreferAll = (actionId, field, type, pg) =>
+  pg.none(sql.unreferAll, [actionId, field, tableName(type)])
 
 const sql = {
   listByActionIds: `
@@ -19,11 +19,11 @@ const sql = {
     WHERE t.action_id IN ($1:csv)
     GROUP BY t.action_id, is_many, key
   `,
-  referAction: `
+  refer: `
     INSERT INTO $4:name (action_id, reference_id, field)
     VALUES ($1, $2, $3)
   `,
-  unreferAllActions: `
+  unreferAll: `
     DELETE FROM $3:name
     WHERE action_id = $1 AND field ~ ('^' || $2 || '(/[0-9]+)?$')
   `,

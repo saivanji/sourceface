@@ -79,7 +79,7 @@ const definitions = {
       actionId: "UUID",
     },
   ],
-  referActionPage: [
+  referPage: [
     {
       actionId: "UUID",
       pageId: "Int",
@@ -87,13 +87,13 @@ const definitions = {
       field: "String",
     },
   ],
-  unreferActionPage: [
+  unreferPage: [
     {
       actionId: "UUID",
       field: "String",
     },
   ],
-  referActionOperation: [
+  referOperation: [
     {
       actionId: "UUID",
       operationId: "Int",
@@ -101,13 +101,13 @@ const definitions = {
       field: "String",
     },
   ],
-  unreferActionOperation: [
+  unreferOperation: [
     {
       actionId: "UUID",
       field: "String",
     },
   ],
-  referActionModule: [
+  referModule: [
     {
       actionId: "UUID",
       moduleId: "UUID",
@@ -115,7 +115,7 @@ const definitions = {
       field: "String",
     },
   ],
-  unreferActionModule: [
+  unreferModule: [
     {
       actionId: "UUID",
       field: "String",
@@ -180,7 +180,7 @@ const structure = (changes) => {
       key: "actionId",
       parent: "createAction",
     },
-    ...getActionRefsMutations({ key: "actionId", parent: "createAction" }),
+    ...getRefsMutations({ key: "actionId", parent: "createAction" }),
   }
 
   let result = []
@@ -546,19 +546,14 @@ const identify = (name, id) => `${name}/${id}`
 const getName = (identifier) => identifier.split("/")[0]
 
 const actionRefsMapping = {
-  pages: ["referActionPage", "unreferActionPage", "pageId", "pageIds"],
+  pages: ["referPage", "unreferPage", "pageId", "pageIds"],
   operations: [
-    "referActionOperation",
-    "unreferActionOperation",
+    "referOperation",
+    "unreferOperation",
     "operationId",
     "operationIds",
   ],
-  modules: [
-    "referActionModule",
-    "unreferActionModule",
-    "moduleId",
-    "moduleIds",
-  ],
+  modules: ["referModule", "unreferModule", "moduleId", "moduleIds"],
 }
 
 const isReference = (key) => {
@@ -573,5 +568,5 @@ const getReferenceType = (key) =>
 
 const getReferenceEntitiesName = (type) => type + "_references"
 
-const getActionRefsMutations = (data) =>
+const getRefsMutations = (data) =>
   values(actionRefsMapping).reduce((acc, [name]) => ({ ...acc, [name]: data }))

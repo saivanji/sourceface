@@ -17,25 +17,25 @@ type ModuleReference {
 }
 
 extend type Mutation {
-  referActionPage(
+  referPage(
     actionId: UUID!
     pageId: Int
     pageIds: [Int!]
     field: String!
   ): Boolean!
-  unreferActionPage(actionId: UUID!, field: String!): Boolean!
-  referActionOperation(
+  unreferPage(actionId: UUID!, field: String!): Boolean!
+  referOperation(
     actionId: UUID!
     operationId: Int
     operationIds: [Int!]
     field: String!
   ): Boolean!
-  unreferActionOperation(actionId: UUID!, field: String!): Boolean!
-  referActionModule(
+  unreferOperation(actionId: UUID!, field: String!): Boolean!
+  referModule(
     actionId: UUID!
     moduleId: UUID
     moduleIds: [UUID!]
     field: String!
   ): Boolean!
-  unreferActionModule(actionId: UUID!, field: String!): Boolean!
+  unreferModule(actionId: UUID!, field: String!): Boolean!
 }

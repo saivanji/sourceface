@@ -1,22 +1,22 @@
 import * as referenceRepo from "repos/reference"
 
-const referAction = (type, single, multiple) => (
+const refer = (type, single, multiple) => (
   parent,
   { actionId, field, ...rest },
   { pg }
 ) => {
   return pg.tx(async (t) => {
-    await referenceRepo.unreferAllActions(actionId, field, type, t)
+    await referenceRepo.unreferAll(actionId, field, type, t)
 
     if (rest[single]) {
-      await referenceRepo.referAction(actionId, rest[single], field, type, t)
+      await referenceRepo.refer(actionId, rest[single], field, type, t)
 
       return true
     }
 
     if (rest[multiple]) {
       for (let [i, id] of rest[multiple].entries()) {
-        await referenceRepo.referAction(actionId, id, `${field}/${i}`, type, t)
+        await referenceRepo.refer(actionId, id, `${field}/${i}`, type, t)
       }
 
       return true
@@ -26,22 +26,18 @@ const referAction = (type, single, multiple) => (
   })
 }
 
-const unreferAction = (type) => async (parent, { actionId, field }, { pg }) => {
-  await referenceRepo.unreferAllActions(actionId, field, type, pg)
+const unrefer = (type) => async (parent, { actionId, field }, { pg }) => {
+  await referenceRepo.unreferAll(actionId, field, type, pg)
   return true
 }
 
 export default {
   Mutation: {
-    referActionPage: referAction("pages", "pageId", "pageIds"),
-    unreferActionPage: unreferAction("pages"),
-    referActionOperation: referAction(
-      "operations",
-      "operationId",
-      "operationIds"
-    ),
-    unreferActionOperation: unreferAction("operations"),
-    referActionModule: referAction("modules", "moduleId", "moduleIds"),
-    unreferActionModule: unreferAction("modules"),
+    referPage: refer("pages", "pageId", "pageIds"),
+    unreferPage: unrefer("pages"),
+    referOperation: refer("operations", "operationId", "operationIds"),
+    unreferOperation: unrefer("operations"),
+    referModule: refer("modules", "moduleId", "moduleIds"),
+    unreferModule: unrefer("modules"),
   },
 }
