@@ -1,5 +1,6 @@
 import { omit, without, values, mergeDeepRight } from "ramda"
 import { normalize } from "normalizr"
+import { identify, mapping } from "../reference"
 import schema from "./schema"
 
 export const init = (data) => normalize(data, schema)
@@ -27,13 +28,13 @@ function entities(state = {}, action) {
     ),
     modules_references: modulesReferences(state.modules_references, action),
     pages: pages(state.pages, action),
-    commands: commands(state.commands, action),
+    operations: operations(state.operations, action),
     modules: modules(state.modules, action),
     actions: actions(state.actions, action),
   }
 }
 
-const createEntityReducer = (field) => {
+const createEntityReducer = (kind) => {
   const merge = (state, x) => mergeDeepRight(state, { [x.id]: x })
 
   return function (state = {}, { type, payload }) {
@@ -44,7 +45,7 @@ const createEntityReducer = (field) => {
         /**
          * Do not updating entities state when removing reference.
          */
-        if (!data || type !== field) return state
+        if (!data || type !== kind) return state
 
         if (data instanceof Array) {
           return data.reduce(merge, state)
@@ -69,7 +70,7 @@ const createReferenceReducer = (kind) => {
           return state
         }
 
-        const key = `action/${actionId}/${field}`
+        const key = identify(actionId, field)
         const isMany = data instanceof Array
 
         if (!data) {
@@ -228,6 +229,31 @@ function actions(state = {}, { type, payload }) {
     case "removeAction":
       return omit([payload.actionId], state)
 
+    case "changeReference": {
+      const { actionId, field, type, data } = payload
+      const key = mapping[type]
+      const items = state[actionId][key]
+      const refId = identify(actionId, field)
+
+      if (!data) {
+        return {
+          ...state,
+          [actionId]: {
+            ...state[actionId],
+            [key]: without([refId], items),
+          },
+        }
+      }
+
+      return {
+        ...state,
+        [actionId]: {
+          ...state[actionId],
+          [key]: [...items, refId],
+        },
+      }
+    }
+
     default:
       return state
   }
@@ -275,7 +301,7 @@ function dirty(state = false, action) {
 }
 
 const pages = createEntityReducer("pages")
-const commands = createEntityReducer("operations")
+const operations = createEntityReducer("operations")
 
 const pagesReferences = createReferenceReducer("pages")
 const operationsReferences = createReferenceReducer("operations")

@@ -31,7 +31,7 @@ export function Editor({ children, page }) {
     }
   }, [page, state.isEditing, state.isDirty])
 
-  console.log(state)
+  console.log(state, denormalize(state.result, [moduleSchema], state.entities))
 
   return (
     <context.Provider

@@ -3,6 +3,7 @@ import { toPairs, isNil, keys, values, mergeDeepRight } from "ramda"
 import deepDiff from "deep-diff"
 import { client } from "packages/client"
 import reducer, { init } from "./reducer"
+import * as reference from "../reference"
 import { toDict } from "./utils"
 
 export const useSave = (page, state, onSuccess) => {
@@ -287,7 +288,7 @@ const insert = (identifier, [head, ...tail], data) => {
 const createChanges = (pageId, initialState, state) => {
   const diff = deepDiff(initialState.entities, state.entities) || []
 
-  // console.log(diff)
+  console.log(diff)
   // return
 
   let result = {}
@@ -421,10 +422,15 @@ const createChanges = (pageId, initialState, state) => {
        */
       const action = state.entities.actions[actionId]
 
-      for (let [key, [mutationName, , oneName, manyName]] of toPairs(
+      for (let [type, [mutationName, , oneName, manyName]] of toPairs(
         actionRefsMapping
       )) {
-        for (let { field, one, many } of action[key]) {
+        const key = reference.mapping[type]
+
+        for (let refId of action[key]) {
+          const name = getReferenceEntitiesName(type)
+          const { field, one, many } = state.entities[name][refId]
+
           const identifier = identify(mutationName, [actionId, field])
           const value = one ? { [oneName]: one } : { [manyName]: many }
 
@@ -500,22 +506,13 @@ const createChanges = (pageId, initialState, state) => {
     /**
      * Refer action
      */
-    if (
-      ["A", "E"].includes(kind) &&
-      path[0] === "actions" &&
-      keys(actionRefsMapping).includes(path[2])
-    ) {
-      const actionId = path[1]
-      const refKey = path[2]
-      const index = path[3]
-      const [mutationName, , oneName, manyName] = actionRefsMapping[refKey]
-
-      const { field, one, many } =
-        typeof index !== "undefined"
-          ? state.entities.actions[actionId][refKey][index]
-          : item.rhs
-
+    if (["E", "N"].includes(kind) && isReference(path[0])) {
+      const [actionId, field] = reference.tear(path[1])
+      const type = getReferenceType(path[0])
+      const { one, many } = state.entities[path[0]][path[1]]
+      const [mutationName, , oneName, manyName] = actionRefsMapping[type]
       const identifier = identify(mutationName, [actionId, field])
+
       const value = one ? { [oneName]: one } : { [manyName]: many }
 
       result[identifier] = {
@@ -528,7 +525,17 @@ const createChanges = (pageId, initialState, state) => {
     /**
      * Unrefer action
      */
-    // if (kind === "D"
+    if (kind === "D" && isReference(path[0])) {
+      const [actionId, field] = reference.tear(path[1])
+      const type = getReferenceType(path[0])
+      const [, mutationName] = actionRefsMapping[type]
+      const identifier = identify(mutationName, [actionId, field])
+
+      result[identifier] = {
+        actionId,
+        field,
+      }
+    }
   }
 
   return result
@@ -539,20 +546,32 @@ const identify = (name, id) => `${name}/${id}`
 const getName = (identifier) => identifier.split("/")[0]
 
 const actionRefsMapping = {
-  pagesRefs: ["referActionPage", "unreferActionPage", "pageId", "pageIds"],
-  operationsRefs: [
+  pages: ["referActionPage", "unreferActionPage", "pageId", "pageIds"],
+  operations: [
     "referActionOperation",
     "unreferActionOperation",
     "operationId",
     "operationIds",
   ],
-  modulesRefs: [
+  modules: [
     "referActionModule",
     "unreferActionModule",
     "moduleId",
     "moduleIds",
   ],
 }
+
+const isReference = (key) => {
+  const str = "_references"
+  const index = key.indexOf(str)
+
+  return index !== -1 && index === key.length - str.length
+}
+
+const getReferenceType = (key) =>
+  key.slice(0, key.length - "_references".length)
+
+const getReferenceEntitiesName = (type) => type + "_references"
 
 const getActionRefsMutations = (data) =>
   values(actionRefsMapping).reduce((acc, [name]) => ({ ...acc, [name]: data }))

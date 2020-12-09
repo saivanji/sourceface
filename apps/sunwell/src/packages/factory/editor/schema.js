@@ -1,4 +1,5 @@
 import { schema } from "normalizr"
+import { identify } from "../reference"
 
 const createReference = (source, name) =>
   new schema.Entity(
@@ -8,16 +9,18 @@ const createReference = (source, name) =>
       many: [source],
     },
     {
-      idAttribute: (value, parent) => `action/${parent.id}/${value.field}`,
+      idAttribute: (value, parent) => identify(parent.id, value.field),
     }
   )
 
+// export const createActionRefId = () =>
+
 export const module = new schema.Entity("modules")
-export const command = new schema.Entity("commands")
+export const operation = new schema.Entity("operations")
 export const page = new schema.Entity("pages")
 export const action = new schema.Entity("actions", {
   pagesRefs: [createReference(page, "pages")],
-  operationsRefs: [createReference(command, "operations")],
+  operationsRefs: [createReference(operation, "operations")],
   modulesRefs: [createReference(module, "modules")],
 })
 

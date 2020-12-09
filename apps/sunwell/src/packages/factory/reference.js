@@ -13,6 +13,9 @@ export const mapping = {
   modules: "modulesRefs",
 }
 
+export const identify = (sourceId, field) => `${sourceId}/${field}`
+export const tear = (id) => id.split("/")
+
 export const listReferences = (type, input) =>
   client
     .query(queries[type], input)
