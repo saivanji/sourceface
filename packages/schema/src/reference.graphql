@@ -21,14 +21,14 @@ extend type Mutation {
     actionId: UUID!
     pageId: Int
     pageIds: [Int!]
-    field: String
+    field: String!
   ): Boolean!
   unreferActionPage(actionId: UUID!, field: String!): Boolean!
   referActionOperation(
     actionId: UUID!
     operationId: Int
     operationIds: [Int!]
-    field: String
+    field: String!
   ): Boolean!
   unreferActionOperation(actionId: UUID!, field: String!): Boolean!
   referActionModule(

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { toPairs, isNil, values, mergeDeepRight } from "ramda"
+import { toPairs, isNil, keys, values, mergeDeepRight } from "ramda"
 import deepDiff from "deep-diff"
 import { client } from "packages/client"
 import reducer, { init } from "./reducer"
@@ -62,22 +62,62 @@ const definitions = {
       type: "ActionType",
       name: "String",
       config: "JSONObject",
-      relations: "JSONObject",
     },
-    ["id", "order", "field", "type", "name", "config", "relations"],
+    ["id", "order", "field", "type", "name", "config"],
   ],
   updateAction: [
     {
       actionId: "UUID",
       name: "String",
       config: "JSONObject",
-      relations: "JSONObject",
     },
-    ["id", "name", "config", "relations"],
+    ["id", "name", "config"],
   ],
   removeAction: [
     {
       actionId: "UUID",
+    },
+  ],
+  referActionPage: [
+    {
+      actionId: "UUID",
+      pageId: "Int",
+      pageIds: "[Int!]",
+      field: "String",
+    },
+  ],
+  unreferActionPage: [
+    {
+      actionId: "UUID",
+      field: "String",
+    },
+  ],
+  referActionOperation: [
+    {
+      actionId: "UUID",
+      operationId: "Int",
+      operationIds: "[Int!]",
+      field: "String",
+    },
+  ],
+  unreferActionOperation: [
+    {
+      actionId: "UUID",
+      field: "String",
+    },
+  ],
+  referActionModule: [
+    {
+      actionId: "UUID",
+      moduleId: "UUID",
+      moduleIds: "[UUID!]",
+      field: "String",
+    },
+  ],
+  unreferActionModule: [
+    {
+      actionId: "UUID",
+      field: "String",
     },
   ],
 }
@@ -139,6 +179,7 @@ const structure = (changes) => {
       key: "actionId",
       parent: "createAction",
     },
+    ...getActionRefsMutations({ key: "actionId", parent: "createAction" }),
   }
 
   let result = []
@@ -245,6 +286,9 @@ const insert = (identifier, [head, ...tail], data) => {
 
 const createChanges = (pageId, initialState, state) => {
   const diff = deepDiff(initialState.entities, state.entities) || []
+
+  // console.log(diff)
+  // return
 
   let result = {}
 
@@ -370,7 +414,26 @@ const createChanges = (pageId, initialState, state) => {
         type: rhs.type,
         name: rhs.name,
         config: rhs.config,
-        relations: rhs.relations,
+      }
+
+      /**
+       * Assign references
+       */
+      const action = state.entities.actions[actionId]
+
+      for (let [key, [mutationName, , oneName, manyName]] of toPairs(
+        actionRefsMapping
+      )) {
+        for (let { field, one, many } of action[key]) {
+          const identifier = identify(mutationName, [actionId, field])
+          const value = one ? { [oneName]: one } : { [manyName]: many }
+
+          result[identifier] = {
+            actionId,
+            field,
+            ...value,
+          }
+        }
       }
     }
 
@@ -400,14 +463,13 @@ const createChanges = (pageId, initialState, state) => {
     if (
       (kind === "E" || kind === "N" || kind === "A") &&
       path[0] === "actions" &&
-      ["name", "config", "relations"].includes(path[2]) &&
+      ["name", "config"].includes(path[2]) &&
       path.length > 2
     ) {
       const actionId = path[1]
       const field = path[2]
       const objectField = path[3]
-      const isObject =
-        ["config", "relations"].includes(field) && path.length > 3
+      const isObject = ["config"].includes(field) && path.length > 3
       const identifier = identify("updateAction", actionId)
 
       result[identifier] = {
@@ -434,6 +496,39 @@ const createChanges = (pageId, initialState, state) => {
         actionId,
       }
     }
+
+    /**
+     * Refer action
+     */
+    if (
+      ["A", "E"].includes(kind) &&
+      path[0] === "actions" &&
+      keys(actionRefsMapping).includes(path[2])
+    ) {
+      const actionId = path[1]
+      const refKey = path[2]
+      const index = path[3]
+      const [mutationName, , oneName, manyName] = actionRefsMapping[refKey]
+
+      const { field, one, many } =
+        typeof index !== "undefined"
+          ? state.entities.actions[actionId][refKey][index]
+          : item.rhs
+
+      const identifier = identify(mutationName, [actionId, field])
+      const value = one ? { [oneName]: one } : { [manyName]: many }
+
+      result[identifier] = {
+        actionId,
+        field,
+        ...value,
+      }
+    }
+
+    /**
+     * Unrefer action
+     */
+    // if (kind === "D"
   }
 
   return result
@@ -442,3 +537,22 @@ const createChanges = (pageId, initialState, state) => {
 const identify = (name, id) => `${name}/${id}`
 
 const getName = (identifier) => identifier.split("/")[0]
+
+const actionRefsMapping = {
+  pagesRefs: ["referActionPage", "unreferActionPage", "pageId", "pageIds"],
+  operationsRefs: [
+    "referActionOperation",
+    "unreferActionOperation",
+    "operationId",
+    "operationIds",
+  ],
+  modulesRefs: [
+    "referActionModule",
+    "unreferActionModule",
+    "moduleId",
+    "moduleIds",
+  ],
+}
+
+const getActionRefsMutations = (data) =>
+  values(actionRefsMapping).reduce((acc, [name]) => ({ ...acc, [name]: data }))

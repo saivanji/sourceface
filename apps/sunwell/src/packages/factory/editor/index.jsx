@@ -31,6 +31,8 @@ export function Editor({ children, page }) {
     }
   }, [page, state.isEditing, state.isDirty])
 
+  console.log(state)
+
   return (
     <context.Provider
       value={{

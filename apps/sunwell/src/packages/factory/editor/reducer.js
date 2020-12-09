@@ -1,6 +1,5 @@
 import { omit, without, values, mergeDeepRight } from "ramda"
 import { normalize } from "normalizr"
-import * as ref from "../reference"
 import schema from "./schema"
 
 export const init = (data) => normalize(data, schema)
@@ -10,15 +9,8 @@ export default (state = {}, action) => {
     return init(action.payload)
   }
 
-  console.log(state)
-
   return {
-    entities: {
-      pages: pages(state.entities.pages, action),
-      commands: commands(state.entities.commands, action),
-      modules: modules(state.entities.modules, action),
-      actions: actions(state.entities.actions, action),
-    },
+    entities: entities(state.entities, action),
     result: result(state.result, action),
     selection: selection(state.selection, action),
     isEditing: edition(state.isEditing, action),
@@ -26,7 +18,22 @@ export default (state = {}, action) => {
   }
 }
 
-const createReferenceReducer = (field) => {
+function entities(state = {}, action) {
+  return {
+    pages_references: pagesReferences(state.pages_references, action),
+    operations_references: operationsReferences(
+      state.operations_references,
+      action
+    ),
+    modules_references: modulesReferences(state.modules_references, action),
+    pages: pages(state.pages, action),
+    commands: commands(state.commands, action),
+    modules: modules(state.modules, action),
+    actions: actions(state.actions, action),
+  }
+}
+
+const createEntityReducer = (field) => {
   const merge = (state, x) => mergeDeepRight(state, { [x.id]: x })
 
   return function (state = {}, { type, payload }) {
@@ -52,8 +59,41 @@ const createReferenceReducer = (field) => {
   }
 }
 
-const pages = createReferenceReducer("pages")
-const commands = createReferenceReducer("operations")
+const createReferenceReducer = (kind) => {
+  return function (state = {}, { type, payload }) {
+    switch (type) {
+      case "changeReference": {
+        const { actionId, field, data, type } = payload
+
+        if (type !== kind) {
+          return state
+        }
+
+        const key = `action/${actionId}/${field}`
+        const isMany = data instanceof Array
+
+        if (!data) {
+          return omit([key], state)
+        }
+
+        const result = isMany
+          ? { many: data.map((x) => x.id) }
+          : { one: data.id }
+
+        return {
+          ...state,
+          [key]: {
+            field,
+            ...result,
+          },
+        }
+      }
+
+      default:
+        return state
+    }
+  }
+}
 
 function modules(state = {}, { type, payload }) {
   switch (type) {
@@ -152,7 +192,7 @@ function actions(state = {}, { type, payload }) {
           type,
           config,
           pagesRefs: [],
-          commandsRefs: [],
+          operationsRefs: [],
           modulesRefs: [],
         },
       }
@@ -169,28 +209,6 @@ function actions(state = {}, { type, payload }) {
             ...state[actionId].config,
             [key]: value,
           },
-        },
-      }
-    }
-
-    case "changeReference": {
-      const { actionId, type, field, data } = payload
-      const result =
-        data instanceof Array
-          ? { many: data.map((x) => x.id) }
-          : { one: data.id }
-
-      const filtered = state[actionId][ref.mapping[type]].filter(
-        (r) => r.field !== field
-      )
-
-      return {
-        ...state,
-        [actionId]: {
-          ...state[actionId],
-          [ref.mapping[type]]: !data
-            ? filtered
-            : [...filtered, { field, ...result }],
         },
       }
     }
@@ -255,3 +273,10 @@ function dirty(state = false, action) {
 
   return state
 }
+
+const pages = createEntityReducer("pages")
+const commands = createEntityReducer("operations")
+
+const pagesReferences = createReferenceReducer("pages")
+const operationsReferences = createReferenceReducer("operations")
+const modulesReferences = createReferenceReducer("modules")

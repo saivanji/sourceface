@@ -4,10 +4,8 @@ export const listByActionIds = async (actionIds, type, pg) =>
   )
 export const referAction = (actionId, referenceId, field, type, pg) =>
   pg.none(sql.referAction, [actionId, referenceId, field, tableName(type)])
-export const unreferAction = (actionId, field, type, pg) =>
-  pg.none(sql.unreferAction, [actionId, field, tableName(type)])
 export const unreferAllActions = (actionId, field, type, pg) =>
-  pg.none(sql.unreferAllActions, [actionId, `${field}/`, tableName(type)])
+  pg.none(sql.unreferAllActions, [actionId, field, tableName(type)])
 
 const sql = {
   listByActionIds: `
@@ -23,13 +21,11 @@ const sql = {
   `,
   referAction: `
     INSERT INTO $4:name (action_id, reference_id, field)
-    VALUES ($1, $2, $3, $4)
-  `,
-  unreferAction: `
-    DELETE FROM $3:name WHERE action_id = $1 AND field = $2
+    VALUES ($1, $2, $3)
   `,
   unreferAllActions: `
-    DELETE FROM $3:name WHERE action_id = $1 AND field ~ $2
+    DELETE FROM $3:name
+    WHERE action_id = $1 AND field ~ ('^' || $2 || '(/[0-9]+)?$')
   `,
 }
 
