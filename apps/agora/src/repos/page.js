@@ -1,4 +1,6 @@
 import { sort } from "ramda"
+import { asCsvValues } from "../postgres"
+import { getField, getIndex } from "../utils/reference"
 
 export const oneByPath = async (path, pg) =>
   matchPage(await pg.many(sql.manyByPath, [createRegExp(path)]))
@@ -6,6 +8,8 @@ export const trailByPageIds = (pageIds, pg) =>
   pg.manyOrNone(sql.trailByPageIds, [pageIds])
 export const listByActionIds = (actionIds, pg) =>
   pg.manyOrNone(sql.listByActionIds, [actionIds])
+export const listByReferenceIds = (refIds, pg) =>
+  pg.manyOrNone(sql.listByReferenceIds, [asCsvValues(refIds)])
 export const listByIds = (pageIds, pg) =>
   pg.manyOrNone(sql.listByIds, [pageIds])
 export const list = (query, limit, offset, pg) =>
@@ -27,6 +31,13 @@ const sql = {
     LEFT JOIN actions_pages AS ap ON (ap.page_id = p.id)
     WHERE ap.action_id IN ($1:csv)
   `,
+  listByReferenceIds: `
+    SELECT p.*, r.action_id, ${getField("r.field")} AS field
+    FROM "references" AS r
+    LEFT JOIN pages AS p ON (p.id = r.page_id)
+    WHERE (r.action_id, ${getField("r.field")}) IN ($1:raw)
+    ORDER BY ${getIndex("r.field")} ASC
+  `,
   listByIds: `
     SELECT * FROM pages WHERE id IN ($1:csv)
   `,
@@ -35,6 +46,8 @@ const sql = {
     LIMIT $2 OFFSET $3
   `,
 }
+
+// TODO: move to utils
 
 /**
  * Transforming path to a regular expression used for finding matched page.

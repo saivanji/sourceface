@@ -21,6 +21,9 @@ export const mergeableColumn = (name) => ({
 
 export const castColumn = (type) => (name) => ({ name, cast: type })
 
+export const asCsvValues = (items) =>
+  items.map((x) => `(${pgp.as.csv(x)})`).join(",")
+
 export const updateQuery = (idName, tableName, data, modifiers = {}) =>
   pgp.helpers.update(
     humps.decamelizeKeys(data),

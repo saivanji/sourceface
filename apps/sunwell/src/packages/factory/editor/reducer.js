@@ -78,8 +78,8 @@ const createReferenceReducer = (kind) => {
         }
 
         const result = isMany
-          ? { many: data.map((x) => x.id) }
-          : { one: data.id }
+          ? { many: data.map((x) => x.id), one: null }
+          : { one: data.id, many: null }
 
         return {
           ...state,

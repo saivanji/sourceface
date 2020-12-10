@@ -1,6 +1,6 @@
 import * as commandRepo from "repos/command"
 
-const commands = (parent, { search, limit = 10, offset = 0 }, { pg }) =>
+const operations = (parent, { search, limit = 10, offset = 0 }, { pg }) =>
   commandRepo.list(search, limit, offset, pg)
 
 const executeCommand = async (
@@ -18,13 +18,10 @@ const stale = (parent, args, ctx) => ctx.loaders.staleByCommand.load(parent.id)
 // TODO: have "executeOperation" as both - read and write
 export default {
   Query: {
-    commands,
-    readCommand: executeCommand,
+    operations,
+    readOperation: executeCommand,
   },
-  Mutation: {
-    writeCommand: executeCommand,
-  },
-  Command: {
+  Operation: {
     stale,
   },
 }

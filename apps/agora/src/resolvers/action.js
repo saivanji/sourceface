@@ -1,4 +1,5 @@
 import * as actionRepo from "repos/action"
+import * as referenceUtils from "utils/reference"
 
 const createAction = async (
   parent,
@@ -25,14 +26,8 @@ const removeAction = async (parent, { actionId }, { pg }) => {
   return true
 }
 
-const pagesRefs = async (parent, args, ctx) =>
-  ctx.loaders.pagesReferencesByAction.load(parent.id)
-
-const operationsRefs = async (parent, args, ctx) =>
-  ctx.loaders.operationsReferencesByAction.load(parent.id)
-
-const modulesRefs = async (parent, args, ctx) =>
-  ctx.loaders.modulesReferencesByAction.load(parent.id)
+const references = async (parent, args, ctx) =>
+  referenceUtils.transform(await ctx.loaders.referencesByAction.load(parent.id))
 
 export default {
   Mutation: {
@@ -41,8 +36,6 @@ export default {
     removeAction,
   },
   Action: {
-    pagesRefs,
-    operationsRefs,
-    modulesRefs,
+    references,
   },
 }

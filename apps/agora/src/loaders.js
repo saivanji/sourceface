@@ -1,8 +1,8 @@
 import DataLoader from "dataloader"
 import * as actionRepo from "repos/action"
-import * as commandRepo from "repos/command"
-import * as moduleRepo from "repos/module"
 import * as pageRepo from "repos/page"
+import * as operationRepo from "repos/command"
+import * as moduleRepo from "repos/module"
 import * as referenceRepo from "repos/reference"
 
 export default (pg) => {
@@ -19,20 +19,24 @@ export default (pg) => {
     "pageId"
   )
   const staleByCommand = new DataLoaderHasMany(
-    (ids) => commandRepo.staleByCommandIds(ids, pg),
+    (ids) => operationRepo.staleByCommandIds(ids, pg),
     "commandId"
   )
-  const pagesReferencesByAction = new DataLoaderHasMany(
-    (ids) => referenceRepo.listByActionIds(ids, "pages", pg),
+  const referencesByAction = new DataLoaderHasMany(
+    (ids) => referenceRepo.listByActionIds(ids, pg),
     "actionId"
   )
-  const operationsReferencesByAction = new DataLoaderHasMany(
-    (ids) => referenceRepo.listByActionIds(ids, "operations", pg),
-    "actionId"
+  const pagesByReference = new DataLoaderHasMany(
+    (ids) => pageRepo.listByReferenceIds(ids, pg),
+    compareRef
   )
-  const modulesReferencesByAction = new DataLoaderHasMany(
-    (ids) => referenceRepo.listByActionIds(ids, "modules", pg),
-    "actionId"
+  const operationsByReference = new DataLoaderHasMany(
+    (ids) => operationRepo.listByReferenceIds(ids, pg),
+    compareRef
+  )
+  const modulesByReference = new DataLoaderHasMany(
+    (ids) => moduleRepo.listByReferenceIds(ids, pg),
+    compareRef
   )
 
   return {
@@ -40,9 +44,10 @@ export default (pg) => {
     modulesByPage,
     trailByPage,
     staleByCommand,
-    pagesReferencesByAction,
-    operationsReferencesByAction,
-    modulesReferencesByAction,
+    referencesByAction,
+    pagesByReference,
+    operationsByReference,
+    modulesByReference,
   }
 }
 
@@ -58,3 +63,6 @@ class DataLoaderHasMany extends DataLoader {
     }, options)
   }
 }
+
+const compareRef = (item, [actionId, field]) =>
+  item.actionId === actionId && item.field === field

@@ -1,41 +1,17 @@
-type PageReference {
+type Reference {
   field: String!
-  one: Page
-  many: [Page!]
-}
-
-type OperationReference {
-  field: String!
-  one: Command
-  many: [Command!]
-}
-
-type ModuleReference {
-  field: String!
-  one: Module
-  many: [Module!]
+  pages: [Page!]
+  operations: [Operation!]
+  modules: [Module!]
 }
 
 extend type Mutation {
-  referPage(
+  refer(
     actionId: UUID!
-    pageId: Int
+    field: String!
     pageIds: [Int!]
-    field: String!
-  ): Boolean!
-  unreferPage(actionId: UUID!, field: String!): Boolean!
-  referOperation(
-    actionId: UUID!
-    operationId: Int
     operationIds: [Int!]
-    field: String!
-  ): Boolean!
-  unreferOperation(actionId: UUID!, field: String!): Boolean!
-  referModule(
-    actionId: UUID!
-    moduleId: UUID
     moduleIds: [UUID!]
-    field: String!
-  ): Boolean!
-  unreferModule(actionId: UUID!, field: String!): Boolean!
+  ): Reference!
+  unrefer(actionId: UUID!, field: String!): Boolean!
 }

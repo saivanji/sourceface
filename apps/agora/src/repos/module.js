@@ -1,4 +1,11 @@
-import { pgp, mergeableColumn, castColumn, updateQuery } from "../postgres"
+import {
+  pgp,
+  mergeableColumn,
+  castColumn,
+  updateQuery,
+  asCsvValues,
+} from "../postgres"
+import { getField, getIndex } from "../utils/reference"
 
 export const one = (moduleId, pg) => pg.one(sql.one, [moduleId])
 export const create = (
@@ -16,6 +23,8 @@ export const update = (moduleId, data, pg) =>
   pg.one(sql.update({ id: moduleId, ...data }))
 export const updateMany = (data, pg) => pg.many(sql.updateMany(data))
 export const remove = (moduleId, pg) => pg.none(sql.remove, [moduleId])
+export const listByReferenceIds = (refIds, pg) =>
+  pg.manyOrNone(sql.listByReferenceIds, [asCsvValues(refIds)])
 export const listByIds = (ids, pg) => pg.manyOrNone(sql.listByIds, [ids])
 export const listByPageIds = (pageIds, pg) =>
   pg.manyOrNone(sql.listByPageIds, [pageIds])
@@ -37,6 +46,13 @@ const sql = {
   `,
   listByPageIds: `
     SELECT * FROM modules WHERE page_id IN ($1:csv)
+  `,
+  listByReferenceIds: `
+    SELECT m.*, r.action_id, ${getField("r.field")} AS field
+    FROM "references" AS r
+    LEFT JOIN modules AS m ON (m.id = r.module_id)
+    WHERE (r.action_id, ${getField("r.field")}) IN ($1:raw)
+    ORDER BY ${getIndex("r.field")} ASC
   `,
   update: (data) =>
     updateQuery("id", "modules", data, { config: mergeableColumn }) +
