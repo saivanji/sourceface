@@ -15,7 +15,7 @@ import { useSave } from "./persistence"
 const context = createContext({})
 
 export function Editor({ children, page }) {
-  const prevPage = useRef(page)
+  const prevPage = useRef(page.id)
   const [state, dispatch] = useReducer(reducer, page.modules, init)
   const actions = useActions(state, dispatch)
   const [isSaving, save] = useSave(page, state, () => actions.edit(false))
@@ -25,9 +25,9 @@ export function Editor({ children, page }) {
       actions.reset(page.modules)
     }
 
-    if (prevPage.current !== page) {
+    if (prevPage.current !== page.id) {
       actions.reset(page.modules)
-      prevPage.current = page
+      prevPage.current = page.id
     }
   }, [page, state.isEditing, state.isDirty])
 
