@@ -33,7 +33,7 @@
 .items {
   display: flex;
   flex-direction: column;
-  padding: $value-1 0;
+  padding: $value-1 $value-2 $value-2;
 }
 
 .item {
@@ -41,8 +41,9 @@
   cursor: pointer;
   display: flex;
   align-items: center;
+  border-radius: $rounded-base;
   color: $color-gray-200;
-  padding: $value-1 $value-3;
+  padding: $value-1 $value-2;
   &.selected,
   &:hover {
     background-color: $color-gray-800;

@@ -15,6 +15,7 @@ const actionFragment = parse(`
   fragment _ on Action {
     id
     references {
+      field
       pages {
         id
       }

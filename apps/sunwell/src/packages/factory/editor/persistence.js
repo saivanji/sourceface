@@ -201,6 +201,8 @@ const structure = (changes) => {
     result.push(entry)
   }
 
+  console.log(result)
+
   return result
 }
 
@@ -336,7 +338,7 @@ const createChanges = (pageId, initialState, state) => {
       const identifier = identify("updateModules", 0)
 
       const initialModule = state.entities.modules[moduleId]
-      const prevUpdates = toDict("moduleId", result[identifier]?.modules)
+      const prevUpdates = toDict("moduleId", result[identifier]?.modules || [])
 
       result[identifier] = {
         modules: values(

@@ -3,9 +3,9 @@ import { normalize } from "normalizr"
 import { identify } from "../reference"
 import schema from "./schema"
 
-export const init = (data) => normalize(data, schema)
+export const init = (data) => root(normalize(data, schema), { type: "init" })
 
-export default (state = {}, action) => {
+export default function root(state = {}, action) {
   if (action.type === "reset") {
     return init(action.payload)
   }
@@ -115,7 +115,7 @@ function actions(state = {}, { type, payload }) {
   switch (type) {
     case "createAction": {
       const { actionId, field, type, config } = payload
-      const order = values(state).filter((a) => a.field !== field).length
+      const order = values(state).filter((a) => a.field === field).length
 
       return {
         ...state,
@@ -273,7 +273,7 @@ function edition(state = false, action) {
 }
 
 function dirty(state = false, action) {
-  if (!["select", "edit"].includes(action.type)) {
+  if (!["init", "select", "edit"].includes(action.type)) {
     return true
   }
 

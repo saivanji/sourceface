@@ -1,6 +1,7 @@
 import * as actionRepo from "repos/action"
 import * as referenceUtils from "utils/reference"
 
+// TODO: probably get next action order from db via transaction (keep concurrency in mind, have gaps?)
 const createAction = async (
   parent,
   { actionId, moduleId, order, field, type, name, config },
