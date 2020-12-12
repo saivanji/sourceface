@@ -9,23 +9,23 @@ const refer = (
     await referenceRepo.unreferAll(actionId, field, t)
     const result = { actionId, field }
 
-    if (pageIds) {
+    if (pageIds && pageIds.length) {
       await referenceRepo.refer(actionId, field, pageIds, "page", t)
       return result
     }
 
-    if (operationIds) {
+    if (operationIds && operationIds.length) {
       await referenceRepo.refer(actionId, field, operationIds, "operation", t)
       return result
     }
 
-    if (moduleIds) {
+    if (moduleIds && moduleIds.length) {
       await referenceRepo.refer(actionId, field, moduleIds, "module", t)
       return result
     }
 
     throw new Error(
-      "Either 'pageIds', 'operationIds' or 'moduleIds' is required"
+      "Either one of 'pageIds', 'operationIds' or 'moduleIds' is required"
     )
   })
 }

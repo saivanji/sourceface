@@ -50,7 +50,7 @@ const sql = {
   listByReferenceIds: `
     SELECT m.*, r.action_id, ${getField("r.field")} AS field
     FROM "references" AS r
-    LEFT JOIN modules AS m ON (m.id = r.module_id)
+    INNER JOIN modules AS m ON (m.id = r.module_id)
     WHERE (r.action_id, ${getField("r.field")}) IN ($1:raw)
     ORDER BY ${getIndex("r.field")} ASC
   `,

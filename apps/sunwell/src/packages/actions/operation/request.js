@@ -2,15 +2,15 @@
 // graphq requests. Instead of that, make a request only for a first call, and the second call should
 // subscribe on data changes and be resolved once cache will be populated by a first item.
 
-export default (commandId, args, staleIds, onStale) => {
-  const cached = cache.get(commandId, args)
+export default (operationId, args, staleIds, onStale) => {
+  const cached = cache.get(operationId, args)
 
   if (cached) {
     /**
      * Attaching listener so whenever data invalidates all callees will be
      * notified.
      */
-    cache.addListener(commandId, onStale)
+    cache.addListener(operationId, onStale)
     return cached
   }
 
@@ -25,16 +25,16 @@ export default (commandId, args, staleIds, onStale) => {
       Accept: "application/json",
     },
     body: JSON.stringify({
-      query: readCommand,
+      query: readOperation,
       variables: {
-        commandId,
+        operationId,
         args,
       },
     }),
   })
     .then((res) => {
       if (!res.ok) {
-        throw "Failed to fetch command"
+        throw "Failed to fetch operation"
       }
 
       return res.json()
@@ -45,9 +45,9 @@ export default (commandId, args, staleIds, onStale) => {
         throw json.errors
       }
 
-      const data = json.data.readCommand
+      const data = json.data.readOperation
 
-      cache.set(commandId, args, data, onStale)
+      cache.set(operationId, args, data, onStale)
 
       for (let staleId of staleIds) {
         cache.invalidate(staleId)
@@ -69,59 +69,59 @@ class Cache {
     this.listeners = {}
   }
 
-  get(commandId, args) {
-    const commands = this.store[commandId]
-    return commands && commands[this.stringify(args)]
+  get(operationId, args) {
+    const operations = this.store[operationId]
+    return operations && operations[this.stringify(args)]
   }
 
-  set(commandId, args, data, onStale) {
+  set(operationId, args, data, onStale) {
     const key = this.stringify(args)
-    const timeoutKey = this.stringify([commandId, args])
+    const timeoutKey = this.stringify([operationId, args])
 
     clearTimeout(this.timeouts[timeoutKey])
 
-    this.store[commandId] = {
-      ...this.store[commandId],
+    this.store[operationId] = {
+      ...this.store[operationId],
       [key]: data,
     }
 
     if (onStale) {
-      this.addListener(commandId, onStale)
+      this.addListener(operationId, onStale)
     }
 
     this.timeouts[timeoutKey] = setTimeout(() => {
-      delete this.store[commandId]
-      this.removeListener(commandId, onStale)
+      delete this.store[operationId]
+      this.removeListener(operationId, onStale)
     }, TTL)
   }
 
-  invalidate(commandId) {
-    delete this.store[commandId]
+  invalidate(operationId) {
+    delete this.store[operationId]
 
-    this.notify(commandId)
+    this.notify(operationId)
     this.clearListeners()
   }
 
-  notify(commandId) {
-    for (let listener of this.listeners[commandId] || []) {
+  notify(operationId) {
+    for (let listener of this.listeners[operationId] || []) {
       listener()
     }
   }
 
-  addListener(commandId, onStale) {
-    const prevListeners = this.listeners[commandId] || []
+  addListener(operationId, onStale) {
+    const prevListeners = this.listeners[operationId] || []
 
-    this.listeners[commandId] = [...prevListeners, onStale]
+    this.listeners[operationId] = [...prevListeners, onStale]
   }
 
-  removeListener(commandId, onStale) {
-    const prevListeners = this.listeners[commandId] || []
+  removeListener(operationId, onStale) {
+    const prevListeners = this.listeners[operationId] || []
 
-    this.listeners[commandId] = prevListeners.filter((x) => x !== onStale)
+    this.listeners[operationId] = prevListeners.filter((x) => x !== onStale)
   }
 
-  clearListeners(commandId) {
-    delete this.listeners[commandId]
+  clearListeners(operationId) {
+    delete this.listeners[operationId]
   }
 
   stringify(args) {
@@ -131,9 +131,9 @@ class Cache {
 
 let cache = new Cache()
 
-const readCommand = `
-  query($commandId: Int!, $args: JSONObject) {
-    readCommand(commandId: $commandId, args: $args)
+const readOperation = `
+  query($operationId: Int!, $args: JSONObject) {
+    readOperation(operationId: $operationId, args: $args)
   }
 `
 

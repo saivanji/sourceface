@@ -33,9 +33,7 @@ const client = createClient({
         /**
          * Preventing normalization for the references since they have no unique identifier.
          */
-        PageReference: () => null,
-        OperationReference: () => null,
-        ModuleReference: () => null,
+        Reference: () => null,
       },
       updates: {
         Mutation: updates,

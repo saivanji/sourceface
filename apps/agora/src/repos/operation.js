@@ -1,13 +1,13 @@
 import { asCsvValues } from "../postgres"
 import { getField, getIndex } from "../utils/reference"
 
-export const byId = (commandId, pg) => pg.one(sql.byId, [commandId])
+export const byId = (operationId, pg) => pg.one(sql.byId, [operationId])
 export const list = (search, limit, offset, pg) =>
   pg.manyOrNone(sql.list, [search || "", limit, offset])
-export const staleByCommandIds = (commandIds, pg) =>
-  pg.manyOrNone(sql.staleByCommandIds, [commandIds])
-export const listByIds = (commandIds, pg) =>
-  pg.manyOrNone(sql.listByIds, [commandIds])
+export const staleByCommandIds = (operationIds, pg) =>
+  pg.manyOrNone(sql.staleByCommandIds, [operationIds])
+export const listByIds = (operationIds, pg) =>
+  pg.manyOrNone(sql.listByIds, [operationIds])
 export const listByReferenceIds = (refIds, pg) =>
   pg.manyOrNone(sql.listByReferenceIds, [asCsvValues(refIds)])
 
@@ -29,7 +29,7 @@ const sql = {
   listByReferenceIds: `
     SELECT o.*, r.action_id, ${getField("r.field")} AS field
     FROM "references" AS r
-    LEFT JOIN operations AS o ON (o.id = r.operation_id)
+    INNER JOIN operations AS o ON (o.id = r.operation_id)
     WHERE (r.action_id, ${getField("r.field")}) IN ($1:raw)
     ORDER BY ${getIndex("r.field")} ASC
   `,

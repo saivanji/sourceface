@@ -5,7 +5,7 @@ export const root = `
     route
   }
 
-  fragment operation on Command {
+  fragment operation on Operation {
     id
     name
     stale {
@@ -41,30 +41,15 @@ export const root = `
         ...module
         actions {
           ...action
-          pagesRefs {
+          references {
             field
-            one {
+            pages {
               ...page
             }
-            many {
-              ...page
-            }
-          }
-          operationsRefs {
-            field
-            one {
+            operations {
               ...operation
             }
-            many {
-              ...operation
-            }
-          }
-          modulesRefs {
-            field
-            one {
-              ...module
-            }
-            many {
+            modules {
               ...module
             }
           }

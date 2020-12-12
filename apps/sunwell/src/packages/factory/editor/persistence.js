@@ -1,9 +1,9 @@
 import { useState } from "react"
-import { toPairs, isNil, keys, values, mergeDeepRight } from "ramda"
+import { toPairs, isNil, values, mergeDeepRight } from "ramda"
 import deepDiff from "deep-diff"
 import { client } from "packages/client"
 import reducer, { init } from "./reducer"
-import * as reference from "../reference"
+import { mapping, tear } from "../reference"
 import { toDict } from "./utils"
 
 export const useSave = (page, state, onSuccess) => {
@@ -33,7 +33,7 @@ const definitions = {
       config: "JSONObject",
       position: "JSONObject",
     },
-    ["id", "parentId", "pageId", "type", "name", "config", "position"],
+    "{ id, parentId, pageId, type, name, config, position }",
   ],
   updateModule: [
     {
@@ -41,13 +41,13 @@ const definitions = {
       name: "String",
       config: "JSONObject",
     },
-    ["id", "name", "config"],
+    "{ id, name, config }",
   ],
   updateModules: [
     {
       modules: "[ModuleInput!]",
     },
-    ["id", "parentId", "position"],
+    "{ id, parentId, position }",
   ],
   removeModule: [
     {
@@ -64,7 +64,7 @@ const definitions = {
       name: "String",
       config: "JSONObject",
     },
-    ["id", "order", "field", "type", "name", "config"],
+    "{ id, order, field, type, name, config }",
   ],
   updateAction: [
     {
@@ -72,50 +72,29 @@ const definitions = {
       name: "String",
       config: "JSONObject",
     },
-    ["id", "name", "config"],
+    "{ id, name, config }",
   ],
   removeAction: [
     {
       actionId: "UUID",
     },
   ],
-  referPage: [
+  refer: [
     {
       actionId: "UUID",
-      pageId: "Int",
+      field: "String",
       pageIds: "[Int!]",
-      field: "String",
-    },
-  ],
-  unreferPage: [
-    {
-      actionId: "UUID",
-      field: "String",
-    },
-  ],
-  referOperation: [
-    {
-      actionId: "UUID",
-      operationId: "Int",
       operationIds: "[Int!]",
-      field: "String",
-    },
-  ],
-  unreferOperation: [
-    {
-      actionId: "UUID",
-      field: "String",
-    },
-  ],
-  referModule: [
-    {
-      actionId: "UUID",
-      moduleId: "UUID",
       moduleIds: "[UUID!]",
-      field: "String",
     },
+    `{
+        field
+        pages { id, title, route }
+        operations { id, name, stale { id } }
+        modules { id, parentId, name, type, config, position }
+      }`,
   ],
-  unreferModule: [
+  unrefer: [
     {
       actionId: "UUID",
       field: "String",
@@ -133,7 +112,7 @@ const mutate = (items) => {
     const name = getName(identifier)
     let args = []
 
-    const [types, out] = definitions[name]
+    const [types, out = ""] = definitions[name]
 
     for (let [key, value] of toPairs(input)) {
       if (isNil(value)) {
@@ -149,19 +128,12 @@ const mutate = (items) => {
       args.push(`${key}:$${variable}`)
     }
 
-    mutations.push(`a${index}: ${name}(${args.join(",")}) ${returns(out)}`)
+    mutations.push(`a${index}: ${name}(${args.join(",")}) ${out}`)
   }
 
   const mutation = `mutation(${init.join(",")}) {${mutations.join(" ")}}`
   return client.mutation(mutation, variables).toPromise()
 }
-
-const returns = (value) =>
-  typeof value === "string"
-    ? value
-    : value instanceof Array
-    ? `{${value.join(", ")}}`
-    : ""
 
 // TODO: container module creation mutation should be sent before positions update(or children create) mutation of the modules which are children of creating module.
 // Keep in mind multiple level nesting. When creating multiple container modules one inside of another, should send mutations from parent to child:
@@ -171,16 +143,16 @@ const returns = (value) =>
 // Children of parent 2 update(or create)
 // Parent 3 create(inside of children 2) and so on
 const structure = (changes) => {
+  // TODO: broken at least with createModule -> createAction
   const deps = {
     createAction: {
       key: "moduleId",
       parent: "createModule",
     },
-    createSomething: {
+    refer: {
       key: "actionId",
       parent: "createAction",
     },
-    ...getRefsMutations({ key: "actionId", parent: "createAction" }),
   }
 
   let result = []
@@ -289,7 +261,6 @@ const createChanges = (pageId, initialState, state) => {
   const diff = deepDiff(initialState.entities, state.entities) || []
 
   console.log(diff)
-  // return
 
   let result = {}
 
@@ -422,23 +393,14 @@ const createChanges = (pageId, initialState, state) => {
        */
       const action = state.entities.actions[actionId]
 
-      for (let [type, [mutationName, , oneName, manyName]] of toPairs(
-        actionRefsMapping
-      )) {
-        const key = reference.mapping[type]
+      for (let key of action.references) {
+        const reference = state.entities.references[key]
+        const identifier = identify("refer", [actionId, reference.field])
 
-        for (let refId of action[key]) {
-          const name = getReferenceEntitiesName(type)
-          const { field, one, many } = state.entities[name][refId]
-
-          const identifier = identify(mutationName, [actionId, field])
-          const value = one ? { [oneName]: one } : { [manyName]: many }
-
-          result[identifier] = {
-            actionId,
-            field,
-            ...value,
-          }
+        result[identifier] = {
+          actionId,
+          field: reference.field,
+          ...toReferenceIds(reference),
         }
       }
     }
@@ -504,36 +466,41 @@ const createChanges = (pageId, initialState, state) => {
     }
 
     /**
-     * Refer action
+     * Refer
      */
-    if (["E", "N"].includes(kind) && isReference(path[0])) {
-      const [actionId, field] = reference.tear(path[1])
-      const type = getReferenceType(path[0])
-      const { one, many } = state.entities[path[0]][path[1]]
-      const [mutationName, , oneName, manyName] = actionRefsMapping[type]
-      const identifier = identify(mutationName, [actionId, field])
+    if (
+      ["E", "N"].includes(kind) &&
+      path[0] === "references" &&
+      path.length >= 2
+    ) {
+      const [actionId, field] = tear(path[1])
+      const identifier = identify("refer", [actionId, field])
 
-      const value = one ? { [oneName]: one } : { [manyName]: many }
+      const reference = state.entities.references[path[1]]
 
       result[identifier] = {
         actionId,
         field,
-        ...value,
+        ...toReferenceIds(reference),
       }
     }
 
     /**
-     * Unrefer action
+     * Unrefer
      */
-    if (kind === "D" && isReference(path[0])) {
-      const [actionId, field] = reference.tear(path[1])
-      const type = getReferenceType(path[0])
-      const [, mutationName] = actionRefsMapping[type]
-      const identifier = identify(mutationName, [actionId, field])
+    if (kind === "D" && path[0] === "references" && path.length === 2) {
+      const [actionId, field] = tear(path[1])
+      const identifier = identify("unrefer", [actionId, field])
 
-      result[identifier] = {
-        actionId,
-        field,
+      /**
+       * Skipping unreferencing in case parent action is removed since
+       * it will be done automatically.
+       */
+      if (state.entities.actions[actionId]) {
+        result[identifier] = {
+          actionId,
+          field,
+        }
       }
     }
   }
@@ -545,28 +512,5 @@ const identify = (name, id) => `${name}/${id}`
 
 const getName = (identifier) => identifier.split("/")[0]
 
-const actionRefsMapping = {
-  pages: ["referPage", "unreferPage", "pageId", "pageIds"],
-  operations: [
-    "referOperation",
-    "unreferOperation",
-    "operationId",
-    "operationIds",
-  ],
-  modules: ["referModule", "unreferModule", "moduleId", "moduleIds"],
-}
-
-const isReference = (key) => {
-  const str = "_references"
-  const index = key.indexOf(str)
-
-  return index !== -1 && index === key.length - str.length
-}
-
-const getReferenceType = (key) =>
-  key.slice(0, key.length - "_references".length)
-
-const getReferenceEntitiesName = (type) => type + "_references"
-
-const getRefsMutations = (data) =>
-  values(actionRefsMapping).reduce((acc, [name]) => ({ ...acc, [name]: data }))
+const toReferenceIds = (reference) =>
+  toPairs(mapping).reduce((acc, [k, v]) => ({ ...acc, [v]: reference[k] }), {})

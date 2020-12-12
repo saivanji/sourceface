@@ -34,7 +34,7 @@ const sql = {
   listByReferenceIds: `
     SELECT p.*, r.action_id, ${getField("r.field")} AS field
     FROM "references" AS r
-    LEFT JOIN pages AS p ON (p.id = r.page_id)
+    INNER JOIN pages AS p ON (p.id = r.page_id)
     WHERE (r.action_id, ${getField("r.field")}) IN ($1:raw)
     ORDER BY ${getIndex("r.field")} ASC
   `,

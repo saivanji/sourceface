@@ -1,16 +1,16 @@
-import * as commandRepo from "repos/command"
+import * as operationRepo from "repos/operation"
 
 const operations = (parent, { search, limit = 10, offset = 0 }, { pg }) =>
-  commandRepo.list(search, limit, offset, pg)
+  operationRepo.list(search, limit, offset, pg)
 
-const executeCommand = async (
+const executeOperation = async (
   parent,
-  { commandId, args },
+  { operationId, args },
   { pg, connections }
 ) => {
-  const command = await commandRepo.byId(commandId, pg)
+  const operation = await operationRepo.byId(operationId, pg)
 
-  return await connections[command.sourceId].execute(command.config, args)
+  return await connections[operation.sourceId].execute(operation.config, args)
 }
 
 const stale = (parent, args, ctx) => ctx.loaders.staleByCommand.load(parent.id)
@@ -19,7 +19,7 @@ const stale = (parent, args, ctx) => ctx.loaders.staleByCommand.load(parent.id)
 export default {
   Query: {
     operations,
-    readOperation: executeCommand,
+    readOperation: executeOperation,
   },
   Operation: {
     stale,

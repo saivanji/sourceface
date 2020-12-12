@@ -1,8 +1,8 @@
 type Reference {
   field: String!
-  pages: [Page!]
-  operations: [Operation!]
-  modules: [Module!]
+  pages: [Page!]!
+  operations: [Operation!]!
+  modules: [Module!]!
 }
 
 extend type Mutation {

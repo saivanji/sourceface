@@ -76,7 +76,7 @@ export const settings = {
 }
 
 const getSelection = (action) =>
-  getReference(REFERENCE_TYPE, FIELD, action) || []
+  getReference(REFERENCE_TYPE, FIELD, action, true)
 
 const createSuggestions = (modules, functions) => {
   return modules.reduce((acc, module) => {

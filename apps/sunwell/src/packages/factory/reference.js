@@ -1,20 +1,20 @@
 import { path } from "ramda"
 import { client } from "packages/client"
 
-export const getReference = (type, field, data) => {
-  const found = data[mapping[type]].find((r) => r.field === field)
+export const getReference = (type, field, action, multiple = false) => {
+  const found = action.references.find((r) => r.field === field)?.[type] || []
 
-  return found?.one || found?.many
-}
-
-export const mapping = {
-  pages: "pagesRefs",
-  operations: "operationsRefs",
-  modules: "modulesRefs",
+  return multiple ? found : found[0]
 }
 
 export const identify = (sourceId, field) => `${sourceId}/${field}`
 export const tear = (id) => id.split("/")
+
+export const mapping = {
+  pages: "pageIds",
+  operations: "operationIds",
+  modules: "moduleIds",
+}
 
 export const listReferences = (type, input) =>
   client
@@ -25,7 +25,7 @@ export const listReferences = (type, input) =>
 const queries = {
   operations: `
     query($search: String, $limit: Int, $offset: Int) {
-      operations: commands(search: $search, limit: $limit, offset: $offset) {
+      operations(search: $search, limit: $limit, offset: $offset) {
         id
         name
         stale {

@@ -1,3 +1,5 @@
 export { default as createModule } from "./createModule"
+export { default as refer } from "./refer"
 export { default as removeAction } from "./removeAction"
 export { default as removeModule } from "./removeModule"
+export { default as unrefer } from "./unrefer"

@@ -1,7 +1,7 @@
 import DataLoader from "dataloader"
 import * as actionRepo from "repos/action"
 import * as pageRepo from "repos/page"
-import * as operationRepo from "repos/command"
+import * as operationRepo from "repos/operation"
 import * as moduleRepo from "repos/module"
 import * as referenceRepo from "repos/reference"
 
