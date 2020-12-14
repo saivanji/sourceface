@@ -37,13 +37,6 @@ export const defineVariable = (id) => {
       actionId: b,
     }
   }
-
-  if (a === "mount") {
-    return {
-      type: "mount",
-      moduleId: b,
-    }
-  }
 }
 
 export const identifyVariable = (definition) => {
@@ -57,10 +50,6 @@ export const identifyVariable = (definition) => {
 
   if (definition.type === "action") {
     return `action/${definition.actionId}`
-  }
-
-  if (definition.type === "mount") {
-    return `mount/${definition.moduleId}`
   }
 }
 
@@ -76,20 +65,15 @@ export const renderVariable = (definition, { modules, actions }) => {
   if (definition.type === "action") {
     return `[action] ${actions[definition.actionId].name}`
   }
-
-  if (definition.type === "mount") {
-    return `[mount] ${modules[definition.moduleId].name}`
-  }
 }
 
 export const createVariable = (
   definition,
   moduleId,
   globalScope,
-  mountScope,
   { modules, actions }
 ) => {
-  const data = evaluateVariable(definition, moduleId, globalScope, mountScope)
+  const data = evaluateVariable(definition, moduleId, globalScope)
   const id = identifyVariable(definition)
 
   return {
@@ -101,12 +85,7 @@ export const createVariable = (
   }
 }
 
-export const evaluateVariable = (
-  definition,
-  moduleId,
-  globalScope,
-  mountScope
-) => {
+export const evaluateVariable = (definition, moduleId, globalScope) => {
   if (definition.type === "local") {
     return globalScope.modules[moduleId][definition.name]
   }
@@ -118,10 +97,6 @@ export const evaluateVariable = (
   if (definition.type === "action") {
     return new Runtime(definition)
   }
-
-  if (definition.type === "mount") {
-    return mountScope[moduleId]
-  }
 }
 
 // TODO: instead of "scope", get module's variables from it's type definitions
@@ -132,10 +107,6 @@ const createModulesDefinitions = (moduleId, modulesList, scope) =>
     if (!moduleScope) {
       return acc
     }
-
-    // TODO: create "mount" type when:
-    // - modules are parents of the current module
-    // - and they have "@mount" action created
 
     const isLocal = m.id === moduleId
     const data = keys(moduleScope).reduce((acc, name) => {
