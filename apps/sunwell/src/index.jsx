@@ -75,6 +75,8 @@ ReactDOM.render(
 // Implement parallel action execution where we can execute multiple actions in one action step(will have n amount of vertical lines for n concurrent actions in the UI between the items with ability to choose current selected action for the ability to edit it by clicking on vertical line)
 // Handle multiple action pipiline branches. (parallel execution, error handling or conditional execution). Have "+" hovered button on the right side of the last line to create a new branch. Branch type edition(condition, try/catch or parallel) will be configured in the action card area
 //
+// Implement variable types. When creating a module, need to define scope type. Also type will need to be defined for other places - operation results, function arguments and so on. Literally every variable should have type
+//
 // Input module configuration
 // - validation is performed via regex. user can provide custom regex, or configure validation by choosing required, type(number only), limit, email and other settings and we will create corresponding regex for that(find a library)
 // Table module configuration

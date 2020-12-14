@@ -172,6 +172,16 @@ export const createVariables = (config, state, updateState) => ({
   },
 })
 
+export const variableTypes = {
+  limit: "Number",
+  offset: "Number",
+  page: "Number",
+  test: {
+    x: "Number",
+    y: "Number",
+  },
+}
+
 export const initialState = {
   page: 0,
 }

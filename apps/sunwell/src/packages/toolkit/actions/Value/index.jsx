@@ -4,7 +4,6 @@ import {
   useEditor,
   useAction,
   useConfiguration,
-  evaluateVariable,
   renderVariable,
   identifyVariable,
   defineVariable,
@@ -73,7 +72,6 @@ Value.Autocomplete = function ValueAutocomplete({
     value: identifyVariable(definition),
     title: renderVariable(definition, { modules, actions }),
     definition,
-    data: evaluateVariable(definition, module.id, scope),
   })
 
   const change = (value) => {

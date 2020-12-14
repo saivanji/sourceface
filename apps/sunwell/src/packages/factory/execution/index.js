@@ -101,7 +101,7 @@ const useData = (fields, identify = false, restore = false) => {
 
       const args = serialize(config, action, {
         createVariable: (definition) =>
-          createVariable(definition, moduleId, scope, { modules, actions }),
+          createVariable(definition, moduleId, scope, {}, { modules, actions }),
       })
 
       if (identify) {

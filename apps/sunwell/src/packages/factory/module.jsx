@@ -5,7 +5,8 @@ import { useEditor } from "./editor"
 // TODO: circular import?
 import { useValue } from "./execution"
 
-const context = createContext({})
+const moduleContext = createContext({})
+const mountContext = createContext({})
 
 export function Module({ module }) {
   const { stock } = useContainer()
@@ -16,8 +17,8 @@ export function Module({ module }) {
   const state = readState(module.id)
 
   return (
-    <context.Provider value={module}>
-      <Mount>
+    <moduleContext.Provider value={module}>
+      <Mount moduleId={module.id}>
         <Component
           config={module.config}
           state={state}
@@ -28,12 +29,13 @@ export function Module({ module }) {
           }
         />
       </Mount>
-    </context.Provider>
+    </moduleContext.Provider>
   )
 }
 
-function Mount({ children }) {
+function Mount({ children, moduleId }) {
   const [[data], loading, pristine, error] = useValue("@mount")
+  const parentMountScope = useMount()
 
   // TODO: where to put UI related code to loaders?
   // TODO: when pristine: true - display global loading
@@ -41,11 +43,21 @@ function Mount({ children }) {
 
   console.log(data, loading, pristine, error)
 
-  return pristine ? "Loading..." : children
+  return pristine ? (
+    "Loading..."
+  ) : (
+    <mountContext.Provider value={{ ...parentMountScope, [moduleId]: data }}>
+      {children}
+    </mountContext.Provider>
+  )
 }
 
 export const useModule = () => {
-  return useContext(context)
+  return useContext(moduleContext)
+}
+
+export const useMount = () => {
+  return useContext(mountContext)
 }
 
 export const useTransition = function StateTransition(key) {

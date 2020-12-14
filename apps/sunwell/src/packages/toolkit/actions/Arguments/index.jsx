@@ -47,7 +47,6 @@ export default function Arguments({
           {groups.map((definition, i) => (
             <Value
               key={i}
-              filter={filterGroupsEdition}
               value={definition}
               onChange={(definition) =>
                 !definition ? removeGroup(i) : changeGroup(definition, i)
@@ -68,7 +67,5 @@ export default function Arguments({
   )
 }
 
-const filterGroupsEdition = ({ data }) => typeof data === "object"
-
-const filterGroupsCreation = (groups) => ({ definition, data }) =>
-  !groups.find(equals(definition)) && typeof data === "object"
+const filterGroupsCreation = (groups) => ({ definition }) =>
+  !groups.find(equals(definition))
