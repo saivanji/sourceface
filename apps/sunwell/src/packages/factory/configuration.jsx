@@ -3,7 +3,7 @@ import { useContainer } from "./container"
 
 const context = createContext({})
 
-export function Configuration({ module }) {
+export function Configuration({ module, children }) {
   const { stock } = useContainer()
   const Component = stock.modules.dict[module.type].Configuration
 
@@ -14,6 +14,7 @@ export function Configuration({ module }) {
       }}
     >
       <Component config={module.config} />
+      {children}
     </context.Provider>
   )
 }

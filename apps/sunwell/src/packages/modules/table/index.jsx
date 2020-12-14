@@ -6,13 +6,13 @@ import {
   Table,
   Pagination,
   Row,
+  // TODO: move label to toolkit?
   Label,
-  Section,
   Input,
   Checkbox,
 } from "@sourceface/components"
 import { useTransition, useValue } from "packages/factory"
-import { Field, Pipe } from "packages/toolkit"
+import { Field, Pipe, Section } from "packages/toolkit"
 import More from "assets/more.svg"
 import styles from "./index.scss"
 

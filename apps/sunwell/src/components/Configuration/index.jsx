@@ -1,6 +1,7 @@
 import React from "react"
 import { Input } from "@sourceface/components"
 import { Configuration, useEditor } from "packages/factory"
+import { Section, Pipe } from "packages/toolkit"
 
 export default function () {
   const { selected: module, select, renameModule, removeModule } = useEditor()
@@ -22,20 +23,26 @@ export default function () {
           onChange={(e) => renameModule(module.id, e.target.value)}
           value={module.name}
         />
-        <span>{module.type}</span>
+        <div>
+          <span>{module.type}</span>
+          <button
+            type="button"
+            onClick={async () => {
+              if (window.confirm()) {
+                select(null)
+                removeModule(module.id)
+              }
+            }}
+          >
+            x
+          </button>
+        </div>
       </div>
-      <Configuration key={module.id} module={module} />
-      <button
-        type="button"
-        onClick={async () => {
-          if (window.confirm()) {
-            select(null)
-            removeModule(module.id)
-          }
-        }}
-      >
-        Remove
-      </button>
+      <Configuration key={module.id} module={module}>
+        <Section title="Mounting">
+          <Pipe field="@mount" label="Data" />
+        </Section>
+      </Configuration>
     </>
   )
 }

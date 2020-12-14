@@ -2,6 +2,8 @@ import React, { createContext, useContext } from "react"
 import { useContainer } from "./container"
 import { useScope } from "./scope"
 import { useEditor } from "./editor"
+// TODO: circular import?
+import { useValue } from "./execution"
 
 const context = createContext({})
 
@@ -15,15 +17,31 @@ export function Module({ module }) {
 
   return (
     <context.Provider value={module}>
-      <Component
-        config={module.config}
-        state={state}
-        scope={scope.modules[module.id]}
-        isEditing={isEditing}
-        onConfigChange={(key, value) => configureModule(module.id, key, value)}
-      />
+      <Mount>
+        <Component
+          config={module.config}
+          state={state}
+          scope={scope.modules[module.id]}
+          isEditing={isEditing}
+          onConfigChange={(key, value) =>
+            configureModule(module.id, key, value)
+          }
+        />
+      </Mount>
     </context.Provider>
   )
+}
+
+function Mount({ children }) {
+  const [[data], loading, pristine, error] = useValue("@mount")
+
+  // TODO: where to put UI related code to loaders?
+  // TODO: when pristine: true - display global loading
+  // TODO: when loading: true - use Await
+
+  console.log(data, loading, pristine, error)
+
+  return pristine ? "Loading..." : children
 }
 
 export const useModule = () => {

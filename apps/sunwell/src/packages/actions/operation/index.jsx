@@ -48,6 +48,8 @@ import request, { cache } from "./request"
 // 3. Keep field name inside of action bar. Rethink empty state. Fit action creation inside of action bar.
 // 4. Consider not collapsing actions, since it might be not much of them
 
+// TODO: in case variable is an object, neither of it's fields can be accessed via dropdown. Have separate action for accessing object variable fields
+
 const FIELD = "current"
 const REFERENCE_TYPE = "operations"
 
@@ -68,13 +70,13 @@ export function Root() {
 
 export function Cut({ action, onConfigChange }) {
   const { groups = [], fields = [] } = action.config
-  const command = getReference(REFERENCE_TYPE, FIELD, action)
+  const operation = getReference(REFERENCE_TYPE, FIELD, action)
   // TODO: set only config fields for Arguments and not provide handlers?
   const changeFields = (fields) => onConfigChange("fields", fields)
   const changeGroups = (groups) => onConfigChange("groups", groups)
 
   return (
-    command && (
+    operation && (
       <Arguments
         groups={groups}
         fields={fields}
@@ -87,8 +89,8 @@ export function Cut({ action, onConfigChange }) {
 
 // TODO: name it differently, since it's not required to return serializable object(variable.get for example)
 export const serialize = (config, action, { createVariable }) => {
-  const command = getReference(REFERENCE_TYPE, FIELD, action)
-  const staleIds = command?.stale.map((x) => x.id)
+  const operation = getReference(REFERENCE_TYPE, FIELD, action)
+  const staleIds = operation?.stale.map((x) => x.id)
 
   const fields = config.fields?.reduce(
     (acc, { key, definition }) => ({
@@ -99,25 +101,25 @@ export const serialize = (config, action, { createVariable }) => {
   )
   const groups = config.groups?.map(createVariable)
 
-  return [command?.id, fields, groups, staleIds]
+  return [operation?.id, fields, groups, staleIds]
 }
 
 export const execute = ({ runtime, onReload }) => (
-  commandId,
+  operationId,
   fields,
   groups,
   staleIds
 ) => {
   return request(
-    commandId,
+    operationId,
     createArgs(runtime, fields, groups),
     staleIds,
     onReload
   )
 }
 
-export const readCache = ({ runtime }) => (commandId, fields, groups) =>
-  cache.get(commandId, createArgs(runtime, fields, groups))
+export const readCache = ({ runtime }) => (operationId, fields, groups) =>
+  cache.get(operationId, createArgs(runtime, fields, groups))
 
 export const add = (config) => {}
 

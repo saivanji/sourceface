@@ -34,7 +34,8 @@ export const useValue = (...fields) => {
   useEffect(() => {
     let canceled = false
     const start = () => !canceled && setResult(mergeLeft({ loading: true }))
-    const failure = (error) => !canceled && setResult(mergeLeft({ error }))
+    const failure = (error) =>
+      !canceled && setResult(mergeLeft({ error, loading: false }))
     const populate = (data) =>
       !canceled &&
       setResult(

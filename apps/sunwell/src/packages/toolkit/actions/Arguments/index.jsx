@@ -1,7 +1,6 @@
 import React from "react"
 import { equals, update, adjust, mergeLeft } from "ramda"
-import { isPlainObject } from "is-plain-object"
-import Section from "../Section"
+import Block from "../Block"
 import Value from "../Value"
 import Pair from "../Pair"
 import styles from "./index.scss"
@@ -28,7 +27,7 @@ export default function Arguments({
     onGroupsChange(groups.filter((_, i) => i !== idx))
 
   return (
-    <Section title="Input">
+    <Block title="Input">
       {!!fields.length && (
         <div className={styles.row}>
           {fields.map((field, i) => (
@@ -65,7 +64,7 @@ export default function Arguments({
           onChange={addGroup}
         />
       </div>
-    </Section>
+    </Block>
   )
 }
 

@@ -1,11 +1,11 @@
-export { Pipe } from "./configuration"
+export { Pipe, Section } from "./configuration"
 export { Field } from "./form"
 export {
   Arguments,
   Pair,
   Placeholder,
   Reference,
-  Section,
+  Block,
   Snippet,
   Static,
   Value,

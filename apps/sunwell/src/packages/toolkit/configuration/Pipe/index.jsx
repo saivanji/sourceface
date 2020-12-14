@@ -13,6 +13,8 @@ import styles from "./index.scss"
 
 // TODO: do not have it as field
 export default ({ field, label }) => {
+  // TODO: restrict field names starting from "@"
+
   const { module } = useConfiguration()
   const { selectors, createAction, removeAction, renameAction } = useEditor()
 
