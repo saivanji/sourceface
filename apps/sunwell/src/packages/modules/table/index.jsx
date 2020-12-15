@@ -172,6 +172,7 @@ export const createVariables = (config, state, updateState) => ({
   },
 })
 
+// TODO: types are not needed, since if we know data - we can get it's type
 export const variableTypes = {
   limit: "Number",
   offset: "Number",
