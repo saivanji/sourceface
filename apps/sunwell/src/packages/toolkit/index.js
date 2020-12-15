@@ -10,4 +10,4 @@ export {
   Static,
   Value,
 } from "./actions"
-export { Layout } from "./modules"
+export { Layout, Loader } from "./modules"

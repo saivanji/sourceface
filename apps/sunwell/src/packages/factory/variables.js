@@ -10,6 +10,7 @@ export const createDefinitions = (
   return [
     ...createModulesDefinitions(moduleId, modulesList, scope),
     ...createActionsDefinitions(actionId, actionsList),
+    ...createStateDefinitions({}),
   ]
 }
 
@@ -37,6 +38,13 @@ export const defineVariable = (id) => {
       actionId: b,
     }
   }
+
+  if (a === "state") {
+    return {
+      type: "state",
+      key: b,
+    }
+  }
 }
 
 export const identifyVariable = (definition) => {
@@ -51,6 +59,10 @@ export const identifyVariable = (definition) => {
   if (definition.type === "action") {
     return `action/${definition.actionId}`
   }
+
+  if (definition.type === "state") {
+    return `state/${definition.key}`
+  }
 }
 
 export const renderVariable = (definition, { modules, actions }) => {
@@ -64,6 +76,10 @@ export const renderVariable = (definition, { modules, actions }) => {
 
   if (definition.type === "action") {
     return `[action] ${actions[definition.actionId].name}`
+  }
+
+  if (definition.type === "state") {
+    return `[state] ${definition.key}`
   }
 }
 
@@ -85,7 +101,7 @@ export const createVariable = (
   }
 }
 
-export const evaluateVariable = (definition, moduleId, globalScope) => {
+export const evaluateVariable = (definition, moduleId, globalScope, state) => {
   if (definition.type === "local") {
     return globalScope.modules[moduleId][definition.name]
   }
@@ -96,6 +112,10 @@ export const evaluateVariable = (definition, moduleId, globalScope) => {
 
   if (definition.type === "action") {
     return new Runtime(definition)
+  }
+
+  if (definition.type === "state") {
+    return state[definition.key]
   }
 }
 
@@ -145,6 +165,9 @@ const createActionsDefinitions = (actionId, actionsList) => {
 
   return result
 }
+
+const createStateDefinitions = (state) =>
+  keys(state).reduce((acc, key) => [...acc, { type: "state", key }], [])
 
 class Runtime {
   constructor(definition) {
