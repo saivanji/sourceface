@@ -103,9 +103,16 @@ export const createVariable = (
   moduleId,
   globalScope,
   mountScope,
+  state,
   { modules, actions }
 ) => {
-  const data = evaluateVariable(definition, moduleId, globalScope, mountScope)
+  const data = evaluateVariable(
+    definition,
+    moduleId,
+    globalScope,
+    mountScope,
+    state
+  )
   const id = identifyVariable(definition)
 
   return {
@@ -121,8 +128,8 @@ export const evaluateVariable = (
   definition,
   moduleId,
   globalScope,
-  state,
-  mountScope
+  mountScope,
+  state
 ) => {
   if (definition.type === "local") {
     return globalScope.modules[moduleId][definition.name]
@@ -137,7 +144,7 @@ export const evaluateVariable = (
   }
 
   if (definition.type === "mount") {
-    return mountScope[moduleId]
+    return mountScope[definition.moduleId]
   }
 
   if (definition.type === "state") {
@@ -154,9 +161,9 @@ const createModulesDefinitions = (moduleId, modulesList, scope) =>
       return acc
     }
 
-    // TODO: create "mount" type when:
-    // - modules are parents of the current module
-    // - and they have "@mount" action created
+    const mountDefinition = isMountAvailable(moduleId, m, modulesList)
+      ? { type: "mount", moduleId: m.id }
+      : null
 
     const isLocal = m.id === moduleId
     const data = keys(moduleScope).reduce((acc, name) => {
@@ -174,7 +181,9 @@ const createModulesDefinitions = (moduleId, modulesList, scope) =>
       return [...acc, definition]
     }, [])
 
-    return [...acc, ...data]
+    return mountDefinition
+      ? [...acc, ...data, mountDefinition]
+      : [...acc, ...data]
   }, [])
 
 const createActionsDefinitions = (actionId, actionsList) => {
@@ -204,6 +213,14 @@ class Runtime {
     this.definition = definition
   }
 }
+
+const hasMountAction = (actions) => !!actions.find((a) => a.field === "@mount")
+
+// TODO: mind nesting of any level
+const isMountAvailable = (sourceId, target, modulesList) =>
+  hasMountAction(target.actions) &&
+  (sourceId === target.id ||
+    !!modulesList.find((m) => m.id === sourceId && m.parentId === target.id))
 
 // variable has
 // - id

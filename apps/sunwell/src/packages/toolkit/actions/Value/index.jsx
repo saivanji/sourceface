@@ -50,7 +50,6 @@ export default function Value({
 }
 
 Value.Autocomplete = function ValueAutocomplete({
-  filter,
   onChange,
   multiple,
   ...props
@@ -73,6 +72,12 @@ Value.Autocomplete = function ValueAutocomplete({
     title: renderVariable(definition, { modules, actions }),
     definition,
   })
+
+  /**
+   * Not displaying self "mount" variable when defining the mount itself
+   */
+  const filter = ({ definition }) =>
+    definition.type !== "mount" || definition.moduleId !== module.id
 
   const change = (value) => {
     onChange(
