@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react"
+import React, { forwardRef, createContext, useContext } from "react"
 import { identity } from "ramda"
 import { Module, useEditor, useModule } from "packages/factory"
 import Grill from "packages/grid"
@@ -11,7 +11,10 @@ import styles from "./index.scss"
 //
 // Use context only in that file. Use provider in Modules and consume data in Frame?
 
-export default function Layout({ renderItem = identity }) {
+const context = createContext({ renderItem: identity })
+
+export default function Layout() {
+  const { renderItem } = useContext(context)
   const { id: parentId = null } = useModule()
   const { modules, isEditing } = useEditor()
   const changeGrid = useChangeGrid(parentId)
@@ -41,6 +44,14 @@ export default function Layout({ renderItem = identity }) {
         )
       }
     />
+  )
+}
+
+Layout.Provider = function LayoutProvider({ children, renderItem }) {
+  return (
+    <context.Provider value={{ renderItem }}>
+      {children || <Layout />}
+    </context.Provider>
   )
 }
 

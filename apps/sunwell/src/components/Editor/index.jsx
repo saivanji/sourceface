@@ -33,7 +33,7 @@ export default function Editor() {
       </div>
       <div ref={bodyRef} className={styles.body}>
         <div className={styles.content}>
-          <Layout
+          <Layout.Provider
             renderItem={(node, id) => (
               <EditableModule scopeRef={bodyRef} id={id}>
                 {node}
