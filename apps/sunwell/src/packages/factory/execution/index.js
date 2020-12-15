@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { mergeLeft } from "ramda"
-import { useModule } from "../module"
+import { useModule, useMount } from "../module"
 import { useScope } from "../scope"
 import { useEditor } from "../editor"
 import { useContainer } from "../container"
@@ -73,6 +73,7 @@ const useData = (fields, identify = false, restore = false) => {
   const { id: moduleId } = useModule()
   const { modules, actions, selectors } = useEditor()
   const { scope } = useScope()
+  const mountScope = useMount()
   const functions = useFunctions()
 
   let identifier = ""
@@ -101,7 +102,10 @@ const useData = (fields, identify = false, restore = false) => {
 
       const args = serialize(config, action, {
         createVariable: (definition) =>
-          createVariable(definition, moduleId, scope, { modules, actions }),
+          createVariable(definition, moduleId, scope, mountScope, {
+            modules,
+            actions,
+          }),
       })
 
       if (identify) {

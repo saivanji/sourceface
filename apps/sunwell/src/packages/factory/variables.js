@@ -39,6 +39,13 @@ export const defineVariable = (id) => {
     }
   }
 
+  if (a === "mount") {
+    return {
+      type: "mount",
+      moduleId: b,
+    }
+  }
+
   if (a === "state") {
     return {
       type: "state",
@@ -60,6 +67,10 @@ export const identifyVariable = (definition) => {
     return `action/${definition.actionId}`
   }
 
+  if (definition.type === "mount") {
+    return `mount/${definition.moduleId}`
+  }
+
   if (definition.type === "state") {
     return `state/${definition.key}`
   }
@@ -78,6 +89,10 @@ export const renderVariable = (definition, { modules, actions }) => {
     return `[action] ${actions[definition.actionId].name}`
   }
 
+  if (definition.type === "mount") {
+    return `[mount] ${modules[definition.moduleId].name}`
+  }
+
   if (definition.type === "state") {
     return `[state] ${definition.key}`
   }
@@ -87,9 +102,10 @@ export const createVariable = (
   definition,
   moduleId,
   globalScope,
+  mountScope,
   { modules, actions }
 ) => {
-  const data = evaluateVariable(definition, moduleId, globalScope)
+  const data = evaluateVariable(definition, moduleId, globalScope, mountScope)
   const id = identifyVariable(definition)
 
   return {
@@ -101,7 +117,13 @@ export const createVariable = (
   }
 }
 
-export const evaluateVariable = (definition, moduleId, globalScope, state) => {
+export const evaluateVariable = (
+  definition,
+  moduleId,
+  globalScope,
+  state,
+  mountScope
+) => {
   if (definition.type === "local") {
     return globalScope.modules[moduleId][definition.name]
   }
@@ -112,6 +134,10 @@ export const evaluateVariable = (definition, moduleId, globalScope, state) => {
 
   if (definition.type === "action") {
     return new Runtime(definition)
+  }
+
+  if (definition.type === "mount") {
+    return mountScope[moduleId]
   }
 
   if (definition.type === "state") {
@@ -127,6 +153,10 @@ const createModulesDefinitions = (moduleId, modulesList, scope) =>
     if (!moduleScope) {
       return acc
     }
+
+    // TODO: create "mount" type when:
+    // - modules are parents of the current module
+    // - and they have "@mount" action created
 
     const isLocal = m.id === moduleId
     const data = keys(moduleScope).reduce((acc, name) => {
