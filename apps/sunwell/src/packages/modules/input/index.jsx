@@ -1,13 +1,15 @@
 import React from "react"
 import * as yup from "yup"
 import { Row, Label, Input } from "@sourceface/components"
-import { useTransition } from "packages/factory"
-import { Field } from "packages/toolkit"
+import { useTransition, useValue } from "packages/factory"
+import { Field, Pipe } from "packages/toolkit"
 
 export const Root = function InputModule({
   config,
   state: { value, validationError, isReleased },
 }) {
+  // TODO: handle async loading
+  const [[initial], loading, pristine, error] = useValue("initial")
   // TODO: additionally `useTransition()`, in order to be able to use `transition({value, validationError})` to
   // set multiple fields at once.
   const transitionValue = useTransition("value")
@@ -26,7 +28,7 @@ export const Root = function InputModule({
   return (
     <div>
       <Input
-        value={value}
+        value={value || initial}
         onChange={handleChange}
         placeholder={config.placeholder}
       />
@@ -35,6 +37,7 @@ export const Root = function InputModule({
   )
 }
 
+// TODO: implement combined field for having regular form element and Pipe
 export const Configuration = function InputModuleConfiguration() {
   return (
     <>
@@ -52,6 +55,9 @@ export const Configuration = function InputModuleConfiguration() {
         <Label title="Validation message">
           <Field name="validationMessage" type="text" component={Input} />
         </Label>
+      </Row>
+      <Row>
+        <Pipe field="initial" label="Initial value" />
       </Row>
     </>
   )

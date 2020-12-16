@@ -10,7 +10,6 @@ export const createDefinitions = (
   return [
     ...createModulesDefinitions(moduleId, modulesList, scope),
     ...createActionsDefinitions(actionId, actionsList),
-    ...createStateDefinitions({}),
   ]
 }
 
@@ -45,13 +44,6 @@ export const defineVariable = (id) => {
       moduleId: b,
     }
   }
-
-  if (a === "state") {
-    return {
-      type: "state",
-      key: b,
-    }
-  }
 }
 
 const definitions = [
@@ -76,10 +68,6 @@ export const identifyVariable = (definition) => {
   if (definition.type === "mount") {
     return `mount/${definition.moduleId}`
   }
-
-  if (definition.type === "state") {
-    return `state/${definition.key}`
-  }
 }
 
 export const renderVariable = (definition, { modules, actions }) => {
@@ -98,10 +86,6 @@ export const renderVariable = (definition, { modules, actions }) => {
   if (definition.type === "mount") {
     return `[mount] ${modules[definition.moduleId].name}`
   }
-
-  if (definition.type === "state") {
-    return `[state] ${definition.key}`
-  }
 }
 
 export const createVariable = (
@@ -109,16 +93,9 @@ export const createVariable = (
   moduleId,
   globalScope,
   mountScope,
-  state,
   { modules, actions }
 ) => {
-  const data = evaluateVariable(
-    definition,
-    moduleId,
-    globalScope,
-    mountScope,
-    state
-  )
+  const data = evaluateVariable(definition, moduleId, globalScope, mountScope)
   const id = identifyVariable(definition)
 
   return {
@@ -134,8 +111,7 @@ export const evaluateVariable = (
   definition,
   moduleId,
   globalScope,
-  mountScope,
-  state
+  mountScope
 ) => {
   if (definition.type === "local") {
     return globalScope.modules[moduleId][definition.name]
@@ -151,10 +127,6 @@ export const evaluateVariable = (
 
   if (definition.type === "mount") {
     return mountScope[definition.moduleId]
-  }
-
-  if (definition.type === "state") {
-    return state[definition.key]
   }
 }
 
@@ -210,9 +182,6 @@ const createActionsDefinitions = (actionId, actionsList) => {
 
   return result
 }
-
-const createStateDefinitions = (state) =>
-  keys(state).reduce((acc, key) => [...acc, { type: "state", key }], [])
 
 class Runtime {
   constructor(definition) {

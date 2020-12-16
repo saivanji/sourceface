@@ -104,17 +104,10 @@ const useData = (fields, identify = false, restore = false) => {
       // TODO: remove "config" and pass only action instead?
       const args = serialize(config, action, {
         createVariable: (definition) =>
-          createVariable(
-            definition,
-            moduleId,
-            scope,
-            mountScope,
-            {},
-            {
-              modules,
-              actions,
-            }
-          ),
+          createVariable(definition, moduleId, scope, mountScope, {
+            modules,
+            actions,
+          }),
       })
 
       if (identify) {
