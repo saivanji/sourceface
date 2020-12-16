@@ -101,6 +101,7 @@ const useData = (fields, identify = false, restore = false) => {
         type
       ]
 
+      // TODO: remove "config" and pass only action instead?
       const args = serialize(config, action, {
         createVariable: (definition) =>
           createVariable(

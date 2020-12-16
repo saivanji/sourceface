@@ -54,6 +54,12 @@ export const defineVariable = (id) => {
   }
 }
 
+const definitions = [
+  "module/moduleId/name",
+  "action/actionId",
+  "mount/moduleId",
+]
+
 export const identifyVariable = (definition) => {
   if (definition.type === "local") {
     return `module/local/${definition.name}`

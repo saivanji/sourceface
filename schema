@@ -1,16 +1,16 @@
-type Order
--
-id Number
-created_at String
-user User
+type Order {
+  id Number
+  created_at String
+  user User
+}
 
-type User
--
-id Number
-first_name String
-last_name String
-orders Order[]
-phone? Number
+type User {
+  id Number
+  first_name String
+  last_name String
+  orders Order[]
+  phone? Number
+}
 
 ___
 
