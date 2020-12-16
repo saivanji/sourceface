@@ -364,6 +364,8 @@ c450ae08-7409-4a75-853f-44e4a4d40e5f	2020-12-12 21:29:30.650449	38ec786b-2157-4f
 f1e03661-c824-40ef-bbae-6fc2543df2dc	2020-12-12 22:12:46.196887	4ac0ac8b-15dc-437a-af4f-2cf90255608a	form	function	{"func":"release"}	action	0
 bdcb1720-b9f7-4000-81bb-6ee6104db34c	2020-12-12 22:27:37.242066	4ac0ac8b-15dc-437a-af4f-2cf90255608a	\N	operation	{}	action	1
 6ef577da-cd33-4231-9a5c-a32a61db1d1f	2020-12-14 15:38:50.517038	04192cf3-daaf-4156-b961-79a8fa6de888	\N	operation	{}	@mount	0
+ac5d0892-31c4-4967-9bd0-6508bcfb5d3e	2020-12-16 15:29:58.549186	75dbe2c3-6fbe-42da-9a92-30cb5a75344e	\N	selector	{"definition":{"type":"mount","moduleId":"04192cf3-daaf-4156-b961-79a8fa6de888"},"path":["status"]}	initial	0
+44a26176-f287-47d2-868d-f608954af9d6	2020-12-16 20:44:23.181596	5a7407cc-401f-47b5-8d8e-4fd94202023d	\N	operation	{}	@mount	0
 \.
 
 
@@ -391,6 +393,7 @@ COPY public.modules (id, created_at, type, config, name, page_id, parent_id, "po
 1a3c0c29-a473-473d-b744-6e609154a14a	2020-12-04 21:40:09.514037	table	{"limit":10,"pagination":true}	table_1	8	\N	{"h":12,"w":10,"x":0,"y":1}
 18ffc49f-d4af-4e32-b4f9-5755092f3f84	2020-12-12 15:23:38.735586	button	{"text":"Click me","size":"regular","shouldFitContainer":false}	abc	8	\N	{"w":3,"h":1,"x":0,"y":0}
 38ec786b-2157-4f99-a964-8300363b9da4	2020-12-05 15:16:40.457933	button	{"size": "regular", "text": "Create order", "shouldFitContainer": false}	button	8	\N	{"h":1,"w":2,"x":8,"y":0}
+be867f4d-df4c-4e8c-b246-f459e713c1ab	2020-12-16 20:40:39.578189	input	{"validationMessage":"Validation failed","placeholder":"Amount","validation":"^.+$"}	form_amount	9	5a7407cc-401f-47b5-8d8e-4fd94202023d	{"w":4,"h":1,"x":0,"y":6}
 4ac0ac8b-15dc-437a-af4f-2cf90255608a	2020-12-12 22:11:34.689155	button	{"text":"Submit","size":"regular","shouldFitContainer":false}	submit	7	04192cf3-daaf-4156-b961-79a8fa6de888	{"w":3,"h":1,"x":0,"y":7}
 ce5874ab-7c22-473a-9cff-8559bc91b4ec	2020-12-12 22:08:42.253396	input	{"validationMessage":"Validation failed","placeholder":"Customer name","validation":"^.+$"}	form_customer_name	7	04192cf3-daaf-4156-b961-79a8fa6de888	{"w":4,"h":1,"x":0,"y":0}
 75dbe2c3-6fbe-42da-9a92-30cb5a75344e	2020-12-12 22:10:57.668111	input	{"validationMessage":"Validation failed","placeholder":"Status","validation":"^.+$"}	form_status	7	04192cf3-daaf-4156-b961-79a8fa6de888	{"w":4,"h":1,"x":0,"y":3}
@@ -400,6 +403,14 @@ d8f69376-21de-4e51-8fa7-faccd70034e6	2020-12-12 22:10:57.668828	input	{"validati
 41941e89-d2ec-4c0f-a3d9-cece801df9f3	2020-12-12 22:10:57.669059	input	{"validationMessage":"Validation failed","placeholder":"Amount","validation":"^.+$"}	form_amount	7	04192cf3-daaf-4156-b961-79a8fa6de888	{"w":4,"h":1,"x":0,"y":6}
 67923baf-7ab0-4237-8a6c-f5d97ab26eeb	2020-12-12 22:10:57.669291	input	{"validationMessage":"Validation failed","placeholder":"Currency","validation":"^.+$"}	form_currency	7	04192cf3-daaf-4156-b961-79a8fa6de888	{"w":4,"h":1,"x":0,"y":5}
 04192cf3-daaf-4156-b961-79a8fa6de888	2020-12-12 22:32:04.944586	container	{}	form	7	\N	{"w":10,"h":9,"x":0,"y":0}
+5a7407cc-401f-47b5-8d8e-4fd94202023d	2020-12-16 20:40:39.56404	container	{}	form	9	\N	{"w":10,"h":11,"x":0,"y":0}
+468ac0ed-3da0-4682-8021-1a0341716caf	2020-12-16 20:40:39.573488	input	{"validationMessage":"Validation failed","validation":"^.+$","placeholder":"Currency"}	form_currency	9	5a7407cc-401f-47b5-8d8e-4fd94202023d	{"w":4,"h":1,"x":0,"y":5}
+150bea96-83a4-4700-847a-a473577a0f44	2020-12-16 20:40:39.575959	input	{"validationMessage":"Validation failed","placeholder":"Status","validation":"^.+$"}	form_status	9	5a7407cc-401f-47b5-8d8e-4fd94202023d	{"w":4,"h":1,"x":0,"y":3}
+93760d88-0624-482a-b49d-a83fac1007aa	2020-12-16 20:41:05.474268	button	{"text":"Click me","size":"regular","shouldFitContainer":false}	submit	9	5a7407cc-401f-47b5-8d8e-4fd94202023d	{"w":3,"h":1,"x":0,"y":7}
+a29bfee2-22c2-48c7-b336-3dc9ab10150b	2020-12-16 20:41:59.450071	input	{"validationMessage":"Validation failed","placeholder":"Payment type","validation":"^.+$"}	form_payment_type	9	5a7407cc-401f-47b5-8d8e-4fd94202023d	{"w":4,"h":1,"x":0,"y":4}
+1e6a7554-9d5f-46fc-afb1-c35d4e316c5b	2020-12-16 20:42:58.425407	input	{"validationMessage":"Validation failed","validation":"^.+$","placeholder":"Delivery type"}	form_delivery_type	9	5a7407cc-401f-47b5-8d8e-4fd94202023d	{"w":4,"h":1,"x":0,"y":2}
+21df1eab-9e3f-4430-9094-32e3d99cd7d1	2020-12-16 20:43:13.294223	input	{"validationMessage":"Validation failed","placeholder":"Address","validation":"^.+$"}	form_address	9	5a7407cc-401f-47b5-8d8e-4fd94202023d	{"w":4,"h":1,"x":0,"y":1}
+2fd0278b-2bed-44d6-93e0-789fe235ca4c	2020-12-16 20:43:39.261627	input	{"validationMessage":"Validation failed","placeholder":"Customer name","validation":"^.+$"}	form_customer_name	9	5a7407cc-401f-47b5-8d8e-4fd94202023d	{"w":4,"h":1,"x":0,"y":0}
 \.
 
 
@@ -423,6 +434,7 @@ COPY public.operations (id, created_at, name, source_id, config) FROM stdin;
 COPY public.pages (id, created_at, route, title) FROM stdin;
 7	2020-12-04 21:35:37.889485	/orders/create	Order creation
 8	2020-12-04 21:36:01.552367	/orders	Orders list
+9	2020-12-16 20:31:44.686672	/orders/:orderId	Edit order
 \.
 
 
@@ -430,7 +442,7 @@ COPY public.pages (id, created_at, route, title) FROM stdin;
 -- Name: pages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.pages_id_seq', 8, true);
+SELECT pg_catalog.setval('public.pages_id_seq', 9, true);
 
 
 --
@@ -453,6 +465,7 @@ f1e03661-c824-40ef-bbae-6fc2543df2dc	\N	\N	41941e89-d2ec-4c0f-a3d9-cece801df9f3	
 f1e03661-c824-40ef-bbae-6fc2543df2dc	\N	\N	67923baf-7ab0-4237-8a6c-f5d97ab26eeb	selected/6
 bdcb1720-b9f7-4000-81bb-6ee6104db34c	\N	8	\N	current/0
 6ef577da-cd33-4231-9a5c-a32a61db1d1f	\N	12	\N	current/0
+44a26176-f287-47d2-868d-f608954af9d6	\N	12	\N	current/0
 \.
 
 
