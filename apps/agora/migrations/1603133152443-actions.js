@@ -1,7 +1,7 @@
 export const up = () =>
   global.pg.tx(async (t) => {
     await t.none(`
-      CREATE TYPE action AS ENUM ('debug', 'function', 'operation', 'redirect')
+      CREATE TYPE action AS ENUM ('debug', 'function', 'operation', 'redirect', 'selector')
     `)
     await t.none(`
       CREATE TABLE actions(

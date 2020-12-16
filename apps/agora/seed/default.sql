@@ -45,7 +45,8 @@ CREATE TYPE public.action AS ENUM (
     'debug',
     'function',
     'operation',
-    'redirect'
+    'redirect',
+    'selector'
 );
 
 
@@ -148,48 +149,6 @@ CREATE TABLE public.actions (
 
 
 ALTER TABLE public.actions OWNER TO admin;
-
---
--- Name: actions_modules; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public.actions_modules (
-    action_id uuid NOT NULL,
-    module_id uuid NOT NULL,
-    field text NOT NULL,
-    CONSTRAINT actions_modules_field_check CHECK ((field <> ''::text))
-);
-
-
-ALTER TABLE public.actions_modules OWNER TO admin;
-
---
--- Name: actions_operations; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public.actions_operations (
-    action_id uuid NOT NULL,
-    operation_id integer NOT NULL,
-    field text NOT NULL,
-    CONSTRAINT actions_operations_field_check CHECK ((field <> ''::text))
-);
-
-
-ALTER TABLE public.actions_operations OWNER TO admin;
-
---
--- Name: actions_pages; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public.actions_pages (
-    action_id uuid NOT NULL,
-    page_id integer NOT NULL,
-    field text NOT NULL,
-    CONSTRAINT actions_pages_field_check CHECK ((field <> ''::text))
-);
-
-
-ALTER TABLE public.actions_pages OWNER TO admin;
 
 --
 -- Name: operations; Type: TABLE; Schema: public; Owner: admin
@@ -295,6 +254,22 @@ ALTER SEQUENCE public.pages_id_seq OWNED BY public.pages.id;
 
 
 --
+-- Name: references; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public."references" (
+    action_id uuid NOT NULL,
+    page_id integer,
+    operation_id integer,
+    module_id uuid,
+    field text NOT NULL,
+    CONSTRAINT references_field_check CHECK ((field ~ '^[a-zA-Z]+/[0-9]+$'::text))
+);
+
+
+ALTER TABLE public."references" OWNER TO admin;
+
+--
 -- Name: sources; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -344,6 +319,18 @@ CREATE TABLE public.stale_operations (
 ALTER TABLE public.stale_operations OWNER TO admin;
 
 --
+-- Name: values; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public."values" (
+    key text NOT NULL,
+    data text NOT NULL
+);
+
+
+ALTER TABLE public."values" OWNER TO admin;
+
+--
 -- Name: operations id; Type: DEFAULT; Schema: public; Owner: admin
 --
 
@@ -371,32 +358,12 @@ ALTER TABLE ONLY public.sources ALTER COLUMN id SET DEFAULT nextval('public.sour
 COPY public.actions (id, created_at, module_id, name, type, config, field, "order") FROM stdin;
 9ab1d4cf-e501-4fa8-b0ef-a861af55f6cb	2020-12-05 12:44:52.630975	1a3c0c29-a473-473d-b744-6e609154a14a	\N	operation	{"fields": [{"key": "limit", "definition": {"name": "limit", "type": "local"}}, {"key": "offset", "definition": {"name": "offset", "type": "local"}}], "groups": []}	data	0
 59407f11-55a0-4968-9c7c-17d5702c1e81	2020-12-05 12:44:52.630632	1a3c0c29-a473-473d-b744-6e609154a14a	\N	operation	{}	count	1
-\.
-
-
---
--- Data for Name: actions_modules; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-COPY public.actions_modules (action_id, module_id, field) FROM stdin;
-9ab1d4cf-e501-4fa8-b0ef-a861af55f6cb	38ec786b-2157-4f99-a964-8300363b9da4	foo
-\.
-
-
---
--- Data for Name: actions_operations; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-COPY public.actions_operations (action_id, operation_id, field) FROM stdin;
-\.
-
-
---
--- Data for Name: actions_pages; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-COPY public.actions_pages (action_id, page_id, field) FROM stdin;
-9ab1d4cf-e501-4fa8-b0ef-a861af55f6cb	8	foo
+e0693656-26ac-48ea-a23c-0ac7a35eca36	2020-12-09 12:25:08.435407	1a3c0c29-a473-473d-b744-6e609154a14a	\N	function	{}	currentPage	2
+c450ae08-7409-4a75-853f-44e4a4d40e5f	2020-12-12 21:29:30.650449	38ec786b-2157-4f99-a964-8300363b9da4	\N	redirect	{}	action	3
+9dad524a-18c0-429f-9eae-31658e5f7b6c	2020-12-12 21:55:05.78589	18ffc49f-d4af-4e32-b4f9-5755092f3f84	\N	redirect	{}	action	3
+f1e03661-c824-40ef-bbae-6fc2543df2dc	2020-12-12 22:12:46.196887	4ac0ac8b-15dc-437a-af4f-2cf90255608a	form	function	{"func":"release"}	action	0
+bdcb1720-b9f7-4000-81bb-6ee6104db34c	2020-12-12 22:27:37.242066	4ac0ac8b-15dc-437a-af4f-2cf90255608a	\N	operation	{}	action	1
+6ef577da-cd33-4231-9a5c-a32a61db1d1f	2020-12-14 15:38:50.517038	04192cf3-daaf-4156-b961-79a8fa6de888	\N	operation	{}	@mount	0
 \.
 
 
@@ -404,7 +371,7 @@ COPY public.actions_pages (action_id, page_id, field) FROM stdin;
 -- Name: commands_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.commands_id_seq', 10, true);
+SELECT pg_catalog.setval('public.commands_id_seq', 12, true);
 
 
 --
@@ -421,8 +388,18 @@ COPY public.migrations (data) FROM stdin;
 --
 
 COPY public.modules (id, created_at, type, config, name, page_id, parent_id, "position") FROM stdin;
-38ec786b-2157-4f99-a964-8300363b9da4	2020-12-05 15:16:40.457933	button	{"text":"Click me","size":"regular","shouldFitContainer":false}	button	8	\N	{"h":1,"w":2,"x":8,"y":0}
 1a3c0c29-a473-473d-b744-6e609154a14a	2020-12-04 21:40:09.514037	table	{"limit":10,"pagination":true}	table_1	8	\N	{"h":12,"w":10,"x":0,"y":1}
+18ffc49f-d4af-4e32-b4f9-5755092f3f84	2020-12-12 15:23:38.735586	button	{"text":"Click me","size":"regular","shouldFitContainer":false}	abc	8	\N	{"w":3,"h":1,"x":0,"y":0}
+38ec786b-2157-4f99-a964-8300363b9da4	2020-12-05 15:16:40.457933	button	{"size": "regular", "text": "Create order", "shouldFitContainer": false}	button	8	\N	{"h":1,"w":2,"x":8,"y":0}
+4ac0ac8b-15dc-437a-af4f-2cf90255608a	2020-12-12 22:11:34.689155	button	{"text":"Submit","size":"regular","shouldFitContainer":false}	submit	7	04192cf3-daaf-4156-b961-79a8fa6de888	{"w":3,"h":1,"x":0,"y":7}
+ce5874ab-7c22-473a-9cff-8559bc91b4ec	2020-12-12 22:08:42.253396	input	{"validationMessage":"Validation failed","placeholder":"Customer name","validation":"^.+$"}	form_customer_name	7	04192cf3-daaf-4156-b961-79a8fa6de888	{"w":4,"h":1,"x":0,"y":0}
+75dbe2c3-6fbe-42da-9a92-30cb5a75344e	2020-12-12 22:10:57.668111	input	{"validationMessage":"Validation failed","placeholder":"Status","validation":"^.+$"}	form_status	7	04192cf3-daaf-4156-b961-79a8fa6de888	{"w":4,"h":1,"x":0,"y":3}
+be0d7480-f666-47d3-bb4f-f5afa805b80b	2020-12-12 22:10:57.668361	input	{"validationMessage":"Validation failed","placeholder":"Delivery type","validation":"^.+$"}	form_delivery_type	7	04192cf3-daaf-4156-b961-79a8fa6de888	{"w":4,"h":1,"x":0,"y":2}
+424cff4f-0eb7-40aa-b5d6-756031c33ad4	2020-12-12 22:10:57.66854	input	{"validationMessage":"Validation failed","placeholder":"Address","validation":"^.+$"}	form_address	7	04192cf3-daaf-4156-b961-79a8fa6de888	{"w":4,"h":1,"x":0,"y":1}
+d8f69376-21de-4e51-8fa7-faccd70034e6	2020-12-12 22:10:57.668828	input	{"validationMessage":"Validation failed","placeholder":"Payment type","validation":"^.+$"}	form_payment_type	7	04192cf3-daaf-4156-b961-79a8fa6de888	{"w":4,"h":1,"x":0,"y":4}
+41941e89-d2ec-4c0f-a3d9-cece801df9f3	2020-12-12 22:10:57.669059	input	{"validationMessage":"Validation failed","placeholder":"Amount","validation":"^.+$"}	form_amount	7	04192cf3-daaf-4156-b961-79a8fa6de888	{"w":4,"h":1,"x":0,"y":6}
+67923baf-7ab0-4237-8a6c-f5d97ab26eeb	2020-12-12 22:10:57.669291	input	{"validationMessage":"Validation failed","placeholder":"Currency","validation":"^.+$"}	form_currency	7	04192cf3-daaf-4156-b961-79a8fa6de888	{"w":4,"h":1,"x":0,"y":5}
+04192cf3-daaf-4156-b961-79a8fa6de888	2020-12-12 22:32:04.944586	container	{}	form	7	\N	{"w":10,"h":9,"x":0,"y":0}
 \.
 
 
@@ -435,6 +412,7 @@ COPY public.operations (id, created_at, name, source_id, config) FROM stdin;
 8	2020-10-25 15:41:01.204099	createOrder	1	{"value": "INSERT INTO orders (customer_name, address, delivery_type, status, payment_type, amount, currency) VALUES ('{{customer_name}}', '{{address}}', '{{delivery_type}}', '{{status}}', '{{payment_type}}', {{amount}}, '{{currency}}') RETURNING *", "result": "single"}
 9	2020-10-25 15:41:01.204099	countOrders	1	{"value":"SELECT count(id)::integer FROM orders","result":"single","compute":"result => result.count"}
 10	2020-11-07 13:05:01.444378	getOrders	1	{"value": "SELECT * FROM orders ORDER BY created_at DESC LIMIT {{limit}} OFFSET {{offset}}", "result": "many"}
+12	2020-12-14 15:38:41.542949	getOrder	1	{"value": "SELECT * FROM orders WHERE id = 1", "result": "single"}
 \.
 
 
@@ -453,6 +431,29 @@ COPY public.pages (id, created_at, route, title) FROM stdin;
 --
 
 SELECT pg_catalog.setval('public.pages_id_seq', 8, true);
+
+
+--
+-- Data for Name: references; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+COPY public."references" (action_id, page_id, operation_id, module_id, field) FROM stdin;
+9ab1d4cf-e501-4fa8-b0ef-a861af55f6cb	7	\N	\N	test/0
+9ab1d4cf-e501-4fa8-b0ef-a861af55f6cb	8	\N	\N	test/1
+9ab1d4cf-e501-4fa8-b0ef-a861af55f6cb	\N	10	\N	current/0
+59407f11-55a0-4968-9c7c-17d5702c1e81	\N	9	\N	current/0
+9dad524a-18c0-429f-9eae-31658e5f7b6c	7	\N	\N	current/0
+c450ae08-7409-4a75-853f-44e4a4d40e5f	7	\N	\N	current/0
+f1e03661-c824-40ef-bbae-6fc2543df2dc	\N	\N	ce5874ab-7c22-473a-9cff-8559bc91b4ec	selected/0
+f1e03661-c824-40ef-bbae-6fc2543df2dc	\N	\N	75dbe2c3-6fbe-42da-9a92-30cb5a75344e	selected/1
+f1e03661-c824-40ef-bbae-6fc2543df2dc	\N	\N	424cff4f-0eb7-40aa-b5d6-756031c33ad4	selected/2
+f1e03661-c824-40ef-bbae-6fc2543df2dc	\N	\N	be0d7480-f666-47d3-bb4f-f5afa805b80b	selected/3
+f1e03661-c824-40ef-bbae-6fc2543df2dc	\N	\N	d8f69376-21de-4e51-8fa7-faccd70034e6	selected/4
+f1e03661-c824-40ef-bbae-6fc2543df2dc	\N	\N	41941e89-d2ec-4c0f-a3d9-cece801df9f3	selected/5
+f1e03661-c824-40ef-bbae-6fc2543df2dc	\N	\N	67923baf-7ab0-4237-8a6c-f5d97ab26eeb	selected/6
+bdcb1720-b9f7-4000-81bb-6ee6104db34c	\N	8	\N	current/0
+6ef577da-cd33-4231-9a5c-a32a61db1d1f	\N	12	\N	current/0
+\.
 
 
 --
@@ -482,27 +483,12 @@ COPY public.stale_operations (command_id, stale_id) FROM stdin;
 
 
 --
--- Name: actions_modules actions_modules_action_id_field_key; Type: CONSTRAINT; Schema: public; Owner: admin
+-- Data for Name: values; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-ALTER TABLE ONLY public.actions_modules
-    ADD CONSTRAINT actions_modules_action_id_field_key UNIQUE (action_id, field);
-
-
---
--- Name: actions_operations actions_operations_action_id_field_key; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.actions_operations
-    ADD CONSTRAINT actions_operations_action_id_field_key UNIQUE (action_id, field);
-
-
---
--- Name: actions_pages actions_pages_action_id_field_key; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.actions_pages
-    ADD CONSTRAINT actions_pages_action_id_field_key UNIQUE (action_id, field);
+COPY public."values" (key, data) FROM stdin;
+schema	test
+\.
 
 
 --
@@ -546,6 +532,30 @@ ALTER TABLE ONLY public.pages
 
 
 --
+-- Name: references references_action_id_field_module_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public."references"
+    ADD CONSTRAINT references_action_id_field_module_id_key UNIQUE (action_id, field, module_id);
+
+
+--
+-- Name: references references_action_id_field_operation_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public."references"
+    ADD CONSTRAINT references_action_id_field_operation_id_key UNIQUE (action_id, field, operation_id);
+
+
+--
+-- Name: references references_action_id_field_page_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public."references"
+    ADD CONSTRAINT references_action_id_field_page_id_key UNIQUE (action_id, field, page_id);
+
+
+--
 -- Name: sources sources_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -578,59 +588,19 @@ ALTER TABLE ONLY public.modules
 
 
 --
+-- Name: values values_key_key; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public."values"
+    ADD CONSTRAINT values_key_key UNIQUE (key);
+
+
+--
 -- Name: actions actions_module_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.actions
     ADD CONSTRAINT actions_module_id_fkey FOREIGN KEY (module_id) REFERENCES public.modules(id) ON DELETE CASCADE;
-
-
---
--- Name: actions_modules actions_modules_action_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.actions_modules
-    ADD CONSTRAINT actions_modules_action_id_fkey FOREIGN KEY (action_id) REFERENCES public.actions(id) ON DELETE CASCADE;
-
-
---
--- Name: actions_modules actions_modules_module_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.actions_modules
-    ADD CONSTRAINT actions_modules_module_id_fkey FOREIGN KEY (module_id) REFERENCES public.modules(id) ON DELETE CASCADE;
-
-
---
--- Name: actions_operations actions_operations_action_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.actions_operations
-    ADD CONSTRAINT actions_operations_action_id_fkey FOREIGN KEY (action_id) REFERENCES public.actions(id) ON DELETE CASCADE;
-
-
---
--- Name: actions_operations actions_operations_operation_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.actions_operations
-    ADD CONSTRAINT actions_operations_operation_id_fkey FOREIGN KEY (operation_id) REFERENCES public.operations(id) ON DELETE RESTRICT;
-
-
---
--- Name: actions_pages actions_pages_action_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.actions_pages
-    ADD CONSTRAINT actions_pages_action_id_fkey FOREIGN KEY (action_id) REFERENCES public.actions(id) ON DELETE CASCADE;
-
-
---
--- Name: actions_pages actions_pages_page_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.actions_pages
-    ADD CONSTRAINT actions_pages_page_id_fkey FOREIGN KEY (page_id) REFERENCES public.pages(id) ON DELETE RESTRICT;
 
 
 --
@@ -655,6 +625,38 @@ ALTER TABLE ONLY public.modules
 
 ALTER TABLE ONLY public.modules
     ADD CONSTRAINT modules_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES public.modules(id) ON DELETE CASCADE;
+
+
+--
+-- Name: references references_action_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public."references"
+    ADD CONSTRAINT references_action_id_fkey FOREIGN KEY (action_id) REFERENCES public.actions(id) ON DELETE CASCADE;
+
+
+--
+-- Name: references references_module_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public."references"
+    ADD CONSTRAINT references_module_id_fkey FOREIGN KEY (module_id) REFERENCES public.modules(id) ON DELETE CASCADE;
+
+
+--
+-- Name: references references_operation_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public."references"
+    ADD CONSTRAINT references_operation_id_fkey FOREIGN KEY (operation_id) REFERENCES public.operations(id) ON DELETE RESTRICT;
+
+
+--
+-- Name: references references_page_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public."references"
+    ADD CONSTRAINT references_page_id_fkey FOREIGN KEY (page_id) REFERENCES public.pages(id) ON DELETE RESTRICT;
 
 
 --
