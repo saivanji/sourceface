@@ -1,0 +1,17 @@
+type Order
+-
+id Number
+created_at String
+user User
+
+type User
+-
+id Number
+first_name String
+last_name String
+orders Order[]
+phone? Number
+
+___
+
+SELECT * FROM orders WHERE id = {{id Number}}
