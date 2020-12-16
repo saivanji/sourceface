@@ -7,6 +7,7 @@ export default function Params() {
   const { path } = useRouterParams()
   const ref = useRef({ pageId: page.id, path })
 
+  // TODO: inconsistency issue persists when cache of operation is expired?
   /**
    * Getting params from next path only after page fetched to avoid data inconsistency.
    */
