@@ -5,11 +5,13 @@ export const createDefinitions = (
   actionId,
   scope,
   modulesList,
-  actionsList
+  actionsList,
+  params
 ) => {
   return [
     ...createModulesDefinitions(moduleId, modulesList, scope),
     ...createActionsDefinitions(actionId, actionsList),
+    ...createParamsDefinitions(params),
   ]
 }
 
@@ -44,12 +46,20 @@ export const defineVariable = (id) => {
       moduleId: b,
     }
   }
+
+  if (a === "params") {
+    return {
+      type: "params",
+      key: b,
+    }
+  }
 }
 
-const definitions = [
+const spec = [
   "module/moduleId/name",
   "action/actionId",
   "mount/moduleId",
+  "params/key",
 ]
 
 export const identifyVariable = (definition) => {
@@ -67,6 +77,10 @@ export const identifyVariable = (definition) => {
 
   if (definition.type === "mount") {
     return `mount/${definition.moduleId}`
+  }
+
+  if (definition.type === "params") {
+    return `params/${definition.key}`
   }
 }
 
@@ -86,24 +100,9 @@ export const renderVariable = (definition, { modules, actions }) => {
   if (definition.type === "mount") {
     return `[mount] ${modules[definition.moduleId].name}`
   }
-}
 
-export const createVariable = (
-  definition,
-  moduleId,
-  globalScope,
-  mountScope,
-  { modules, actions }
-) => {
-  const data = evaluateVariable(definition, moduleId, globalScope, mountScope)
-  const id = identifyVariable(definition)
-
-  return {
-    definition,
-    id,
-    view: renderVariable(definition, { modules, actions }),
-    get: (runtime) => runtime?.[id] || data,
-    data,
+  if (definition.type === "params") {
+    return `[params] ${definition.key}`
   }
 }
 
@@ -111,7 +110,8 @@ export const evaluateVariable = (
   definition,
   moduleId,
   globalScope,
-  mountScope
+  mountScope,
+  params
 ) => {
   if (definition.type === "local") {
     return globalScope.modules[moduleId][definition.name]
@@ -127,6 +127,36 @@ export const evaluateVariable = (
 
   if (definition.type === "mount") {
     return mountScope[definition.moduleId]
+  }
+
+  if (definition.type === "params") {
+    return params[definition.key]
+  }
+}
+
+export const createVariable = (
+  definition,
+  moduleId,
+  globalScope,
+  mountScope,
+  params,
+  { modules, actions }
+) => {
+  const data = evaluateVariable(
+    definition,
+    moduleId,
+    globalScope,
+    mountScope,
+    params
+  )
+  const id = identifyVariable(definition)
+
+  return {
+    definition,
+    id,
+    view: renderVariable(definition, { modules, actions }),
+    get: (runtime) => runtime?.[id] || data,
+    data,
   }
 }
 
@@ -182,6 +212,9 @@ const createActionsDefinitions = (actionId, actionsList) => {
 
   return result
 }
+
+const createParamsDefinitions = (params) =>
+  keys(params).reduce((acc, key) => [...acc, { type: "params", key }], [])
 
 class Runtime {
   constructor(definition) {

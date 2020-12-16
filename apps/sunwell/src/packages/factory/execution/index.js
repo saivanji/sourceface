@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { mergeLeft } from "ramda"
+import { useParams } from "hooks/index"
 import { useModule } from "../module"
 import { useMount } from "../mount"
 import { useScope } from "../scope"
@@ -76,6 +77,7 @@ const useData = (fields, identify = false, restore = false) => {
   const { scope } = useScope()
   const mountScope = useMount()
   const functions = useFunctions()
+  const params = useParams()
 
   let identifier = ""
   let executions = []
@@ -104,7 +106,7 @@ const useData = (fields, identify = false, restore = false) => {
       // TODO: remove "config" and pass only action instead?
       const args = serialize(config, action, {
         createVariable: (definition) =>
-          createVariable(definition, moduleId, scope, mountScope, {
+          createVariable(definition, moduleId, scope, mountScope, params, {
             modules,
             actions,
           }),

@@ -1,5 +1,6 @@
 import React, { forwardRef, createContext, useContext } from "react"
 import { identity } from "ramda"
+import { Await } from "@sourceface/components"
 import { Module, useEditor, useModule } from "packages/factory"
 import Grill from "packages/grid"
 import { createLayout } from "./utils"
@@ -13,7 +14,7 @@ import styles from "./index.scss"
 
 const context = createContext({ renderItem: identity })
 
-export default function Layout() {
+export default function Layout({ isLoading }) {
   const { renderItem } = useContext(context)
   const { id: parentId = null } = useModule()
   const { modules, isEditing } = useEditor()
@@ -22,37 +23,35 @@ export default function Layout() {
   const layout = createLayout(parentId, modules)
 
   return (
-    <Grill
-      rows={50}
-      cols={10}
-      rowHeight={60}
-      layout={layout}
-      isStatic={!isEditing}
-      onChange={changeGrid}
-      components={{
-        Box,
-        OuterItem,
-        SortPlaceholder: Placeholder,
-        ResizePlaceholder: Placeholder,
-      }}
-      renderItem={(module) =>
-        renderItem(
-          <div className={styles.module}>
-            <Module module={module} />
-          </div>,
-          module.id
-        )
-      }
-    />
+    <Await isAwaiting={isLoading}>
+      <Grill
+        rows={50}
+        cols={10}
+        rowHeight={60}
+        layout={layout}
+        isStatic={!isEditing}
+        onChange={changeGrid}
+        components={{
+          Box,
+          OuterItem,
+          SortPlaceholder: Placeholder,
+          ResizePlaceholder: Placeholder,
+        }}
+        renderItem={(module) =>
+          renderItem(
+            <div className={styles.module}>
+              <Module module={module} />
+            </div>,
+            module.id
+          )
+        }
+      />
+    </Await>
   )
 }
 
 Layout.Provider = function LayoutProvider({ children, renderItem }) {
-  return (
-    <context.Provider value={{ renderItem }}>
-      {children || <Layout />}
-    </context.Provider>
-  )
+  return <context.Provider value={{ renderItem }}>{children}</context.Provider>
 }
 
 const OuterItem = ({ style }) => {

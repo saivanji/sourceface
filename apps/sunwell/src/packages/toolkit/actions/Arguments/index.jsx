@@ -11,7 +11,11 @@ export default function Arguments({
   onFieldsChange,
   onGroupsChange,
 }) {
-  const keys = ["limit", "offset"].map((key) => ({ title: key, value: key }))
+  // TODO: use actual arguments
+  const keys = ["limit", "offset", "id"].map((key) => ({
+    title: key,
+    value: key,
+  }))
 
   const addField = ([key, definition]) =>
     onFieldsChange([...fields, { key, definition }])

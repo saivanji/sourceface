@@ -14,7 +14,7 @@
   padding: $value-1;
   color: $color-gray-900;
   border-radius: $rounded-base;
-  &:hover {
+  &:not(.disabled):hover {
     background-color: $color-gray-300;
   }
   &:focus {

@@ -10,7 +10,7 @@ import styles from "./index.scss"
 // near the orders page will be a button opening a modal to edit current page properties(url, etc?)
 // page title is editable?
 // page creation button could be near page title, also page title is a select which has all pages inside
-export default function Editor() {
+export default function Editor({ isLoading }) {
   const { isDirty, save, selected, edit } = useEditor()
   const bodyRef = useRef()
 
@@ -39,7 +39,9 @@ export default function Editor() {
                 {node}
               </EditableModule>
             )}
-          />
+          >
+            <Layout isLoading={isLoading} />
+          </Layout.Provider>
         </div>
       </div>
     </div>

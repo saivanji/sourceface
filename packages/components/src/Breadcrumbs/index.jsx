@@ -1,4 +1,5 @@
 import React from "react"
+import cx from "classnames"
 import styles from "./index.scss"
 
 export default function Breadcrumbs({
@@ -7,12 +8,23 @@ export default function Breadcrumbs({
 }) {
   return (
     <div className={styles.root}>
-      {React.Children.map(children, (item, i) => (
-        <React.Fragment key={i}>
-          {i !== 0 && "/"}
-          {React.cloneElement(item, { component: link })}
-        </React.Fragment>
-      ))}
+      {React.Children.map(children, (item, i) => {
+        const isLast = i === React.Children.count(children) - 1
+        return (
+          <React.Fragment key={i}>
+            {!isLast ? (
+              <>
+                {React.cloneElement(item, { component: link })}
+                {"/"}
+              </>
+            ) : (
+              <span className={cx(styles.link, styles.disabled)}>
+                {item.props.children}
+              </span>
+            )}
+          </React.Fragment>
+        )
+      })}
     </div>
   )
 }

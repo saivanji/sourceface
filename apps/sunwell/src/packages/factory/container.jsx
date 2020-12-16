@@ -10,6 +10,7 @@ export function Container({ children, stock, page, effects }) {
   return (
     <context.Provider
       value={{
+        page,
         stock,
       }}
     >

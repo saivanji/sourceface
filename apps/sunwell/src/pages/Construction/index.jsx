@@ -36,12 +36,12 @@ export default () => {
     "Loading..."
   ) : (
     <Container page={page} effects={effects} stock={stock}>
-      <Page path={path} page={page} />
+      <Page page={page} isLoading={result.fetching} />
     </Container>
   )
 }
 
-function Page({ path, page }) {
+function Page({ page, isLoading }) {
   const { isEditing, edit } = useEditor()
 
   // TODO: replace params of route instead of passign route as link.
@@ -50,19 +50,19 @@ function Page({ path, page }) {
     ? []
     : [
         ...page.trail.map((x) => ({ title: x.title, to: "/e" + x.route })),
-        { title: page.title, to: "/e/" + path },
+        { title: page.title },
       ]
 
   return (
     <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
       {isEditing ? (
-        <Editor />
+        <Editor isLoading={isLoading} />
       ) : (
         <Shell
           path={[{ title: "Content", to: "/e" }, ...breadcrumbs]}
           actions={<button onClick={() => edit(true)}>Edit</button>}
         >
-          <Layout />
+          <Layout isLoading={isLoading} />
         </Shell>
       )}
     </DndProvider>

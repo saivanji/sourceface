@@ -1,4 +1,5 @@
 import React from "react"
+import { useParams } from "hooks/index"
 import {
   useScope,
   useEditor,
@@ -58,13 +59,15 @@ Value.Autocomplete = function ValueAutocomplete({
   const { module } = useConfiguration()
   const { scope } = useScope()
   const { action } = useAction()
+  const params = useParams()
 
   const definitions = createDefinitions(
     module.id,
     action.id,
     scope,
     selectors.modules(),
-    selectors.actions(module.id, action.field)
+    selectors.actions(module.id, action.field),
+    params
   )
 
   const map = (definition) => ({

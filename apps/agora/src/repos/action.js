@@ -12,7 +12,7 @@ export const create = (
   pg
 ) => pg.one(sql.create, [actionId, moduleId, order, field, type, name, config])
 export const update = (actionId, fields, pg) =>
-  pg.one(sql.update(fields), [actionId])
+  pg.one(sql.update({ id: actionId, ...fields }))
 export const remove = (actionId, pg) => pg.none(sql.remove, [actionId])
 export const listByModuleIds = (moduleIds, pg) =>
   pg.manyOrNone(sql.listByModuleIds, [moduleIds])
