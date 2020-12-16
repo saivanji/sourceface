@@ -37,15 +37,12 @@ export function Root({ action, onConfigChange }) {
 }
 
 export const serialize = ({ definition, path }, action, { createVariable }) => {
-  // TODO: do we need to return variable or access path inside of "serialize"?
   return [definition && createVariable(definition), path]
 }
 
-// TODO: do we need to use "runtime"?
 export const execute = ({ runtime }) => (variable, keys = []) =>
   variable && path(keys, variable.get(runtime))
 
-// Select [foo][bar][baz] from [variable]
 const suggestions = [
   "customer_name",
   "address",
