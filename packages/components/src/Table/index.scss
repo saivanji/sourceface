@@ -45,6 +45,7 @@
   }
 }
 
-// .tr:hover {
-//   background-color: $color-gray-100;
-// }
+.tr.hover:hover {
+  cursor: pointer;
+  background-color: $color-gray-100;
+}

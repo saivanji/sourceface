@@ -44,9 +44,9 @@ Table.Th = function Th({ children, className, ...props }) {
   )
 }
 
-Table.Tr = function Tr({ children, className, ...props }) {
+Table.Tr = function Tr({ children, className, hover, ...props }) {
   return (
-    <tr {...props} className={cx(styles.tr, className)}>
+    <tr {...props} className={cx(styles.tr, hover && styles.hover, className)}>
       {children}
     </tr>
   )
