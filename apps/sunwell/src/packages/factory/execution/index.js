@@ -72,7 +72,7 @@ export const useValue = (...fields) => {
 // "useFunction" and "useValue"
 const useData = (fields, identify = false, restore = false, input = {}) => {
   const { stock } = useContainer()
-  const { id: moduleId } = useModule()
+  const { id: moduleId, config } = useModule()
   const { modules, actions, selectors } = useEditor()
   const { scope } = useScope()
   const mountScope = useMount()
@@ -86,7 +86,10 @@ const useData = (fields, identify = false, restore = false, input = {}) => {
   for (let [i, field] of fields.entries()) {
     let sequence = []
     let runtime = createInputRuntime(input)
-    let initialValue
+    /**
+     * By default pipe initial value is the same field in config. It will be overwritten when processing actions.
+     */
+    let initialValue = config[field]
 
     for (let action of selectors.actions(moduleId, field)) {
       /**
