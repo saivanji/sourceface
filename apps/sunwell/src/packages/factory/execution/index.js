@@ -13,7 +13,7 @@ export const useHandler = (...fields) => {
   const [executions] = useData(fields)
 
   // TODO: consider function arguments as input to the action
-  return executions.map((fn) => (args) => fn())
+  return executions.map((fn) => fn && ((args) => fn()))
   // same as the above
   // return executions
 }
@@ -52,7 +52,7 @@ export const useValue = (...fields) => {
     }
 
     start()
-    Promise.all(executions.map((fn) => fn(reload)))
+    Promise.all(executions.map((fn) => fn?.(reload)))
       .then(populate)
       .catch(failure)
 
@@ -83,7 +83,7 @@ const useData = (fields, identify = false, restore = false) => {
   let executions = []
   let initial = restore ? [] : null
 
-  for (let field of fields) {
+  for (let [i, field] of fields.entries()) {
     let sequence = []
     let runtime = {}
     let initialValue
@@ -139,13 +139,15 @@ const useData = (fields, identify = false, restore = false) => {
       }
     }
 
-    executions.push((onReload) =>
-      reduce(
-        (runtime, [, fn]) => fn(runtime, onReload),
-        ([actionId]) => `action/${actionId}`,
-        sequence
-      )
-    )
+    if (sequence.length) {
+      executions[i] = (onReload) =>
+        reduce(
+          (runtime, [, fn]) => fn(runtime, onReload),
+          ([actionId]) => `action/${actionId}`,
+          sequence
+        )
+    }
+
     initial?.push(initialValue)
   }
 
