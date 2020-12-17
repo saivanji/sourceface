@@ -5,6 +5,7 @@ import {
   useEditor,
   useAction,
   useConfiguration,
+  useContainer,
   renderVariable,
   identifyVariable,
   defineVariable,
@@ -56,14 +57,16 @@ Value.Autocomplete = function ValueAutocomplete({
   ...props
 }) {
   const { selectors, modules, actions } = useEditor()
+  const { stock } = useContainer()
   const { module } = useConfiguration()
   const { scope } = useScope()
   const { action } = useAction()
   const params = useParams()
 
   const definitions = createDefinitions(
-    module.id,
-    action.id,
+    stock,
+    module,
+    action,
     scope,
     selectors.modules(),
     selectors.actions(module.id, action.field),

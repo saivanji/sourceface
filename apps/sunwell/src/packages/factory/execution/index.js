@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { mergeLeft } from "ramda"
+import { keys, mergeLeft } from "ramda"
 import { useParams } from "hooks/index"
 import { useModule } from "../module"
 import { useMount } from "../mount"
@@ -13,7 +13,7 @@ export const useHandler = (...fields) => {
   const [executions] = useData(fields)
 
   // TODO: consider function arguments as input to the action
-  return executions.map((fn) => fn && ((args) => fn()))
+  return executions.map((fn) => fn && ((input) => fn(null, input)))
   // same as the above
   // return executions
 }
@@ -124,6 +124,7 @@ const useData = (fields, identify = false, restore = false) => {
       const cacheable = !!readCache
       const cached =
         cacheable &&
+        // TODO: should handle input here as well?
         (runtime[`action/${action.id}`] = readCache({ runtime })(...args))
 
       if ((cacheable && !cached) || (settings?.effect && !cacheable)) {
@@ -134,15 +135,17 @@ const useData = (fields, identify = false, restore = false) => {
       if (initial) {
         initialValue =
           !settings?.effect && !cacheable
-            ? execute({ functions, modules, runtime })(...args)
+            ? // TODO: should handle input here as well?
+              execute({ functions, modules, runtime })(...args)
             : cached
       }
     }
 
     if (sequence.length) {
-      executions[i] = (onReload) =>
+      executions[i] = (onReload, input) =>
         reduce(
-          (runtime, [, fn]) => fn(runtime, onReload),
+          (actionRuntime, [, fn]) =>
+            fn({ ...actionRuntime, ...createInputRuntime(input) }, onReload),
           ([actionId]) => `action/${actionId}`,
           sequence
         )
@@ -173,3 +176,9 @@ const reduce = async (fn, createKey, [head, ...tail], acc = {}) => {
     last,
   })
 }
+
+const createInputRuntime = (input) =>
+  keys(input).reduce(
+    (acc, key) => ({ ...acc, [`input/${key}`]: input[key] }),
+    {}
+  )

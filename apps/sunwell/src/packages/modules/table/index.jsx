@@ -11,7 +11,7 @@ import {
   Input,
   Checkbox,
 } from "@sourceface/components"
-import { useTransition, useValue } from "packages/factory"
+import { useTransition, useValue, useHandler } from "packages/factory"
 import { Field, Pipe, Section } from "packages/toolkit"
 import More from "assets/more.svg"
 import styles from "./index.scss"
@@ -27,6 +27,7 @@ export const Root = function TableModule({
   scope: { limit, offset, page },
 }) {
   const [[rows, count], loading, pristine, error] = useValue("data", "count")
+  const [onRowClick] = useHandler("rowClick")
 
   const changePage = useTransition("page")
 
@@ -52,7 +53,11 @@ export const Root = function TableModule({
         </Table.Thead>
         <Table.Tbody>
           {rows?.map((row) => (
-            <Table.Tr key={row.id}>
+            <Table.Tr
+              key={row.id}
+              hover={!!onRowClick}
+              onClick={() => onRowClick?.({ row })}
+            >
               <Table.Td>{row.id}</Table.Td>
               <Table.Td>
                 {moment(row.created_at).format("DD MMM YY, HH:mm")}
@@ -128,6 +133,11 @@ export const Configuration = function TableModuleConfiguration({ config }) {
           </>
         )}
       </Section>
+      <Section title="Row">
+        <Row>
+          <Pipe field="rowClick" label="Row click" />
+        </Row>
+      </Section>
     </>
   )
 }
@@ -180,6 +190,12 @@ export const variableTypes = {
   test: {
     x: "Number",
     y: "Number",
+  },
+}
+
+export const inputTypes = {
+  rowClick: {
+    row: "",
   },
 }
 

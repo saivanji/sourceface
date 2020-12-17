@@ -1,17 +1,22 @@
 import { keys } from "ramda"
 
 export const createDefinitions = (
-  moduleId,
-  actionId,
+  stock,
+  module,
+  action,
   scope,
   modulesList,
   actionsList,
   params
 ) => {
   return [
-    ...createModulesDefinitions(moduleId, modulesList, scope),
-    ...createActionsDefinitions(actionId, actionsList),
+    ...createModulesDefinitions(module.id, modulesList, scope),
+    ...createActionsDefinitions(action.id, actionsList),
     ...createParamsDefinitions(params),
+    ...createInputDefinitions(
+      action.field,
+      stock.modules.dict[module.type].inputTypes
+    ),
   ]
 }
 
@@ -53,6 +58,13 @@ export const defineVariable = (id) => {
       key: b,
     }
   }
+
+  if (a === "input") {
+    return {
+      type: "input",
+      key: b,
+    }
+  }
 }
 
 const spec = [
@@ -82,6 +94,10 @@ export const identifyVariable = (definition) => {
   if (definition.type === "params") {
     return `params/${definition.key}`
   }
+
+  if (definition.type === "input") {
+    return `input/${definition.key}`
+  }
 }
 
 export const renderVariable = (definition, { modules, actions }) => {
@@ -104,6 +120,10 @@ export const renderVariable = (definition, { modules, actions }) => {
   if (definition.type === "params") {
     return `[params] ${definition.key}`
   }
+
+  if (definition.type === "input") {
+    return `[input] ${definition.key}`
+  }
 }
 
 export const evaluateVariable = (
@@ -121,7 +141,7 @@ export const evaluateVariable = (
     return globalScope.modules[definition.moduleId][definition.name]
   }
 
-  if (definition.type === "action") {
+  if (definition.type === "action" || definition.type === "input") {
     return new Runtime(definition)
   }
 
@@ -215,6 +235,13 @@ const createActionsDefinitions = (actionId, actionsList) => {
 
 const createParamsDefinitions = (params) =>
   keys(params).reduce((acc, key) => [...acc, { type: "params", key }], [])
+
+const createInputDefinitions = (field, inputTypes) => {
+  return keys(inputTypes[field]).reduce(
+    (acc, key) => [...acc, { type: "input", key }],
+    []
+  )
+}
 
 class Runtime {
   constructor(definition) {
