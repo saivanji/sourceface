@@ -70,7 +70,7 @@ export const useValue = (...fields) => {
 
 // TODO: might not need to have "useData" in favor of having logic in a separate function and keeping other hooks in
 // "useFunction" and "useValue"
-const useData = (fields, identify = false, restore = false) => {
+const useData = (fields, identify = false, restore = false, input = {}) => {
   const { stock } = useContainer()
   const { id: moduleId } = useModule()
   const { modules, actions, selectors } = useEditor()
@@ -85,7 +85,7 @@ const useData = (fields, identify = false, restore = false) => {
 
   for (let [i, field] of fields.entries()) {
     let sequence = []
-    let runtime = {}
+    let runtime = createInputRuntime(input)
     let initialValue
 
     for (let action of selectors.actions(moduleId, field)) {
@@ -124,7 +124,6 @@ const useData = (fields, identify = false, restore = false) => {
       const cacheable = !!readCache
       const cached =
         cacheable &&
-        // TODO: should handle input here as well?
         (runtime[`action/${action.id}`] = readCache({ runtime })(...args))
 
       if ((cacheable && !cached) || (settings?.effect && !cacheable)) {
@@ -135,8 +134,7 @@ const useData = (fields, identify = false, restore = false) => {
       if (initial) {
         initialValue =
           !settings?.effect && !cacheable
-            ? // TODO: should handle input here as well?
-              execute({ functions, modules, runtime })(...args)
+            ? execute({ functions, modules, runtime })(...args)
             : cached
       }
     }
