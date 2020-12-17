@@ -1,7 +1,7 @@
 import React from "react"
 import { Input } from "@sourceface/components"
 import { Configuration, useEditor } from "packages/factory"
-import { Section, Pipe } from "packages/toolkit"
+import { Section, Option } from "packages/toolkit"
 
 export default function () {
   const { selected: module, select, renameModule, removeModule } = useEditor()
@@ -40,7 +40,7 @@ export default function () {
       </div>
       <Configuration key={module.id} module={module}>
         <Section title="Mounting">
-          <Pipe field="@mount" label="Data" />
+          <Option name="@mount" label="Data" actionsOnly />
         </Section>
       </Configuration>
     </>

@@ -1,8 +1,8 @@
 import React from "react"
 import * as yup from "yup"
 import * as system from "@sourceface/style"
-import { Row, Label, Input, Select } from "@sourceface/components"
-import { Field } from "packages/toolkit"
+import { Input, Select } from "@sourceface/components"
+import { Option } from "packages/toolkit"
 import styles from "./index.scss"
 
 // every module should have correspoding loader(depending on type)
@@ -31,61 +31,38 @@ export const Root = function TextModule({ config }) {
 export const Configuration = function TextModuleConfiguration() {
   return (
     <>
-      <Row>
-        <Label title="Text">
-          <Field name="text" type="text" component={Input} />
-        </Label>
-      </Row>
-      <Row>
-        <Label title="Size">
-          <Field
-            name="fontSize"
-            items={optionsProps.fontSizes}
-            component={Select}
-          />
-        </Label>
-      </Row>
-      <Row>
-        <Label title="Font weight">
-          <Field
-            name="fontWeight"
-            items={optionsProps.fontWeights}
-            component={Select}
-          />
-        </Label>
-      </Row>
-      <Row>
-        <Label title="Horizontal alignment">
-          <Field
-            name="alignmentX"
-            items={optionsProps.alignmentsX}
-            component={Select}
-          />
-        </Label>
-      </Row>
-      <Row>
-        <Label title="Vertical alignment">
-          <Field
-            name="alignmentY"
-            items={optionsProps.alignmentsY}
-            component={Select}
-          />
-        </Label>
-      </Row>
-      <Row>
-        <Label title="Decoration">
-          <Field
-            name="decoration"
-            items={optionsProps.decorations}
-            component={Select}
-          />
-        </Label>
-      </Row>
-      <Row>
-        <Label title="Color">
-          <Field name="color" type="text" component={Input} />
-        </Label>
-      </Row>
+      <Option name="text" label="Text" type="text" component={Input} />
+      <Option
+        name="fontSize"
+        label="size"
+        items={optionsProps.fontSizes}
+        component={Select}
+      />
+      <Option
+        name="fontWeight"
+        label="Font weight"
+        items={optionsProps.fontWeights}
+        component={Select}
+      />
+      <Option
+        name="alignmentX"
+        label="Horizontal alignment"
+        items={optionsProps.alignmentsX}
+        component={Select}
+      />
+      <Option
+        name="alignmentY"
+        label="Vertical alignment"
+        items={optionsProps.alignmentsY}
+        component={Select}
+      />
+      <Option
+        name="decoration"
+        label="Decoration"
+        items={optionsProps.decorations}
+        component={Select}
+      />
+      <Option name="color" label="Color" type="text" component={Input} />
     </>
   )
 }

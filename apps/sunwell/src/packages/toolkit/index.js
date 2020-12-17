@@ -1,5 +1,4 @@
-export { Pipe, Section } from "./configuration"
-export { Field } from "./form"
+export { Option, Section } from "./configuration"
 export {
   Arguments,
   Pair,

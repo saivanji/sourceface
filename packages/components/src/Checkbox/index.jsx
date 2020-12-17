@@ -2,7 +2,7 @@ import React from "react"
 import styles from "./index.scss"
 
 export default function Checkbox({
-  label,
+  text,
   style,
   value = false,
   onChange,
@@ -20,7 +20,7 @@ export default function Checkbox({
         }}
         {...props}
       />
-      {label && <span className={styles.label}>{label}</span>}
+      {text && <span className={styles.text}>{text}</span>}
     </label>
   )
 }

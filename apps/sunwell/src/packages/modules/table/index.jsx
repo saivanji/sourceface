@@ -5,14 +5,11 @@ import {
   Await,
   Table,
   Pagination,
-  Row,
-  // TODO: move label to toolkit?
-  Label,
   Input,
   Checkbox,
 } from "@sourceface/components"
 import { useTransition, useValue, useHandler } from "packages/factory"
-import { Field, Pipe, Section } from "packages/toolkit"
+import { Option, Section } from "packages/toolkit"
 import More from "assets/more.svg"
 import styles from "./index.scss"
 
@@ -109,34 +106,30 @@ export const Configuration = function TableModuleConfiguration({ config }) {
   return (
     <>
       <Section title="Basic">
-        <Row>
-          <Pipe field="data" label="Data" />
-        </Row>
+        <Option name="data" label="Data" actionsOnly />
       </Section>
       <Section title="Pagination">
-        <Row>
-          <Field name="pagination" label="Enabled" component={Checkbox} />
-        </Row>
+        <Option
+          name="pagination"
+          label="Enabled"
+          text="Yes"
+          component={Checkbox}
+        />
         {config.pagination && (
           <>
-            <Row>
-              <Pipe field="count" label="Total count" />
-            </Row>
-            <Row>
-              <Pipe label="Current page" field="currentPage" />
-            </Row>
-            <Row>
-              <Label title="Items per page">
-                <Field name="limit" type="number" component={Input} />
-              </Label>
-            </Row>
+            <Option name="count" label="Total count" actionsOnly />
+            <Option name="currentPage" label="Current page" />
+            <Option
+              name="limit"
+              label="Items per page"
+              type="number"
+              component={Input}
+            />
           </>
         )}
       </Section>
       <Section title="Row">
-        <Row>
-          <Pipe field="rowClick" label="Row click" />
-        </Row>
+        <Option name="rowClick" label="Row click" actionsOnly />
       </Section>
     </>
   )

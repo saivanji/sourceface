@@ -1,0 +1,23 @@
+@import "~@sourceface/style/index.scss";
+
+.action:not(:last-child):after {
+  content: "";
+  display: block;
+  margin: 0 auto;
+  width: 1px;
+  height: $value-2;
+  background-color: $color-gray-400;
+}
+
+.group {
+  margin-bottom: $value-4;
+}
+
+.button.visible,
+.label:hover .button {
+  opacity: 1;
+}
+
+.button {
+  opacity: 0;
+}

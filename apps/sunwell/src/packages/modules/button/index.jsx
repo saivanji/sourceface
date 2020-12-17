@@ -1,15 +1,8 @@
 import React from "react"
-import {
-  Row,
-  Label,
-  Input,
-  Button,
-  Select,
-  Checkbox,
-} from "@sourceface/components"
+import { Input, Button, Select, Checkbox } from "@sourceface/components"
 import * as yup from "yup"
 import { useHandler } from "packages/factory"
-import { Field, Pipe } from "packages/toolkit"
+import { Option } from "packages/toolkit"
 
 export const Root = function ButtonModule({ config }) {
   const [onClick] = useHandler("action")
@@ -33,26 +26,20 @@ export const Root = function ButtonModule({ config }) {
 export const Configuration = function ButtonModuleConfiguration() {
   return (
     <>
-      <Row>
-        <Label title="Text">
-          <Field name="text" type="text" component={Input} />
-        </Label>
-      </Row>
-      <Row>
-        <Label title="Size">
-          <Field name="size" items={optionsProps.sizes} component={Select} />
-        </Label>
-      </Row>
-      <Row>
-        <Pipe field="action" label="Action" />
-      </Row>
-      <Row>
-        <Field
-          name="shouldFitContainer"
-          label="Fits container"
-          component={Checkbox}
-        />
-      </Row>
+      <Option name="text" label="Text" type="text" component={Input} />
+      <Option
+        name="size"
+        label="Size"
+        items={optionsProps.sizes}
+        component={Select}
+      />
+      <Option name="action" label="Action" actionsOnly />
+      <Option
+        name="shouldFitContainer"
+        label="Fits container"
+        text="Yes"
+        component={Checkbox}
+      />
     </>
   )
 }

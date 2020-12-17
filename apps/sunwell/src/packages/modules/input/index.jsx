@@ -1,8 +1,8 @@
 import React from "react"
 import * as yup from "yup"
-import { Row, Label, Input } from "@sourceface/components"
+import { Input } from "@sourceface/components"
 import { useTransition, useValue } from "packages/factory"
-import { Field, Pipe } from "packages/toolkit"
+import { Option } from "packages/toolkit"
 
 export const Root = function InputModule({
   config,
@@ -41,24 +41,25 @@ export const Root = function InputModule({
 export const Configuration = function InputModuleConfiguration() {
   return (
     <>
-      <Row>
-        <Label title="Placeholder">
-          <Field name="placeholder" type="text" component={Input} />
-        </Label>
-      </Row>
-      <Row>
-        <Label title="Validation">
-          <Field name="validation" type="text" component={Input} />
-        </Label>
-      </Row>
-      <Row>
-        <Label title="Validation message">
-          <Field name="validationMessage" type="text" component={Input} />
-        </Label>
-      </Row>
-      <Row>
-        <Pipe field="initial" label="Initial value" />
-      </Row>
+      <Option
+        name="placeholder"
+        label="Placeholder"
+        type="text"
+        component={Input}
+      />
+      <Option
+        name="validation"
+        label="Validation"
+        type="text"
+        component={Input}
+      />
+      <Option
+        name="validationMessage"
+        label="Validation message"
+        type="text"
+        component={Input}
+      />
+      <Option name="initial" label="Initial value" actionsOnly />
     </>
   )
 }

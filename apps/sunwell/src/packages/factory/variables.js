@@ -236,7 +236,7 @@ const createActionsDefinitions = (actionId, actionsList) => {
 const createParamsDefinitions = (params) =>
   keys(params).reduce((acc, key) => [...acc, { type: "params", key }], [])
 
-const createInputDefinitions = (field, inputTypes) => {
+const createInputDefinitions = (field, inputTypes = {}) => {
   return keys(inputTypes[field]).reduce(
     (acc, key) => [...acc, { type: "input", key }],
     []
