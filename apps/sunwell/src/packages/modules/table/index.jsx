@@ -8,7 +8,7 @@ import {
   Input,
   Checkbox,
 } from "@sourceface/components"
-import { useTransition, useValue, useHandler } from "packages/factory"
+import { useTransition, useHandlers } from "packages/factory"
 import { Option, Section } from "packages/toolkit"
 import More from "assets/more.svg"
 import styles from "./index.scss"
@@ -19,21 +19,18 @@ import styles from "./index.scss"
 
 // TODO: implement sub module configuration. When clicking on something inside of a module(for example column head) - display separate configuration sidebar instead of main configuration.
 
+export const populate = ["data", "count", "pagination"]
+
 export const Root = function TableModule({
-  config,
+  isUpdating,
+  values: { data, count, pagination },
   scope: { limit, offset, page },
 }) {
-  const [[rows, count], loading, pristine, error] = useValue("data", "count")
-  const [onRowClick] = useHandler("rowClick")
-
+  const [onRowClick] = useHandlers("rowClick")
   const changePage = useTransition("page")
 
-  return error ? (
-    `Failed to load data:\n${JSON.stringify(error)}`
-  ) : pristine ? (
-    "Loading..."
-  ) : (
-    <Await isAwaiting={loading} className={styles.root}>
+  return (
+    <Await isAwaiting={isUpdating} className={styles.root}>
       <Table>
         <Table.Thead>
           <Table.Tr>
@@ -49,7 +46,7 @@ export const Root = function TableModule({
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
-          {rows?.map((row) => (
+          {data?.map((row) => (
             <Table.Tr
               key={row.id}
               hover={!!onRowClick}
@@ -73,7 +70,7 @@ export const Root = function TableModule({
             </Table.Tr>
           ))}
         </Table.Tbody>
-        {config.pagination && count && limit !== 0 && (
+        {pagination && count && limit !== 0 && (
           <Table.Tfoot>
             <Table.Tr>
               <Table.Td colSpan={9}>
@@ -142,11 +139,11 @@ export const Configuration = function TableModuleConfiguration({ config }) {
 // used through "useValue" hook. If config value is literal then it will simple return it, if it's
 // an action - execute it.
 //
-// In case of "createVariables" function, config elements might be functions itself with similar logic.
+// In case of "createScope" function, config elements might be functions itself with similar logic.
 // For literals - will be returned their values, for actions - executed
 
 // TODO: remove parsing to int and have limit as integer in config instead
-export const createVariables = (config, state, updateState) => ({
+export const createScope = (config, state, updateState) => ({
   limit: +config.limit,
   // TODO: offset should be based on computed page value from config not from state
   offset: +config.limit * state.page,
@@ -196,7 +193,7 @@ export const initialState = {
   page: 0,
 }
 
-export const defaultConfig = {
+export const defaults = {
   pagination: true,
   limit: 10,
   // currentPage: "~page",

@@ -95,7 +95,7 @@ const optionsProps = Object.keys({ ...options }).reduce(
   {}
 )
 
-export const defaultConfig = {
+export const defaults = {
   text: "Hello world",
   fontSize: system.fontSizes.lg,
   fontWeight: system.fontWeights.regular,

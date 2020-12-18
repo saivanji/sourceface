@@ -15,7 +15,7 @@ export const Configuration = function ContainerModuleConfiguration() {
   return "configuration"
 }
 
-export const defaultConfig = {}
+export const defaults = {}
 
 export const size = {
   w: 6,

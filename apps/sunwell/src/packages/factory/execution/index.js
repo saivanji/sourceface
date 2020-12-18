@@ -9,7 +9,7 @@ import { useContainer } from "../container"
 import { createVariable } from "../variables"
 import { useFunctions } from "../functions"
 
-export const useHandler = (...fields) => {
+export const useHandlers = (...fields) => {
   const [executions] = useData(fields)
 
   // TODO: consider function arguments as input to the action
@@ -18,7 +18,7 @@ export const useHandler = (...fields) => {
   // return executions
 }
 
-export const useValue = (...fields) => {
+export const useValues = (...fields) => {
   const [result, setResult] = useState({
     data: [],
     error: null,
@@ -69,7 +69,7 @@ export const useValue = (...fields) => {
 }
 
 // TODO: might not need to have "useData" in favor of having logic in a separate function and keeping other hooks in
-// "useFunction" and "useValue"
+// "useFunction" and "useValues"
 const useData = (fields, identify = false, restore = false, input = {}) => {
   const { stock } = useContainer()
   const { id: moduleId, config } = useModule()
@@ -150,6 +150,8 @@ const useData = (fields, identify = false, restore = false, input = {}) => {
           ([actionId]) => `action/${actionId}`,
           sequence
         )
+    } else if (typeof config[field] !== "undefined") {
+      executions[i] = () => config[field]
     }
 
     initial?.push(initialValue)

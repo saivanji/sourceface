@@ -25,7 +25,7 @@ export function useActions(state, dispatch) {
       payload: {
         moduleId,
         parentId,
-        config: stock.modules.dict[type].defaultConfig,
+        config: stock.modules.dict[type].defaults,
         type,
         name,
         position,

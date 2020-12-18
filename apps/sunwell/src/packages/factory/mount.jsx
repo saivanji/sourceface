@@ -1,11 +1,11 @@
 import React, { createContext, useContext } from "react"
 // TODO: circular import?
-import { useValue } from "./execution"
+import { useValues } from "./execution"
 
 const context = createContext({})
 
 export function Mount({ children, moduleId }) {
-  const [[data], loading, pristine, error] = useValue("@mount")
+  const [[data], loading, pristine, error] = useValues("@mount")
   const parentMountScope = useMount()
 
   // TODO: where to put UI related code to loaders?

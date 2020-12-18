@@ -1,11 +1,11 @@
 import React from "react"
 import { Input, Button, Select, Checkbox } from "@sourceface/components"
 import * as yup from "yup"
-import { useHandler } from "packages/factory"
+import { useHandlers } from "packages/factory"
 import { Option } from "packages/toolkit"
 
 export const Root = function ButtonModule({ config }) {
-  const [onClick] = useHandler("action")
+  const [onClick] = useHandlers("action")
 
   return (
     <Button
@@ -63,7 +63,7 @@ const optionsProps = Object.keys(options).reduce(
   {}
 )
 
-export const defaultConfig = {
+export const defaults = {
   text: "Click me",
   size: "regular",
   shouldFitContainer: false,

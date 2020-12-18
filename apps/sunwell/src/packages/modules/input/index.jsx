@@ -1,7 +1,7 @@
 import React from "react"
 import * as yup from "yup"
 import { Input } from "@sourceface/components"
-import { useTransition, useValue } from "packages/factory"
+import { useTransition, useValues } from "packages/factory"
 import { Option } from "packages/toolkit"
 
 export const Root = function InputModule({
@@ -9,7 +9,7 @@ export const Root = function InputModule({
   state: { value, validationError, isReleased },
 }) {
   // TODO: handle async loading
-  const [[initial], loading, pristine, error] = useValue("initial")
+  const [[initial], loading, pristine, error] = useValues("initial")
   // TODO: additionally `useTransition()`, in order to be able to use `transition({value, validationError})` to
   // set multiple fields at once.
   const transitionValue = useTransition("value")
@@ -64,7 +64,7 @@ export const Configuration = function InputModuleConfiguration() {
   )
 }
 
-export const createVariables = (config, state) => ({
+export const createScope = (config, state) => ({
   value: state.value,
 })
 
@@ -83,7 +83,7 @@ export const createFunctions = (config, state, transition) => ({
   },
 })
 
-export const defaultConfig = {
+export const defaults = {
   validationMessage: "Validation failed",
 }
 
