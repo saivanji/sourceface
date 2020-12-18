@@ -13,6 +13,8 @@ import { Option, Section } from "packages/toolkit"
 import More from "assets/more.svg"
 import styles from "./index.scss"
 
+// TODO: test use case of defining "page" global state, fetching table data in parent "container" module, passing down to "table" via "mount" and paging with "on page change" field
+
 // TODO: filters might be displayed in place of a column(filtered column will have gray rounded bg and "i" icon. When user will hover it - will display applied filters)
 
 // TODO: implement actions. on clicking button - execute query. or open another page
@@ -143,6 +145,7 @@ export const Configuration = function TableModuleConfiguration({ config }) {
 // In case of "createScope" function, config elements might be functions itself with similar logic.
 // For literals - will be returned their values, for actions - executed
 
+// TODO: should values be from "populated" array or all available values?
 // TODO: remove parsing to int and have limit as integer in config instead
 export const createScope = (config, state, updateState) => ({
   limit: +config.limit,
