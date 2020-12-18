@@ -4,16 +4,20 @@ import * as yup from "yup"
 import { useHandlers } from "packages/factory"
 import { Option } from "packages/toolkit"
 
-export const Root = function ButtonModule({ config }) {
+export const populate = ["shouldFitContainer", "size", "text"]
+
+export const Root = function ButtonModule({
+  values: { shouldFitContainer, size, text },
+}) {
   const [onClick] = useHandlers("action")
 
   return (
     <Button
-      shouldFitContainer={config.shouldFitContainer}
-      size={config.size}
+      shouldFitContainer={shouldFitContainer}
+      size={size}
       onClick={() => onClick({ foo: "bar" })}
     >
-      {config.text}
+      {text}
     </Button>
   )
 }

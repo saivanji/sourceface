@@ -1,15 +1,21 @@
 import React from "react"
 import * as yup from "yup"
 import { Input } from "@sourceface/components"
-import { useTransition, useValues } from "packages/factory"
+import { useTransition } from "packages/factory"
 import { Option } from "packages/toolkit"
 
+export const populate = [
+  "initial",
+  "validation",
+  "validationMessage",
+  "placeholder",
+]
+
 export const Root = function InputModule({
-  config,
+  values: { initial, validation, validationMessage, placeholder },
   state: { value, validationError, isReleased },
 }) {
   // TODO: handle async loading
-  const [[initial], loading, pristine, error] = useValues("initial")
   // TODO: additionally `useTransition()`, in order to be able to use `transition({value, validationError})` to
   // set multiple fields at once.
   const transitionValue = useTransition("value")
@@ -18,8 +24,7 @@ export const Root = function InputModule({
   const handleChange = (e) => {
     const { value: currentValue } = e.target
     const error =
-      config.validation &&
-      (validate(config.validation, currentValue) || config.validationMessage)
+      validation && (validate(validation, currentValue) || validationMessage)
 
     transitionValidationError((isReleased && error) || null)
     transitionValue(currentValue)
@@ -30,7 +35,7 @@ export const Root = function InputModule({
       <Input
         value={value || initial}
         onChange={handleChange}
-        placeholder={config.placeholder}
+        placeholder={placeholder}
       />
       <div>{validationError}</div>
     </div>

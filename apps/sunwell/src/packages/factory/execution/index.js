@@ -151,6 +151,10 @@ const useData = (fields, identify = false, restore = false, input = {}) => {
           sequence
         )
     } else if (typeof config[field] !== "undefined") {
+      /**
+       * When no actions defined for the option - returning value from config
+       * if it exists there.
+       */
       executions[i] = () => config[field]
     }
 

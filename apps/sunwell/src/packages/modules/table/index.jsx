@@ -97,6 +97,7 @@ export const Root = function TableModule({
   )
 }
 
+// TODO: introduce "on page change" option for customizing paging behavior
 // TODO: apply progressive disclosure technique for pagination and
 // other optional stuff. (probably with accordion for the section?)
 export const Configuration = function TableModuleConfiguration({ config }) {

@@ -7,7 +7,7 @@ export default function Params() {
   const { path } = useRouterParams()
   const ref = useRef({ pageId: page.id, path })
 
-  // TODO: inconsistency issue persists when cache of operation is expired?
+  // TODO: inconsistency issue persists when cache of operation is expired? Or the issue with "Can not read property 'orderId' of null" is still not resolved
   /**
    * Getting params from next path only after page fetched to avoid data inconsistency.
    */

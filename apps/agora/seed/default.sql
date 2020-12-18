@@ -363,8 +363,6 @@ c450ae08-7409-4a75-853f-44e4a4d40e5f	2020-12-12 21:29:30.650449	38ec786b-2157-4f
 9dad524a-18c0-429f-9eae-31658e5f7b6c	2020-12-12 21:55:05.78589	18ffc49f-d4af-4e32-b4f9-5755092f3f84	\N	redirect	{}	action	3
 f1e03661-c824-40ef-bbae-6fc2543df2dc	2020-12-12 22:12:46.196887	4ac0ac8b-15dc-437a-af4f-2cf90255608a	form	function	{"func":"release"}	action	0
 bdcb1720-b9f7-4000-81bb-6ee6104db34c	2020-12-12 22:27:37.242066	4ac0ac8b-15dc-437a-af4f-2cf90255608a	\N	operation	{}	action	1
-6ef577da-cd33-4231-9a5c-a32a61db1d1f	2020-12-14 15:38:50.517038	04192cf3-daaf-4156-b961-79a8fa6de888	\N	operation	{}	@mount	0
-44a26176-f287-47d2-868d-f608954af9d6	2020-12-16 20:44:23.181596	5a7407cc-401f-47b5-8d8e-4fd94202023d	\N	operation	{}	@mount	0
 6962e6e4-6dc0-441c-9d73-f6e62d7fd80e	2020-12-16 20:45:59.969758	2fd0278b-2bed-44d6-93e0-789fe235ca4c	\N	selector	{"definition":{"type":"mount","moduleId":"5a7407cc-401f-47b5-8d8e-4fd94202023d"},"path":["customer_name"]}	initial	0
 801ac681-f882-4f65-b2dc-7fa7d72f41b8	2020-12-16 20:50:42.127821	1e6a7554-9d5f-46fc-afb1-c35d4e316c5b	\N	selector	{"definition":{"type":"mount","moduleId":"5a7407cc-401f-47b5-8d8e-4fd94202023d"},"path":["delivery_type"]}	initial	2
 e91ea41b-8589-408c-b1a7-92643b540cd7	2020-12-16 20:50:42.128111	21df1eab-9e3f-4430-9094-32e3d99cd7d1	\N	selector	{"definition":{"type":"mount","moduleId":"5a7407cc-401f-47b5-8d8e-4fd94202023d"},"path":["address"]}	initial	1
@@ -372,6 +370,7 @@ f44d8bd9-ecda-4da0-b63f-ce57caffb6e4	2020-12-16 20:52:02.144861	be867f4d-df4c-4e
 6530f888-4d29-4d72-813c-2a1dd13bd621	2020-12-16 20:52:02.146332	468ac0ed-3da0-4682-8021-1a0341716caf	\N	selector	{"definition":{"type":"mount","moduleId":"5a7407cc-401f-47b5-8d8e-4fd94202023d"},"path":["currency"]}	initial	5
 c074863d-8059-4106-b998-7e5f479e302c	2020-12-16 20:52:02.146586	150bea96-83a4-4700-847a-a473577a0f44	\N	selector	{"definition":{"type":"mount","moduleId":"5a7407cc-401f-47b5-8d8e-4fd94202023d"},"path":["status"]}	initial	3
 e538ab74-969f-4182-89fc-653e807b72c8	2020-12-16 20:52:02.146857	a29bfee2-22c2-48c7-b336-3dc9ab10150b	\N	selector	{"definition":{"type":"mount","moduleId":"5a7407cc-401f-47b5-8d8e-4fd94202023d"},"path":["payment_type"]}	initial	4
+44a26176-f287-47d2-868d-f608954af9d6	2020-12-16 20:44:23.181596	5a7407cc-401f-47b5-8d8e-4fd94202023d	\N	operation	{"fields": [{"key": "id", "definition": {"key": "orderId", "type": "params"}}]}	@mount	0
 \.
 
 
@@ -470,7 +469,6 @@ f1e03661-c824-40ef-bbae-6fc2543df2dc	\N	\N	d8f69376-21de-4e51-8fa7-faccd70034e6	
 f1e03661-c824-40ef-bbae-6fc2543df2dc	\N	\N	41941e89-d2ec-4c0f-a3d9-cece801df9f3	selected/5
 f1e03661-c824-40ef-bbae-6fc2543df2dc	\N	\N	67923baf-7ab0-4237-8a6c-f5d97ab26eeb	selected/6
 bdcb1720-b9f7-4000-81bb-6ee6104db34c	\N	8	\N	current/0
-6ef577da-cd33-4231-9a5c-a32a61db1d1f	\N	12	\N	current/0
 44a26176-f287-47d2-868d-f608954af9d6	\N	12	\N	current/0
 \.
 

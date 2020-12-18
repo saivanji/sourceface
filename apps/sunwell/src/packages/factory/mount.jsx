@@ -14,7 +14,9 @@ export function Mount({ children, moduleId }) {
 
   // console.log(data, loading, pristine, error)
 
-  return pristine ? (
+  return error ? (
+    JSON.stringify(error)
+  ) : pristine ? (
     "Loading..."
   ) : (
     <context.Provider value={{ ...parentMountScope, [moduleId]: data }}>

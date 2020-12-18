@@ -25,7 +25,6 @@ function Component({ module }) {
     <Mount moduleId={module.id}>
       <Root
         values={transformValues(values, populate)}
-        config={module.config}
         state={state}
         scope={scope.modules[module.id]}
         isUpdating={isUpdating}

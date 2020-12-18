@@ -5,25 +5,43 @@ import { Input, Select } from "@sourceface/components"
 import { Option } from "packages/toolkit"
 import styles from "./index.scss"
 
-// every module should have correspoding loader(depending on type)
-export const Root = function TextModule({ config }) {
-  // const [text, , pristine] = useTemplate(config.text)
+export const populate = [
+  "text",
+  "fontSize",
+  "fontWeight",
+  "alignmentX",
+  "alignmentY",
+  "decoration",
+  "color",
+]
 
-  return false ? (
-    "Loading..."
-  ) : (
+// every module should have correspoding loader(depending on type)
+export const Root = function TextModule({
+  values: {
+    text,
+    fontSize,
+    fontWeight,
+    alignmentX,
+    alignmentY,
+    decoration,
+    color,
+  },
+}) {
+  // const [text, , pristine] = useTemplate(text)
+
+  return (
     <span
       className={styles.root}
       style={{
-        fontSize: system.fontSizes[config.fontSize],
-        fontWeight: system.fontWeights[config.fontWeight],
-        textAlign: config.alignmentX,
-        verticalAlign: config.alignmentY,
-        textDecoration: config.decoration,
-        color: config.color,
+        fontSize: system.fontSizes[fontSize],
+        fontWeight: system.fontWeights[fontWeight],
+        textAlign: alignmentX,
+        verticalAlign: alignmentY,
+        textDecoration: decoration,
+        color: color,
       }}
     >
-      {config.text}
+      {text}
     </span>
   )
 }
