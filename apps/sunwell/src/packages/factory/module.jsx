@@ -15,8 +15,6 @@ function Component({ module }) {
   const { Root, populate = [] } = stock.modules.dict[module.type]
   const moduleStore = store[module.id]
 
-  console.log(moduleStore, scope)
-
   const [, isUpdating, pristine, error] = useValues(...populate, (data) =>
     assignData(module.id, data)
   )

@@ -24,6 +24,8 @@ export const useHandlers = (...fields) => {
 // Also try not to rely on variables when rendering dependent modules.
 // Flow is the following:
 // - Go over fields and if fields can be evaluated - evaluate, if can't then skip it. After all correct fields are evaluated go to the first unevaluated field and try to evaluate it, repeat until all fields be evaluated. That might solve both cases
+// Throw error from "evaluate" in case something is not available and catch it here
+// No need to sort the fields using that approach
 export const useValues = (...fields) => {
   const last = fields[fields.length - 1]
   const onUpdate = typeof last === "function" ? last : null
