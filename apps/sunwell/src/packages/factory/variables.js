@@ -41,6 +41,7 @@ export const defineVariable = (id) => {
 
     return {
       type,
+      // TODO: chances are it might be not needed. Try to implement without it
       __variable: true,
       ...zipObj(keys, values),
     }

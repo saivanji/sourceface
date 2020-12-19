@@ -18,6 +18,8 @@ export const useHandlers = (...fields) => {
   // return executions
 }
 
+// TODO: do ordering of the fields, since "limit" needs to be evaluated first in order to be
+// available for "data" evaluation in example of table
 export const useValues = (...fields) => {
   const last = fields[fields.length - 1]
   const onUpdate = typeof last === "function" ? last : null
