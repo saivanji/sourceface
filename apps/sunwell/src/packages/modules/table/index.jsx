@@ -21,7 +21,8 @@ import styles from "./index.scss"
 
 // TODO: implement sub module configuration. When clicking on something inside of a module(for example column head) - display separate configuration sidebar instead of main configuration.
 
-// TODO: how to handle dependencies between fields? For example user may fetch "page" field asynchronously and after based on "page" field fetch "data" rows. So "data" depends on "page" and needs to be fetched after it. But that behavior is defined in the user land, don't hard-code it.
+// TODO: how to handle dependencies between fields? For example user may fetch "page" field asynchronously and after based on "page" field fetch "data" rows. So "data" depends on "page" and needs to be fetched after it. But that behavior is defined in the user land, don't hard-code it. Define order of executions in useValues. What about useFunctions?
+// TODO: how to handle circular dependencies?("data" have "count" inside and "count" have "data" inside) restrict and filter out variables in listing from one of a sides?
 export const populate = ["data", "count", "pagination"]
 
 export const Root = function TableModule({
