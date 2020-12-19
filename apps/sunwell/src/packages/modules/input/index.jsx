@@ -12,7 +12,7 @@ export const populate = [
 ]
 
 export const Root = function InputModule({
-  values: { initial, validation, validationMessage, placeholder },
+  data: { initial, validation, validationMessage, placeholder },
   state: { value, validationError, isReleased },
 }) {
   // TODO: handle async loading
@@ -69,19 +69,19 @@ export const Configuration = function InputModuleConfiguration() {
   )
 }
 
-export const createScope = (config, state) => ({
+export const createScope = (data, state) => ({
   value: state.value,
 })
 
-export const createFunctions = (config, state, transition) => ({
+export const createFunctions = (data, state, transition) => ({
   release: () => {
     transition("isReleased", true)
 
-    if (config.validation && !validate(config.validation, state.value)) {
+    if (data.validation && !validate(data.validation, state.value)) {
       // TODO: transition({validationError: message}) in order to be able set multiple state fields at once
-      transition("validationError", config.validationMessage)
+      transition("validationError", data.validationMessage)
 
-      throw new Error(config.validationMessage)
+      throw new Error(data.validationMessage)
     }
 
     return state.value

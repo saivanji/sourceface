@@ -356,11 +356,9 @@ ALTER TABLE ONLY public.sources ALTER COLUMN id SET DEFAULT nextval('public.sour
 --
 
 COPY public.actions (id, created_at, module_id, name, type, config, field, "order") FROM stdin;
-9ab1d4cf-e501-4fa8-b0ef-a861af55f6cb	2020-12-05 12:44:52.630975	1a3c0c29-a473-473d-b744-6e609154a14a	\N	operation	{"fields": [{"key": "limit", "definition": {"name": "limit", "type": "local"}}, {"key": "offset", "definition": {"name": "offset", "type": "local"}}], "groups": []}	data	0
 59407f11-55a0-4968-9c7c-17d5702c1e81	2020-12-05 12:44:52.630632	1a3c0c29-a473-473d-b744-6e609154a14a	\N	operation	{}	count	1
 e0693656-26ac-48ea-a23c-0ac7a35eca36	2020-12-09 12:25:08.435407	1a3c0c29-a473-473d-b744-6e609154a14a	\N	function	{}	currentPage	2
 c450ae08-7409-4a75-853f-44e4a4d40e5f	2020-12-12 21:29:30.650449	38ec786b-2157-4f99-a964-8300363b9da4	\N	redirect	{}	action	3
-9dad524a-18c0-429f-9eae-31658e5f7b6c	2020-12-12 21:55:05.78589	18ffc49f-d4af-4e32-b4f9-5755092f3f84	\N	redirect	{}	action	3
 f1e03661-c824-40ef-bbae-6fc2543df2dc	2020-12-12 22:12:46.196887	4ac0ac8b-15dc-437a-af4f-2cf90255608a	form	function	{"func":"release"}	action	0
 bdcb1720-b9f7-4000-81bb-6ee6104db34c	2020-12-12 22:27:37.242066	4ac0ac8b-15dc-437a-af4f-2cf90255608a	\N	operation	{}	action	1
 6962e6e4-6dc0-441c-9d73-f6e62d7fd80e	2020-12-16 20:45:59.969758	2fd0278b-2bed-44d6-93e0-789fe235ca4c	\N	selector	{"definition":{"type":"mount","moduleId":"5a7407cc-401f-47b5-8d8e-4fd94202023d"},"path":["customer_name"]}	initial	0
@@ -371,6 +369,7 @@ f44d8bd9-ecda-4da0-b63f-ce57caffb6e4	2020-12-16 20:52:02.144861	be867f4d-df4c-4e
 c074863d-8059-4106-b998-7e5f479e302c	2020-12-16 20:52:02.146586	150bea96-83a4-4700-847a-a473577a0f44	\N	selector	{"definition":{"type":"mount","moduleId":"5a7407cc-401f-47b5-8d8e-4fd94202023d"},"path":["status"]}	initial	3
 e538ab74-969f-4182-89fc-653e807b72c8	2020-12-16 20:52:02.146857	a29bfee2-22c2-48c7-b336-3dc9ab10150b	\N	selector	{"definition":{"type":"mount","moduleId":"5a7407cc-401f-47b5-8d8e-4fd94202023d"},"path":["payment_type"]}	initial	4
 44a26176-f287-47d2-868d-f608954af9d6	2020-12-16 20:44:23.181596	5a7407cc-401f-47b5-8d8e-4fd94202023d	\N	operation	{"fields": [{"key": "id", "definition": {"key": "orderId", "type": "params"}}]}	@mount	0
+9ab1d4cf-e501-4fa8-b0ef-a861af55f6cb	2020-12-05 12:44:52.630975	1a3c0c29-a473-473d-b744-6e609154a14a	\N	operation	{"fields": [{"key": "limit", "definition": {"name": "limit", "type": "local", "__variable": true}}, {"key": "offset", "definition": {"name": "offset", "type": "local", "__variable": true}}], "groups": []}	data	0
 \.
 
 
@@ -396,7 +395,6 @@ COPY public.migrations (data) FROM stdin;
 
 COPY public.modules (id, created_at, type, config, name, page_id, parent_id, "position") FROM stdin;
 1a3c0c29-a473-473d-b744-6e609154a14a	2020-12-04 21:40:09.514037	table	{"limit":10,"pagination":true}	table_1	8	\N	{"h":12,"w":10,"x":0,"y":1}
-18ffc49f-d4af-4e32-b4f9-5755092f3f84	2020-12-12 15:23:38.735586	button	{"text":"Click me","size":"regular","shouldFitContainer":false}	abc	8	\N	{"w":3,"h":1,"x":0,"y":0}
 38ec786b-2157-4f99-a964-8300363b9da4	2020-12-05 15:16:40.457933	button	{"size": "regular", "text": "Create order", "shouldFitContainer": false}	button	8	\N	{"h":1,"w":2,"x":8,"y":0}
 be867f4d-df4c-4e8c-b246-f459e713c1ab	2020-12-16 20:40:39.578189	input	{"validationMessage":"Validation failed","placeholder":"Amount","validation":"^.+$"}	form_amount	9	5a7407cc-401f-47b5-8d8e-4fd94202023d	{"w":4,"h":1,"x":0,"y":6}
 5a7407cc-401f-47b5-8d8e-4fd94202023d	2020-12-16 20:40:39.56404	container	{}	form	9	\N	{"w":10,"h":9,"x":0,"y":0}
@@ -459,7 +457,6 @@ COPY public."references" (action_id, page_id, operation_id, module_id, field) FR
 9ab1d4cf-e501-4fa8-b0ef-a861af55f6cb	8	\N	\N	test/1
 9ab1d4cf-e501-4fa8-b0ef-a861af55f6cb	\N	10	\N	current/0
 59407f11-55a0-4968-9c7c-17d5702c1e81	\N	9	\N	current/0
-9dad524a-18c0-429f-9eae-31658e5f7b6c	7	\N	\N	current/0
 c450ae08-7409-4a75-853f-44e4a4d40e5f	7	\N	\N	current/0
 f1e03661-c824-40ef-bbae-6fc2543df2dc	\N	\N	ce5874ab-7c22-473a-9cff-8559bc91b4ec	selected/0
 f1e03661-c824-40ef-bbae-6fc2543df2dc	\N	\N	75dbe2c3-6fbe-42da-9a92-30cb5a75344e	selected/1

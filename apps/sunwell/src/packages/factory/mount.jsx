@@ -6,7 +6,7 @@ const context = createContext({})
 
 export function Mount({ children, moduleId }) {
   const [[data], loading, pristine, error] = useValues("@mount")
-  const parentMountScope = useMount()
+  const parentMount = useMount()
 
   // TODO: where to put UI related code to loaders?
   // TODO: when pristine: true - display global loading
@@ -19,7 +19,7 @@ export function Mount({ children, moduleId }) {
   ) : pristine ? (
     "Loading..."
   ) : (
-    <context.Provider value={{ ...parentMountScope, [moduleId]: data }}>
+    <context.Provider value={{ ...parentMount, [moduleId]: data }}>
       {children}
     </context.Provider>
   )

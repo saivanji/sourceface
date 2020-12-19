@@ -17,7 +17,7 @@ export const populate = [
 
 // every module should have correspoding loader(depending on type)
 export const Root = function TextModule({
-  values: {
+  data: {
     text,
     fontSize,
     fontWeight,

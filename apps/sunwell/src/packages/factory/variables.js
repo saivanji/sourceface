@@ -1,4 +1,4 @@
-import { keys } from "ramda"
+import { keys, zipObj } from "ramda"
 
 export const createDefinitions = (
   stock,
@@ -21,62 +21,35 @@ export const createDefinitions = (
 }
 
 export const defineVariable = (id) => {
-  const [a, b, c] = id.split("/")
+  const spec = [
+    "local/name",
+    "external/moduleId/name",
+    "action/actionId",
+    "mount/moduleId",
+    "params/key",
+    "input/key",
+  ]
 
-  if (a === "module" && b === "local") {
-    return {
-      type: "local",
-      name: c,
-    }
-  }
+  const [type, ...keys] = id.split("/")
 
-  if (a === "module") {
-    return {
-      type: "external",
-      moduleId: b,
-      name: c,
-    }
-  }
+  return spec.reduce((result, item) => {
+    const [itemType, ...values] = item.split("/")
 
-  if (a === "action") {
-    return {
-      type: "action",
-      actionId: b,
+    if (result || itemType !== type) {
+      return result
     }
-  }
 
-  if (a === "mount") {
     return {
-      type: "mount",
-      moduleId: b,
+      type,
+      __variable: true,
+      ...zipObj(keys, values),
     }
-  }
-
-  if (a === "params") {
-    return {
-      type: "params",
-      key: b,
-    }
-  }
-
-  if (a === "input") {
-    return {
-      type: "input",
-      key: b,
-    }
-  }
+  }, null)
 }
-
-const spec = [
-  "module/moduleId/name",
-  "action/actionId",
-  "mount/moduleId",
-  "params/key",
-]
 
 export const identifyVariable = (definition) => {
   if (definition.type === "local") {
-    return `module/local/${definition.name}`
+    return `local/${definition.name}`
   }
 
   if (definition.type === "external") {
@@ -129,16 +102,16 @@ export const renderVariable = (definition, { modules, actions }) => {
 export const evaluateVariable = (
   definition,
   moduleId,
-  globalScope,
-  mountScope,
+  scope,
+  mount,
   params
 ) => {
   if (definition.type === "local") {
-    return globalScope.modules[moduleId][definition.name]
+    return scope[moduleId][definition.name]
   }
 
   if (definition.type === "external") {
-    return globalScope.modules[definition.moduleId][definition.name]
+    return scope[definition.moduleId][definition.name]
   }
 
   if (definition.type === "action" || definition.type === "input") {
@@ -146,7 +119,7 @@ export const evaluateVariable = (
   }
 
   if (definition.type === "mount") {
-    return mountScope[definition.moduleId]
+    return mount[definition.moduleId]
   }
 
   if (definition.type === "params") {
@@ -157,18 +130,12 @@ export const evaluateVariable = (
 export const createVariable = (
   definition,
   moduleId,
-  globalScope,
-  mountScope,
+  scope,
+  mount,
   params,
   { modules, actions }
 ) => {
-  const data = evaluateVariable(
-    definition,
-    moduleId,
-    globalScope,
-    mountScope,
-    params
-  )
+  const data = evaluateVariable(definition, moduleId, scope, mount, params)
   const id = identifyVariable(definition)
 
   return {
@@ -183,7 +150,7 @@ export const createVariable = (
 // TODO: instead of "scope", get module's variables from it's type definitions
 const createModulesDefinitions = (moduleId, modulesList, scope) =>
   modulesList.reduce((acc, m) => {
-    const moduleScope = scope.modules[m.id]
+    const moduleScope = scope[m.id]
 
     if (!moduleScope) {
       return acc

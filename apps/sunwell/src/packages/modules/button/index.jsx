@@ -7,7 +7,7 @@ import { Option } from "packages/toolkit"
 export const populate = ["shouldFitContainer", "size", "text"]
 
 export const Root = function ButtonModule({
-  values: { shouldFitContainer, size, text },
+  data: { shouldFitContainer, size, text },
 }) {
   const [onClick] = useHandlers("action")
 

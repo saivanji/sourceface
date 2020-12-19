@@ -1,7 +1,7 @@
 import React from "react"
 import { useParams } from "hooks/index"
 import {
-  useScope,
+  useStore,
   useEditor,
   useAction,
   useConfiguration,
@@ -59,7 +59,7 @@ Value.Autocomplete = function ValueAutocomplete({
   const { selectors, modules, actions } = useEditor()
   const { stock } = useContainer()
   const { module } = useConfiguration()
-  const { scope } = useScope()
+  const { scope } = useStore()
   const { action } = useAction()
   const params = useParams()
 

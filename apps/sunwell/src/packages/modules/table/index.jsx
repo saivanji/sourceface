@@ -23,11 +23,11 @@ import styles from "./index.scss"
 
 // TODO: how to handle dependencies between fields? For example user may fetch "page" field asynchronously and after based on "page" field fetch "data" rows. So "data" depends on "page" and needs to be fetched after it. But that behavior is defined in the user land, don't hard-code it. Define order of executions in useValues. What about useFunctions?
 // TODO: how to handle circular dependencies?("data" have "count" inside and "count" have "data" inside) restrict and filter out variables in listing from one of a sides?
-export const populate = ["data", "count", "pagination"]
+export const populate = ["data", "count", "pagination", "limit"]
 
 export const Root = function TableModule({
   isUpdating,
-  values: { data, count, pagination },
+  data: { data, count, pagination },
   scope: { limit, offset, page },
 }) {
   const [onRowClick] = useHandlers("rowClick")
@@ -149,10 +149,10 @@ export const Configuration = function TableModuleConfiguration({ config }) {
 
 // TODO: should values be from "populated" array or all available values?
 // TODO: remove parsing to int and have limit as integer in config instead
-export const createScope = (config, state, updateState) => ({
-  limit: +config.limit,
+export const createScope = (data, state) => ({
+  limit: +data.limit,
   // TODO: offset should be based on computed page value from config not from state
-  offset: +config.limit * state.page,
+  offset: +data.limit * state.page,
   // TODO: local page variable also should be based on computed page from config, not from state
   page: state.page,
   // TODO: computed variables are executed only when used in order not to calculate everything when

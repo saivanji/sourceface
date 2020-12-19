@@ -7,7 +7,7 @@ export {
   evaluateVariable,
 } from "./variables"
 export { Container, useContainer } from "./container"
-export { useScope } from "./scope"
+export { useStore } from "./store"
 export { useFunctions } from "./functions"
 export { useEditor } from "./editor"
 export { useValues, useHandlers } from "./execution"

@@ -2,19 +2,19 @@ import React, { createContext, useContext } from "react"
 import { mapObjIndexed } from "ramda"
 import { useContainer } from "./container"
 import { useEditor } from "./editor"
-import { useScope } from "./scope"
+import { useStore } from "./store"
 
 const context = createContext({})
 
 export function Functions({ children, effects }) {
   const { stock } = useContainer()
   const { modules } = useEditor()
-  const { assignState, scope } = useScope()
+  const { assignState, store } = useStore()
 
   const modulesFunctions = createModuleFunctions(
     modules,
     stock,
-    scope,
+    store,
     assignState
   )
 
@@ -29,13 +29,18 @@ export const useFunctions = () => {
   return useContext(context)
 }
 
-const createModuleFunctions = (modules, stock, scope, assignState) =>
-  mapObjIndexed(
-    ({ id, type, config }) =>
-      stock.modules.dict[type].createFunctions?.(
-        config,
-        scope.modules[id],
-        (key, value) => assignState(id, key, value)
-      ) || {},
-    modules
-  )
+const createModuleFunctions = (modules, stock, store, assignState) =>
+  mapObjIndexed(({ id, type }) => {
+    // TODO: make sure it's correct
+    if (!store[id]) {
+      return
+    }
+
+    const { data, state } = store[id]
+
+    return (
+      stock.modules.dict[type].createFunctions?.(data, state, (key, value) =>
+        assignState(id, key, value)
+      ) || {}
+    )
+  }, modules)

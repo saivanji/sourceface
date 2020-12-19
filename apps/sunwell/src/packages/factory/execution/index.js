@@ -3,7 +3,7 @@ import { keys, mergeLeft } from "ramda"
 import { useParams } from "hooks/index"
 import { useModule } from "../module"
 import { useMount } from "../mount"
-import { useScope } from "../scope"
+import { useStore } from "../store"
 import { useEditor } from "../editor"
 import { useContainer } from "../container"
 import { createVariable } from "../variables"
@@ -19,6 +19,11 @@ export const useHandlers = (...fields) => {
 }
 
 export const useValues = (...fields) => {
+  const last = fields[fields.length - 1]
+  const onUpdate = typeof last === "function" ? last : null
+
+  fields = onUpdate ? fields.slice(0, -1) : fields
+
   const [result, setResult] = useState({
     data: [],
     error: null,
@@ -37,12 +42,15 @@ export const useValues = (...fields) => {
     let canceled = false
     const start = () => !canceled && setResult(mergeLeft({ loading: true }))
     const failure = (error) =>
-      !canceled && setResult(mergeLeft({ error, loading: false }))
-    const populate = (data) =>
-      !canceled &&
-      setResult(
-        mergeLeft({ data, loading: false, pristine: false, error: null })
-      )
+      !canceled && setResult(mergeLeft({ data: [], error, loading: false }))
+    const populate = (data) => {
+      if (!canceled) {
+        setResult(
+          mergeLeft({ data, loading: false, pristine: false, error: null })
+        )
+        onUpdate?.(data)
+      }
+    }
     const reload = () => !canceled && setResult(mergeLeft({ stale: true }))
 
     if (initial) {
@@ -74,8 +82,8 @@ const useData = (fields, identify = false, restore = false, input = {}) => {
   const { stock } = useContainer()
   const { id: moduleId, config } = useModule()
   const { modules, actions, selectors } = useEditor()
-  const { scope } = useScope()
-  const mountScope = useMount()
+  const { scope } = useStore()
+  const mount = useMount()
   const functions = useFunctions()
   const params = useParams()
 
@@ -109,7 +117,7 @@ const useData = (fields, identify = false, restore = false, input = {}) => {
       // TODO: remove "config" and pass only action instead?
       const args = serialize(config, action, {
         createVariable: (definition) =>
-          createVariable(definition, moduleId, scope, mountScope, params, {
+          createVariable(definition, moduleId, scope, mount, params, {
             modules,
             actions,
           }),

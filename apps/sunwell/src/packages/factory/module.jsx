@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from "react"
 import { useContainer } from "./container"
-import { useScope } from "./scope"
+import { useStore } from "./store"
 import { useEditor } from "./editor"
 import { Mount } from "./mount"
 import { useValues } from "./execution"
@@ -10,12 +10,18 @@ const moduleContext = createContext({})
 function Component({ module }) {
   const { stock } = useContainer()
   const { isEditing, configureModule } = useEditor()
-  const { readState, scope } = useScope()
+  const { store, scope, assignData } = useStore()
 
   const { Root, populate = [] } = stock.modules.dict[module.type]
-  const state = readState(module.id)
+  const moduleStore = store[module.id]
 
-  const [values, isUpdating, pristine, error] = useValues(...populate)
+  console.log(moduleStore, scope)
+
+  const [, isUpdating, pristine, error] = useValues(...populate, (data) =>
+    assignData(module.id, data)
+  )
+
+  // TODO: check of function availability as well in addition to variable availability
 
   return error ? (
     `Failed to load data:\n${JSON.stringify(error)}`
@@ -24,9 +30,9 @@ function Component({ module }) {
   ) : (
     <Mount moduleId={module.id}>
       <Root
-        values={transformValues(values, populate)}
-        state={state}
-        scope={scope.modules[module.id]}
+        data={moduleStore.data}
+        state={moduleStore.state}
+        scope={scope[module.id]}
         isUpdating={isUpdating}
         isEditing={isEditing}
         onConfigChange={(key, value) => configureModule(module.id, key, value)}
@@ -48,11 +54,8 @@ export const useModule = () => {
 }
 
 export const useTransition = function StateTransition(key) {
-  const { assignState } = useScope()
+  const { assignState } = useStore()
   const { id: moduleId } = useModule()
 
   return (value) => assignState(moduleId, key, value)
 }
-
-const transformValues = (values, populate) =>
-  populate.reduce((acc, key, i) => ({ ...acc, [key]: values[i] }), {})
