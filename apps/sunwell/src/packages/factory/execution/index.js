@@ -20,6 +20,10 @@ export const useHandlers = (...fields) => {
 
 // TODO: do ordering of the fields, since "limit" needs to be evaluated first in order to be
 // available for "data" evaluation in example of table
+// Try not to rely on action config's variables here.
+// Also try not to rely on variables when rendering dependent modules.
+// Flow is the following:
+// - Go over fields and if fields can be evaluated - evaluate, if can't then skip it. After all correct fields are evaluated go to the first unevaluated field and try to evaluate it, repeat until all fields be evaluated.
 export const useValues = (...fields) => {
   const last = fields[fields.length - 1]
   const onUpdate = typeof last === "function" ? last : null
