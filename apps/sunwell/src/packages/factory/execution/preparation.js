@@ -1,4 +1,4 @@
-import { difference, clone, props, keys, isEmpty } from "ramda"
+import { keys } from "ramda"
 
 import { createVariable, IncompleteEvaluation } from "../variables"
 
@@ -7,8 +7,7 @@ export const prepare = (
   fields,
   identify = false,
   restore = false,
-  input = {},
-  result = { identifier: "", executions: {}, initial: restore ? {} : null }
+  input = {}
 ) => {
   const {
     moduleId,
@@ -23,12 +22,11 @@ export const prepare = (
     params,
   } = dependencies
 
-  let identifier = result.identifier
-  let executions = clone(result.executions)
-  let initial = clone(result.initial)
-  let suspended = []
+  let identifier = ""
+  let executions = []
+  let initial = restore ? [] : null
 
-  for (let field of difference(fields, keys(executions))) {
+  for (let [i, field] of fields.entries()) {
     let sequence = []
     let runtime = createInputRuntime(input)
     /**
@@ -81,7 +79,7 @@ export const prepare = (
       }
 
       if (sequence.length) {
-        executions[field] = (onReload, input) =>
+        executions[i] = (onReload, input) =>
           reduce(
             (actionRuntime, [, fn]) =>
               fn({ ...actionRuntime, ...createInputRuntime(input) }, onReload),
@@ -93,32 +91,20 @@ export const prepare = (
          * When no actions defined for the option - returning value from config
          * if it exists there.
          */
-        executions[field] = () => config[field]
+        executions[i] = () => config[field]
       }
 
-      if (initial) {
-        initial[field] = initialValue
-      }
+      initial?.push(initialValue)
     } catch (err) {
       if (!(err instanceof IncompleteEvaluation)) {
         throw err
       }
 
-      suspended.push(field)
-
-      continue
+      return []
     }
   }
 
-  if (suspended.length) {
-    return prepare(dependencies, fields, identify, restore, input, {
-      identifier,
-      executions,
-      initial,
-    })
-  }
-
-  return [props(fields, executions), identifier, props(fields, initial)]
+  return [executions, identifier, initial]
 }
 
 const reduce = async (fn, createKey, [head, ...tail], acc = {}) => {

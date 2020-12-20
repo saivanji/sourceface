@@ -14,7 +14,7 @@ export const useHandlers = (...fields) => {
   const [executions] = prepare(dependencies, fields)
 
   // TODO: consider function arguments as input to the action
-  return executions.map((fn) => fn && ((input) => fn(null, input)))
+  return executions?.map((fn) => fn && ((input) => fn(null, input))) || []
   // same as the above
   // return executions
 }
@@ -64,6 +64,13 @@ export const useValues = (...fields) => {
     }
     const reload = () => !canceled && setResult(mergeLeft({ stale: true }))
 
+    /**
+     * Skipping execution in case evaluation is incomplete.
+     */
+    if (!executions) {
+      return
+    }
+
     if (initial) {
       populate(initial)
 
@@ -79,6 +86,13 @@ export const useValues = (...fields) => {
       canceled = true
     }
   }, [identifier, result.stale])
+
+  /**
+   * Returning loading state in case evaluation is incomplete.
+   */
+  if (!executions) {
+    return [[], true, true, null]
+  }
 
   if (initial) {
     return [initial, false, false, null]
