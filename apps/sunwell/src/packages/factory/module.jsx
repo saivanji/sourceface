@@ -23,7 +23,7 @@ function Component({ module }) {
 
   return error ? (
     `Failed to load data:\n${JSON.stringify(error)}`
-  ) : pristine ? (
+  ) : pristine || !moduleStore ? (
     "Loading..."
   ) : (
     <Mount moduleId={module.id}>

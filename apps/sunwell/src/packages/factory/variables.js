@@ -107,6 +107,13 @@ export const evaluateVariable = (
   mount,
   params
 ) => {
+  if (
+    (definition.type === "local" && !scope[moduleId]) ||
+    (definition.type === "external" && !scope[definition.moduleId])
+  ) {
+    throw new IncompleteEvaluation()
+  }
+
   if (definition.type === "local") {
     return scope[moduleId][definition.name]
   }
@@ -147,6 +154,8 @@ export const createVariable = (
     data,
   }
 }
+
+export class IncompleteEvaluation extends Error {}
 
 // TODO: instead of "scope", get module's variables from it's type definitions
 const createModulesDefinitions = (moduleId, modulesList, scope) =>

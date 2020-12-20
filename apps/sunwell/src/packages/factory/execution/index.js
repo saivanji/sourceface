@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react"
-import { keys, mergeLeft } from "ramda"
+import { mergeLeft } from "ramda"
 import { useParams } from "hooks/index"
 import { useModule } from "../module"
 import { useMount } from "../mount"
 import { useStore } from "../store"
 import { useEditor } from "../editor"
 import { useContainer } from "../container"
-import { createVariable } from "../variables"
 import { useFunctions } from "../functions"
+import { prepare } from "./preparation"
 
 export const useHandlers = (...fields) => {
-  const [executions] = useData(fields)
+  const dependencies = useDependencies()
+  const [executions] = prepare(dependencies, fields)
 
   // TODO: consider function arguments as input to the action
   return executions.map((fn) => fn && ((input) => fn(null, input)))
@@ -39,8 +40,10 @@ export const useValues = (...fields) => {
     pristine: true,
     stale: false,
   })
+  const dependencies = useDependencies()
 
-  const [executions, identifier, initial] = useData(
+  const [executions, identifier, initial] = prepare(
+    dependencies,
     fields,
     true,
     result.pristine
@@ -84,9 +87,7 @@ export const useValues = (...fields) => {
   return [result.data, result.loading, result.pristine, result.error]
 }
 
-// TODO: might not need to have "useData" in favor of having logic in a separate function and keeping other hooks in
-// "useFunction" and "useValues"
-const useData = (fields, identify = false, restore = false, input = {}) => {
+const useDependencies = () => {
   const { stock } = useContainer()
   const { id: moduleId, config } = useModule()
   const { modules, actions, selectors } = useEditor()
@@ -95,113 +96,16 @@ const useData = (fields, identify = false, restore = false, input = {}) => {
   const functions = useFunctions()
   const params = useParams()
 
-  let identifier = ""
-  let executions = []
-  let initial = restore ? [] : null
-
-  for (let [i, field] of fields.entries()) {
-    let sequence = []
-    let runtime = createInputRuntime(input)
-    /**
-     * By default pipe initial value is the same field in config. It will be overwritten when processing actions.
-     */
-    let initialValue = config[field]
-
-    for (let action of selectors.actions(moduleId, field)) {
-      /**
-       * Skipping not existing actions
-       */
-      // TODO: should we keep it since all data will be integrient?
-      if (!action) {
-        continue
-      }
-
-      const { config, type } = action
-
-      const { serialize, execute, readCache, settings } = stock.actions.dict[
-        type
-      ]
-
-      // TODO: remove "config" and pass only action instead?
-      const args = serialize(config, action, {
-        createVariable: (definition) =>
-          createVariable(definition, moduleId, scope, mount, params, {
-            modules,
-            actions,
-          }),
-      })
-
-      if (identify) {
-        identifier += JSON.stringify(args)
-      }
-      sequence.push([
-        action.id,
-        (runtime, onReload) =>
-          execute({ functions, modules, runtime, onReload })(...args),
-      ])
-
-      const cacheable = !!readCache
-      const cached =
-        cacheable &&
-        (runtime[`action/${action.id}`] = readCache({ runtime })(...args))
-
-      if ((cacheable && !cached) || (settings?.effect && !cacheable)) {
-        initial = null
-        continue
-      }
-
-      if (initial) {
-        initialValue =
-          !settings?.effect && !cacheable
-            ? execute({ functions, modules, runtime })(...args)
-            : cached
-      }
-    }
-
-    if (sequence.length) {
-      executions[i] = (onReload, input) =>
-        reduce(
-          (actionRuntime, [, fn]) =>
-            fn({ ...actionRuntime, ...createInputRuntime(input) }, onReload),
-          ([actionId]) => `action/${actionId}`,
-          sequence
-        )
-    } else if (typeof config[field] !== "undefined") {
-      /**
-       * When no actions defined for the option - returning value from config
-       * if it exists there.
-       */
-      executions[i] = () => config[field]
-    }
-
-    initial?.push(initialValue)
+  return {
+    moduleId,
+    stock,
+    config,
+    modules,
+    actions,
+    selectors,
+    scope,
+    mount,
+    functions,
+    params,
   }
-
-  return [executions, identifier, initial]
 }
-
-const reduce = async (fn, createKey, [head, ...tail], acc = {}) => {
-  if (!head) {
-    return acc.last
-  }
-
-  const last = await fn(acc.stack, head)
-
-  if (!tail.length) {
-    return last
-  }
-
-  return reduce(fn, createKey, tail, {
-    stack: {
-      ...acc.stack,
-      [createKey(head)]: last,
-    },
-    last,
-  })
-}
-
-const createInputRuntime = (input) =>
-  keys(input).reduce(
-    (acc, key) => ({ ...acc, [`input/${key}`]: input[key] }),
-    {}
-  )
