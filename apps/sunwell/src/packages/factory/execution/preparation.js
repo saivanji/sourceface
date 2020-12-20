@@ -1,6 +1,7 @@
 import { keys } from "ramda"
-
 import { createVariable, IncompleteEvaluation } from "../variables"
+
+// TODO: illustrate on paper complete evaluation flow
 
 export const prepare = (
   dependencies,
