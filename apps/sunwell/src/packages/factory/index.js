@@ -8,6 +8,7 @@ export {
 } from "./variables"
 export { Container, useContainer } from "./container"
 export { useStore } from "./store"
+export { useScope } from "./scope"
 export { useFunctions } from "./functions"
 export { useEditor } from "./editor"
 export { useValues, useHandlers } from "./execution"

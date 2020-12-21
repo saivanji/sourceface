@@ -4,34 +4,36 @@ import { useStore } from "./store"
 import { useEditor } from "./editor"
 import { Mount } from "./mount"
 import { useValues } from "./execution"
+import { useScope } from "./scope"
 
 const moduleContext = createContext({})
 
 function Component({ module }) {
   const { stock } = useContainer()
   const { isEditing, configureModule } = useEditor()
-  const { store, scope, assignData } = useStore()
+  const { state } = useStore()
 
-  const { Root, populate = [] } = stock.modules.dict[module.type]
-  const moduleStore = store[module.id]
+  const { Root, populateData = [], populateScope = [] } = stock.modules.dict[
+    module.type
+  ]
 
-  const [, isUpdating, pristine, error] = useValues(...populate, (data) =>
-    assignData(module.id, data)
-  )
+  const [data, isUpdating, pristine, error] = useValues(...populateData)
 
   // TODO: check of function availability as well in addition to variable availability
 
+  const [scope, scopeMeta] = useScope(...populateScope)
+
   return error ? (
     `Failed to load data:\n${JSON.stringify(error)}`
-  ) : pristine || !moduleStore ? (
+  ) : pristine ? (
     "Loading..."
   ) : (
     <Mount moduleId={module.id}>
       <Root
-        data={moduleStore.data}
-        state={moduleStore.state}
-        scope={scope[module.id]}
-        isUpdating={isUpdating}
+        data={data}
+        scope={scope}
+        state={state[module.id]}
+        isUpdating={isUpdating || scopeMeta.isUpdating}
         isEditing={isEditing}
         onConfigChange={(key, value) => configureModule(module.id, key, value)}
       />

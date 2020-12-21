@@ -4,10 +4,10 @@ import * as yup from "yup"
 import { useHandlers } from "packages/factory"
 import { Option } from "packages/toolkit"
 
-export const populate = ["shouldFitContainer", "size", "text"]
+export const populateData = ["shouldFitContainer", "size", "text"]
 
 export const Root = function ButtonModule({
-  data: { shouldFitContainer, size, text },
+  data: [shouldFitContainer, size, text],
 }) {
   const [onClick] = useHandlers("action")
 

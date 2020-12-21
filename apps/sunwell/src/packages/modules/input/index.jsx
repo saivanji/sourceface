@@ -4,7 +4,7 @@ import { Input } from "@sourceface/components"
 import { useTransition } from "packages/factory"
 import { Option } from "packages/toolkit"
 
-export const populate = [
+export const populateData = [
   "initial",
   "validation",
   "validationMessage",
@@ -12,7 +12,7 @@ export const populate = [
 ]
 
 export const Root = function InputModule({
-  data: { initial, validation, validationMessage, placeholder },
+  data: [initial, validation, validationMessage, placeholder],
   state: { value, validationError, isReleased },
 }) {
   // TODO: handle async loading
@@ -67,6 +67,31 @@ export const Configuration = function InputModuleConfiguration() {
       <Option name="initial" label="Initial value" actionsOnly />
     </>
   )
+}
+
+export const scope = {
+  value: (state) => state.value,
+}
+
+export const functions = {
+  release: (validation, validationMessage, state, transition) => {
+    transition("isReleased", true)
+
+    if (validation && !validate(validation, state.value)) {
+      // TODO: transition({validationError: message}) in order to be able set multiple state fields at once
+      transition("validationError", validationMessage)
+
+      throw new Error(validationMessage)
+    }
+
+    return state.value
+  },
+}
+
+export const dependencies = {
+  functions: {
+    release: ["validation", "validationMessage"],
+  },
 }
 
 export const createScope = (data, state) => ({

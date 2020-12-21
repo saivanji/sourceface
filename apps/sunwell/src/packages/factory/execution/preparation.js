@@ -3,6 +3,7 @@ import { createVariable, IncompleteEvaluation } from "../variables"
 
 // TODO: illustrate on paper complete evaluation flow
 
+// TODO: most likely "Scope" component is not needed for keeping the scope values since they're will be calculated on the fly
 export const prepare = (
   dependencies,
   fields,

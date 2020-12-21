@@ -28,11 +28,6 @@ export const useHandlers = (...fields) => {
 // Throw error from "evaluate" in case something is not available and catch it here
 // No need to sort the fields using that approach
 export const useValues = (...fields) => {
-  const last = fields[fields.length - 1]
-  const onUpdate = typeof last === "function" ? last : null
-
-  fields = onUpdate ? fields.slice(0, -1) : fields
-
   const [result, setResult] = useState({
     data: [],
     error: null,
@@ -54,14 +49,11 @@ export const useValues = (...fields) => {
     const start = () => !canceled && setResult(mergeLeft({ loading: true }))
     const failure = (error) =>
       !canceled && setResult(mergeLeft({ data: [], error, loading: false }))
-    const populate = (data) => {
-      if (!canceled) {
-        setResult(
-          mergeLeft({ data, loading: false, pristine: false, error: null })
-        )
-        onUpdate?.(data)
-      }
-    }
+    const populate = (data) =>
+      !canceled &&
+      setResult(
+        mergeLeft({ data, loading: false, pristine: false, error: null })
+      )
     const reload = () => !canceled && setResult(mergeLeft({ stale: true }))
 
     /**

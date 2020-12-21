@@ -5,7 +5,7 @@ import { Input, Select } from "@sourceface/components"
 import { Option } from "packages/toolkit"
 import styles from "./index.scss"
 
-export const populate = [
+export const populateData = [
   "text",
   "fontSize",
   "fontWeight",
@@ -17,15 +17,7 @@ export const populate = [
 
 // every module should have correspoding loader(depending on type)
 export const Root = function TextModule({
-  data: {
-    text,
-    fontSize,
-    fontWeight,
-    alignmentX,
-    alignmentY,
-    decoration,
-    color,
-  },
+  data: [text, fontSize, fontWeight, alignmentX, alignmentY, decoration, color],
 }) {
   // const [text, , pristine] = useTemplate(text)
 
