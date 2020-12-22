@@ -4,8 +4,6 @@ import * as yup from "yup"
 import { useHandlers } from "packages/factory"
 import { Option } from "packages/toolkit"
 
-export const populateData = ["shouldFitContainer", "size", "text"]
-
 export const Root = function ButtonModule({
   data: [shouldFitContainer, size, text],
 }) {
@@ -21,6 +19,8 @@ export const Root = function ButtonModule({
     </Button>
   )
 }
+
+Root.data = ["shouldFitContainer", "size", "text"]
 
 // TODO: have "isSpinning" field to display loading state for a button.
 // That might be useful in combination with using actions for that field(when we set that value

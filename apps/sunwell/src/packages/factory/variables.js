@@ -1,4 +1,5 @@
 import { keys, zipObj } from "ramda"
+import { prepare } from "./execution"
 
 export const createDefinitions = (
   stock,
@@ -103,23 +104,17 @@ export const renderVariable = (definition, { modules, actions }) => {
 export const evaluateVariable = (
   definition,
   moduleId,
-  scope,
   mount,
-  params
+  params,
+  modules,
+  dependencies
 ) => {
-  if (
-    (definition.type === "local" && !scope[moduleId]) ||
-    (definition.type === "external" && !scope[definition.moduleId])
-  ) {
-    throw new IncompleteEvaluation()
-  }
-
   if (definition.type === "local") {
-    return scope[moduleId][definition.name]
+    return new Lazy({ moduleId, name: definition.name }, modules, dependencies)
   }
 
   if (definition.type === "external") {
-    return scope[definition.moduleId][definition.name]
+    return new Lazy(definition, modules, dependencies)
   }
 
   if (definition.type === "action" || definition.type === "input") {
@@ -135,27 +130,59 @@ export const evaluateVariable = (
   }
 }
 
-export const createVariable = (
-  definition,
-  moduleId,
-  scope,
-  mount,
-  params,
-  { modules, actions }
-) => {
-  const data = evaluateVariable(definition, moduleId, scope, mount, params)
-  const id = identifyVariable(definition)
+// TODO: should accept "onReload"?
+class Lazy {
+  constructor(payload, modules, dependencies) {
+    const module = modules[payload.moduleId]
+    const blueprint = dependencies.stock.modules.dict[module.type]
+    const fields = blueprint.dependencies.scope[payload.name]
+    const selector = blueprint.scope[payload.name]
 
-  return {
-    definition,
-    id,
-    view: renderVariable(definition, { modules, actions }),
-    get: (runtime) => runtime?.[id] || data,
-    data,
+    const [executions, cache] = prepare(dependencies, fields)
+
+    this.selector = selector
+    this.state = dependencies.store.state[payload.moduleId]
+    this.executions = executions
+    this.cache = cache
+  }
+
+  async execute() {
+    const result = this.cache || (await Promise.all(this.executions))
+
+    return this.selector(...result, this.state)
   }
 }
 
-export class IncompleteEvaluation extends Error {}
+export const createVariable = (
+  definition,
+  moduleId,
+  mount,
+  params,
+  dependencies,
+  { modules, actions }
+) => {
+  const id = identifyVariable(definition)
+
+  return {
+    id,
+    definition,
+    view: renderVariable(definition, { modules, actions }),
+    get: (runtime) => {
+      const data = evaluateVariable(
+        definition,
+        moduleId,
+        mount,
+        params,
+        modules,
+        dependencies
+      )
+
+      return data instanceof Lazy
+        ? data.execute()
+        : Promise.resolve(runtime?.[id] || data)
+    },
+  }
+}
 
 // TODO: instead of "scope", get module's variables from it's type definitions
 const createModulesDefinitions = (moduleId, modulesList, scope) =>

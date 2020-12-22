@@ -4,13 +4,6 @@ import { Input } from "@sourceface/components"
 import { useTransition } from "packages/factory"
 import { Option } from "packages/toolkit"
 
-export const populateData = [
-  "initial",
-  "validation",
-  "validationMessage",
-  "placeholder",
-]
-
 export const Root = function InputModule({
   data: [initial, validation, validationMessage, placeholder],
   state: { value, validationError, isReleased },
@@ -41,6 +34,8 @@ export const Root = function InputModule({
     </div>
   )
 }
+
+Root.data = ["initial", "validation", "validationMessage", "placeholder"]
 
 // TODO: implement combined field for having regular form element and Pipe
 export const Configuration = function InputModuleConfiguration() {

@@ -88,18 +88,18 @@ export function Cut({ action, onConfigChange }) {
 }
 
 // TODO: name it differently, since it's not required to return serializable object(variable.get for example)
-export const serialize = (config, action, { createVariable }) => {
+export const serialize = (action, { createVariable }) => {
   const operation = getReference(REFERENCE_TYPE, FIELD, action)
   const staleIds = operation?.stale.map((x) => x.id)
 
-  const fields = config.fields?.reduce(
+  const fields = action.config.fields?.reduce(
     (acc, { key, definition }) => ({
       ...acc,
       [key]: createVariable(definition),
     }),
     {}
   )
-  const groups = config.groups?.map(createVariable)
+  const groups = action.config.groups?.map(createVariable)
 
   return [operation?.id, fields, groups, staleIds]
 }

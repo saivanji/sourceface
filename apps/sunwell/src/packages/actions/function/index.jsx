@@ -46,10 +46,10 @@ export function Root({ action, onConfigChange }) {
   )
 }
 
-export const serialize = (config, action) => {
+export const serialize = (action) => {
   const selection = getSelection(action)
 
-  return [selection, config.func, {}]
+  return [selection, action.config.func, {}]
 }
 
 export const execute = ({ functions }) => (modules, func, args) => {
