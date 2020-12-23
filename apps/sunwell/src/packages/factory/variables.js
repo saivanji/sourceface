@@ -1,4 +1,4 @@
-import { keys, zipObj } from "ramda"
+import { mergeRight, keys, zipObj } from "ramda"
 import { prepare } from "./execution"
 
 export const createDefinitions = (
@@ -137,19 +137,30 @@ class Lazy {
     const blueprint = dependencies.stock.modules.dict[module.type]
     const fields = blueprint.dependencies.scope[payload.name]
     const selector = blueprint.scope[payload.name]
-
     const [executions, cache] = prepare(dependencies, fields)
 
-    this.selector = selector
-    this.state = dependencies.store.state[payload.moduleId]
-    this.executions = executions
+    this.state = mergeRight(
+      blueprint.initialState,
+      dependencies.store.state[payload.moduleId]
+    )
     this.cache = cache
+    this.executions = executions
+    this.selector = selector
   }
 
-  async execute() {
-    const result = this.cache || (await Promise.all(this.executions))
+  execute(cachedOnly) {
+    if (cachedOnly || this.cache) {
+      if (!this.cache) {
+        // TODO: probably should throw error
+        return null
+      }
 
-    return this.selector(...result, this.state)
+      return this.selector(...this.cache, this.state)
+    }
+
+    return Promise.all(this.executions.map((fn) => fn())).then((data) =>
+      this.selector(...data, this.state)
+    )
   }
 }
 
@@ -162,24 +173,23 @@ export const createVariable = (
   { modules, actions }
 ) => {
   const id = identifyVariable(definition)
+  const data = evaluateVariable(
+    definition,
+    moduleId,
+    mount,
+    params,
+    modules,
+    dependencies
+  )
 
   return {
     id,
     definition,
     view: renderVariable(definition, { modules, actions }),
-    get: (runtime) => {
-      const data = evaluateVariable(
-        definition,
-        moduleId,
-        mount,
-        params,
-        modules,
-        dependencies
-      )
-
+    get: (runtime, cachedOnly) => {
       return data instanceof Lazy
-        ? data.execute()
-        : Promise.resolve(runtime?.[id] || data)
+        ? data.execute(cachedOnly)
+        : runtime?.[id] || data
     },
   }
 }

@@ -1,7 +1,7 @@
 import { keys } from "ramda"
 import { createVariable } from "./variables"
 
-export const prepare = (dependencies, fields, input = {}) => {
+export const prepare = (dependencies, fields = [], input = {}) => {
   const {
     module,
     stock,
@@ -15,6 +15,7 @@ export const prepare = (dependencies, fields, input = {}) => {
 
   let executions = []
   let cache = null
+  let identifier = ""
 
   for (let [i, field] of fields.entries()) {
     let sequence = []
@@ -39,6 +40,8 @@ export const prepare = (dependencies, fields, input = {}) => {
           }),
       })
 
+      identifier += JSON.stringify(args)
+
       sequence.push([
         action.id,
         (runtime, onReload) =>
@@ -48,6 +51,7 @@ export const prepare = (dependencies, fields, input = {}) => {
       const cacheable = !!readCache
       const cached =
         cacheable &&
+        // TODO: "readCache" returns promise
         (runtime[`action/${action.id}`] = readCache({ runtime })(...args))
 
       if ((cacheable && !cached) || (settings?.effect && !cacheable)) {
@@ -82,7 +86,7 @@ export const prepare = (dependencies, fields, input = {}) => {
     cache?.push(initialValue)
   }
 
-  return cache || executions
+  return [executions, cache, identifier]
 }
 
 const reduce = async (fn, createKey, [head, ...tail], acc = {}) => {

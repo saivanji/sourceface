@@ -32,6 +32,8 @@ export const Root = function TableModule({
   const [onRowClick] = useHandlers("rowClick")
   const changePage = useTransition("page")
 
+  console.log(page)
+
   return (
     <Await isAwaiting={isUpdating} className={styles.root}>
       <Table>

@@ -1,5 +1,5 @@
 import React from "react"
-import { mapObjIndexed } from "ramda"
+import { keys, mapObjIndexed } from "ramda"
 import { Reference, Arguments } from "packages/toolkit"
 import { getReference } from "packages/factory"
 import request, { cache } from "./request"
@@ -104,7 +104,7 @@ export const serialize = (action, { createVariable }) => {
   return [operation?.id, fields, groups, staleIds]
 }
 
-export const execute = ({ runtime, onReload }) => (
+export const execute = ({ runtime, onReload }) => async (
   operationId,
   fields,
   groups,
@@ -112,14 +112,14 @@ export const execute = ({ runtime, onReload }) => (
 ) => {
   return request(
     operationId,
-    createArgs(runtime, fields, groups),
+    await createArgs(runtime, fields, groups),
     staleIds,
     onReload
   )
 }
 
-export const readCache = ({ runtime }) => (operationId, fields, groups) =>
-  cache.get(operationId, createArgs(runtime, fields, groups))
+export const readCache = ({ runtime }) => async (operationId, fields, groups) =>
+  cache.get(operationId, createSyncArgs(runtime, fields, groups))
 
 export const add = (config) => {}
 
@@ -127,10 +127,26 @@ export const settings = {
   effect: true,
 }
 
-const createArgs = (runtime, fields, groups) => ({
-  ...mapObjIndexed((variable) => variable.get(runtime), fields),
+const createSyncArgs = async (runtime, fields, groups) => ({
+  ...mapObjIndexed((variable) => variable.get(runtime, true), fields),
   ...groups?.reduce(
-    (acc, variable) => ({ ...acc, ...variable.get(runtime) }),
+    (acc, variable) => ({ ...acc, ...variable.get(runtime, true) }),
     {}
   ),
 })
+
+const createArgs = async (runtime, fields, groups) => {
+  let result = {}
+
+  for (let key of keys(fields)) {
+    const variable = fields[key]
+    result[key] = await variable.get(runtime)
+  }
+
+  for (let key of keys(groups)) {
+    const variable = groups[key]
+    result = { ...result, ...(await variable.get(runtime)) }
+  }
+
+  return result
+}

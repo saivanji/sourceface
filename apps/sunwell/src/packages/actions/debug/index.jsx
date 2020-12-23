@@ -31,11 +31,11 @@ export const serialize = ({ definitions = [] }, action, { createVariable }) => {
 
 // TODO: might need to return the result of previous evaluation not to
 // break when used in the end of a pipe
-export const execute = ({ runtime }) => (variables) => {
+export const execute = ({ runtime }) => async (variables) => {
   for (let variable of variables) {
     console.log(
       `Variable: %c${variable.view}. %cValue: %c${JSON.stringify(
-        variable.get(runtime)
+        await variable.get(runtime)
       )}`,
       "color: blue",
       "color: black",

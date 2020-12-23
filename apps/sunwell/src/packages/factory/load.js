@@ -8,7 +8,8 @@ import { useContainer } from "./container"
 import { useFunctions } from "./functions"
 import { useStore } from "./store"
 
-export const useLoad = (funcs, cached) => {
+// TODO: caclulate all variables upfront and pass down only literals as identifier/arguments?
+export const useLoad = (funcs, cached, identifier) => {
   const [result, setResult] = useState({
     data: [],
     isLoading: false,
@@ -16,9 +17,6 @@ export const useLoad = (funcs, cached) => {
     error: null,
     stale: false,
   })
-
-  // TODO: in case of same cached data return the same js object
-  const identifier = JSON.stringify(cached)
 
   useEffect(() => {
     let canceled = false
