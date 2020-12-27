@@ -4,6 +4,8 @@ import { Reference, Arguments } from "packages/toolkit"
 import { getReference } from "packages/factory"
 import request, { cache } from "./request"
 
+// TODO: consider keeping variables configuration in a separate column in database(variables) instead of config
+
 // TODO: when adding a new action, user will choose from multiple sub categories. For some modules will be the only one option(query, redirect),
 // for others - many(module - for every module, from specific module)
 //
