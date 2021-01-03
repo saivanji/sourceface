@@ -6,6 +6,14 @@ import * as cache from "./cache";
 export const readSetting = (key, module, getScopeValue) => {
   // TODO: in future, when no action will be available return config value in that place
   const action = module.settings[key];
+
+  /**
+   * Explicitly returning null if setting is not defined.
+   */
+  if (!action) {
+    return null;
+  }
+
   const args = evaluateArguments(action.variables, getScopeValue);
 
   return maybePromise(args, (args) => {
@@ -32,30 +40,41 @@ export const readScopeValue = (
   state,
   getScopeValue
 ) => {
-  const settings = plural(blueprint.dependencies.scope[key], (key) =>
+  const settings = plural(blueprint.scope?.[key].settings, (key) =>
     readSetting(key, module, getScopeValue)
   );
 
-  return maybePromise(settings, (settings) =>
-    blueprint.scope[key](state, settings)
+  const scope = plural(blueprint.scope?.[key].scope, (key) =>
+    readScopeValue(key, module, blueprint, state, getScopeValue)
+  );
+
+  return maybePromise(settings, scope, (settings, scope) =>
+    blueprint.scope[key].selector(state, { settings, scope })
   );
 };
 
-export const plural = (keys, fn) => {
-  const result = keys.map(fn);
-  const isPromise = result.some((x) => x instanceof Promise);
+export const plural = (keys = [], fn) =>
+  maybePromise(...keys.map(fn), (...args) => args);
 
-  return isPromise ? Promise.all(result) : result;
-};
-
-const evaluateArguments = async (args, getScopeValue) => {
+const evaluateArguments = (args, getScopeValue) => {
   const variableNames = keys(args);
 
-  const argsList = await Promise.all(
-    variableNames.map((name) => variable.evaluate(args[name], getScopeValue))
+  const argsList = variableNames.map((name) =>
+    variable.evaluate(args[name], getScopeValue)
   );
 
-  return zipObj(variableNames, argsList);
+  return maybePromise(argsList, zipObj(variableNames));
 };
 
-const maybePromise = (x, fn) => (x instanceof Promise ? x.then(fn) : fn(x));
+const maybePromise = (...args) => {
+  const items = args.slice(0, -1);
+  const fn = args[args.length - 1];
+
+  const isPromise = items.some((x) => x instanceof Promise);
+
+  if (isPromise) {
+    return Promise.all(items).then((result) => fn(...result));
+  }
+
+  return fn(...items);
+};

@@ -2,6 +2,9 @@ import React from "react"
 import { update, path } from "ramda"
 import { Value, Static } from "packages/toolkit"
 
+// TODO: sometimes it's useful to return variable value from the action (without accessing it's fields). Cover that case here.
+// rename to "Variable/Value" so user can return plain value from the action or access it's fields.
+// Or implement field accessing api in Value autocomplete so properties can be accessed in any place Value can be used?
 export function Root({ action, onConfigChange }) {
   const { definition, path = [] } = action.config
 

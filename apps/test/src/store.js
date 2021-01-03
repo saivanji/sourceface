@@ -9,21 +9,21 @@ export const moduleFamily = atomFamily({
   key: "module",
   default: selectorFamily({
     key: "module/default",
-    get: (param) => ({ get }) => get(modules).entity[param]
-  })
+    get: (param) => ({ get }) => get(modules).entity[param],
+  }),
 });
 
 export const modules = selector({
   key: "modules",
-  get: async () => normalize(await api.listModules())
+  get: async () => normalize(await api.listModules()),
 });
 
 export const selectedId = atom({
   key: "selectedId",
   default: selector({
     key: "selectedId/default",
-    get: ({ get }) => get(modules).ids[0]
-  })
+    get: ({ get }) => get(modules).ids[0],
+  }),
 });
 
 export const settingsFamily = selectorFamily({
@@ -32,7 +32,7 @@ export const settingsFamily = selectorFamily({
     const module = get(moduleFamily(moduleId));
 
     return plural(keys, (key) => readSetting(key, module, getScopeValue(get)));
-  }
+  },
 });
 
 export const scopeFamily = selectorFamily({
@@ -45,7 +45,7 @@ export const scopeFamily = selectorFamily({
     return plural(keys, (key) =>
       readScopeValue(key, module, blueprint, state, getScopeValue(get))
     );
-  }
+  },
 });
 
 export const stateFamily = atomFamily({
@@ -56,8 +56,8 @@ export const stateFamily = atomFamily({
       const module = get(moduleFamily(param));
 
       return modulesStock[module.type].initialState || {};
-    }
-  })
+    },
+  }),
 });
 
 const getScopeValue = (get) => (moduleId, key) => {
@@ -65,7 +65,7 @@ const getScopeValue = (get) => (moduleId, key) => {
   const module = get(moduleFamily(moduleId));
   const blueprint = modulesStock[module.type];
 
-  return readScopeValue(key, module, blueprint, state);
+  return readScopeValue(key, module, blueprint, state, getScopeValue(get));
 };
 
 // export const selected = selector({

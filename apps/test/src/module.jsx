@@ -28,7 +28,7 @@ export default function ModuleProvider({ moduleId }) {
 function Module() {
   const [selectedId, setSelectedId] = useRecoilState(store.selectedId);
   const { module, blueprint } = useModule();
-  const state = useRecoilValue(store.stateFamily(module.id));
+  const [state, changeState] = useRecoilState(store.stateFamily(module.id));
 
   const { Root } = blueprint;
 
@@ -44,6 +44,7 @@ function Module() {
   }
 
   if (error) {
+    console.log(error);
     return JSON.stringify(error);
   }
 
@@ -51,12 +52,17 @@ function Module() {
     <div
       onClick={() => setSelectedId(module.id)}
       className={cx(
-        "cursor-pointer rounded-md border-2 border-dashed p-4 bg-white mb-3",
+        "rounded-md border-2 border-dashed p-4 bg-white mb-3",
         isLoading && "opacity-75",
         selectedId === module.id ? "border-blue-500" : "border-green-300"
       )}
     >
-      <Root state={state} settings={settings.data} scope={scope.data} />
+      <Root
+        state={state}
+        onStateChange={changeState}
+        settings={settings.data}
+        scope={scope.data}
+      />
     </div>
   );
 }

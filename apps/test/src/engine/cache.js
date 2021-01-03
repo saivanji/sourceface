@@ -9,7 +9,7 @@ export const get = (...input) => store[identify(...input)];
 export const set = (...input) => {
   const identifier = identify(...input.slice(0, -1));
 
-  store[identifier] = input.slice(-1);
+  store[identifier] = input[input.length - 1];
 
   clearTimeout(timeouts[identifier]);
   timeouts[identifier] = setTimeout(() => {

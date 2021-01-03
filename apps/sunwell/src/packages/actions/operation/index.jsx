@@ -52,6 +52,9 @@ import request, { cache } from "./request"
 
 // TODO: in case variable is an object, neither of it's fields can be accessed via dropdown. Have separate action for accessing object variable fields
 
+// TODO: implement separate autocomplete for variables(with properties selection, category, type and info displaying)
+// Base on props and public interface of r-s package
+
 const FIELD = "current"
 const REFERENCE_TYPE = "operations"
 

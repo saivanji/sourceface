@@ -1,13 +1,14 @@
 import React from "react";
-import { useTransition } from "../engine/hooks";
 // import { Setting } from "../editor/settings";
 
-export function Root({ scope: [formatted] }) {
-  const changeCount = useTransition("value");
+// TODO: test counter as pagination for table
+export function Root({ scope: [value], onStateChange }) {
+  const changeCount = (fn) =>
+    onStateChange((state) => ({ ...state, value: fn(state.value) }));
 
   return (
     <div className="flex flex-col items-center">
-      <span className="mb-2">Current: {formatted}</span>
+      <span className="mb-2">Current: {value}</span>
       <div className="grid grid-flow-col gap-2">
         <button
           className="px-2 border border-gray-400 bg-gray-200 shadow rounded"
@@ -26,8 +27,7 @@ export function Root({ scope: [formatted] }) {
   );
 }
 
-Root.settings = ["postfix"];
-Root.scope = ["formatted"];
+Root.scope = ["value"];
 
 // export function Settings() {
 //   return (
@@ -42,27 +42,17 @@ export const initialState = {
 };
 
 export const scope = {
-  formatted: (state, [postfix]) => `${state.value} ${postfix}`,
+  value: {
+    selector: (state) => state.value,
+    type: "Number",
+  },
 };
 
 export const functions = {
-  increment: (state, transition) => {
-    transition("value", state.value + 1);
-  },
-  log: (state, transition, [postfix]) => {
-    console.log(postfix);
-  },
-};
-
-export const types = {
-  formatted: "String",
-};
-
-export const dependencies = {
-  scope: {
-    formatted: ["postfix"],
-  },
-  functions: {
-    log: ["postfix"],
+  increment: {
+    call: (state, transition, { settings: [value] }) => {
+      transition("value", value + 1);
+    },
+    settings: ["value"],
   },
 };

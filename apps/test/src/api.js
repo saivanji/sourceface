@@ -6,16 +6,43 @@ export function listModules() {
   });
 }
 
+// setting = "config entry || action"
 export const modules = [
   {
     id: 1,
-    type: "text",
+    type: "table",
     settings: {
-      content: {
-        name: "query",
+      data: {
+        name: "operation",
         variables: {
-          endpoint: { category: "global", payload: { name: "page" } },
-          key: { category: "constant", payload: { value: "content" } },
+          name: { category: "constant", payload: { value: "ordersList" } },
+          limit: {
+            category: "scope",
+            payload: { moduleId: 1, property: "limit" },
+          },
+          offset: {
+            category: "scope",
+            payload: { moduleId: 1, property: "offset" },
+          },
+        },
+      },
+      page: {
+        name: "value",
+        variables: {
+          input: {
+            category: "scope",
+            payload: { moduleId: 3, property: "value" },
+          },
+        },
+      },
+      // Using "value" action until we implement state configuration values.
+      limit: {
+        name: "value",
+        variables: {
+          input: {
+            category: "constant",
+            payload: { value: 10 },
+          },
         },
       },
     },
@@ -25,10 +52,12 @@ export const modules = [
     type: "text",
     settings: {
       content: {
-        name: "query",
+        name: "value",
         variables: {
-          endpoint: { category: "global", payload: { name: "page" } },
-          key: { category: "constant", payload: { value: "email" } },
+          input: {
+            category: "scope",
+            payload: { moduleId: 1, property: "offset" },
+          },
         },
       },
     },
@@ -36,33 +65,5 @@ export const modules = [
   {
     id: 3,
     type: "counter",
-    settings: {
-      postfix: {
-        name: "query",
-        variables: {
-          endpoint: { category: "constant", payload: { value: "meta" } },
-          key: { category: "constant", payload: { value: "units" } },
-        },
-      },
-      // title: {}
-    },
-  },
-  {
-    id: 4,
-    type: "text",
-    settings: {
-      content: {
-        name: "value",
-        variables: {
-          input: {
-            category: "scope",
-            payload: {
-              moduleId: 3,
-              property: "formatted",
-            },
-          },
-        },
-      },
-    },
   },
 ];

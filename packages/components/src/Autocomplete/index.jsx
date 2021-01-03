@@ -4,6 +4,8 @@ import styles from "./index.scss"
 import { useItems } from "./hooks"
 import { listSuggestions, transformToOriginal } from "./utils"
 
+// TODO: refactor and base on props and public interface of r-s package
+
 // TODO: implement multiselect so it can be used for choosing multiple modules in
 // some actions(for example in the form submission case)
 export default function Autocomplete({
