@@ -13,7 +13,7 @@ export const modules = [
     type: "table",
     settings: {
       data: {
-        name: "operation",
+        type: "operation",
         variables: {
           name: { category: "constant", payload: { value: "ordersList" } },
           limit: {
@@ -27,7 +27,7 @@ export const modules = [
         },
       },
       page: {
-        name: "value",
+        type: "value",
         variables: {
           input: {
             category: "scope",
@@ -37,7 +37,7 @@ export const modules = [
       },
       // Using "value" action until we implement state configuration values.
       limit: {
-        name: "value",
+        type: "value",
         variables: {
           input: {
             category: "constant",
@@ -52,7 +52,7 @@ export const modules = [
     type: "text",
     settings: {
       content: {
-        name: "value",
+        type: "value",
         variables: {
           input: {
             category: "scope",
@@ -65,5 +65,19 @@ export const modules = [
   {
     id: 3,
     type: "counter",
+  },
+  {
+    id: 4,
+    type: "button",
+    settings: {
+      event: {
+        type: "operation",
+        variables: {
+          name: { category: "constant", payload: { value: "ordersList" } },
+          limit: { category: "constant", payload: { value: 10 } },
+          offset: { category: "constant", payload: { value: 0 } },
+        },
+      },
+    },
   },
 ];

@@ -18,5 +18,4 @@ export const set = (...input) => {
   }, TTL);
 };
 
-const identify = (moduleId, field, args) =>
-  `${moduleId}/${field}/${stringify(args)}`;
+const identify = (actionType, args) => `${actionType}/${stringify(args)}`;

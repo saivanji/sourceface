@@ -1,5 +1,5 @@
-import { useRef, useEffect } from "react";
-import { useRecoilValueLoadable, useSetRecoilState } from "recoil";
+import { useRef, useEffect, useMemo } from "react";
+import { useRecoilValueLoadable, useRecoilCallback } from "recoil";
 import { useModule } from "../module";
 import * as store from "../store";
 
@@ -10,6 +10,18 @@ export function useSettings(keys) {
   return useLoadableStatus(loadable);
 }
 
+export function useSettingCallback(key) {
+  const input = useInput([key]);
+  return useRecoilCallback(
+    ({ snapshot }) => async () => {
+      const [result] = await snapshot.getPromise(store.settingsFamily(input));
+
+      return result;
+    },
+    [input]
+  );
+}
+
 export function useScope(keys) {
   const input = useInput(keys);
   const loadable = useRecoilValueLoadable(store.scopeFamily(input));
@@ -17,20 +29,10 @@ export function useScope(keys) {
   return useLoadableStatus(loadable);
 }
 
-export function useTransition(key) {
-  const { module } = useModule();
-  const setter = useSetRecoilState(store.stateFamily(module.id));
-
-  return (value) =>
-    setter((prevState) => ({
-      ...prevState,
-      [key]: typeof value === "function" ? value(prevState[key]) : value
-    }));
-}
-
 function useInput(keys) {
   const { module } = useModule();
-  return [module.id, keys];
+  // TODO: what if "keys" will be provided as value from render function?
+  return useMemo(() => [module.id, keys], [module.id, keys]);
 }
 
 function useLoadableStatus(loadable) {
@@ -47,6 +49,6 @@ function useLoadableStatus(loadable) {
     isPristine: !prev.current && loadable.state === "loading",
     isLoading: loadable.state === "loading",
     data: loadable.state === "hasValue" ? loadable.contents : prev.current,
-    error: loadable.state === "hasError" ? loadable.contents : null
+    error: loadable.state === "hasError" ? loadable.contents : null,
   };
 }

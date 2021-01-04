@@ -4,6 +4,15 @@ import { RecoilRoot, useRecoilValue } from "recoil";
 import Module from "./module";
 import * as store from "./store";
 
+// - Stale
+// - Setting functions
+// - Multiple action evaluation
+// - Static config setting
+// - Variable categories
+//   - Argument
+//   - Action
+//   - Mount
+
 function Modules() {
   const { ids } = useRecoilValue(store.modules);
 

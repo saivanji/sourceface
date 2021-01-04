@@ -2,6 +2,7 @@ import { keys, zipObj } from "ramda";
 import { stock as actionsStock } from "../actions";
 import * as variable from "./variable";
 import * as cache from "./cache";
+import { maybePromise } from "./utils";
 
 export const readSetting = (key, module, getScopeValue) => {
   // TODO: in future, when no action will be available return config value in that place
@@ -17,16 +18,16 @@ export const readSetting = (key, module, getScopeValue) => {
   const args = evaluateArguments(action.variables, getScopeValue);
 
   return maybePromise(args, (args) => {
-    const cached = cache.get(module.id, key, args);
+    const cached = cache.get(action.type, args);
 
     if (cached) {
       return cached;
     }
 
-    const result = actionsStock[action.name].execute(args);
+    const result = actionsStock[action.type].execute(args);
 
     return maybePromise(result, (result) => {
-      cache.set(module.id, key, args, result);
+      cache.set(action.type, args, result);
 
       return result;
     });
@@ -64,17 +65,4 @@ const evaluateArguments = (args, getScopeValue) => {
   );
 
   return maybePromise(argsList, zipObj(variableNames));
-};
-
-const maybePromise = (...args) => {
-  const items = args.slice(0, -1);
-  const fn = args[args.length - 1];
-
-  const isPromise = items.some((x) => x instanceof Promise);
-
-  if (isPromise) {
-    return Promise.all(items).then((result) => fn(...result));
-  }
-
-  return fn(...items);
 };
