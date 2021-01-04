@@ -4,8 +4,8 @@ import { RecoilRoot, useRecoilValue } from "recoil";
 import Module from "./module";
 import * as store from "./store";
 
-// - Stale
 // - Module functions
+// - Stale
 // - Multiple action evaluation
 // - Static config setting
 // - Variable categories
