@@ -1,3 +1,6 @@
+export const plural = (keys = [], fn) =>
+  maybePromise(...keys.map(fn), (...args) => args);
+
 export const maybePromise = (...args) => {
   const items = args.slice(0, -1);
   const fn = args[args.length - 1];

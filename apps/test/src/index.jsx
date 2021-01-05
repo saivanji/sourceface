@@ -2,24 +2,23 @@ import React, { Suspense } from "react";
 import { render } from "react-dom";
 import { RecoilRoot, useRecoilValue } from "recoil";
 import Module from "./module";
-import * as store from "./store";
+import { root } from "./store";
 
 // - Module functions
 // - Stale
 // - Multiple action evaluation
-// - Static config setting
 // - Variable categories
 //   - Argument
 //   - Action
 //   - Mount
 
 function Modules() {
-  const { ids } = useRecoilValue(store.modules);
+  const { result } = useRecoilValue(root);
 
   return (
     <div className="px-12 py-4 flex flex-col items-center text-center">
-      {ids.map((id) => (
-        <Module key={id} moduleId={id} />
+      {result.map((moduleId) => (
+        <Module key={moduleId} moduleId={moduleId} />
       ))}
     </div>
   );

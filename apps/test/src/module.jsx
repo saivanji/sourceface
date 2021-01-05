@@ -2,16 +2,16 @@ import React, { createContext, useContext } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import Skeleton from "react-loading-skeleton";
 import cx from "classnames";
-import * as store from "./store";
+import { moduleFamily, stateFamily, selectedId } from "./store";
 import { stock as modulesStock } from "./modules";
-import { useSettings, useScope } from "./engine/hooks";
+import { useSettings, useScope } from "./engine";
 
 const context = createContext(null);
 const empty = [];
 
 export function useModule() {
   const moduleId = useContext(context);
-  const module = useRecoilValue(store.moduleFamily(moduleId));
+  const module = useRecoilValue(moduleFamily(moduleId));
   const blueprint = modulesStock[module.type];
 
   return { module, blueprint };
@@ -26,9 +26,9 @@ export default function ModuleProvider({ moduleId }) {
 }
 
 function Module() {
-  const [selectedId, setSelectedId] = useRecoilState(store.selectedId);
+  const [selection, setSelection] = useRecoilState(selectedId);
   const { module, blueprint } = useModule();
-  const [state, changeState] = useRecoilState(store.stateFamily(module.id));
+  const [state, changeState] = useRecoilState(stateFamily(module.id));
 
   const { Root } = blueprint;
 
@@ -50,11 +50,11 @@ function Module() {
 
   return (
     <div
-      onClick={() => setSelectedId(module.id)}
+      onClick={() => setSelection(module.id)}
       className={cx(
         "rounded-md border-2 border-dashed p-4 bg-white mb-3",
         isLoading && "opacity-75",
-        selectedId === module.id ? "border-blue-500" : "border-green-300"
+        selection === module.id ? "border-blue-500" : "border-green-300"
       )}
     >
       <Root

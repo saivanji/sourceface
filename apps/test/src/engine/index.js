@@ -1,11 +1,11 @@
 import { useRef, useEffect, useMemo } from "react";
 import { useRecoilValueLoadable, useRecoilCallback } from "recoil";
 import { useModule } from "../module";
-import * as store from "../store";
+import { settingsFamily, scopeFamily } from "./store";
 
 export function useSettings(keys) {
   const input = useInput(keys);
-  const loadable = useRecoilValueLoadable(store.settingsFamily(input));
+  const loadable = useRecoilValueLoadable(settingsFamily(input));
 
   return useLoadableStatus(loadable);
 }
@@ -14,7 +14,7 @@ export function useSettingCallback(key) {
   const input = useInput([key]);
   return useRecoilCallback(
     ({ snapshot }) => async () => {
-      const [result] = await snapshot.getPromise(store.settingsFamily(input));
+      const [result] = await snapshot.getPromise(settingsFamily(input));
 
       return result;
     },
@@ -24,7 +24,7 @@ export function useSettingCallback(key) {
 
 export function useScope(keys) {
   const input = useInput(keys);
-  const loadable = useRecoilValueLoadable(store.scopeFamily(input));
+  const loadable = useRecoilValueLoadable(scopeFamily(input));
 
   return useLoadableStatus(loadable);
 }

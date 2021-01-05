@@ -11,9 +11,14 @@ export const modules = [
   {
     id: 1,
     type: "table",
-    settings: {
-      data: {
+    config: {
+      limit: 10,
+    },
+    actions: [
+      {
+        order: 0,
         type: "operation",
+        field: "data",
         variables: {
           name: { category: "constant", payload: { value: "ordersList" } },
           limit: {
@@ -26,8 +31,10 @@ export const modules = [
           },
         },
       },
-      page: {
+      {
+        order: 0,
         type: "value",
+        field: "page",
         variables: {
           input: {
             category: "scope",
@@ -35,23 +42,15 @@ export const modules = [
           },
         },
       },
-      // Using "value" action until we implement state configuration values.
-      limit: {
-        type: "value",
-        variables: {
-          input: {
-            category: "constant",
-            payload: { value: 10 },
-          },
-        },
-      },
-    },
+    ],
   },
   {
     id: 2,
     type: "text",
-    settings: {
-      content: {
+    actions: [
+      {
+        order: 0,
+        field: "content",
         type: "value",
         variables: {
           input: {
@@ -60,7 +59,7 @@ export const modules = [
           },
         },
       },
-    },
+    ],
   },
   {
     id: 3,
@@ -69,15 +68,17 @@ export const modules = [
   {
     id: 4,
     type: "button",
-    settings: {
-      event: {
+    actions: [
+      {
+        order: 0,
         type: "operation",
+        field: "event",
         variables: {
           name: { category: "constant", payload: { value: "ordersList" } },
           limit: { category: "constant", payload: { value: 10 } },
           offset: { category: "constant", payload: { value: 0 } },
         },
       },
-    },
+    ],
   },
 ];
