@@ -11,6 +11,8 @@ export function execute({ name, ...args }) {
   });
 }
 
+export const groupCache = () => {};
+
 const controllers = {
   ordersList: ({ limit, offset }) =>
     db.ordersList.slice(offset, offset + limit),

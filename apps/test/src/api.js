@@ -6,7 +6,6 @@ export function listModules() {
   });
 }
 
-// setting = "config entry || action"
 export const modules = [
   {
     id: 1,
@@ -16,6 +15,7 @@ export const modules = [
     },
     actions: [
       {
+        id: 1,
         order: 0,
         type: "operation",
         field: "data",
@@ -32,6 +32,7 @@ export const modules = [
         },
       },
       {
+        id: 2,
         order: 0,
         type: "value",
         field: "page",
@@ -49,6 +50,7 @@ export const modules = [
     type: "text",
     actions: [
       {
+        id: 3,
         order: 0,
         field: "content",
         type: "value",
@@ -70,6 +72,7 @@ export const modules = [
     type: "button",
     actions: [
       {
+        id: 4,
         order: 0,
         type: "operation",
         field: "event",

@@ -5,5 +5,11 @@ import { schema } from "normalizr";
  * application crash.
  */
 const module_ = new schema.Entity("modules");
+const action = new schema.Entity("actions");
+
+/**
+ * Defining circular dependencies
+ */
+module_.define({ actions: [action] });
 
 export default [module_];

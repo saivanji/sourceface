@@ -6,7 +6,6 @@ import { root } from "./store";
 
 // - Module functions
 // - Stale
-// - Multiple action evaluation
 // - Variable categories
 //   - Argument
 //   - Action

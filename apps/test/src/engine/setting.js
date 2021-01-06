@@ -2,7 +2,7 @@ import { keys, zipObj } from "ramda";
 import { stock as actionsStock } from "../actions";
 import * as variable from "./variable";
 import * as cache from "./cache";
-import { maybePromise } from "./utils";
+import { maybePromise, reduce } from "./utils";
 
 export const readSetting = (value, actions, getScopeValue) => {
   if (actions.length) {
@@ -13,7 +13,11 @@ export const readSetting = (value, actions, getScopeValue) => {
 };
 
 const pipeActions = (actions, getScopeValue) => {
-  return processAction(actions[0], getScopeValue);
+  return reduce(
+    (acc, action) => processAction(action, getScopeValue),
+    null,
+    actions
+  );
 };
 
 const processAction = (action, getScopeValue) => {
@@ -43,5 +47,5 @@ const evaluateArguments = (args, getScopeValue) => {
     variable.evaluate(args[name], getScopeValue)
   );
 
-  return maybePromise(argsList, zipObj(variableNames));
+  return maybePromise(...argsList, (...items) => zipObj(variableNames, items));
 };

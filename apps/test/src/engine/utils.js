@@ -13,3 +13,17 @@ export const maybePromise = (...args) => {
 
   return fn(...items);
 };
+
+export const reduce = (fn, acc, [head, ...tail]) => {
+  if (!head) {
+    return acc;
+  }
+
+  return maybePromise(fn(acc, head), (nextAcc) => {
+    if (!tail.length) {
+      return nextAcc;
+    }
+
+    return reduce(fn, nextAcc, tail);
+  });
+};
