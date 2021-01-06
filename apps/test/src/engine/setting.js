@@ -12,6 +12,15 @@ export const readSetting = (value, actions, getScopeValue) => {
   return value;
 };
 
+/**
+ * Indicates interruption of actions pipeline.
+ */
+export class Break {
+  constructor(reason) {
+    this.reason = reason;
+  }
+}
+
 const pipeActions = (actions, getScopeValue) => {
   return reduce(
     (acc, action) => processAction(action, getScopeValue),

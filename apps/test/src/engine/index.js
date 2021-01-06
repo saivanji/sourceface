@@ -3,6 +3,8 @@ import { useRecoilValueLoadable, useRecoilCallback } from "recoil";
 import { useModule } from "../module";
 import { settingsFamily, scopeFamily } from "./store";
 
+export { Break } from "./setting";
+
 export function useSettings(keys) {
   const input = useInput(keys);
   const loadable = useRecoilValueLoadable(settingsFamily(input));

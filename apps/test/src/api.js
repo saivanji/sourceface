@@ -57,7 +57,7 @@ export const modules = [
         variables: {
           input: {
             category: "scope",
-            payload: { moduleId: 1, property: "offset" },
+            payload: { moduleId: 5, property: "value" },
           },
         },
       },
@@ -68,8 +68,15 @@ export const modules = [
     type: "counter",
   },
   {
+    id: 5,
+    type: "input",
+  },
+  {
     id: 4,
     type: "button",
+    config: {
+      text: "Submit",
+    },
     actions: [
       {
         id: 4,

@@ -2,7 +2,7 @@ import React from "react";
 // import { Setting } from "../editor/settings";
 import { useSettingCallback } from "../engine";
 
-export const Root = () => {
+export const Root = ({ settings: [text] }) => {
   const onClick = useSettingCallback("event");
 
   return (
@@ -10,10 +10,12 @@ export const Root = () => {
       onClick={onClick}
       className="text-md p-2 rounded bg-gray-200 border border-gray-400 shadow"
     >
-      Click me
+      {text || "Click me"}
     </button>
   );
 };
+
+Root.settings = ["text"];
 
 // export function Settings() {
 //   return (
