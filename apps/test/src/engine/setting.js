@@ -1,11 +1,11 @@
 import { stock as stagesStock } from "./stages";
 import { reduce } from "./utils";
 
-export const readSetting = (value, sequence, getLocalVariable) => {
+// TODO: move to "./execution"
+export const readSetting = (value, sequence, getLocal) => {
   if (sequence.length) {
     return reduce(
-      (acc, stage) =>
-        stagesStock[stage.type].execute(stage.values, getLocalVariable),
+      (acc, stage) => stagesStock[stage.type].execute(stage.values, getLocal),
       null,
       sequence
     );

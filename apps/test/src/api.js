@@ -9,24 +9,138 @@ export function listModules() {
 export const modules = [
   {
     id: 1,
-    type: "text",
+    type: "table",
+    config: {
+      limit: 10,
+    },
     stages: [
       {
         id: 1,
+        order: 0,
+        group: "data/default",
+        type: "value",
+        functions: [
+          {
+            id: 1,
+            name: "root",
+            category: "operation",
+            args: [
+              {
+                id: 2,
+                name: "limit",
+                category: "module",
+                // TODO: use references instead of moduleId
+                payload: { moduleId: 1, property: "limit" },
+              },
+              {
+                id: 3,
+                name: "offset",
+                category: "module",
+                payload: { moduleId: 1, property: "offset" },
+              },
+            ],
+            references: [
+              {
+                name: "root",
+                operation: {
+                  id: 1,
+                  name: "ordersList",
+                },
+              },
+            ],
+          },
+        ],
+        variables: [
+          // {
+          //   id: 1,
+          //   name: "root",
+          //   category: "constant",
+          //   payload: {
+          //     value: "Hello World",
+          //   },
+          // },
+        ],
+      },
+      {
+        id: 2,
+        order: 0,
+        group: "page/default",
+        type: "value",
+        functions: [],
+        variables: [
+          {
+            id: 4,
+            name: "root",
+            category: "module",
+            payload: {
+              moduleId: 3,
+              property: "value",
+            },
+            references: [],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 2,
+    type: "text",
+    stages: [
+      {
+        id: 3,
         order: 0,
         group: "content/default",
         type: "value",
         functions: [],
         variables: [
           {
-            id: 1,
+            id: 5,
             name: "root",
-            category: "constant",
+            category: "module",
             payload: {
-              value: "Hello World",
+              moduleId: 5,
+              property: "value",
             },
+            references: [],
           },
         ],
+      },
+    ],
+  },
+  {
+    id: 3,
+    type: "counter",
+  },
+  {
+    id: 5,
+    type: "input",
+  },
+  {
+    id: 4,
+    type: "button",
+    config: {
+      text: "Submit",
+    },
+    stages: [
+      {
+        id: 4,
+        order: 0,
+        group: "event/default",
+        type: "value",
+        functions: [
+          {
+            id: 6,
+            name: "root",
+            category: "module",
+            payload: {
+              moduleId: 5,
+              property: "reveal",
+            },
+            args: [],
+            references: [],
+          },
+        ],
+        variables: [],
       },
     ],
   },
@@ -128,7 +242,7 @@ const _modules = [
 // "stages" - id, parent_id, type, config, group, order
 //
 // Make sure that we update value with a transaction by deleting previous variable/function and setting
-// a new one in order not to have both variable and function available at the same name.
+// a new one in order not to have both variable and function available at the same name. The same goes for references
 
 // Graphql types are - Stage, Variable, Function, Reference
 const stages = [
@@ -166,7 +280,7 @@ const stages = [
             },
           },
         ],
-        arguments: [
+        args: [
           {
             name: "foo",
             category: "constant",
@@ -309,7 +423,7 @@ const transformed = {
         root: {
           type: "function",
           category: "operation",
-          arguments: {
+          args: {
             foo: {
               category: "constant",
               payload: { value: "bar" },

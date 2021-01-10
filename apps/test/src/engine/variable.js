@@ -8,18 +8,18 @@ const global = {
 //
 // The same applies to functions: `form_*.justify` will call justify functions on desired modules and return an object with results.
 
-export const evaluate = (definition, getLocalVariable) => {
-  if (definition.category === "global") {
-    return global[definition.payload.name];
+export const evaluate = ({ category, payload }, getLocal) => {
+  if (category === "global") {
+    return global[payload.name];
   }
 
-  if (definition.category === "constant") {
-    return definition.payload.value;
+  if (category === "constant") {
+    return payload.value;
   }
 
-  if (definition.category === "scope") {
-    const { moduleId, property } = definition.payload;
+  if (category === "module") {
+    const { moduleId, property } = payload;
 
-    return getLocalVariable(moduleId, property);
+    return getLocal("variable", moduleId, property);
   }
 };

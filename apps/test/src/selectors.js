@@ -1,4 +1,4 @@
-import { sort } from "ramda";
+import { keys, sort } from "ramda";
 import { denormalize } from "normalizr";
 import { module_ } from "./schema";
 
@@ -15,8 +15,8 @@ export const getSequence = (field, sequenceName, module, entities) => {
           id: s.id,
           type: s.type,
           values: {
-            ...transformValue(s.variables, "variable"),
-            ...transformValue(s.functions, "function"),
+            ...transformValues(s.variables, "variable"),
+            ...transformValues(s.functions, "function"),
           },
         },
       ];
@@ -27,14 +27,29 @@ export const getSequence = (field, sequenceName, module, entities) => {
   return sort((a, b) => a.order - b.order, items);
 };
 
-const transformValue = (items, type) =>
+const transformValues = (items, type) =>
   items.reduce(
-    (acc, x) => ({
+    (acc, v) => ({
       ...acc,
-      [x.name]: {
+      [v.name]: {
         type,
-        data: x,
+        data: {
+          ...v,
+          references: transformReferences(v.references),
+        },
       },
     }),
     {}
   );
+
+const transformReferences = (items) =>
+  items.reduce((acc, { name, ...reference }) => {
+    const type = keys(reference)[0];
+
+    return {
+      ...acc,
+      [name]: {
+        data: reference[type],
+      },
+    };
+  }, {});

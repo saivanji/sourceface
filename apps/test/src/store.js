@@ -40,7 +40,7 @@ export const selectedId = atom({
 
 export const sequenceFamily = selectorFamily({
   key: "sequence",
-  get: ([moduleId, field, sequenceName]) => ({ get }) => {
+  get: ([moduleId, field, sequenceName = "default"]) => ({ get }) => {
     const { entities } = get(root);
     const module = entities.modules[moduleId];
 

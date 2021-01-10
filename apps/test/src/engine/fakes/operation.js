@@ -3,10 +3,10 @@ import faker from "faker";
 
 faker.seed(1);
 
-export function execute({ name, ...args }) {
+export function execute(args, { root }) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(controllers[name](args));
+      resolve(controllers[root.data.name](args));
     }, Math.random() * 1000);
   });
 }

@@ -43,6 +43,7 @@ export const variables = {
 export const functions = {
   reveal: {
     call: (args, state, transition, { variables: [value] }) => {
+      console.log("call");
       const regexp = /^.+$/;
 
       if (!regexp.test(value)) {
