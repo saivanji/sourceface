@@ -23,6 +23,8 @@ ReactDOM.render(
 )
 
 // TODO:
+// Implement controllers feature where user can define server executed code with engine lang
+//
 // Consider having ability to execute the action pipeline before every module loads so we can populate the module with data from action.
 // It might work with nested modules(containers and modals) so we can execute operation for example and nested inputs will have data on first load
 // (that feature might be front-end only, can it theoretically be implemented on a specific module side?)
