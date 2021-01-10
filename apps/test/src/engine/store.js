@@ -5,7 +5,7 @@ import { root, moduleFamily, stateFamily } from "../store";
 import schema from "../schema";
 import { stock as modulesStock } from "../modules";
 import { readSetting } from "./setting";
-import { readScopeValue } from "./scope";
+import { readScopeVariable } from "./scope";
 import { plural } from "./utils";
 
 export const settingsFamily = selectorFamily({
@@ -16,26 +16,30 @@ export const settingsFamily = selectorFamily({
     return plural(fields, (field) => {
       const actions = get(actionsFamily([moduleId, field]));
 
-      return readSetting(module.config?.[field], actions, getScopeValue(get));
+      return readSetting(
+        module.config?.[field],
+        actions,
+        getScopeVariable(get)
+      );
     });
   },
 });
 
-export const scopeFamily = selectorFamily({
-  key: "scope",
+export const scopeVariablesFamily = selectorFamily({
+  key: "variable",
   get: ([moduleId, keys]) => ({ get }) => {
     const state = get(stateFamily(moduleId));
     const module = get(moduleFamily(moduleId));
     const blueprint = modulesStock[module.type];
 
     return plural(keys, (key) =>
-      readScopeValue(
+      readScopeVariable(
         key,
         blueprint,
         module.config,
         state,
         getActions(moduleId, get),
-        getScopeValue(get)
+        getScopeVariable(get)
       )
     );
   },
@@ -56,18 +60,18 @@ export const actionsFamily = selectorFamily({
   },
 });
 
-const getScopeValue = (get) => (moduleId, key) => {
+const getScopeVariable = (get) => (moduleId, key) => {
   const state = get(stateFamily(moduleId));
   const module = get(moduleFamily(moduleId));
   const blueprint = modulesStock[module.type];
 
-  return readScopeValue(
+  return readScopeVariable(
     key,
     blueprint,
     module.config,
     state,
     getActions(moduleId, get),
-    getScopeValue(get)
+    getScopeVariable(get)
   );
 };
 

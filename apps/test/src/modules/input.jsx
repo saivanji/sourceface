@@ -1,7 +1,11 @@
 import React from "react";
 import { Break } from "../engine";
 
-export const Root = ({ scope: [value], state: { error }, onStateChange }) => {
+export const Root = ({
+  variables: [value],
+  state: { error },
+  onStateChange,
+}) => {
   return (
     <div>
       <input
@@ -22,14 +26,14 @@ export const Root = ({ scope: [value], state: { error }, onStateChange }) => {
   );
 };
 
-Root.scope = ["value"];
+Root.variables = ["value"];
 
 export const initialState = {
   value: "",
   error: null,
 };
 
-export const scope = {
+export const variables = {
   value: {
     selector: (state) => state.value,
     type: "String",
@@ -38,7 +42,7 @@ export const scope = {
 
 export const functions = {
   reveal: {
-    call: (args, state, transition, { scope: [value] }) => {
+    call: (args, state, transition, { variables: [value] }) => {
       const regexp = /^.+$/;
 
       if (!regexp.test(value)) {
@@ -51,10 +55,12 @@ export const functions = {
 
       return value;
     },
-    scope: ["value"],
-    returns: "String",
-    args: {
-      foo: "String",
+    variables: ["value"],
+    types: {
+      returns: "String",
+      args: {
+        foo: "String",
+      },
     },
   },
 };

@@ -1,25 +1,33 @@
 import { plural, maybePromise } from "./utils";
 import { readSetting } from "./setting";
 
-export const readScopeValue = (
+// readScopeFunction
+export const readScopeVariable = (
   key,
   blueprint,
   config,
   state,
   getActions,
-  getScopeValue
+  getScopeVariable
 ) => {
-  const setup = blueprint.scope[key];
+  const setup = blueprint.variables[key];
 
   const settings = plural(setup.settings, (field) =>
-    readSetting(config?.[field], getActions(field), getScopeValue)
+    readSetting(config?.[field], getActions(field), getScopeVariable)
   );
 
-  const scope = plural(setup.scope, (key) =>
-    readScopeValue(key, blueprint, config, state, getActions, getScopeValue)
+  const variables = plural(setup.variables, (key) =>
+    readScopeVariable(
+      key,
+      blueprint,
+      config,
+      state,
+      getActions,
+      getScopeVariable
+    )
   );
 
-  return maybePromise(settings, scope, (settings, scope) =>
-    setup.selector(state, { settings, scope })
+  return maybePromise(settings, variables, (settings, variables) =>
+    setup.selector(state, { settings, variables })
   );
 };

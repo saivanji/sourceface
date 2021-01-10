@@ -2,7 +2,7 @@ import React from "react";
 import moment from "moment";
 import Pagination from "react-js-pagination";
 
-export function Root({ settings: [data], scope: [page], onStateChange }) {
+export function Root({ settings: [data], variables: [page], onStateChange }) {
   const thClassName = "border-b border-gray-300 pb-3 pr-4 text-left";
   const tdClassName = "border-b border-gray-200 py-3 pr-4 text-left";
 
@@ -64,9 +64,9 @@ export function Root({ settings: [data], scope: [page], onStateChange }) {
 }
 
 Root.settings = ["data"];
-Root.scope = ["page"];
+Root.variables = ["page"];
 
-export const scope = {
+export const variables = {
   page: {
     selector: (state, { settings: [page] }) => page ?? state.page,
     settings: ["page"],
@@ -78,8 +78,8 @@ export const scope = {
     type: "Number",
   },
   offset: {
-    selector: (state, { scope: [page, limit] }) => limit * page,
-    scope: ["page", "limit"],
+    selector: (state, { variables: [page, limit] }) => limit * page,
+    variables: ["page", "limit"],
     type: "Number",
   },
 };

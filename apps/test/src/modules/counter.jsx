@@ -2,7 +2,7 @@ import React from "react";
 // import { Setting } from "../editor/settings";
 
 // TODO: test counter as pagination for table
-export function Root({ scope: [value], onStateChange }) {
+export function Root({ variables: [value], onStateChange }) {
   const changeCount = (fn) =>
     onStateChange((state) => ({ ...state, value: fn(state.value) }));
 
@@ -27,7 +27,7 @@ export function Root({ scope: [value], onStateChange }) {
   );
 }
 
-Root.scope = ["value"];
+Root.variables = ["value"];
 
 // export function Settings() {
 //   return (
@@ -41,7 +41,7 @@ export const initialState = {
   value: 0,
 };
 
-export const scope = {
+export const variables = {
   value: {
     selector: (state) => state.value,
     type: "Number",

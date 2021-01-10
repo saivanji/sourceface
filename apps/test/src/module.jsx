@@ -4,7 +4,7 @@ import Skeleton from "react-loading-skeleton";
 import cx from "classnames";
 import { moduleFamily, stateFamily, selectedId } from "./store";
 import { stock as modulesStock } from "./modules";
-import { useSettings, useScope } from "./engine";
+import { useSettings, useScopeVariables } from "./engine";
 
 const context = createContext(null);
 const empty = [];
@@ -33,11 +33,11 @@ function Module() {
   const { Root } = blueprint;
 
   const settings = useSettings(Root.settings || empty);
-  const scope = useScope(Root.scope || empty);
+  const variables = useScopeVariables(Root.variables || empty);
 
-  const isPristine = settings.isPristine || scope.isPristine;
-  const isLoading = settings.isLoading || scope.isLoading;
-  const error = settings.error || scope.error;
+  const isPristine = settings.isPristine || variables.isPristine;
+  const isLoading = settings.isLoading || variables.isLoading;
+  const error = settings.error || variables.error;
 
   if (isPristine) {
     return <Skeleton width={200} height={80} className="mb-3" />;
@@ -61,7 +61,7 @@ function Module() {
         state={state}
         onStateChange={changeState}
         settings={settings.data}
-        scope={scope.data}
+        variables={variables.data}
       />
     </div>
   );
