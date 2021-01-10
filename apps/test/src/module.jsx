@@ -4,7 +4,7 @@ import Skeleton from "react-loading-skeleton";
 import cx from "classnames";
 import { moduleFamily, stateFamily, selectedId } from "./store";
 import { stock as modulesStock } from "./modules";
-import { useSettings, useScopeVariables } from "./engine";
+import { useSettings, useLocalVariables } from "./engine";
 
 const context = createContext(null);
 const empty = [];
@@ -33,7 +33,7 @@ function Module() {
   const { Root } = blueprint;
 
   const settings = useSettings(Root.settings || empty);
-  const variables = useScopeVariables(Root.variables || empty);
+  const variables = useLocalVariables(Root.variables || empty);
 
   const isPristine = settings.isPristine || variables.isPristine;
   const isLoading = settings.isLoading || variables.isLoading;

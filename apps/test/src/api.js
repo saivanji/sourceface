@@ -9,6 +9,32 @@ export function listModules() {
 export const modules = [
   {
     id: 1,
+    type: "text",
+    stages: [
+      {
+        id: 1,
+        order: 0,
+        group: "content/default",
+        type: "value",
+        functions: [],
+        variables: [
+          {
+            id: 1,
+            name: "root",
+            category: "constant",
+            payload: {
+              value: "Hello World",
+            },
+          },
+        ],
+      },
+    ],
+  },
+];
+
+const _modules = [
+  {
+    id: 1,
     type: "table",
     config: {
       limit: 10,
@@ -95,8 +121,8 @@ export const modules = [
 
 // Postgres tables are:
 // "values" - id, stage_id, name
-// "variables" - value_id, category, payload
-// "functions" - value_id, category, is_effect
+// "variables" - id, value_id, category, payload
+// "functions" - id, value_id, category, is_effect
 // "functions_arguments" function_id, value_id
 // "references" - "value_id", "..."
 // "stages" - id, parent_id, type, config, group, order
@@ -111,6 +137,7 @@ const stages = [
     order: 0,
     group: "data/default",
     type: "value",
+    functions: [],
     variables: [
       {
         name: "root",

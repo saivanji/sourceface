@@ -2,6 +2,7 @@ import { atom, atomFamily, selector, selectorFamily } from "recoil";
 import { normalize } from "normalizr";
 import * as api from "./api";
 import schema from "./schema";
+import { getSequence } from "./selectors";
 import { stock as modulesStock } from "./modules";
 
 export const root = selector({
@@ -35,6 +36,16 @@ export const selectedId = atom({
     key: "selectedId/default",
     get: ({ get }) => get(root).result[0],
   }),
+});
+
+export const sequenceFamily = selectorFamily({
+  key: "sequence",
+  get: ([moduleId, field, sequenceName]) => ({ get }) => {
+    const { entities } = get(root);
+    const module = entities.modules[moduleId];
+
+    return getSequence(field, sequenceName, module, entities);
+  },
 });
 
 // export const selected = selector({

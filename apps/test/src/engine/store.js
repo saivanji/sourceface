@@ -1,11 +1,8 @@
 import { selectorFamily } from "recoil";
-import { sort } from "ramda";
-import { denormalize } from "normalizr";
-import { root, moduleFamily, stateFamily } from "../store";
-import schema from "../schema";
+import { moduleFamily, stateFamily, sequenceFamily } from "../store";
 import { stock as modulesStock } from "../modules";
 import { readSetting } from "./setting";
-import { readScopeVariable } from "./scope";
+import { readLocalVariable } from "./local";
 import { plural } from "./utils";
 
 export const settingsFamily = selectorFamily({
@@ -14,18 +11,14 @@ export const settingsFamily = selectorFamily({
     const module = get(moduleFamily(moduleId));
 
     return plural(fields, (field) => {
-      const actions = get(actionsFamily([moduleId, field]));
+      const stages = get(sequenceFamily([moduleId, field, "default"]));
 
-      return readSetting(
-        module.config?.[field],
-        actions,
-        getScopeVariable(get)
-      );
+      return readSetting(module.config?.[field], stages, getLocalVariable(get));
     });
   },
 });
 
-export const scopeVariablesFamily = selectorFamily({
+export const localVariablesFamily = selectorFamily({
   key: "variable",
   get: ([moduleId, keys]) => ({ get }) => {
     const state = get(stateFamily(moduleId));
@@ -33,47 +26,32 @@ export const scopeVariablesFamily = selectorFamily({
     const blueprint = modulesStock[module.type];
 
     return plural(keys, (key) =>
-      readScopeVariable(
+      readLocalVariable(
         key,
         blueprint,
         module.config,
         state,
-        getActions(moduleId, get),
-        getScopeVariable(get)
+        getSequence(moduleId, get),
+        getLocalVariable(get)
       )
     );
   },
 });
 
-export const actionsFamily = selectorFamily({
-  key: "actions",
-  get: ([moduleId, field]) => ({ get }) => {
-    const { entities } = get(root);
-    const module = entities.modules[moduleId];
-
-    return sort(
-      (a, b) => a.order - b.order,
-      denormalize(module, schema[0], entities).actions.filter(
-        (a) => a.field === field
-      )
-    );
-  },
-});
-
-const getScopeVariable = (get) => (moduleId, key) => {
+const getLocalVariable = (get) => (moduleId, key) => {
   const state = get(stateFamily(moduleId));
   const module = get(moduleFamily(moduleId));
   const blueprint = modulesStock[module.type];
 
-  return readScopeVariable(
+  return readLocalVariable(
     key,
     blueprint,
     module.config,
     state,
-    getActions(moduleId, get),
-    getScopeVariable(get)
+    getSequence(moduleId, get),
+    getLocalVariable(get)
   );
 };
 
-const getActions = (moduleId, get) => (field) =>
-  get(actionsFamily([moduleId, field]));
+const getSequence = (moduleId, get) => (field) =>
+  get(sequenceFamily([moduleId, field]));

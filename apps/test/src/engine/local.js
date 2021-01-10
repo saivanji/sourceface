@@ -1,8 +1,8 @@
 import { plural, maybePromise } from "./utils";
 import { readSetting } from "./setting";
 
-// readScopeFunction
-export const readScopeVariable = (
+// readLocalFunction
+export const readLocalVariable = (
   key,
   blueprint,
   config,
@@ -17,7 +17,7 @@ export const readScopeVariable = (
   );
 
   const variables = plural(setup.variables, (key) =>
-    readScopeVariable(
+    readLocalVariable(
       key,
       blueprint,
       config,

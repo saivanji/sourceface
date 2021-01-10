@@ -1,7 +1,7 @@
 import { useRef, useEffect, useMemo } from "react";
 import { useRecoilValueLoadable, useRecoilCallback } from "recoil";
 import { useModule } from "../module";
-import { settingsFamily, scopeVariablesFamily } from "./store";
+import { settingsFamily, localVariablesFamily } from "./store";
 
 export { Break } from "./setting";
 
@@ -24,9 +24,9 @@ export function useSettingCallback(key) {
   );
 }
 
-export function useScopeVariables(keys) {
+export function useLocalVariables(keys) {
   const input = useInput(keys);
-  const loadable = useRecoilValueLoadable(scopeVariablesFamily(input));
+  const loadable = useRecoilValueLoadable(localVariablesFamily(input));
 
   return useLoadableStatus(loadable);
 }

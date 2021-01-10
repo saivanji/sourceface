@@ -1,60 +1,24 @@
-import { keys, zipObj } from "ramda";
-import { stock as actionsStock } from "../actions";
-import * as variable from "./variable";
-import * as cache from "./cache";
-import { maybePromise, reduce } from "./utils";
+import { stock as stagesStock } from "./stages";
+import { reduce } from "./utils";
 
-export const readSetting = (value, actions, getScopeVariable) => {
-  if (actions.length) {
-    return pipeActions(actions, getScopeVariable);
+export const readSetting = (value, sequence, getLocalVariable) => {
+  if (sequence.length) {
+    return reduce(
+      (acc, stage) =>
+        stagesStock[stage.type].execute(stage.values, getLocalVariable),
+      null,
+      sequence
+    );
   }
 
   return value;
 };
 
 /**
- * Indicates interruption of actions pipeline.
+ * Indicates interruption of sequence pipeline.
  */
 export class Break {
   constructor(reason) {
     this.reason = reason;
   }
 }
-
-const pipeActions = (actions, getScopeVariable) => {
-  return reduce(
-    (acc, action) => processAction(action, getScopeVariable),
-    null,
-    actions
-  );
-};
-
-const processAction = (action, getScopeVariable) => {
-  const args = evaluateArguments(action.variables, getScopeVariable);
-
-  return maybePromise(args, (args) => {
-    const cached = cache.get(action.type, args);
-
-    if (cached) {
-      return cached;
-    }
-
-    const result = actionsStock[action.type].execute(args);
-
-    return maybePromise(result, (result) => {
-      cache.set(action.type, args, result);
-
-      return result;
-    });
-  });
-};
-
-const evaluateArguments = (args, getScopeVariable) => {
-  const variableNames = keys(args);
-
-  const argsList = variableNames.map((name) =>
-    variable.evaluate(args[name], getScopeVariable)
-  );
-
-  return maybePromise(...argsList, (...items) => zipObj(variableNames, items));
-};
