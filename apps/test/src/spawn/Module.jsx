@@ -1,31 +1,18 @@
-import React, { createContext, useContext } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import React from "react";
+import { useRecoilState } from "recoil";
 import Skeleton from "react-loading-skeleton";
 import cx from "classnames";
-import { moduleFamily, stateFamily, selectedId } from "./store";
-import { stock as modulesStock } from "./modules";
-import { useSettings, useLocalVariables } from "./engine";
+import { stateFamily, selectedId } from "../store";
+import { useModule, useSettings, useLocalVariables } from "./consumers";
 
-const context = createContext(null);
 const empty = [];
 
-export function useModule() {
-  const moduleId = useContext(context);
-  const module = useRecoilValue(moduleFamily(moduleId));
-  const blueprint = modulesStock[module.type];
-
-  return { module, blueprint };
-}
-
-export default function ModuleProvider({ moduleId }) {
-  return (
-    <context.Provider value={moduleId}>
-      <Module />
-    </context.Provider>
-  );
-}
-
-function Module() {
+/**
+ * Module component responsible for rendering specific module based on it's id, handling the
+ * loading state(when pipeline execution happens) and passing down it's local state
+ * information, required setting and variables that module depends on.
+ */
+export default function Module() {
   const [selection, setSelection] = useRecoilState(selectedId);
   const { module, blueprint } = useModule();
   const [state, changeState] = useRecoilState(stateFamily(module.id));

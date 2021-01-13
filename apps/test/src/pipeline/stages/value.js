@@ -1,5 +1,4 @@
-import * as variable from "../variable";
-import * as func from "../function";
+import { func, variable } from "../value";
 
 export const execute = (values, getScopeVariable) => {
   const { type, data } = values.root;

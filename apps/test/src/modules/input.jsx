@@ -1,11 +1,13 @@
 import React from "react";
-import { Break } from "../engine";
+import { Break } from "../pipeline";
 
 export const Root = ({
   variables: [value],
   state: { error },
   onStateChange,
 }) => {
+  console.log(error);
+
   return (
     <div>
       <input
@@ -40,10 +42,10 @@ export const variables = {
   },
 };
 
+// TODO: rename to "effects"
 export const functions = {
   reveal: {
     call: (args, state, transition, { variables: [value] }) => {
-      console.log("call");
       const regexp = /^.+$/;
 
       if (!regexp.test(value)) {
@@ -51,7 +53,7 @@ export const functions = {
 
         transition((state) => ({ ...state, error }));
 
-        throw new Break(`Validation failed with "${error}" message`);
+        // throw new Break(`Validation failed with "${error}" message`);
       }
 
       return value;

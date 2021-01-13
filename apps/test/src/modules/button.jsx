@@ -1,6 +1,6 @@
 import React from "react";
 // import { Setting } from "../editor/settings";
-import { useSettingCallback } from "../engine";
+import { useSettingCallback } from "../spawn";
 
 export const Root = ({ settings: [text] }) => {
   const onClick = useSettingCallback("event");

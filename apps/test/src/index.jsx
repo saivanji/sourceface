@@ -1,8 +1,8 @@
 import React, { Suspense } from "react";
 import { render } from "react-dom";
 import { RecoilRoot, useRecoilValue } from "recoil";
-import Module from "./module";
-import { root } from "./store";
+import Module from "./spawn";
+import { page } from "./store";
 
 // - References
 // - Module functions
@@ -13,7 +13,7 @@ import { root } from "./store";
 //   - Mount
 
 function Modules() {
-  const { result } = useRecoilValue(root);
+  const { result } = useRecoilValue(page);
 
   return (
     <div className="px-12 py-4 flex flex-col items-center text-center">

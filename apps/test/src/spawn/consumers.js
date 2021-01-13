@@ -1,11 +1,21 @@
-import { useRef, useEffect, useMemo } from "react";
-import { useRecoilValueLoadable, useRecoilCallback } from "recoil";
-import { useModule } from "../module";
-import { settingsFamily, localVariablesFamily } from "./store";
+import { useContext, useRef, useEffect, useMemo } from "react";
+import {
+  useSetRecoilState,
+  useRecoilValue,
+  useRecoilValueLoadable,
+} from "recoil";
+import { context } from "./Provider.jsx";
+import { moduleFamily, settingsFamily, localVariablesFamily } from "../store";
+import { stock as modulesStock } from "../modules";
 
-export { Break } from "./setting";
+export function useModule() {
+  const moduleId = useContext(context);
+  const module = useRecoilValue(moduleFamily(moduleId));
+  const blueprint = modulesStock[module.type];
 
-// TODO: move to ../
+  return { module, blueprint };
+}
+
 export function useSettings(keys) {
   const input = useInput(keys);
   const loadable = useRecoilValueLoadable(settingsFamily(input));
@@ -15,14 +25,7 @@ export function useSettings(keys) {
 
 export function useSettingCallback(key) {
   const input = useInput([key]);
-  return useRecoilCallback(
-    ({ snapshot }) => async () => {
-      const [result] = await snapshot.getPromise(settingsFamily(input));
-
-      return result;
-    },
-    [input]
-  );
+  return useSetRecoilState(settingsFamily(input));
 }
 
 export function useLocalVariables(keys) {

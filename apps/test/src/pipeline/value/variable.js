@@ -3,7 +3,7 @@ const global = {
   version: "2.1.3",
 };
 
-// TODO: there will be especial syntax where user can enter * when types variable name in the "Value" component. In that case Value will return an object
+// TODO: there will be a special syntax where user can enter * when types variable name in the "Value" component. In that case Value will return an object
 // with keys as patterns. Like `form_*.value` will return object with keys as patterns and "value" fields as values
 //
 // The same applies to functions: `form_*.justify` will call justify functions on desired modules and return an object with results.

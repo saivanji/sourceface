@@ -7,35 +7,26 @@
 // Some functions might be considered as side-effects(redirect) and could not be used in a "value" action, but in "effect" instead
 
 import { zipObj } from "ramda";
+import * as operation from "../../wires/operation";
+import { maybePromise } from "../../utils";
+import * as cache from "../cache";
 import * as variable from "./variable";
-import * as cache from "./cache";
-import { maybePromise } from "./utils";
-import * as operationFake from "./fakes/operation";
 
-// TODO: refactor
-export const evaluate = (
-  { id, category, payload, args, references },
-  getLocal
-) => {
+export const evaluate = (definition, getLocal) => {
+  const { id, args, references } = definition;
   const argsNames = args.map((arg) => arg.name);
   const argsValues = args.map((arg) => variable.evaluate(arg, getLocal));
 
-  const fn =
-    category === "module"
-      ? getLocal("function", payload.moduleId, payload.property)
-      : spec[category];
-
-  return maybePromise(...argsValues, (...items) => {
+  return maybePromise(argsValues, (items) => {
     const args = zipObj(argsNames, items);
     const cached = cache.get(id, args);
+    const call = createFunction(definition, getLocal);
 
     if (cached) {
       return cached;
     }
 
-    const result = fn(args, references);
-
-    return maybePromise(result, (result) => {
+    return maybePromise([call(args, references)], ([result]) => {
       cache.set(id, args, result);
 
       return result;
@@ -44,5 +35,13 @@ export const evaluate = (
 };
 
 const spec = {
-  operation: operationFake.execute,
+  operation: operation.execute,
 };
+
+/**
+ * Creates a function out of it's definition object.
+ */
+const createFunction = ({ category, payload }, getLocal) =>
+  category === "module"
+    ? getLocal("function", payload.moduleId, payload.property)
+    : spec[category];
