@@ -91,9 +91,11 @@ export const settingsFamily = selectorFamily({
   key: "settings",
   get: ([moduleId, fields]) => ({ get }) =>
     computeSettings(moduleId, fields, get),
-  // TODO: async set is not supported by Recoil see that issue for the reference:
-  // https://github.com/facebookexperimental/Recoil/issues/762
-  set: ([moduleId, fields]) => ({ get, set }) =>
+  /**
+   * Async set is not supported by Recoil see that issue for
+   * the reference: https://github.com/facebookexperimental/Recoil/issues/762
+   */
+  set: ([moduleId, fields]) => ({ get, set }, args) =>
     computeSettings(moduleId, fields, get, set),
 });
 
