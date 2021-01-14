@@ -6,7 +6,7 @@
 //
 // Some functions might be considered as side-effects(redirect) and could not be used in a "value" action, but in "effect" instead
 
-import { zipObj } from "ramda";
+import { zipObj, keys, values } from "ramda";
 import * as operation from "../../wires/operation";
 import { maybePromise } from "../../utils";
 import * as cache from "../cache";
@@ -14,11 +14,14 @@ import * as variable from "./variable";
 
 export const evaluate = (definition, getLocal) => {
   const { id, args, references } = definition;
-  const argsNames = args.map((arg) => arg.name);
-  const argsValues = args.map((arg) => variable.evaluate(arg, getLocal));
+  const argsNames = keys(args);
+  const argsValues = values(args).map((arg) =>
+    variable.evaluate(arg.data, getLocal)
+  );
 
   return maybePromise(argsValues, (items) => {
     const args = zipObj(argsNames, items);
+
     const cached = cache.get(id, args);
     const call = createFunction(definition, getLocal);
 
@@ -41,7 +44,7 @@ const spec = {
 /**
  * Creates a function out of it's definition object.
  */
-const createFunction = ({ category, payload }, getLocal) =>
+const createFunction = ({ category, payload, references }, getLocal) =>
   category === "module"
-    ? getLocal("function", payload.moduleId, payload.property)
+    ? getLocal("function", references.module.id, payload.property)
     : spec[category];

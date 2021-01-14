@@ -6,7 +6,7 @@ faker.seed(1);
 export function execute(args, { root }) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(controllers[root.data.name](args));
+      resolve(controllers[root.name](args));
     }, Math.random() * 1000);
   });
 }

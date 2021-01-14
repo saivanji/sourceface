@@ -4,8 +4,8 @@ import { RecoilRoot, useRecoilValue } from "recoil";
 import Module from "./spawn";
 import { page } from "./store";
 
-// - References
-// - Module functions
+// investigate extra rerendering with recoil and performance in general
+
 // - Stale
 // - Modules nesting
 // - Non default pipelines

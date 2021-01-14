@@ -1,3 +1,4 @@
+import { mergeRight } from "ramda";
 import { atom, atomFamily, selector, selectorFamily } from "recoil";
 import { normalize } from "normalizr";
 import * as api from "./api";
@@ -27,7 +28,23 @@ export const moduleFamily = atomFamily({
   key: "module",
   default: selectorFamily({
     key: "module/default",
-    get: (param) => ({ get }) => get(page).entities.modules[param],
+    get: (moduleId) => ({ get }) => {
+      const module = get(page).entities.modules[moduleId];
+      const { initialConfig } = modulesStock[module.type];
+
+      return mergeRight({ config: initialConfig }, module);
+    },
+  }),
+});
+
+/**
+ * Stages state. Used for real time configuration in the editor.
+ */
+export const stageFamily = atomFamily({
+  key: "stage",
+  default: selectorFamily({
+    key: "stage/default",
+    get: (stageId) => ({ get }) => get(page).entities.stages[stageId],
   }),
 });
 
@@ -61,10 +78,9 @@ export const page = selector({
 export const sequenceFamily = selectorFamily({
   key: "sequence",
   get: ([moduleId, field, sequenceName = "default"]) => ({ get }) => {
-    const { entities } = get(page);
-    const module = entities.modules[moduleId];
+    const module = get(moduleFamily(moduleId));
 
-    return getSequence(field, sequenceName, module, entities);
+    return getSequence(field, sequenceName, module.stages, createGetStage(get));
   },
 });
 
@@ -75,6 +91,8 @@ export const settingsFamily = selectorFamily({
   key: "settings",
   get: ([moduleId, fields]) => ({ get }) =>
     computeSettings(moduleId, fields, get),
+  // TODO: async set is not supported by Recoil see that issue for the reference:
+  // https://github.com/facebookexperimental/Recoil/issues/762
   set: ([moduleId, fields]) => ({ get, set }) =>
     computeSettings(moduleId, fields, get, set),
 });
@@ -117,6 +135,8 @@ const createGetLocal = (get, set) => (type, moduleId, key) => {
  */
 const createGetSequence = (moduleId, get) => (field) =>
   get(sequenceFamily([moduleId, field]));
+
+const createGetStage = (get) => (stageId) => get(stageFamily(stageId));
 
 /**
  * Returns settings data based on module id and desired fields.

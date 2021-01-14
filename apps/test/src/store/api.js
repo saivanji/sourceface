@@ -29,14 +29,29 @@ export const modules = [
                 id: 2,
                 name: "limit",
                 category: "module",
-                // TODO: use references instead of moduleId
-                payload: { moduleId: 1, property: "limit" },
+                payload: { property: "limit" },
+                references: [
+                  {
+                    name: "module",
+                    module: {
+                      id: 1,
+                    },
+                  },
+                ],
               },
               {
                 id: 3,
                 name: "offset",
                 category: "module",
-                payload: { moduleId: 1, property: "offset" },
+                payload: { property: "offset" },
+                references: [
+                  {
+                    name: "module",
+                    module: {
+                      id: 1,
+                    },
+                  },
+                ],
               },
             ],
             references: [
@@ -73,10 +88,16 @@ export const modules = [
             name: "root",
             category: "module",
             payload: {
-              moduleId: 3,
               property: "value",
             },
-            references: [],
+            references: [
+              {
+                name: "module",
+                module: {
+                  id: 3,
+                },
+              },
+            ],
           },
         ],
       },
@@ -98,10 +119,16 @@ export const modules = [
             name: "root",
             category: "module",
             payload: {
-              moduleId: 5,
               property: "value",
             },
-            references: [],
+            references: [
+              {
+                name: "module",
+                module: {
+                  id: 5,
+                },
+              },
+            ],
           },
         ],
       },
@@ -110,10 +137,23 @@ export const modules = [
   {
     id: 3,
     type: "counter",
+    stages: [],
   },
   {
     id: 5,
     type: "input",
+    stages: [],
+    config: {
+      placeholder: "Enter first name",
+    },
+  },
+  {
+    id: 6,
+    type: "input",
+    stages: [],
+    config: {
+      placeholder: "Enter last name",
+    },
   },
   {
     id: 4,
@@ -123,111 +163,47 @@ export const modules = [
     },
     stages: [
       {
-        id: 4,
+        id: 5,
         order: 0,
         group: "event/default",
-        type: "value",
+        type: "dictionary",
+        variables: [],
         functions: [
           {
             id: 6,
-            name: "root",
+            name: "first_name",
             category: "module",
             payload: {
-              moduleId: 5,
               property: "reveal",
             },
             args: [],
-            references: [],
+            references: [
+              {
+                name: "module",
+                module: {
+                  id: 5,
+                },
+              },
+            ],
+          },
+          {
+            id: 7,
+            name: "last_name",
+            category: "module",
+            payload: {
+              property: "reveal",
+            },
+            args: [],
+            references: [
+              {
+                name: "module",
+                module: {
+                  id: 6,
+                },
+              },
+            ],
           },
         ],
-        variables: [],
-      },
-    ],
-  },
-];
-
-const _modules = [
-  {
-    id: 1,
-    type: "table",
-    config: {
-      limit: 10,
-    },
-    actions: [
-      {
-        id: 1,
-        order: 0,
-        type: "operation",
-        field: "data",
-        variables: {
-          name: { category: "constant", payload: { value: "ordersList" } },
-          limit: {
-            category: "scope",
-            payload: { moduleId: 1, property: "limit" },
-          },
-          offset: {
-            category: "scope",
-            payload: { moduleId: 1, property: "offset" },
-          },
-        },
-      },
-      {
-        id: 2,
-        order: 0,
-        type: "value",
-        field: "page",
-        variables: {
-          input: {
-            category: "scope",
-            payload: { moduleId: 3, property: "value" },
-          },
-        },
-      },
-    ],
-  },
-  {
-    id: 2,
-    type: "text",
-    actions: [
-      {
-        id: 3,
-        order: 0,
-        field: "content",
-        type: "value",
-        variables: {
-          input: {
-            category: "scope",
-            payload: { moduleId: 5, property: "value" },
-          },
-        },
-      },
-    ],
-  },
-  {
-    id: 3,
-    type: "counter",
-  },
-  {
-    id: 5,
-    type: "input",
-  },
-  {
-    id: 4,
-    type: "button",
-    config: {
-      text: "Submit",
-    },
-    actions: [
-      {
-        id: 4,
-        order: 0,
-        type: "operation",
-        field: "event",
-        variables: {
-          name: { category: "constant", payload: { value: "ordersList" } },
-          limit: { category: "constant", payload: { value: 10 } },
-          offset: { category: "constant", payload: { value: 0 } },
-        },
       },
     ],
   },
@@ -413,79 +389,3 @@ const stages = [
     ],
   },
 ];
-
-const transformed = {
-  default: [
-    {
-      id: 1,
-      type: "value",
-      values: {
-        root: {
-          type: "function",
-          category: "operation",
-          args: {
-            foo: {
-              category: "constant",
-              payload: { value: "bar" },
-            },
-          },
-          references: {
-            root: {
-              operation: {
-                id: 1,
-                "...": "operation entry data",
-              },
-            },
-          },
-        },
-      },
-    },
-    {
-      id: 2,
-      type: "catch",
-      stages: {
-        success: [
-          {
-            id: 6,
-            type: "value",
-            values: {},
-          },
-          {
-            id: 7,
-            type: "value",
-            values: {},
-          },
-        ],
-        failure: [
-          {
-            id: 8,
-            type: "value",
-            values: {},
-          },
-        ],
-      },
-    },
-    {
-      id: 3,
-      type: "cond",
-      stages: {
-        "case/0": {
-          id: 10,
-          type: "value",
-          values: {},
-        },
-      },
-      values: {
-        root: {
-          type: "variable",
-          name: "root",
-          "...": "...",
-        },
-        "case/0": {
-          type: "variable",
-          "...": "...",
-        },
-      },
-    },
-  ],
-};

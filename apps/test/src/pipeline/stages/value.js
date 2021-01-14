@@ -1,13 +1,3 @@
-import { func, variable } from "../value";
+import { evaluate } from "../value";
 
-export const execute = (values, getScopeVariable) => {
-  const { type, data } = values.root;
-
-  if (type === "variable") {
-    return variable.evaluate(data, getScopeVariable);
-  }
-
-  if (type === "function") {
-    return func.evaluate(data, getScopeVariable);
-  }
-};
+export const execute = (input, getLocal) => evaluate(input.root, getLocal);

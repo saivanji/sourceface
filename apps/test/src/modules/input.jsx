@@ -2,6 +2,7 @@ import React from "react";
 import { Break } from "../pipeline";
 
 export const Root = ({
+  settings: [placeholder],
   variables: [value],
   state: { error, isRevealed },
   onStateChange,
@@ -20,7 +21,7 @@ export const Root = ({
     <div>
       <input
         type="text"
-        placeholder="Enter text"
+        placeholder={placeholder}
         value={value}
         className={error ? "bg-red-200" : ""}
         onChange={change}
@@ -30,12 +31,17 @@ export const Root = ({
   );
 };
 
+Root.settings = ["placeholder"];
 Root.variables = ["value"];
 
 export const initialState = {
   value: "",
   isRevealed: false,
   error: null,
+};
+
+export const initialConfig = {
+  placeholder: "Enter text",
 };
 
 export const variables = {
