@@ -5,5 +5,6 @@ export {
   stateFamily,
   sequenceFamily,
   settingsFamily,
+  settingsCallbackFamily,
   localVariablesFamily,
 } from "./state";

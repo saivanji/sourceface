@@ -1,11 +1,17 @@
 import { useContext, useRef, useEffect, useMemo } from "react";
 import {
-  useSetRecoilState,
   useRecoilValue,
   useRecoilValueLoadable,
+  useRecoilCallback,
 } from "recoil";
 import { context } from "./Provider.jsx";
-import { moduleFamily, settingsFamily, localVariablesFamily } from "../store";
+import {
+  stateFamily,
+  moduleFamily,
+  settingsFamily,
+  settingsCallbackFamily,
+  localVariablesFamily,
+} from "../store";
 import { stock as modulesStock } from "../modules";
 
 export function useModule() {
@@ -25,7 +31,14 @@ export function useSettings(keys) {
 
 export function useSettingCallback(key) {
   const input = useInput([key]);
-  return useSetRecoilState(settingsFamily(input));
+
+  return useRecoilCallback(({ snapshot, set }) => async () => {
+    const callback = await snapshot.getPromise(settingsCallbackFamily(input));
+    const createTransition = (moduleId) => (valueOrFn) =>
+      set(stateFamily(moduleId), valueOrFn);
+
+    callback(createTransition);
+  });
 }
 
 export function useLocalVariables(keys) {
