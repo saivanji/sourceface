@@ -91,12 +91,10 @@ export const settingsFamily = selectorFamily({
   key: "settings",
   get: ([moduleId, fields]) => ({ get }) =>
     computeSettings(moduleId, fields, get),
-});
-
-export const settingsCallbackFamily = selectorFamily({
-  key: "settingsCallback",
-  get: ([moduleId, fields]) => ({ get }) => (createTransition) =>
-    computeSettings(moduleId, fields, get, createTransition),
+  // TODO: async set is not supported by Recoil see that issue for the reference:
+  // https://github.com/facebookexperimental/Recoil/issues/762
+  set: ([moduleId, fields]) => ({ get, set }) =>
+    computeSettings(moduleId, fields, get, set),
 });
 
 /**
@@ -114,14 +112,11 @@ export const localVariablesFamily = selectorFamily({
  * Creator of a function returning local entity(either variable or function) based on
  * module id and entity key.
  */
-const createGetLocal = (get, createTransition = () => (x) => x) => (
-  type,
-  moduleId,
-  key
-) => {
+const createGetLocal = (get, set) => (type, moduleId, key) => {
   const state = get(stateFamily(moduleId));
   const module = get(moduleFamily(moduleId));
   const blueprint = modulesStock[module.type];
+  const transition = (valueOrFn) => set?.(stateFamily(moduleId), valueOrFn);
 
   return readLocal(
     type,
@@ -131,7 +126,7 @@ const createGetLocal = (get, createTransition = () => (x) => x) => (
     state,
     createGetSequence(moduleId, get),
     createGetLocal(get),
-    createTransition(module.id)
+    transition
   );
 };
 
@@ -146,7 +141,7 @@ const createGetStage = (get) => (stageId) => get(stageFamily(stageId));
 /**
  * Returns settings data based on module id and desired fields.
  */
-const computeSettings = (moduleId, fields, get, createTransition) => {
+const computeSettings = (moduleId, fields, get, set) => {
   const module = get(moduleFamily(moduleId));
 
   return maybePromise(
@@ -156,7 +151,7 @@ const computeSettings = (moduleId, fields, get, createTransition) => {
       return readSetting(
         module.config?.[field],
         stages,
-        createGetLocal(get, createTransition)
+        createGetLocal(get, set)
       );
     })
   );
