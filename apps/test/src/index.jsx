@@ -7,6 +7,8 @@ import { page } from "./store";
 // - References
 // - Module functions
 // - Stale
+// - Modules nesting
+// - Non default pipelines
 // - Variable categories
 //   - Argument
 //   - Action

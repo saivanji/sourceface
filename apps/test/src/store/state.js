@@ -73,9 +73,10 @@ export const sequenceFamily = selectorFamily({
  */
 export const settingsFamily = selectorFamily({
   key: "settings",
-  get: ([moduleId, fields]) => ({ get }) => getSettings(moduleId, fields, get),
+  get: ([moduleId, fields]) => ({ get }) =>
+    computeSettings(moduleId, fields, get),
   set: ([moduleId, fields]) => ({ get, set }) =>
-    getSettings(moduleId, fields, get, set),
+    computeSettings(moduleId, fields, get, set),
 });
 
 /**
@@ -120,7 +121,7 @@ const createGetSequence = (moduleId, get) => (field) =>
 /**
  * Returns settings data based on module id and desired fields.
  */
-const getSettings = (moduleId, fields, get, set) => {
+const computeSettings = (moduleId, fields, get, set) => {
   const module = get(moduleFamily(moduleId));
 
   return maybePromise(

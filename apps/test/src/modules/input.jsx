@@ -3,10 +3,18 @@ import { Break } from "../pipeline";
 
 export const Root = ({
   variables: [value],
-  state: { error },
+  state: { error, isRevealed },
   onStateChange,
 }) => {
-  console.log(error);
+  const change = (e) => {
+    const { value } = e.target;
+
+    onStateChange((state) => ({
+      ...state,
+      error: !isRevealed ? null : validate(value),
+      value,
+    }));
+  };
 
   return (
     <div>
@@ -15,13 +23,7 @@ export const Root = ({
         placeholder="Enter text"
         value={value}
         className={error ? "bg-red-200" : ""}
-        onChange={(e) =>
-          onStateChange((state) => ({
-            ...state,
-            error: null,
-            value: e.target.value,
-          }))
-        }
+        onChange={change}
       />
       {error && <div className="text-red-600 mt-1">{error}</div>}
     </div>
@@ -32,6 +34,7 @@ Root.variables = ["value"];
 
 export const initialState = {
   value: "",
+  isRevealed: false,
   error: null,
 };
 
@@ -46,14 +49,14 @@ export const variables = {
 export const functions = {
   reveal: {
     call: (args, state, transition, { variables: [value] }) => {
-      const regexp = /^.+$/;
+      transition((state) => ({ ...state, isRevealed: true }));
 
-      if (!regexp.test(value)) {
-        const error = "Invalid";
+      const error = validate(value);
 
+      if (error) {
         transition((state) => ({ ...state, error }));
 
-        // throw new Break(`Validation failed with "${error}" message`);
+        throw new Break(`Validation failed with "${error}" message`);
       }
 
       return value;
@@ -66,4 +69,13 @@ export const functions = {
       },
     },
   },
+};
+
+const regexp = /^.+$/;
+const validate = (value) => {
+  if (regexp.test(value)) {
+    return null;
+  }
+
+  return "Invalid input";
 };

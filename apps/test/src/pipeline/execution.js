@@ -10,7 +10,7 @@ export const readLocal = (
   state,
   getSequence,
   getLocal,
-  setState
+  transition
 ) => {
   const keys = {
     variable: "variables",
@@ -35,7 +35,7 @@ export const readLocal = (
         state,
         getSequence,
         getLocal,
-        setState
+        transition
       )
     )
   );
@@ -48,18 +48,30 @@ export const readLocal = (
     }
 
     if (type === "function") {
-      return (args) => setup.call(args, state, setState, dependencies);
+      return (args) => setup.call(args, state, transition, dependencies);
     }
   });
 };
 
 export const readSetting = (value, sequence, getLocal) => {
   if (sequence.length) {
-    return reduce(
-      (acc, stage) => stagesStock[stage.type].execute(stage.values, getLocal),
-      null,
-      sequence
-    );
+    try {
+      return reduce(
+        (acc, stage) => stagesStock[stage.type].execute(stage.values, getLocal),
+        null,
+        sequence
+      );
+    } catch (err) {
+      /**
+       * When pipeline in interrupted - returning that interruption as a result so
+       * it can be handled if needed.
+       */
+      if (err instanceof Break) {
+        return err;
+      }
+
+      throw err;
+    }
   }
 
   return value;
