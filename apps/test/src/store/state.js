@@ -73,6 +73,20 @@ export const page = selector({
 });
 
 /**
+ * Modules list filtered by a parent module id
+ */
+export const modulesFamily = selectorFamily({
+  key: "modules",
+  get: (parentId) => ({ get }) => {
+    const { result, entities } = get(page);
+
+    return result.filter(
+      (moduleId) => entities.modules[moduleId].parentId === parentId
+    );
+  },
+});
+
+/**
  * Pipelines based on specific module and it's setting field.
  */
 export const sequenceFamily = selectorFamily({

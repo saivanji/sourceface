@@ -8,8 +8,12 @@ import { context } from "./Provider.jsx";
 import { moduleFamily, settingsFamily, localVariablesFamily } from "../store";
 import { stock as modulesStock } from "../modules";
 
+export function useModuleId() {
+  return useContext(context);
+}
+
 export function useModule() {
-  const moduleId = useContext(context);
+  const moduleId = useModuleId();
   const module = useRecoilValue(moduleFamily(moduleId));
   const blueprint = modulesStock[module.type];
 

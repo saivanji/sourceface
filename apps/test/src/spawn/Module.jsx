@@ -37,7 +37,10 @@ export default function Module() {
 
   return (
     <div
-      onClick={() => setSelection(module.id)}
+      onClick={(e) => {
+        e.stopPropagation();
+        setSelection(module.id);
+      }}
       className={cx(
         "rounded-md border-2 border-dashed p-4 bg-white mb-3",
         isLoading && "opacity-75",

@@ -9,6 +9,7 @@ export function listModules() {
 export const modules = [
   {
     id: 1,
+    parentId: null,
     type: "table",
     config: {
       limit: 10,
@@ -105,6 +106,7 @@ export const modules = [
   },
   {
     id: 2,
+    parentId: null,
     type: "text",
     stages: [
       {
@@ -136,11 +138,13 @@ export const modules = [
   },
   {
     id: 3,
+    parentId: null,
     type: "counter",
     stages: [],
   },
   {
     id: 5,
+    parentId: 7,
     type: "input",
     stages: [],
     config: {
@@ -149,6 +153,7 @@ export const modules = [
   },
   {
     id: 6,
+    parentId: 7,
     type: "input",
     stages: [],
     config: {
@@ -157,6 +162,7 @@ export const modules = [
   },
   {
     id: 4,
+    parentId: 7,
     type: "button",
     config: {
       text: "Submit",
@@ -206,6 +212,11 @@ export const modules = [
         ],
       },
     ],
+  },
+  {
+    id: 7,
+    parentId: null,
+    type: "container",
   },
 ];
 

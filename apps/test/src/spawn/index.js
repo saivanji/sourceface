@@ -2,6 +2,7 @@ import Provider from "./Provider";
 
 export {
   useModule,
+  useModuleId,
   useSettings,
   useSettingCallback,
   useLocalVariables,
