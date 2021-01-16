@@ -110,7 +110,7 @@ export const settingsFamily = selectorFamily({
    * the reference: https://github.com/facebookexperimental/Recoil/issues/762
    */
   set: ([moduleId, fields]) => ({ get, set }, args) =>
-    computeSettings(moduleId, fields, get, set),
+    computeSettings(moduleId, fields, get, set, { args }),
 });
 
 /**
@@ -149,7 +149,7 @@ const createAccessors = (moduleId, get, set) => ({
    * Accessor returning local entity(either variable or function) based on
    * module id and entity key.
    */
-  local(type, moduleId, key) {
+  local(type, moduleId, key, scope) {
     const state = get(stateFamily(moduleId));
     const module = get(moduleFamily(moduleId));
     const blueprint = modulesStock[module.type];
@@ -163,7 +163,8 @@ const createAccessors = (moduleId, get, set) => ({
       module.config,
       state,
       transition,
-      accessors
+      accessors,
+      scope
     );
   },
 });
@@ -171,14 +172,14 @@ const createAccessors = (moduleId, get, set) => ({
 /**
  * Returns settings data based on module id and desired fields.
  */
-const computeSettings = (moduleId, fields, get, set) => {
+const computeSettings = (moduleId, fields, get, set, scope) => {
   const module = get(moduleFamily(moduleId));
 
   return maybePromise(
     fields.map((field) => {
       const accessors = createAccessors(moduleId, get, set);
 
-      return readSetting(field, module.config, accessors);
+      return readSetting(field, module.config, accessors, scope);
     })
   );
 };

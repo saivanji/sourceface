@@ -8,11 +8,18 @@ import Layout from "./Layout";
 
 // investigate extra rerendering with recoil and performance in general
 
+// TODO: consider having only hooks for getting settings, variables or functions instead of mutating root component. They will report to the Spawn to
+// trigger corresponding loading/error state but will return plain data without loading/error flags. Use some sort of Suspense alternative until useTransition
+// api will not be implemented. So using computation hooks will trigger loading/error state update in the nearest ancestor of Suspense like component.
+// By default will have that component appear in Spawn.
+
 // - Stale
 // - Non default pipelines
 // - Variable categories
 //   - Argument
 //   - Action
+
+// Editor
 
 function App() {
   return (

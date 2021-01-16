@@ -27,6 +27,7 @@ export function useSettings(keys) {
   return useLoadableStatus(loadable);
 }
 
+// TODO: plural - useSettingCallbacks
 export function useSettingCallback(key) {
   const input = useInput([key]);
   return useSetRecoilState(settingsFamily(input));

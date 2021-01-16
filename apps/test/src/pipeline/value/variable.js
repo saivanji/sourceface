@@ -13,7 +13,8 @@ const global = {
 
 export const evaluate = (
   { category, payload, references, path = [] },
-  accessors
+  accessors,
+  scope
 ) => {
   let value;
 
@@ -36,6 +37,10 @@ export const evaluate = (
     const { module } = references;
 
     value = accessors.mount(module.id);
+  }
+
+  if (category === "argument") {
+    value = scope.args[payload.property];
   }
 
   return maybePromise([value], ([value]) => selectPath(path, value));

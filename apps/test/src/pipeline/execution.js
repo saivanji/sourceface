@@ -8,7 +8,8 @@ export const readLocal = (
   config,
   state,
   transition,
-  accessors
+  accessors,
+  scope
 ) => {
   const keys = {
     variable: "variables",
@@ -18,7 +19,7 @@ export const readLocal = (
   const setup = blueprint[keys[type]][key];
 
   const settings = maybePromise(
-    setup.settings?.map((field) => readSetting(field, config, accessors))
+    setup.settings?.map((field) => readSetting(field, config, accessors, scope))
   );
 
   const variables = maybePromise(
@@ -30,7 +31,8 @@ export const readLocal = (
         config,
         state,
         transition,
-        accessors
+        accessors,
+        scope
       )
     )
   );
@@ -48,14 +50,14 @@ export const readLocal = (
   });
 };
 
-export const readSetting = (field, config, accessors) => {
+export const readSetting = (field, config, accessors, scope) => {
   const stages = accessors.stages(field);
 
   if (stages.length) {
     try {
       return reduce(
         (acc, stage) =>
-          stagesStock[stage.type].execute(stage.values, accessors),
+          stagesStock[stage.type].execute(stage.values, accessors, scope),
         null,
         stages
       );

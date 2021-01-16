@@ -110,3 +110,7 @@ export const initialState = {
   page: 0,
   selected: null,
 };
+
+export const args = {
+  action: "Number",
+};
