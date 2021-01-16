@@ -1,17 +1,66 @@
 import stringify from "fast-json-stable-stringify";
-import { maybePromise } from "../utils";
 
 let store = {};
 let timeouts = {};
-let calls = {};
+let queue = {};
 const TTL = 3 * 60 * 1000;
 
-const get = (...input) => store[identify(...input)];
+/**
+ * Function responsible for calling a function, handling cahing and
+ * resolving duplicating async requests.
+ */
+export const load = (id, fn, args, references) => {
+  const identifier = identify(id, args);
+  const fromCache = store[identifier];
 
-const set = (...input) => {
-  const identifier = identify(...input.slice(0, -1));
+  if (fromCache) {
+    return fromCache;
+  }
 
-  store[identifier] = input[input.length - 1];
+  /**
+   * If nothing is in queue - call a function and emit subscribers in case of async
+   * call or return plain value otherwise.
+   */
+  if (!queue[identifier]) {
+    const result = fn(args, references);
+
+    if (result instanceof Promise) {
+      result.then((data) => {
+        emit(identifier, data, false);
+        set(identifier, data);
+      });
+
+      result.catch((err) => {
+        emit(identifier, err, true);
+      });
+    } else {
+      set(identifier, result);
+
+      return result;
+    }
+  }
+
+  return wait(identifier);
+};
+
+/**
+ * Notifying all subscribers for a change.
+ */
+const emit = (identifier, payload, isError) => {
+  const subscriptions = queue[identifier] || [];
+
+  for (let [onSuccess, onError] of subscriptions) {
+    (isError ? onError : onSuccess)(payload);
+  }
+
+  delete queue[identifier];
+};
+
+/**
+ * Sets data to a cache.
+ */
+const set = (identifier, data) => {
+  store[identifier] = data;
 
   clearTimeout(timeouts[identifier]);
   timeouts[identifier] = setTimeout(() => {
@@ -20,36 +69,17 @@ const set = (...input) => {
   }, TTL);
 };
 
-const register = (...input) => {
-  const identifier = identify(...input.slice(0, -1));
+/**
+ * Waits until promise callbacks will be called in a queue.
+ */
+const wait = (identifier) =>
+  new Promise((resolve, reject) => {
+    const prev = queue[identifier] || [];
 
-  // calls[identifier] =
-};
+    queue[identifier] = [...prev, [resolve, reject]];
+  });
 
 /**
- * Function responsible for handling duplicating async requests.
- *
- * When new async function is called, it gets registered in the store so the next call of the same function
- * gets suspended until the initial function call is resolved.
+ * Identification of a specific function by it's id and arguments.
  */
-export const load = (id, fn, args, references) => {
-  const fromCache = get(id, args);
-
-  if (fromCache) {
-    return fromCache;
-  }
-
-  // if call is not registered - register and proceed
-  // if call is registered suspend and wait for initial function to resolve
-  // no need to keep flags for isFetching and so on since we might get that by checking the cache
-
-  const result = fn(args, references);
-
-  return maybePromise([result], ([result]) => {
-    set(id, args, result);
-
-    return result;
-  });
-};
-
 const identify = (id, args) => `${id}/${stringify(args)}`;
