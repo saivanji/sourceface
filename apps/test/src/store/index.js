@@ -4,7 +4,7 @@ export {
   moduleFamily,
   modulesFamily,
   stateFamily,
-  sequenceFamily,
+  stagesFamily,
   settingsFamily,
   localVariablesFamily,
 } from "./state";

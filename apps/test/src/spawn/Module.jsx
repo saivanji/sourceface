@@ -3,9 +3,11 @@ import { useRecoilState } from "recoil";
 import Skeleton from "react-loading-skeleton";
 import cx from "classnames";
 import { stateFamily, selectedId } from "../store";
+import { either } from "../utils";
 import { useModule, useSettings, useLocalVariables } from "./consumers";
 
 const empty = [];
+const mountKey = ["@mount"];
 
 /**
  * Module component responsible for rendering specific module based on it's id, handling the
@@ -19,12 +21,13 @@ export default function Module() {
 
   const { Root } = blueprint;
 
+  const mount = useSettings(mountKey);
   const settings = useSettings(Root.settings || empty);
   const variables = useLocalVariables(Root.variables || empty);
 
-  const isPristine = settings.isPristine || variables.isPristine;
-  const isLoading = settings.isLoading || variables.isLoading;
-  const error = settings.error || variables.error;
+  const isPristine = either("isPristine", mount, settings, variables);
+  const isLoading = either("isLoading", mount, settings, variables);
+  const error = either("error", mount, settings, variables);
 
   if (isPristine) {
     return <Skeleton width={200} height={80} className="mb-3" />;

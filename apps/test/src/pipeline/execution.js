@@ -1,16 +1,14 @@
 import { stock as stagesStock } from "./stages";
 import { maybePromise, reduce } from "../utils";
 
-// TODO: readScope
 export const readLocal = (
   type,
   key,
   blueprint,
   config,
   state,
-  getSequence,
-  getLocal,
-  transition
+  transition,
+  accessors
 ) => {
   const keys = {
     variable: "variables",
@@ -20,9 +18,7 @@ export const readLocal = (
   const setup = blueprint[keys[type]][key];
 
   const settings = maybePromise(
-    setup.settings?.map((field) =>
-      readSetting(config?.[field], getSequence(field), getLocal)
-    )
+    setup.settings?.map((field) => readSetting(field, config, accessors))
   );
 
   const variables = maybePromise(
@@ -33,9 +29,8 @@ export const readLocal = (
         blueprint,
         config,
         state,
-        getSequence,
-        getLocal,
-        transition
+        transition,
+        accessors
       )
     )
   );
@@ -53,17 +48,20 @@ export const readLocal = (
   });
 };
 
-export const readSetting = (value, sequence, getLocal) => {
-  if (sequence.length) {
+export const readSetting = (field, config, accessors) => {
+  const stages = accessors.stages(field);
+
+  if (stages.length) {
     try {
       return reduce(
-        (acc, stage) => stagesStock[stage.type].execute(stage.values, getLocal),
+        (acc, stage) =>
+          stagesStock[stage.type].execute(stage.values, accessors),
         null,
-        sequence
+        stages
       );
     } catch (err) {
       /**
-       * When pipeline in interrupted - returning that interruption as a result so
+       * When pipeline is interrupted - returning that interruption as a result so
        * it can be handled if needed.
        */
       if (err instanceof Break) {
@@ -74,7 +72,7 @@ export const readSetting = (value, sequence, getLocal) => {
     }
   }
 
-  return value;
+  return config?.[field];
 };
 
 /**

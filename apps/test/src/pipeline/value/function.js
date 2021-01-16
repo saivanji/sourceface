@@ -12,18 +12,18 @@ import { maybePromise } from "../../utils";
 import * as cache from "../cache";
 import * as variable from "./variable";
 
-export const evaluate = (definition, getLocal) => {
+export const evaluate = (definition, accessors) => {
   const { id, args, references } = definition;
   const argsNames = keys(args);
   const argsValues = values(args).map((arg) =>
-    variable.evaluate(arg.data, getLocal)
+    variable.evaluate(arg.data, accessors)
   );
 
   return maybePromise(argsValues, (items) => {
     const args = zipObj(argsNames, items);
 
     const cached = cache.get(id, args);
-    const call = createFunction(definition, getLocal);
+    const call = createFunction(definition, accessors);
 
     if (cached) {
       return cached;
@@ -44,7 +44,7 @@ const spec = {
 /**
  * Creates a function out of it's definition object.
  */
-const createFunction = ({ category, payload, references }, getLocal) =>
+const createFunction = ({ category, payload, references }, accessors) =>
   category === "module"
-    ? getLocal("function", references.module.id, payload.property)
+    ? accessors.local("function", references.module.id, payload.property)
     : spec[category];

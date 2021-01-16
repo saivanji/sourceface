@@ -14,12 +14,12 @@ export function execute(args, { root }) {
 export const groupCache = () => {};
 
 const controllers = {
-  ordersList: ({ limit, offset }) =>
-    db.ordersList.slice(offset, offset + limit),
+  ordersList: ({ limit, offset }) => db.orders.slice(offset, offset + limit),
+  order: ({ id }) => db.orders.find((o) => o.id === id),
 };
 
 const db = {
-  ordersList: times(
+  orders: times(
     (i) => ({
       id: i,
       customer_name: `${faker.name.firstName()} ${faker.name.lastName()}`,

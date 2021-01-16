@@ -1,3 +1,6 @@
+import { path as selectPath } from "ramda";
+import { maybePromise } from "../../utils";
+
 const global = {
   page: "about",
   version: "2.1.3",
@@ -8,18 +11,32 @@ const global = {
 //
 // The same applies to functions: `form_*.justify` will call justify functions on desired modules and return an object with results.
 
-export const evaluate = ({ category, payload, references }, getLocal) => {
+export const evaluate = (
+  { category, payload, references, path = [] },
+  accessors
+) => {
+  let value;
+
   if (category === "global") {
-    return global[payload.name];
+    value = global[payload.name];
   }
 
   if (category === "constant") {
-    return payload.value;
+    value = payload.value;
   }
 
   if (category === "module") {
     const { property } = payload;
+    const { module } = references;
 
-    return getLocal("variable", references.module.id, property);
+    value = accessors.local("variable", module.id, property);
   }
+
+  if (category === "mount") {
+    const { module } = references;
+
+    value = accessors.mount(module.id);
+  }
+
+  return maybePromise([value], ([value]) => selectPath(path, value));
 };

@@ -4,7 +4,7 @@ import { identity, keys, sort } from "ramda";
  * Denormalization of module sequence data out of flat normalized shape based on
  * desired setting field and sequence name.
  */
-export const getSequence = (field, sequenceName, stageIds, getStage) => {
+export const getStages = (field, sequenceName, stageIds, getStage) => {
   const items = stageIds.reduce((acc, stageId) => {
     const stage = getStage(stageId);
 

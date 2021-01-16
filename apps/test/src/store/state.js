@@ -3,7 +3,7 @@ import { atom, atomFamily, selector, selectorFamily } from "recoil";
 import { normalize } from "normalizr";
 import * as api from "./api";
 import schema from "./schema";
-import { getSequence } from "./transformations";
+import { getStages } from "./transformations";
 import { maybePromise } from "../utils";
 import { stock as modulesStock } from "../modules";
 import { readLocal, readSetting } from "../pipeline";
@@ -89,12 +89,12 @@ export const modulesFamily = selectorFamily({
 /**
  * Pipelines based on specific module and it's setting field.
  */
-export const sequenceFamily = selectorFamily({
-  key: "sequence",
+export const stagesFamily = selectorFamily({
+  key: "stages",
   get: ([moduleId, field, sequenceName = "default"]) => ({ get }) => {
     const module = get(moduleFamily(moduleId));
 
-    return getSequence(field, sequenceName, module.stages, createGetStage(get));
+    return getStages(field, sequenceName, module.stages, createGetStage(get));
   },
 });
 
@@ -118,41 +118,55 @@ export const settingsFamily = selectorFamily({
  */
 export const localVariablesFamily = selectorFamily({
   key: "variable",
-  get: ([moduleId, keys]) => ({ get }) =>
-    maybePromise(
-      keys.map((key) => createGetLocal(get)("variable", moduleId, key))
-    ),
+  get: ([moduleId, keys]) => ({ get }) => {
+    const accessors = createAccessors(moduleId, get);
+
+    return maybePromise(
+      keys.map((key) => accessors.local("variable", moduleId, key))
+    );
+  },
 });
 
-/**
- * Creator of a function returning local entity(either variable or function) based on
- * module id and entity key.
- */
-const createGetLocal = (get, set) => (type, moduleId, key) => {
-  const state = get(stateFamily(moduleId));
-  const module = get(moduleFamily(moduleId));
-  const blueprint = modulesStock[module.type];
-  const transition = (valueOrFn) => set?.(stateFamily(moduleId), valueOrFn);
-
-  return readLocal(
-    type,
-    key,
-    blueprint,
-    module.config,
-    state,
-    createGetSequence(moduleId, get),
-    createGetLocal(get),
-    transition
-  );
-};
-
-/**
- * Creator of a function returning specific module sequence based on a desired field.
- */
-const createGetSequence = (moduleId, get) => (field) =>
-  get(sequenceFamily([moduleId, field]));
-
 const createGetStage = (get) => (stageId) => get(stageFamily(stageId));
+
+const createAccessors = (moduleId, get, set) => ({
+  /**
+   * Creator of a function returning a mount value of a specific module.
+   */
+  mount(moduleId) {
+    const module = get(moduleFamily(moduleId));
+    const accessors = createAccessors(moduleId, get, set);
+
+    return readSetting("@mount", module.config, accessors);
+  },
+  /**
+   * Accessor returning specific module stages based on a desired field.
+   */
+  stages(field) {
+    return get(stagesFamily([moduleId, field]));
+  },
+  /**
+   * Accessor returning local entity(either variable or function) based on
+   * module id and entity key.
+   */
+  local(type, moduleId, key) {
+    const state = get(stateFamily(moduleId));
+    const module = get(moduleFamily(moduleId));
+    const blueprint = modulesStock[module.type];
+    const transition = (valueOrFn) => set?.(stateFamily(moduleId), valueOrFn);
+    const accessors = createAccessors(moduleId, get, set);
+
+    return readLocal(
+      type,
+      key,
+      blueprint,
+      module.config,
+      state,
+      transition,
+      accessors
+    );
+  },
+});
 
 /**
  * Returns settings data based on module id and desired fields.
@@ -162,13 +176,9 @@ const computeSettings = (moduleId, fields, get, set) => {
 
   return maybePromise(
     fields.map((field) => {
-      const stages = get(sequenceFamily([moduleId, field]));
+      const accessors = createAccessors(moduleId, get, set);
 
-      return readSetting(
-        module.config?.[field],
-        stages,
-        createGetLocal(get, set)
-      );
+      return readSetting(field, module.config, accessors);
     })
   );
 };

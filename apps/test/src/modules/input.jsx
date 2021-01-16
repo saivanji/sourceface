@@ -46,7 +46,8 @@ export const initialConfig = {
 
 export const variables = {
   value: {
-    selector: (state) => state.value,
+    selector: (state, { settings: [value] }) => value ?? state.value,
+    settings: ["value"],
     type: "String",
   },
 };
