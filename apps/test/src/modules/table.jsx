@@ -1,12 +1,18 @@
 import React from "react";
+import cx from "classnames";
 import moment from "moment";
 import Pagination from "react-js-pagination";
 
-export function Root({ settings: [data], variables: [page], onStateChange }) {
+export function Root({
+  settings: [data],
+  variables: [page, selected],
+  onStateChange,
+}) {
   const thClassName = "border-b border-gray-300 pb-3 pr-4 text-left";
-  const tdClassName = "border-b border-gray-200 py-3 pr-4 text-left";
 
-  const changePage = (page) => onStateChange({ page: page - 1 });
+  const changePage = (page) =>
+    onStateChange((state) => ({ ...state, page: page - 1 }));
+  const select = (id) => onStateChange((state) => ({ ...state, selected: id }));
 
   return (
     <table>
@@ -23,22 +29,33 @@ export function Root({ settings: [data], variables: [page], onStateChange }) {
         </tr>
       </thead>
       <tbody>
-        {data?.map((row) => (
-          <tr key={row.id}>
-            <td className={tdClassName}>{row.id}</td>
-            <td className={tdClassName}>
-              {moment(row.created_at).format("DD MMM YY, HH:mm")}
-            </td>
-            <td className={tdClassName}>{row.customer_name}</td>
-            <td className={tdClassName}>{row.address}</td>
-            <td className={tdClassName}>{row.delivery_type}</td>
-            <td className={tdClassName}>{row.status}</td>
-            <td className={tdClassName}>{row.payment_type}</td>
-            <td className={tdClassName}>
-              {row.amount} {row.currency}
-            </td>
-          </tr>
-        ))}
+        {data?.map((row) => {
+          const tdClassName = cx(
+            "border-b border-gray-200 py-3 pr-4 text-left group-hover:bg-gray-100",
+            selected === row.id && "bg-gray-100"
+          );
+
+          return (
+            <tr
+              className="group cursor-pointer"
+              key={row.id}
+              onClick={() => select(row.id)}
+            >
+              <td className={tdClassName}>{row.id}</td>
+              <td className={tdClassName}>
+                {moment(row.created_at).format("DD MMM YY, HH:mm")}
+              </td>
+              <td className={tdClassName}>{row.customer_name}</td>
+              <td className={tdClassName}>{row.address}</td>
+              <td className={tdClassName}>{row.delivery_type}</td>
+              <td className={tdClassName}>{row.status}</td>
+              <td className={tdClassName}>{row.payment_type}</td>
+              <td className={tdClassName}>
+                {row.amount} {row.currency}
+              </td>
+            </tr>
+          );
+        })}
       </tbody>
       <tfoot>
         <tr>
@@ -64,12 +81,17 @@ export function Root({ settings: [data], variables: [page], onStateChange }) {
 }
 
 Root.settings = ["data"];
-Root.variables = ["page"];
+Root.variables = ["page", "selected"];
 
 export const variables = {
   page: {
     selector: (state, { settings: [page] }) => page ?? state.page,
     settings: ["page"],
+    type: "Number",
+  },
+  selected: {
+    selector: (state, { settings: [data] }) => state.selected ?? data[0].id,
+    settings: ["data"],
     type: "Number",
   },
   limit: {
@@ -86,4 +108,5 @@ export const variables = {
 
 export const initialState = {
   page: 0,
+  selected: null,
 };

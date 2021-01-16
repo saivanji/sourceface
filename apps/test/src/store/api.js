@@ -7,103 +7,103 @@ export function listModules() {
 }
 
 export const modules = [
-  // {
-  //   id: 1,
-  //   parentId: null,
-  //   type: "table",
-  //   config: {
-  //     limit: 10,
-  //   },
-  //   stages: [
-  //     {
-  //       id: 1,
-  //       order: 0,
-  //       group: "data/default",
-  //       type: "value",
-  //       functions: [
-  //         {
-  //           id: 1,
-  //           name: "root",
-  //           category: "operation",
-  //           args: [
-  //             {
-  //               id: 2,
-  //               name: "limit",
-  //               category: "module",
-  //               payload: { property: "limit" },
-  //               references: [
-  //                 {
-  //                   name: "module",
-  //                   module: {
-  //                     id: 1,
-  //                   },
-  //                 },
-  //               ],
-  //             },
-  //             {
-  //               id: 3,
-  //               name: "offset",
-  //               category: "module",
-  //               payload: { property: "offset" },
-  //               references: [
-  //                 {
-  //                   name: "module",
-  //                   module: {
-  //                     id: 1,
-  //                   },
-  //                 },
-  //               ],
-  //             },
-  //           ],
-  //           references: [
-  //             {
-  //               name: "root",
-  //               operation: {
-  //                 id: 1,
-  //                 name: "ordersList",
-  //               },
-  //             },
-  //           ],
-  //         },
-  //       ],
-  //       variables: [
-  //         // {
-  //         //   id: 1,
-  //         //   name: "root",
-  //         //   category: "constant",
-  //         //   payload: {
-  //         //     value: "Hello World",
-  //         //   },
-  //         // },
-  //       ],
-  //     },
-  //     {
-  //       id: 2,
-  //       order: 0,
-  //       group: "page/default",
-  //       type: "value",
-  //       functions: [],
-  //       variables: [
-  //         {
-  //           id: 4,
-  //           name: "root",
-  //           category: "module",
-  //           payload: {
-  //             property: "value",
-  //           },
-  //           references: [
-  //             {
-  //               name: "module",
-  //               module: {
-  //                 id: 3,
-  //               },
-  //             },
-  //           ],
-  //         },
-  //       ],
-  //     },
-  //   ],
-  // },
+  {
+    id: 1,
+    parentId: null,
+    type: "table",
+    config: {
+      limit: 10,
+    },
+    stages: [
+      {
+        id: 1,
+        order: 0,
+        group: "data/default",
+        type: "value",
+        functions: [
+          {
+            id: 1,
+            name: "root",
+            category: "operation",
+            args: [
+              {
+                id: 2,
+                name: "limit",
+                category: "module",
+                payload: { property: "limit" },
+                references: [
+                  {
+                    name: "module",
+                    module: {
+                      id: 1,
+                    },
+                  },
+                ],
+              },
+              {
+                id: 3,
+                name: "offset",
+                category: "module",
+                payload: { property: "offset" },
+                references: [
+                  {
+                    name: "module",
+                    module: {
+                      id: 1,
+                    },
+                  },
+                ],
+              },
+            ],
+            references: [
+              {
+                name: "root",
+                operation: {
+                  id: 1,
+                  name: "ordersList",
+                },
+              },
+            ],
+          },
+        ],
+        variables: [
+          // {
+          //   id: 1,
+          //   name: "root",
+          //   category: "constant",
+          //   payload: {
+          //     value: "Hello World",
+          //   },
+          // },
+        ],
+      },
+      {
+        id: 2,
+        order: 0,
+        group: "page/default",
+        type: "value",
+        functions: [],
+        variables: [
+          {
+            id: 4,
+            name: "root",
+            category: "module",
+            payload: {
+              property: "value",
+            },
+            references: [
+              {
+                name: "module",
+                module: {
+                  id: 3,
+                },
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
   {
     id: 2,
     parentId: null,
@@ -136,12 +136,12 @@ export const modules = [
       },
     ],
   },
-  // {
-  //   id: 3,
-  //   parentId: null,
-  //   type: "counter",
-  //   stages: [],
-  // },
+  {
+    id: 3,
+    parentId: null,
+    type: "counter",
+    stages: [],
+  },
   {
     id: 5,
     parentId: 7,
@@ -150,7 +150,7 @@ export const modules = [
       {
         id: 10,
         order: 0,
-        group: "value/default",
+        group: "initial/default",
         type: "value",
         functions: [],
         variables: [
@@ -172,71 +172,95 @@ export const modules = [
       },
     ],
     config: {
-      placeholder: "Enter first name",
+      placeholder: "Enter customer name",
     },
   },
-  // {
-  //   id: 6,
-  //   parentId: 7,
-  //   type: "input",
-  //   stages: [],
-  //   config: {
-  //     placeholder: "Enter last name",
-  //   },
-  // },
-  // {
-  //   id: 4,
-  //   parentId: 7,
-  //   type: "button",
-  //   config: {
-  //     text: "Submit",
-  //   },
-  //   stages: [
-  //     {
-  //       id: 5,
-  //       order: 0,
-  //       group: "event/default",
-  //       type: "dictionary",
-  //       variables: [],
-  //       functions: [
-  //         {
-  //           id: 6,
-  //           name: "first_name",
-  //           category: "module",
-  //           payload: {
-  //             property: "reveal",
-  //           },
-  //           args: [],
-  //           references: [
-  //             {
-  //               name: "module",
-  //               module: {
-  //                 id: 5,
-  //               },
-  //             },
-  //           ],
-  //         },
-  //         // {
-  //         //   id: 7,
-  //         //   name: "last_name",
-  //         //   category: "module",
-  //         //   payload: {
-  //         //     property: "reveal",
-  //         //   },
-  //         //   args: [],
-  //         //   references: [
-  //         //     {
-  //         //       name: "module",
-  //         //       module: {
-  //         //         id: 6,
-  //         //       },
-  //         //     },
-  //         //   ],
-  //         // },
-  //       ],
-  //     },
-  //   ],
-  // },
+  {
+    id: 6,
+    parentId: 7,
+    type: "input",
+    stages: [
+      {
+        id: 18,
+        order: 0,
+        group: "initial/default",
+        type: "value",
+        functions: [],
+        variables: [
+          {
+            id: 11,
+            name: "root",
+            category: "mount",
+            path: ["address"],
+            references: [
+              {
+                name: "module",
+                module: {
+                  id: 7,
+                },
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    config: {
+      placeholder: "Enter address",
+    },
+  },
+  {
+    id: 4,
+    parentId: 7,
+    type: "button",
+    config: {
+      text: "Submit",
+    },
+    stages: [
+      {
+        id: 5,
+        order: 0,
+        group: "event/default",
+        type: "dictionary",
+        variables: [],
+        functions: [
+          {
+            id: 6,
+            name: "first_name",
+            category: "module",
+            payload: {
+              property: "reveal",
+            },
+            args: [],
+            references: [
+              {
+                name: "module",
+                module: {
+                  id: 5,
+                },
+              },
+            ],
+          },
+          {
+            id: 7,
+            name: "last_name",
+            category: "module",
+            payload: {
+              property: "reveal",
+            },
+            args: [],
+            references: [
+              {
+                name: "module",
+                module: {
+                  id: 6,
+                },
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
   {
     id: 7,
     parentId: null,
@@ -257,9 +281,16 @@ export const modules = [
               {
                 id: 6,
                 name: "id",
-                category: "constant",
-                payload: { value: 1 },
-                references: [],
+                category: "module",
+                payload: { property: "selected" },
+                references: [
+                  {
+                    name: "module",
+                    module: {
+                      id: 1,
+                    },
+                  },
+                ],
               },
             ],
             references: [

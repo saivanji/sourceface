@@ -35,7 +35,7 @@ Root.settings = ["placeholder"];
 Root.variables = ["value"];
 
 export const initialState = {
-  value: "",
+  value: null,
   isRevealed: false,
   error: null,
 };
@@ -46,8 +46,8 @@ export const initialConfig = {
 
 export const variables = {
   value: {
-    selector: (state, { settings: [value] }) => value ?? state.value,
-    settings: ["value"],
+    selector: (state, { settings: [initial] }) => state.value ?? initial ?? "",
+    settings: ["initial"],
     type: "String",
   },
 };

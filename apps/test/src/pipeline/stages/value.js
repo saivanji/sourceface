@@ -1,3 +1,3 @@
 import { evaluate } from "../value";
 
-export const execute = (input, getLocal) => evaluate(input.root, getLocal);
+export const execute = (input, accessors) => evaluate(input.root, accessors);

@@ -3,7 +3,7 @@ import { Break } from "../execution";
 import { evaluate } from "../value";
 import { maybePromise } from "../../utils";
 
-export const execute = (input, getScopeVariable) => {
+export const execute = (input, accessors) => {
   const breakage = new Break("One of the values of dictionary was broken");
   let broken = false;
 
@@ -18,12 +18,12 @@ export const execute = (input, getScopeVariable) => {
 
   const evaluated = values(input).map((value) => {
     try {
-      const result = evaluate(value, getScopeVariable);
+      const result = evaluate(value, accessors);
 
       /**
        * Catching Break errors when evaluate returns a Promise.
        */
-      return result.catch?.(handleBreak) || result;
+      return result?.catch?.(handleBreak) || result;
     } catch (err) {
       /**
        * Catching Break errors when evaluate returns plain value.
