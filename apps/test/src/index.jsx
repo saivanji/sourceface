@@ -3,6 +3,8 @@ import { render } from "react-dom";
 import { RecoilRoot } from "recoil";
 import Layout from "./Layout";
 
+// name it "core" instead of "factory"
+
 // TODO: make sure we can access mount variable from any module in the page. Not specifically in the descendent tree.
 // Display variable suggestion in case @mount is defined for the specific module. Display spinner in the source module until @mount resolves.
 
