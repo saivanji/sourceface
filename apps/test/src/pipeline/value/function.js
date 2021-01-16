@@ -21,19 +21,9 @@ export const evaluate = (definition, accessors) => {
 
   return maybePromise(argsValues, (items) => {
     const args = zipObj(argsNames, items);
-
-    const cached = cache.get(id, args);
     const call = createFunction(definition, accessors);
 
-    if (cached) {
-      return cached;
-    }
-
-    return maybePromise([call(args, references)], ([result]) => {
-      cache.set(id, args, result);
-
-      return result;
-    });
+    return cache.load(id, call, args, references);
   });
 };
 
