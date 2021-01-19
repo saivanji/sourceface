@@ -9,6 +9,11 @@ import Layout from "./Layout";
 // Display variable suggestion in case @mount is defined for the specific module. Display spinner in the source module until @mount resolves.
 // consider having it as global page actions instead of mount since it's lazy and has nothing to do with a specific module.
 
+// TODO: consider having default "container" module type which will be created with every page, so that will lead to the following changes:
+// - layouts no longer attached to pages but only to the modules instead
+// - only default module can have "mounts"?
+// - have is_root flag in module table.
+
 // investigate extra rerendering with recoil and performance in general
 
 // - Stale
