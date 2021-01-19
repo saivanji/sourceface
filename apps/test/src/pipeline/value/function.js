@@ -12,11 +12,11 @@ import { maybePromise } from "../../utils";
 import * as cache from "../cache";
 import * as variable from "./variable";
 
-export const evaluate = (definition, accessors) => {
+export const evaluate = (definition, accessors, scope) => {
   const { id, args, references } = definition;
   const argsNames = keys(args);
   const argsValues = values(args).map((arg) =>
-    variable.evaluate(arg.data, accessors)
+    variable.evaluate(arg.data, accessors, scope)
   );
 
   return maybePromise(argsValues, (items) => {

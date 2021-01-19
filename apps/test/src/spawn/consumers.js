@@ -5,7 +5,7 @@ import {
   useRecoilValueLoadable,
 } from "recoil";
 import { context } from "./Provider.jsx";
-import { moduleFamily, settingsFamily, localVariablesFamily } from "../store";
+import { moduleFamily, settingsFamily, localVariablesFamily, stagesFamily } from "../store";
 import { stock as modulesStock } from "../modules";
 
 export function useModuleId() {
@@ -14,6 +14,9 @@ export function useModuleId() {
 
 export function useModule() {
   const moduleId = useModuleId();
+  // TODO: should we use useRecoilValueLoadable instead unless we go all in with Suspense? Since when
+  // settings editing will be implemented changing module settings real time might cause global loader to be
+  // triggered.
   const module = useRecoilValue(moduleFamily(moduleId));
   const blueprint = modulesStock[module.type];
 
@@ -27,10 +30,16 @@ export function useSettings(keys) {
   return useLoadableStatus(loadable);
 }
 
-// TODO: plural - useSettingCallbacks
 export function useSettingCallback(key) {
   const input = useInput([key]);
-  return useSetRecoilState(settingsFamily(input));
+  const func = useSetRecoilState(settingsFamily(input));
+  const stages = useRecoilValue(stagesFamily(input))
+
+  if (stages.length === 0) {
+    return undefined;
+  }
+
+  return func
 }
 
 export function useLocalVariables(keys) {

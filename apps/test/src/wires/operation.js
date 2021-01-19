@@ -15,6 +15,9 @@ export const groupCache = () => {};
 
 const controllers = {
   ordersList: ({ limit, offset }) => db.orders.slice(offset, offset + limit),
+  removeOrder: ({ id }) => {
+    db.orders = db.orders.filter(order => order.id !== id)
+  },
   order: ({ id }) => db.orders.find((o) => o.id === id),
 };
 

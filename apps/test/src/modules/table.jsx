@@ -2,12 +2,15 @@ import React from "react";
 import cx from "classnames";
 import moment from "moment";
 import Pagination from "react-js-pagination";
+import { useSettingCallback } from "../spawn";
 
 export function Root({
   settings: [data],
   variables: [page, selected],
   onStateChange,
 }) {
+  const remove = useSettingCallback("remove");
+
   const thClassName = "border-b border-gray-300 pb-3 pr-4 text-left";
 
   const changePage = (page) =>
@@ -60,18 +63,28 @@ export function Root({
       <tfoot>
         <tr>
           <td colSpan={8} className="pt-3">
-            <div className="flex justify-end">
-              <Pagination
-                hideDisabled
-                innerClass="flex"
-                linkClass="px-2 py-1 block rounded hover:bg-gray-100"
-                activeLinkClass="bg-gray-200"
-                activePage={page + 1}
-                itemsCountPerPage={10}
-                totalItemsCount={450}
-                pageRangeDisplayed={5}
-                onChange={changePage}
-              />
+            <div className="flex items-center">
+              {remove && (
+                <button
+                  onClick={() => remove({ id: selected })}
+                  className="underline text-red-700"
+                >
+                  Remove
+                </button>
+              )}
+              <div className="ml-auto">
+                <Pagination
+                  hideDisabled
+                  innerClass="flex"
+                  linkClass="px-2 py-1 block rounded hover:bg-gray-100"
+                  activeLinkClass="bg-gray-200"
+                  activePage={page + 1}
+                  itemsCountPerPage={10}
+                  totalItemsCount={450}
+                  pageRangeDisplayed={5}
+                  onChange={changePage}
+                />
+              </div>
             </div>
           </td>
         </tr>
@@ -112,5 +125,7 @@ export const initialState = {
 };
 
 export const args = {
-  action: "Number",
+  remove: {
+    id: "Number",
+  },
 };

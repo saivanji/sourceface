@@ -102,6 +102,38 @@ export const modules = [
           },
         ],
       },
+      {
+        id: 15,
+        order: 0,
+        group: "remove/default",
+        type: "value",
+        variables: [],
+        functions: [
+          {
+            id: 10,
+            name: "root",
+            category: "operation",
+            args: [
+              {
+                id: 25,
+                name: "id",
+                category: "argument",
+                payload: { property: "id" },
+                references: []
+              },
+            ],
+            references: [
+              {
+                name: "root",
+                operation: {
+                  id: 3,
+                  name: "removeOrder",
+                },
+              },
+            ],
+          },
+        ]
+      }
     ],
   },
   {
