@@ -17,7 +17,7 @@ import Layout from "./Layout";
 // investigate extra rerendering with recoil and performance in general
 
 // - Stale
-// - Non default pipelines
+// - Non default pipelines(hold off implementation until it's needed)
 // - Variable categories
 //   - Action
 
