@@ -7,6 +7,7 @@ import Layout from "./Layout";
 
 // TODO: make sure we can access mount variable from any module in the page. Not specifically in the descendent tree.
 // Display variable suggestion in case @mount is defined for the specific module. Display spinner in the source module until @mount resolves.
+// consider having it as global page actions instead of mount since it's lazy and has nothing to do with a specific module.
 
 // investigate extra rerendering with recoil and performance in general
 
