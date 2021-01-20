@@ -119,7 +119,7 @@ export const modules = [
                 name: "id",
                 category: "argument",
                 payload: { property: "id" },
-                references: []
+                references: [],
               },
             ],
             references: [
@@ -128,12 +128,13 @@ export const modules = [
                 operation: {
                   id: 3,
                   name: "removeOrder",
+                  stale: [{ id: 1 }],
                 },
               },
             ],
           },
-        ]
-      }
+        ],
+      },
     ],
   },
   {

@@ -1,5 +1,13 @@
 import stringify from "fast-json-stable-stringify";
 
+/**
+ * Function result cache. Will be removed once Recoil will implement selector caching by it's output
+ * (currently it's caching selectors only by their inputs). That will let having module state shape
+ * as object without recomputing selectors.
+ *
+ * See https://github.com/facebookexperimental/Recoil/pull/749 for further detail.
+ */
+
 let store = {};
 let timeouts = {};
 let queue = {};
@@ -11,11 +19,11 @@ const TTL = 3 * 60 * 1000;
  */
 export const load = (id, fn, args, references) => {
   const identifier = identify(id, args);
-  const fromCache = store[identifier];
+  // const fromCache = store[identifier];
 
-  if (fromCache) {
-    return fromCache;
-  }
+  // if (fromCache) {
+  //   return fromCache;
+  // }
 
   /**
    * If nothing is in queue - call a function and emit subscribers in case of async

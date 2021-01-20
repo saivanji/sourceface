@@ -1,4 +1,5 @@
 import { times } from "ramda";
+import moment from "moment";
 import faker from "faker";
 
 faker.seed(1);
@@ -16,7 +17,7 @@ export const groupCache = () => {};
 const controllers = {
   ordersList: ({ limit, offset }) => db.orders.slice(offset, offset + limit),
   removeOrder: ({ id }) => {
-    db.orders = db.orders.filter(order => order.id !== id)
+    db.orders = db.orders.filter((order) => order.id !== id);
   },
   order: ({ id }) => db.orders.find((o) => o.id === id),
 };
@@ -25,6 +26,7 @@ const db = {
   orders: times(
     (i) => ({
       id: i,
+      created_at: moment().format(),
       customer_name: `${faker.name.firstName()} ${faker.name.lastName()}`,
       address: faker.address.streetAddress(),
       delivery_type: faker.random.arrayElement(["delivery", "pickup"]),
