@@ -150,6 +150,7 @@ const createAccessors = (moduleId, get, set) => ({
    * module id and entity key.
    */
   local(type, moduleId, key, scope) {
+    // TODO: will get only needed state with generated selectorFamily
     const state = get(stateFamily(moduleId));
     const module = get(moduleFamily(moduleId));
     const blueprint = modulesStock[module.type];

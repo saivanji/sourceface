@@ -38,6 +38,7 @@ export const readLocal = (
   );
 
   return maybePromise([settings, variables], ([settings, variables]) => {
+    // TODO: pass state as a dependency
     const dependencies = { settings, variables };
 
     if (type === "variable") {
