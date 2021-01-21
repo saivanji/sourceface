@@ -98,22 +98,26 @@ Root.variables = ["page", "selected"];
 
 export const variables = {
   page: {
-    selector: (state, { settings: [page] }) => page ?? state.page,
+    selector: ({ state: [statePage], settings: [settingsPage] }) =>
+      settingsPage ?? statePage,
     settings: ["page"],
+    state: ["page"],
     type: "Number",
   },
   selected: {
-    selector: (state, { settings: [data] }) => state.selected ?? data[0].id,
+    selector: ({ state: [selected], settings: [data] }) =>
+      selected ?? data[0].id,
     settings: ["data"],
+    state: ["selected"],
     type: "Number",
   },
   limit: {
-    selector: (state, { settings: [limit] }) => limit,
+    selector: ({ settings: [limit] }) => limit,
     settings: ["limit"],
     type: "Number",
   },
   offset: {
-    selector: (state, { variables: [page, limit] }) => limit * page,
+    selector: ({ variables: [page, limit] }) => limit * page,
     variables: ["page", "limit"],
     type: "Number",
   },

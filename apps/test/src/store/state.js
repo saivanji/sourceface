@@ -56,12 +56,21 @@ export const stateFamily = atomFamily({
   key: "state",
   default: selectorFamily({
     key: "state/default",
-    get: (param) => ({ get }) => {
-      const module = get(moduleFamily(param));
+    get: (moduleId) => ({ get }) => {
+      const module = get(moduleFamily(moduleId));
 
       return modulesStock[module.type].initialState || {};
     },
   }),
+});
+
+const stateFieldFamily = selectorFamily({
+  key: `stateField`,
+  get: ([moduleId, key]) => ({ get }) => {
+    const state = get(stateFamily(moduleId));
+
+    return state[key];
+  },
 });
 
 /**
@@ -131,7 +140,21 @@ const createGetStage = (get) => (stageId) => get(stageFamily(stageId));
 
 const createAccessors = (moduleId, get, set) => ({
   /**
-   * Creator of a function returning a mount value of a specific module.
+   * Accessor returning module stages based on a desired field.
+   */
+  stages(field) {
+    return get(stagesFamily([moduleId, field]));
+  },
+  /**
+   * Accessor of a specific state field.
+   */
+  state(key, blueprint) {
+    return blueprint.variables?.[key].state?.map((key) =>
+      get(stateFieldFamily([moduleId, key]))
+    );
+  },
+  /**
+   * Accessor of a mount value for a specific module.
    */
   mount(moduleId) {
     const module = get(moduleFamily(moduleId));
@@ -140,29 +163,20 @@ const createAccessors = (moduleId, get, set) => ({
     return readSetting("@mount", module.config, accessors);
   },
   /**
-   * Accessor returning specific module stages based on a desired field.
-   */
-  stages(field) {
-    return get(stagesFamily([moduleId, field]));
-  },
-  /**
    * Accessor returning local entity(either variable or function) based on
    * module id and entity key.
    */
   local(type, moduleId, key, scope) {
-    // TODO: will get only needed state with generated selectorFamily
-    const state = get(stateFamily(moduleId));
     const module = get(moduleFamily(moduleId));
     const blueprint = modulesStock[module.type];
     const transition = (valueOrFn) => set?.(stateFamily(moduleId), valueOrFn);
     const accessors = createAccessors(moduleId, get, set);
 
     return readLocal(
+      module,
       type,
       key,
       blueprint,
-      module.config,
-      state,
       transition,
       accessors,
       scope

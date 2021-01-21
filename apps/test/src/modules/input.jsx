@@ -46,8 +46,10 @@ export const initialConfig = {
 
 export const variables = {
   value: {
-    selector: (state, { settings: [initial] }) => state.value ?? initial ?? "",
+    selector: ({ state: [value], settings: [initial] }) =>
+      value ?? initial ?? "",
     settings: ["initial"],
+    state: ["value"],
     type: "String",
   },
 };

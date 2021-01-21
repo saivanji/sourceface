@@ -2,11 +2,10 @@ import { stock as stagesStock } from "./stages";
 import { maybePromise, reduce } from "../utils";
 
 export const readLocal = (
+  module,
   type,
   key,
   blueprint,
-  config,
-  state,
   transition,
   accessors,
   scope
@@ -19,17 +18,18 @@ export const readLocal = (
   const setup = blueprint[keys[type]][key];
 
   const settings = maybePromise(
-    setup.settings?.map((field) => readSetting(field, config, accessors, scope))
+    setup.settings?.map((field) =>
+      readSetting(field, module.config, accessors, scope)
+    )
   );
 
   const variables = maybePromise(
     setup.variables?.map((key) =>
       readLocal(
+        module,
         "variable",
         key,
         blueprint,
-        config,
-        state,
         transition,
         accessors,
         scope
@@ -38,15 +38,18 @@ export const readLocal = (
   );
 
   return maybePromise([settings, variables], ([settings, variables]) => {
-    // TODO: pass state as a dependency
-    const dependencies = { settings, variables };
+    console.log("call");
+
+    // TODO: probably causes circular calls
+    // const state = accessors.state(key, blueprint);
+    const dependencies = { state: [0], settings, variables };
 
     if (type === "variable") {
-      return setup.selector(state, dependencies);
+      return setup.selector(dependencies);
     }
 
     if (type === "function") {
-      return (args) => setup.call(args, state, transition, dependencies);
+      return (args) => setup.call(args, {}, transition, dependencies);
     }
   });
 };

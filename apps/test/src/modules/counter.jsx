@@ -43,7 +43,8 @@ export const initialState = {
 
 export const variables = {
   value: {
-    selector: (state) => state.value,
+    selector: ({ state: [value] }) => value,
+    state: ["value"],
     type: "Number",
   },
 };
@@ -51,7 +52,7 @@ export const variables = {
 export const functions = {
   increment: {
     call: (state, transition, { settings: [value] }) => {
-      transition("value", value + 1);
+      transition((state) => ({ ...state, value: value + 1 }));
     },
     settings: ["value"],
   },
