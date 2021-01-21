@@ -17,11 +17,7 @@ export const readLocal = (
 
   const setup = blueprint[keys[type]][key];
 
-  const settings = maybePromise(
-    setup.settings?.map((field) =>
-      readSetting(field, module.config, accessors, scope)
-    )
-  );
+  const settings = accessors.settings(setup.settings || []);
 
   const variables = maybePromise(
     setup.variables?.map((key) =>

@@ -1,5 +1,5 @@
 import { mergeRight } from "ramda";
-import { atom, atomFamily, selector, selectorFamily } from "recoil";
+import { atom, atomFamily, selector, selectorFamily, waitForAll } from "recoil";
 import { normalize } from "normalizr";
 import * as api from "./api";
 import schema from "./schema";
@@ -124,6 +124,17 @@ export const settingsFamily = selectorFamily({
     computeSettings(moduleId, fields, get, set, { args }),
 });
 
+export const settingFamily = selectorFamily({
+  key: "setting",
+  get: ([moduleId, field]) => ({ get }) => {
+    const module = get(moduleFamily(moduleId));
+    const accessors = createAccessors(moduleId, get);
+
+    return readSetting(field, module.config, accessors);
+  },
+  // TODO: add "set" function to consider "set" and "args" arguments
+});
+
 /**
  * Module local variables list based on it's id and desired variables keys.
  */
@@ -153,6 +164,11 @@ const createAccessors = (moduleId, get, set) => ({
   state(key, blueprint) {
     return blueprint.variables?.[key].state?.map((key) =>
       get(stateFieldFamily([moduleId, key]))
+    );
+  },
+  settings(fields) {
+    return get(
+      waitForAll(fields.map((field) => settingFamily([moduleId, field])))
     );
   },
   /**
@@ -190,13 +206,7 @@ const createAccessors = (moduleId, get, set) => ({
  * Returns settings data based on module id and desired fields.
  */
 const computeSettings = (moduleId, fields, get, set, scope) => {
-  const module = get(moduleFamily(moduleId));
-
-  return maybePromise(
-    fields.map((field) => {
-      const accessors = createAccessors(moduleId, get, set);
-
-      return readSetting(field, module.config, accessors, scope);
-    })
+  return get(
+    waitForAll(fields.map((field) => settingFamily([moduleId, field])))
   );
 };

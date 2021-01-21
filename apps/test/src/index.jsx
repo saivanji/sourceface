@@ -17,6 +17,8 @@ import Layout from "./Layout";
 // TODO: fix extra fetch of a list when changing a selection
 // TODO: consider having singular selectors for settings and local variables to be able to cache every setting / variable separately
 // TODO: make sure we cache functions with recoil independently of a specific setting(previously that was solved by moving cache to a function space)
+// TODO: prettify recoil state
+// TODO: we might get rid of "maybePromise"
 
 // investigate extra rerendering with recoil and performance in general
 
