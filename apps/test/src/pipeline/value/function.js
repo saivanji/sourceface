@@ -9,7 +9,7 @@
 import { zipObj, keys, values } from "ramda";
 import * as operation from "../../wires/operation";
 import { maybePromise } from "../../utils";
-import * as cache from "../cache";
+import * as loader from "../loader";
 import * as variable from "./variable";
 
 export const evaluate = (definition, accessors, scope) => {
@@ -23,7 +23,7 @@ export const evaluate = (definition, accessors, scope) => {
     const args = zipObj(argsNames, items);
     const call = createFunction(definition, accessors);
 
-    return cache.load(id, call, args, references);
+    return loader.load(id, call, args, references);
   });
 };
 

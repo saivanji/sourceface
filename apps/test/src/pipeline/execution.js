@@ -37,19 +37,18 @@ export const readLocal = (
     )
   );
 
-  return maybePromise([settings, variables], ([settings, variables]) => {
-    console.log("call");
+  // TODO: consider type(either variable or function) when accessing the state
+  const state = accessors.state(key, blueprint);
 
-    // TODO: probably causes circular calls
-    // const state = accessors.state(key, blueprint);
-    const dependencies = { state: [0], settings, variables };
+  return maybePromise([settings, variables], ([settings, variables]) => {
+    const dependencies = { state, settings, variables };
 
     if (type === "variable") {
       return setup.selector(dependencies);
     }
 
     if (type === "function") {
-      return (args) => setup.call(args, {}, transition, dependencies);
+      return (args) => setup.call(args, state, transition, dependencies);
     }
   });
 };

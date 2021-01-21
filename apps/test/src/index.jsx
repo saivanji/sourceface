@@ -14,10 +14,6 @@ import Layout from "./Layout";
 // - only default module can have "mounts"?
 // - have is_root flag in module table.
 
-// TODO: use selector to select state fields to let selectors for local values be cached. Getting the whole state breaks cache
-// TODO: statically create selector family out of modules stock for every field of module type. Even better create selector family
-// for every field in "variables" object of every module type(based on newly introduced "state" dependency list).
-
 // investigate extra rerendering with recoil and performance in general
 
 // - Stale
