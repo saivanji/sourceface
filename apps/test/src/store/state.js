@@ -95,6 +95,7 @@ export const modulesFamily = selectorFamily({
   },
 });
 
+// TODO: might map the ids in the UI and have singular selector for every stage
 /**
  * Pipelines based on specific module and it's setting field.
  */
@@ -107,6 +108,7 @@ export const stagesFamily = selectorFamily({
   },
 });
 
+// TODO: might need to split selector to singular form to improve caching
 /**
  * Specific module settings based on it's id and desired setting fields.
  */

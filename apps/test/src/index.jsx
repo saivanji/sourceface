@@ -14,6 +14,10 @@ import Layout from "./Layout";
 // - only default module can have "mounts"?
 // - have is_root flag in module table.
 
+// TODO: fix extra fetch of a list when changing a selection
+// TODO: consider having singular selectors for settings and local variables to be able to cache every setting / variable separately
+// TODO: make sure we cache functions with recoil independently of a specific setting(previously that was solved by moving cache to a function space)
+
 // investigate extra rerendering with recoil and performance in general
 
 // - Stale
