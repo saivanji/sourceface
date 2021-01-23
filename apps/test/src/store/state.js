@@ -4,7 +4,6 @@ import { normalize } from "normalizr";
 import * as api from "./api";
 import schema from "./schema";
 import { getStages } from "./transformations";
-import { maybePromise } from "../utils";
 import { stock as modulesStock } from "../modules";
 import { readLocal, readSetting } from "../pipeline";
 
@@ -108,22 +107,6 @@ export const stagesFamily = selectorFamily({
   },
 });
 
-// TODO: might need to split selector to singular form to improve caching
-/**
- * Specific module settings based on it's id and desired setting fields.
- */
-export const settingsFamily = selectorFamily({
-  key: "settings",
-  get: ([moduleId, fields]) => ({ get }) =>
-    computeSettings(moduleId, fields, get),
-  /**
-   * Async set is not supported by Recoil see that issue for
-   * the reference: https://github.com/facebookexperimental/Recoil/issues/762
-   */
-  set: ([moduleId, fields]) => ({ get, set }, args) =>
-    computeSettings(moduleId, fields, get, set, { args }),
-});
-
 export const settingFamily = selectorFamily({
   key: "setting",
   get: ([moduleId, field]) => ({ get }) => {
@@ -132,20 +115,22 @@ export const settingFamily = selectorFamily({
 
     return readSetting(field, module.config, accessors);
   },
-  // TODO: add "set" function to consider "set" and "args" arguments
+  set: ([moduleId, field]) => ({ get, set }, args) => {
+    const module = get(moduleFamily(moduleId));
+    const accessors = createAccessors(moduleId, get, set);
+
+    return readSetting(field, module.config, accessors, { args });
+  },
 });
 
-/**
- * Module local variables list based on it's id and desired variables keys.
- */
-export const localVariablesFamily = selectorFamily({
+export const localVariableFamily = selectorFamily({
   key: "variable",
-  get: ([moduleId, keys]) => ({ get }) => {
+  get: ([moduleId, key]) => ({ get }) => {
     const accessors = createAccessors(moduleId, get);
+    const module = get(moduleFamily(moduleId));
+    const blueprint = modulesStock[module.type];
 
-    return maybePromise(
-      keys.map((key) => accessors.local("variable", moduleId, key))
-    );
+    return readLocal(module, "variable", key, blueprint, () => {}, accessors);
   },
 });
 
@@ -169,6 +154,11 @@ const createAccessors = (moduleId, get, set) => ({
   settings(fields) {
     return get(
       waitForAll(fields.map((field) => settingFamily([moduleId, field])))
+    );
+  },
+  localVariables(keys) {
+    return get(
+      waitForAll(keys.map((key) => localVariableFamily([moduleId, key])))
     );
   },
   /**
@@ -201,12 +191,3 @@ const createAccessors = (moduleId, get, set) => ({
     );
   },
 });
-
-/**
- * Returns settings data based on module id and desired fields.
- */
-const computeSettings = (moduleId, fields, get, set, scope) => {
-  return get(
-    waitForAll(fields.map((field) => settingFamily([moduleId, field])))
-  );
-};

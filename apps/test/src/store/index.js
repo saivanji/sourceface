@@ -5,6 +5,6 @@ export {
   modulesFamily,
   stateFamily,
   stagesFamily,
-  settingsFamily,
-  localVariablesFamily,
+  settingFamily,
+  localVariableFamily,
 } from "./state";

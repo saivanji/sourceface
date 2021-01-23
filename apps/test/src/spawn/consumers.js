@@ -1,11 +1,17 @@
-import { useContext, useRef, useEffect, useMemo } from "react";
+import { useContext, useRef, useEffect } from "react";
 import {
   useSetRecoilState,
   useRecoilValue,
   useRecoilValueLoadable,
+  waitForAll,
 } from "recoil";
 import { context } from "./Provider.jsx";
-import { moduleFamily, settingsFamily, localVariablesFamily, stagesFamily } from "../store";
+import {
+  moduleFamily,
+  settingFamily,
+  localVariableFamily,
+  stagesFamily,
+} from "../store";
 import { stock as modulesStock } from "../modules";
 
 export function useModuleId() {
@@ -23,36 +29,37 @@ export function useModule() {
   return { module, blueprint };
 }
 
-export function useSettings(keys) {
-  const input = useInput(keys);
-  const loadable = useRecoilValueLoadable(settingsFamily(input));
+export function useSettings(fields) {
+  const { module } = useModule();
+  const loadable = useRecoilValueLoadable(
+    waitForAll(fields.map((field) => settingFamily([module.id, field])))
+  );
 
   return useLoadableStatus(loadable);
 }
 
-export function useSettingCallback(key) {
-  const input = useInput([key]);
-  const func = useSetRecoilState(settingsFamily(input));
-  const stages = useRecoilValue(stagesFamily(input))
+export function useSettingCallback(field) {
+  const { module } = useModule();
+  const func = useSetRecoilState(settingFamily([module.id, field]));
+  const stages = useRecoilValue(stagesFamily([module.id, field]));
 
+  /**
+   * Do not returning a function when no stages defined.
+   */
   if (stages.length === 0) {
     return undefined;
   }
 
-  return func
+  return func;
 }
 
 export function useLocalVariables(keys) {
-  const input = useInput(keys);
-  const loadable = useRecoilValueLoadable(localVariablesFamily(input));
+  const { module } = useModule();
+  const loadable = useRecoilValueLoadable(
+    waitForAll(keys.map((key) => localVariableFamily([module.id, key])))
+  );
 
   return useLoadableStatus(loadable);
-}
-
-function useInput(keys) {
-  const { module } = useModule();
-  // TODO: what if "keys" will be provided as value from render function?
-  return useMemo(() => [module.id, keys], [module.id, keys]);
 }
 
 function useLoadableStatus(loadable) {

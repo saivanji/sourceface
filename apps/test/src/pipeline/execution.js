@@ -1,5 +1,5 @@
 import { stock as stagesStock } from "./stages";
-import { maybePromise, reduce } from "../utils";
+import { reduce } from "../utils";
 
 export const readLocal = (
   module,
@@ -7,8 +7,7 @@ export const readLocal = (
   key,
   blueprint,
   transition,
-  accessors,
-  scope
+  accessors
 ) => {
   const keys = {
     variable: "variables",
@@ -18,35 +17,19 @@ export const readLocal = (
   const setup = blueprint[keys[type]][key];
 
   const settings = accessors.settings(setup.settings || []);
-
-  const variables = maybePromise(
-    setup.variables?.map((key) =>
-      readLocal(
-        module,
-        "variable",
-        key,
-        blueprint,
-        transition,
-        accessors,
-        scope
-      )
-    )
-  );
-
+  const variables = accessors.localVariables(setup.variables || []);
   // TODO: consider type(either variable or function) when accessing the state
   const state = accessors.state(key, blueprint);
 
-  return maybePromise([settings, variables], ([settings, variables]) => {
-    const dependencies = { state, settings, variables };
+  const dependencies = { state, settings, variables };
 
-    if (type === "variable") {
-      return setup.selector(dependencies);
-    }
+  if (type === "variable") {
+    return setup.selector(dependencies);
+  }
 
-    if (type === "function") {
-      return (args) => setup.call(args, state, transition, dependencies);
-    }
-  });
+  if (type === "function") {
+    return (args) => setup.call(args, state, transition, dependencies);
+  }
 };
 
 export const readSetting = (field, config, accessors, scope) => {
