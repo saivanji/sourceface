@@ -51,7 +51,7 @@ export const variables = {
 
 export const functions = {
   increment: {
-    call: (state, transition, { settings: [value] }) => {
+    call: (args, transition, { settings: [value] }) => {
       transition((state) => ({ ...state, value: value + 1 }));
     },
     settings: ["value"],

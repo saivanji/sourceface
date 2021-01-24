@@ -1,5 +1,4 @@
 import { path as selectPath } from "ramda";
-import { maybePromise } from "../../utils";
 
 const global = {
   page: "about",
@@ -30,7 +29,7 @@ export const evaluate = (
     const { property } = payload;
     const { module } = references;
 
-    value = accessors.local("variable", module.id, property);
+    value = accessors.localVariable(module.id, property);
   }
 
   if (category === "mount") {
@@ -43,5 +42,5 @@ export const evaluate = (
     value = scope.args[payload.property];
   }
 
-  return maybePromise([value], ([value]) => selectPath(path, value));
+  return selectPath(path, value);
 };

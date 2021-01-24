@@ -20,16 +20,16 @@ export const modules = [
         order: 0,
         group: "data/default",
         type: "value",
-        functions: [
+        values: [
           {
             id: 1,
             name: "root",
-            category: "operation",
+            category: "function/operation",
             args: [
               {
                 id: 2,
                 name: "limit",
-                category: "module",
+                category: "variable/module",
                 payload: { property: "limit" },
                 references: [
                   {
@@ -43,7 +43,7 @@ export const modules = [
               {
                 id: 3,
                 name: "offset",
-                category: "module",
+                category: "variable/module",
                 payload: { property: "offset" },
                 references: [
                   {
@@ -66,28 +66,17 @@ export const modules = [
             ],
           },
         ],
-        variables: [
-          // {
-          //   id: 1,
-          //   name: "root",
-          //   category: "constant",
-          //   payload: {
-          //     value: "Hello World",
-          //   },
-          // },
-        ],
       },
       {
         id: 2,
         order: 0,
         group: "page/default",
         type: "value",
-        functions: [],
-        variables: [
+        values: [
           {
             id: 4,
             name: "root",
-            category: "module",
+            category: "variable/module",
             payload: {
               property: "value",
             },
@@ -107,12 +96,11 @@ export const modules = [
         order: 0,
         group: "remove/default",
         type: "value",
-        variables: [],
-        functions: [
+        values: [
           {
             id: 10,
             name: "root",
-            category: "operation",
+            category: "function/operation",
             args: [
               {
                 id: 25,
@@ -147,12 +135,11 @@ export const modules = [
         order: 0,
         group: "content/default",
         type: "value",
-        functions: [],
-        variables: [
+        values: [
           {
             id: 5,
             name: "root",
-            category: "module",
+            category: "variable/module",
             payload: {
               property: "value",
             },
@@ -185,12 +172,11 @@ export const modules = [
         order: 0,
         group: "initial/default",
         type: "value",
-        functions: [],
-        variables: [
+        values: [
           {
             id: 11,
             name: "root",
-            category: "mount",
+            category: "variable/mount",
             path: ["customer_name"],
             references: [
               {
@@ -218,12 +204,11 @@ export const modules = [
         order: 0,
         group: "initial/default",
         type: "value",
-        functions: [],
-        variables: [
+        values: [
           {
             id: 11,
             name: "root",
-            category: "mount",
+            category: "variable/mount",
             path: ["address"],
             references: [
               {
@@ -254,12 +239,11 @@ export const modules = [
         order: 0,
         group: "event/default",
         type: "dictionary",
-        variables: [],
-        functions: [
+        values: [
           {
             id: 6,
             name: "first_name",
-            category: "module",
+            category: "function/module",
             payload: {
               property: "reveal",
             },
@@ -276,7 +260,7 @@ export const modules = [
           {
             id: 7,
             name: "last_name",
-            category: "module",
+            category: "function/module",
             payload: {
               property: "reveal",
             },
@@ -304,17 +288,16 @@ export const modules = [
         order: 0,
         group: "@mount/default",
         type: "value",
-        variables: [],
-        functions: [
+        values: [
           {
             id: 7,
             name: "root",
-            category: "operation",
+            category: "function/operation",
             args: [
               {
                 id: 6,
                 name: "id",
-                category: "module",
+                category: "variable/module",
                 payload: { property: "selected" },
                 references: [
                   {
@@ -343,10 +326,8 @@ export const modules = [
 ];
 
 // Postgres tables are:
-// "values" - id, stage_id, name
-// "variables" - id, value_id, category, payload
-// "functions" - id, value_id, category, is_effect
-// "functions_arguments" function_id, value_id
+// "values" - id, stage_id, name, category
+// "values_arguments" value_id, arg_value_id
 // "references" - "value_id", "..."
 // "stages" - id, parent_id, type, config, group, order
 //

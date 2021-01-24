@@ -6,12 +6,7 @@ import {
   waitForAll,
 } from "recoil";
 import { context } from "./Provider.jsx";
-import {
-  moduleFamily,
-  settingFamily,
-  localVariableFamily,
-  stagesFamily,
-} from "../store";
+import { moduleFamily, settingFamily, localVariableFamily } from "../store";
 import { stock as modulesStock } from "../modules";
 
 export function useModuleId() {
@@ -41,12 +36,11 @@ export function useSettings(fields) {
 export function useSettingCallback(field) {
   const { module } = useModule();
   const func = useSetRecoilState(settingFamily([module.id, field]));
-  const stages = useRecoilValue(stagesFamily([module.id, field]));
 
   /**
    * Do not returning a function when no stages defined.
    */
-  if (stages.length === 0) {
+  if (module.stages.length === 0) {
     return undefined;
   }
 

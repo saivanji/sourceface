@@ -5,7 +5,12 @@ import { schema } from "normalizr";
  * application crash.
  */
 const module_ = new schema.Entity("modules");
-const stage = new schema.Entity("stages");
+const value = new schema.Entity("values");
+const stage = new schema.Entity("stages", {
+  values: [value],
+});
+
+value.define({ args: [value] });
 
 /**
  * Defining circular dependencies

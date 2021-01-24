@@ -57,7 +57,7 @@ export const variables = {
 // TODO: rename to "effects"
 export const functions = {
   reveal: {
-    call: (args, state, transition, { variables: [value] }) => {
+    call: (args, transition, { variables: [value] }) => {
       transition((state) => ({ ...state, isRevealed: true }));
 
       const error = validate(value);

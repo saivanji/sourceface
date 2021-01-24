@@ -1,11 +1,14 @@
-import { mergeRight } from "ramda";
+import { sort, keys, mergeRight, mapObjIndexed } from "ramda";
 import { atom, atomFamily, selector, selectorFamily, waitForAll } from "recoil";
 import { normalize } from "normalizr";
 import * as api from "./api";
 import schema from "./schema";
-import { getStages } from "./transformations";
 import { stock as modulesStock } from "../modules";
-import { readLocal, readSetting } from "../pipeline";
+import { evaluate as evaluateVariable } from "../pipeline/variable";
+import * as loader from "../loader";
+import * as wires from "../wires";
+import { stock as stagesStock } from "../stages";
+import { reduce } from "../utils";
 
 /**
  * Selected module state. Used in editor to represent currently
@@ -33,17 +36,6 @@ export const moduleFamily = atomFamily({
 
       return mergeRight({ config: initialConfig }, module);
     },
-  }),
-});
-
-/**
- * Stages state. Used for real time configuration in the editor.
- */
-export const stageFamily = atomFamily({
-  key: "stage",
-  default: selectorFamily({
-    key: "stage/default",
-    get: (stageId) => ({ get }) => get(page).entities.stages[stageId],
   }),
 });
 
@@ -94,100 +86,194 @@ export const modulesFamily = selectorFamily({
   },
 });
 
-// TODO: might map the ids in the UI and have singular selector for every stage
-/**
- * Pipelines based on specific module and it's setting field.
- */
-export const stagesFamily = selectorFamily({
-  key: "stages",
-  get: ([moduleId, field, sequenceName = "default"]) => ({ get }) => {
-    const module = get(moduleFamily(moduleId));
-
-    return getStages(field, sequenceName, module.stages, createGetStage(get));
-  },
-});
-
 export const settingFamily = selectorFamily({
   key: "setting",
-  get: ([moduleId, field]) => ({ get }) => {
-    const module = get(moduleFamily(moduleId));
-    const accessors = createAccessors(moduleId, get);
-
-    return readSetting(field, module.config, accessors);
-  },
-  set: ([moduleId, field]) => ({ get, set }, args) => {
-    const module = get(moduleFamily(moduleId));
-    const accessors = createAccessors(moduleId, get, set);
-
-    return readSetting(field, module.config, accessors, { args });
-  },
+  get: (param) => (opts) => readSetting(param, opts),
+  set: (param) => (opts, args) => readSetting(param, opts, { args }),
 });
 
 export const localVariableFamily = selectorFamily({
-  key: "variable",
+  key: "localVariable",
   get: ([moduleId, key]) => ({ get }) => {
-    const accessors = createAccessors(moduleId, get);
     const module = get(moduleFamily(moduleId));
     const blueprint = modulesStock[module.type];
+    const setup = blueprint.variables[key];
 
-    return readLocal(module, "variable", key, blueprint, () => {}, accessors);
+    return setup.selector(createDependencies(get, moduleId, setup));
   },
 });
 
-const createGetStage = (get) => (stageId) => get(stageFamily(stageId));
+export const localFunctionFamily = selectorFamily({
+  key: "localFunction",
+  get: ([moduleId, key]) => ({ get }) => {
+    const module = get(moduleFamily(moduleId));
+    const blueprint = modulesStock[module.type];
+    const setup = blueprint.variables[key];
+
+    return (transition) => (args) =>
+      setup.call(args, transition, createDependencies(get, moduleId, setup));
+  },
+});
+
+export const functionResultFamily = selectorFamily({
+  key: "functionResult",
+  get: (valueId) => ({ get }) => {
+    const { entities } = get(page);
+    const { id, category, args, references } = transformValue(
+      entities.values[valueId]
+    );
+    const accessors = createAccessors(null, get);
+
+    const call = wires[category];
+
+    const evaluatedArgs = mapObjIndexed(
+      (valueId) => accessors.evaluate(entities.values[valueId].name),
+      args
+    );
+
+    return loader.load(id, call, evaluatedArgs, references);
+  },
+});
 
 const createAccessors = (moduleId, get, set) => ({
-  /**
-   * Accessor returning module stages based on a desired field.
-   */
-  stages(field) {
-    return get(stagesFamily([moduleId, field]));
-  },
-  /**
-   * Accessor of a specific state field.
-   */
-  state(key, blueprint) {
-    return blueprint.variables?.[key].state?.map((key) =>
-      get(stateFieldFamily([moduleId, key]))
-    );
-  },
-  settings(fields) {
-    return get(
-      waitForAll(fields.map((field) => settingFamily([moduleId, field])))
-    );
-  },
-  localVariables(keys) {
-    return get(
-      waitForAll(keys.map((key) => localVariableFamily([moduleId, key])))
-    );
-  },
   /**
    * Accessor of a mount value for a specific module.
    */
   mount(moduleId) {
-    const module = get(moduleFamily(moduleId));
-    const accessors = createAccessors(moduleId, get, set);
-
-    return readSetting("@mount", module.config, accessors);
+    return get(settingFamily([moduleId, "@mount"]));
   },
-  /**
-   * Accessor returning local entity(either variable or function) based on
-   * module id and entity key.
-   */
-  local(type, moduleId, key, scope) {
-    const module = get(moduleFamily(moduleId));
-    const blueprint = modulesStock[module.type];
-    const transition = (valueOrFn) => set?.(stateFamily(moduleId), valueOrFn);
-    const accessors = createAccessors(moduleId, get, set);
+  localVariable(moduleId, key) {
+    return get(localVariableFamily([moduleId, key]));
+  },
+  evaluate(name, scope) {
+    const stage = {};
+    const entities = {};
+    const value = transformValue(findValue(name, stage.values, entities));
 
-    return readLocal(
-      module,
-      type,
-      key,
-      blueprint,
-      transition,
-      accessors,
-      scope
-    );
+    if (value.type === "variable") {
+      return evaluateVariable(value, this, scope);
+    }
+
+    if (value.type === "function") {
+      const { id, category, args, references, payload } = value;
+      const transition = (valueOrFn) => set?.(stateFamily(moduleId), valueOrFn);
+
+      if (category === "module") {
+        const evaluatedArgs = mapObjIndexed(
+          (valueId) => this.evaluate(entities.values[valueId].name, scope),
+          args
+        );
+
+        return get(
+          localFunctionFamily([references.module.id, payload.property])
+        )(transition)(evaluatedArgs);
+      }
+
+      return get(functionResultFamily(id));
+    }
   },
 });
+
+const findValue = (name, valueIds, entities) =>
+  valueIds.find((valueId) => entities.values[valueId].name === name);
+
+const transformValue = (value) => {
+  const [type, category] = value.category.split("/");
+
+  return {
+    ...value,
+    type,
+    category,
+    references: value.references.reduce((acc, { name, ...reference }) => {
+      const type = keys(reference)[0];
+
+      return {
+        ...acc,
+        [name]: reference[type],
+      };
+    }, {}),
+  };
+};
+
+const getStages = (field, sequenceName, stageIds, entities) => {
+  const items = stageIds.reduce((acc, stageId) => {
+    const stage = entities.stages[stageId];
+
+    if (stage.group !== `${field}/${sequenceName}`) {
+      return acc;
+    }
+
+    return [...acc, stage];
+  }, []);
+
+  return sort((a, b) => a.order - b.order, items);
+};
+
+const readSetting = ([moduleId, field], { get }, scope) => {
+  const module = get(moduleFamily(moduleId));
+  const { entities } = get(page);
+
+  const accessors = createAccessors(moduleId, get);
+  const stages = getStages(field, "default", module.stages, entities);
+
+  if (stages.length) {
+    try {
+      return reduce(
+        (acc, stage) => {
+          const input = stage.values.map(
+            (valueId) => entities.values[valueId].name
+          );
+
+          return stagesStock[stage.type].execute(input, accessors, scope);
+        },
+        null,
+        stages
+      );
+    } catch (err) {
+      /**
+       * When pipeline is interrupted - returning that interruption as a result so
+       * it can be handled if needed.
+       */
+      if (err instanceof Break) {
+        return err;
+      }
+
+      throw err;
+    }
+  }
+
+  return module.config?.[field];
+};
+
+/**
+ * Indicates interruption of sequence pipeline.
+ */
+export class Break {
+  constructor(reason) {
+    this.reason = reason;
+  }
+}
+
+const createDependencies = (get, moduleId, setup) => {
+  const settings = get(
+    waitForAll(
+      setup.settings?.map((field) => settingFamily([moduleId, field])) || []
+    )
+  );
+  const variables = get(
+    waitForAll(
+      setup.variables?.map((key) => localVariableFamily([moduleId, key])) || []
+    )
+  );
+  const state = get(
+    waitForAll(
+      setup.state?.map((key) => stateFieldFamily([moduleId, key])) || []
+    )
+  );
+
+  return {
+    settings,
+    variables,
+    state,
+  };
+};
