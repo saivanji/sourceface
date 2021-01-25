@@ -1,4 +1,4 @@
-import { __, curry, sort, keys, values, mergeRight } from "ramda";
+import { __, curry, sort, keys, mergeRight } from "ramda";
 import { atom, atomFamily, selector, selectorFamily, waitForAll } from "recoil";
 import { normalize } from "normalizr";
 import * as api from "../api";
@@ -112,7 +112,7 @@ export const localFunctionFamily = selectorFamily({
   get: ([moduleId, key]) => ({ get }) => {
     const module = get(moduleFamily(moduleId));
     const blueprint = modulesStock[module.type];
-    const setup = blueprint.variables[key];
+    const setup = blueprint.functions[key];
 
     return (transition) => (args) =>
       setup.call(args, transition, createDependencies(get, moduleId, setup));
