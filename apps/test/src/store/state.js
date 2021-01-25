@@ -8,7 +8,6 @@ import { evaluate as evaluateVariable } from "../pipeline/variable";
 import * as loader from "../loader";
 import * as wires from "../wires";
 import { stock as stagesStock } from "../stages";
-import { reduce } from "../utils";
 
 /**
  * Selected module state. Used in editor to represent currently
@@ -222,21 +221,17 @@ const readSetting = ([moduleId, field], { get, set }, scope) => {
 
   if (stages.length) {
     try {
-      return reduce(
-        (acc, stage) => {
-          const input = stage.values.reduce((acc, valueId) => {
-            const value = entities.values[valueId];
+      return stages.reduce((acc, stage) => {
+        const input = stage.values.reduce((acc, valueId) => {
+          const value = entities.values[valueId];
 
-            return { ...acc, [value.name]: value };
-          }, {});
+          return { ...acc, [value.name]: value };
+        }, {});
 
-          const curriedEvaluate = curry(evaluate)({ get, set }, __, scope);
+        const curriedEvaluate = curry(evaluate)({ get, set }, __, scope);
 
-          return stagesStock[stage.type].execute(curriedEvaluate, input);
-        },
-        null,
-        stages
-      ).catch(console.log);
+        return stagesStock[stage.type].execute(curriedEvaluate, input);
+      }, null);
     } catch (err) {
       /**
        * When pipeline is interrupted - returning that interruption as a result so
