@@ -63,32 +63,9 @@ const stateFieldFamily = selectorFamily({
   },
 });
 
-const ids = atom({
-  key: "ids",
-  default: selector({
-    key: "ids/default",
-    get: ({ get }) => {
-      const { entities } = get(page);
-
-      return values(entities.values).reduce((acc, value) => {
-        const [type] = parseCategory(value.category);
-
-        if (type !== "function") {
-          return acc;
-        }
-
-        return {
-          ...acc,
-          [value.id]: 0,
-        };
-      }, {});
-    },
-  }),
-});
-
-const idFamily = selectorFamily({
-  key: "id",
-  get: (valueId) => ({ get }) => get(ids)[valueId],
+const countersFamily = atomFamily({
+  key: "counters",
+  default: 0,
 });
 
 /**
@@ -145,18 +122,27 @@ export const localFunctionFamily = selectorFamily({
 export const functionResultFamily = selectorFamily({
   key: "functionResult",
   get: (valueId) => ({ get }) => {
-    get(idFamily(valueId));
-
     const { entities } = get(page);
     const { id, category, args, references } = transformValue(
       entities.values[valueId]
     );
 
-    const call = wires[category];
+    const { referenceType, select, execute, getStaleIds } = wires[category];
+
+    const reference = select(references);
+    const call = (args) => execute(reference, args);
+
+    get(countersFamily([reference.id, referenceType]));
 
     const evaluatedArgs = evaluateArgs({ get }, args);
 
-    return loader.load(id, call, evaluatedArgs, references);
+    return loader.load(id, call, evaluatedArgs);
+
+    // TODO: when "set" is provided, then:
+    // const staleIds = getStaleIds(reference)
+    // for (let staleId of staleIds) {
+    //   set(countersFamily([staleid, referenceType]), prev => prev + 1)
+    // }
   },
 });
 

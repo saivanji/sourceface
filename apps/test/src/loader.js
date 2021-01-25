@@ -6,7 +6,7 @@ let queue = {};
  * Function responsible for calling a function, handling cahing and
  * resolving duplicating async requests.
  */
-export const load = (id, fn, args, references) => {
+export const load = (id, fn, args) => {
   const identifier = identify(id, args);
 
   /**
@@ -14,7 +14,7 @@ export const load = (id, fn, args, references) => {
    * call or return plain value otherwise.
    */
   if (!queue[identifier]) {
-    const result = fn(args, references);
+    const result = fn(args);
 
     if (result instanceof Promise) {
       result.then((data) => {

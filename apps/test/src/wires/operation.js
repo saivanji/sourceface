@@ -4,15 +4,17 @@ import faker from "faker";
 
 faker.seed(1);
 
-export function execute(args, { root }) {
+export function execute(operation, args) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(controllers[root.name](args));
+      resolve(controllers[operation.name](args));
     }, Math.random() * 1000);
   });
 }
 
-export const groupCache = () => {};
+export const getStaleIds = (operation) => operation.stale.map((o) => o.id);
+export const select = (references) => references.root;
+export const referenceType = "operation";
 
 const controllers = {
   ordersList: ({ limit, offset }) => db.orders.slice(offset, offset + limit),
