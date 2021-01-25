@@ -1,4 +1,5 @@
 import { path as selectPath } from "ramda";
+// TODO: import selectors directly here?
 
 const global = {
   page: "about",

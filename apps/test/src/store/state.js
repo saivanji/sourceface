@@ -1,8 +1,8 @@
-import { __, curry, sort, keys, mergeRight } from "ramda";
+import { __, curry, sort, keys, values, mergeRight } from "ramda";
 import { atom, atomFamily, selector, selectorFamily, waitForAll } from "recoil";
 import { normalize } from "normalizr";
-import * as api from "./api";
-import schema from "./schema";
+import * as api from "../api";
+import schema from "../schema";
 import { stock as modulesStock } from "../modules";
 import { evaluate as evaluateVariable } from "../pipeline/variable";
 import * as loader from "../loader";
@@ -63,6 +63,34 @@ const stateFieldFamily = selectorFamily({
   },
 });
 
+const ids = atom({
+  key: "ids",
+  default: selector({
+    key: "ids/default",
+    get: ({ get }) => {
+      const { entities } = get(page);
+
+      return values(entities.values).reduce((acc, value) => {
+        const [type] = parseCategory(value.category);
+
+        if (type !== "function") {
+          return acc;
+        }
+
+        return {
+          ...acc,
+          [value.id]: 0,
+        };
+      }, {});
+    },
+  }),
+});
+
+const idFamily = selectorFamily({
+  key: "id",
+  get: (valueId) => ({ get }) => get(ids)[valueId],
+});
+
 /**
  * Current page data including modules list and page information.
  */
@@ -117,6 +145,8 @@ export const localFunctionFamily = selectorFamily({
 export const functionResultFamily = selectorFamily({
   key: "functionResult",
   get: (valueId) => ({ get }) => {
+    get(idFamily(valueId));
+
     const { entities } = get(page);
     const { id, category, args, references } = transformValue(
       entities.values[valueId]
@@ -164,6 +194,8 @@ const evaluate = ({ get, set }, value, scope) => {
       )(evaluatedArgs);
     }
 
+    // TODO: in case "set" is provided, might use "set(functionResultFamily)" instead so
+    // we can invalidate cache
     return get(functionResultFamily(id));
   }
 };
@@ -181,8 +213,10 @@ const evaluateArgs = ({ get, set }, valueIds, scope) => {
   }, {});
 };
 
+const parseCategory = (category) => category.split("/");
+
 const transformValue = (value) => {
-  const [type, category] = value.category.split("/");
+  const [type, category] = parseCategory(value.category);
 
   return {
     ...value,
