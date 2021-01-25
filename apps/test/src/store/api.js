@@ -98,12 +98,12 @@ export const modules = [
         type: "value",
         values: [
           {
-            id: 10,
+            id: 5,
             name: "root",
             category: "function/operation",
             args: [
               {
-                id: 25,
+                id: 6,
                 name: "id",
                 category: "argument",
                 payload: { property: "id" },
@@ -137,7 +137,7 @@ export const modules = [
         type: "value",
         values: [
           {
-            id: 5,
+            id: 7,
             name: "root",
             category: "variable/module",
             payload: {
@@ -174,7 +174,7 @@ export const modules = [
         type: "value",
         values: [
           {
-            id: 11,
+            id: 8,
             name: "root",
             category: "variable/mount",
             path: ["customer_name"],
@@ -206,7 +206,7 @@ export const modules = [
         type: "value",
         values: [
           {
-            id: 11,
+            id: 9,
             name: "root",
             category: "variable/mount",
             path: ["address"],
@@ -241,7 +241,7 @@ export const modules = [
         type: "dictionary",
         values: [
           {
-            id: 6,
+            id: 10,
             name: "first_name",
             category: "function/module",
             payload: {
@@ -258,7 +258,7 @@ export const modules = [
             ],
           },
           {
-            id: 7,
+            id: 11,
             name: "last_name",
             category: "function/module",
             payload: {
@@ -290,12 +290,12 @@ export const modules = [
         type: "value",
         values: [
           {
-            id: 7,
+            id: 12,
             name: "root",
             category: "function/operation",
             args: [
               {
-                id: 6,
+                id: 13,
                 name: "id",
                 category: "variable/module",
                 payload: { property: "selected" },

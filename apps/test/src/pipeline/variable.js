@@ -12,8 +12,9 @@ const global = {
 
 export const evaluate = (
   { category, payload, references, path = [] },
-  accessors,
-  scope
+  scope,
+  getLocal,
+  getMount
 ) => {
   let value;
 
@@ -29,13 +30,13 @@ export const evaluate = (
     const { property } = payload;
     const { module } = references;
 
-    value = accessors.localVariable(module.id, property);
+    value = getLocal(module.id, property);
   }
 
   if (category === "mount") {
     const { module } = references;
 
-    value = accessors.mount(module.id);
+    value = getMount(module.id);
   }
 
   if (category === "argument") {

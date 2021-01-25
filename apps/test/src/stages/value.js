@@ -1,2 +1,1 @@
-export const execute = (accessors, scope) =>
-  accessors.evaluate("root", accessors, scope);
+export const execute = (evaluate, input) => evaluate(input.root);

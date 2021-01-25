@@ -107,8 +107,7 @@ export const variables = {
   selected: {
     selector: ({ state: [selected], settings: [data] }) =>
       selected ?? data[0].id,
-    // TODO: having "data" defined here causes list cache to break
-    // That is happening because cache is not independent
+    // TODO: having "data" defined here causes app to load extremely slow
     settings: ["data"],
     state: ["selected"],
     type: "Number",

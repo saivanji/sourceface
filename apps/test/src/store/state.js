@@ -1,4 +1,4 @@
-import { sort, keys, mergeRight, mapObjIndexed } from "ramda";
+import { __, curry, sort, keys, mergeRight } from "ramda";
 import { atom, atomFamily, selector, selectorFamily, waitForAll } from "recoil";
 import { normalize } from "normalizr";
 import * as api from "./api";
@@ -122,60 +122,65 @@ export const functionResultFamily = selectorFamily({
     const { id, category, args, references } = transformValue(
       entities.values[valueId]
     );
-    const accessors = createAccessors(null, get);
 
     const call = wires[category];
 
-    const evaluatedArgs = mapObjIndexed(
-      (valueId) => accessors.evaluate(entities.values[valueId].name),
-      args
-    );
+    const evaluatedArgs = evaluateArgs({ get }, args);
 
     return loader.load(id, call, evaluatedArgs, references);
   },
 });
 
-const createAccessors = (moduleId, get, set) => ({
-  /**
-   * Accessor of a mount value for a specific module.
-   */
-  mount(moduleId) {
-    return get(settingFamily([moduleId, "@mount"]));
-  },
-  localVariable(moduleId, key) {
-    return get(localVariableFamily([moduleId, key]));
-  },
-  evaluate(name, scope) {
-    const stage = {};
-    const entities = {};
-    const value = transformValue(findValue(name, stage.values, entities));
+const getMount = ({ get }, moduleId) => {
+  return get(settingFamily([moduleId, "@mount"]));
+};
 
-    if (value.type === "variable") {
-      return evaluateVariable(value, this, scope);
+const getLocal = ({ get }, moduleId, key) => {
+  return get(localVariableFamily([moduleId, key]));
+};
+
+const evaluate = ({ get, set }, value, scope) => {
+  const data = transformValue(value);
+
+  if (data.type === "variable") {
+    return evaluateVariable(
+      data,
+      scope,
+      curry(getLocal)({ get, set }),
+      curry(getMount)({ get, set })
+    );
+  }
+
+  if (data.type === "function") {
+    const { id, category, args, references, payload } = data;
+
+    if (category === "module") {
+      const transition = (valueOrFn) =>
+        set?.(stateFamily(references.module.id), valueOrFn);
+
+      const evaluatedArgs = evaluateArgs({ get, set }, args, scope);
+
+      return get(localFunctionFamily([references.module.id, payload.property]))(
+        transition
+      )(evaluatedArgs);
     }
 
-    if (value.type === "function") {
-      const { id, category, args, references, payload } = value;
-      const transition = (valueOrFn) => set?.(stateFamily(moduleId), valueOrFn);
+    return get(functionResultFamily(id));
+  }
+};
 
-      if (category === "module") {
-        const evaluatedArgs = mapObjIndexed(
-          (valueId) => this.evaluate(entities.values[valueId].name, scope),
-          args
-        );
+const evaluateArgs = ({ get, set }, valueIds, scope) => {
+  const { entities } = get(page);
 
-        return get(
-          localFunctionFamily([references.module.id, payload.property])
-        )(transition)(evaluatedArgs);
-      }
+  return valueIds.reduce((acc, valueId) => {
+    const value = entities.values[valueId];
 
-      return get(functionResultFamily(id));
-    }
-  },
-});
-
-const findValue = (name, valueIds, entities) =>
-  valueIds.find((valueId) => entities.values[valueId].name === name);
+    return {
+      ...acc,
+      [value.name]: evaluate({ get, set }, value, scope),
+    };
+  }, {});
+};
 
 const transformValue = (value) => {
   const [type, category] = value.category.split("/");
@@ -209,26 +214,29 @@ const getStages = (field, sequenceName, stageIds, entities) => {
   return sort((a, b) => a.order - b.order, items);
 };
 
-const readSetting = ([moduleId, field], { get }, scope) => {
+const readSetting = ([moduleId, field], { get, set }, scope) => {
   const module = get(moduleFamily(moduleId));
   const { entities } = get(page);
 
-  const accessors = createAccessors(moduleId, get);
   const stages = getStages(field, "default", module.stages, entities);
 
   if (stages.length) {
     try {
       return reduce(
         (acc, stage) => {
-          const input = stage.values.map(
-            (valueId) => entities.values[valueId].name
-          );
+          const input = stage.values.reduce((acc, valueId) => {
+            const value = entities.values[valueId];
 
-          return stagesStock[stage.type].execute(input, accessors, scope);
+            return { ...acc, [value.name]: value };
+          }, {});
+
+          const curriedEvaluate = curry(evaluate)({ get, set }, __, scope);
+
+          return stagesStock[stage.type].execute(curriedEvaluate, input);
         },
         null,
         stages
-      );
+      ).catch(console.log);
     } catch (err) {
       /**
        * When pipeline is interrupted - returning that interruption as a result so

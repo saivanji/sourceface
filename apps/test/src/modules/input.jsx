@@ -1,5 +1,5 @@
 import React from "react";
-import { Break } from "../pipeline";
+import { Break } from "../store/state";
 
 export const Root = ({
   settings: [placeholder],
