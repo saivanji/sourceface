@@ -11,7 +11,7 @@ export const useModuleId = () => {
 
 export const useModule = () => {
   const moduleId = useModuleId();
-  const module = useSelector(getModule(moduleId));
+  const module = useSelector((state) => getModule(state, moduleId));
   const blueprint = modulesStock[module.type];
 
   return { module, blueprint };

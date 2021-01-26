@@ -1,7 +1,8 @@
 import React from "react";
 import Module from "./Module";
 import { useModuleId } from "../consumers";
-import { usePrivateSelector, makeGetModuleIds } from "../store";
+import { makeGetModuleIds } from "../store";
+import { usePrivateSelector } from "../hooks";
 
 export default function Layout() {
   const parentId = useModuleId();
