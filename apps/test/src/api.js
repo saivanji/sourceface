@@ -247,6 +247,7 @@ export const modules = [
       {
         id: 5,
         order: 0,
+        name: "form_data",
         group: "event/default",
         type: "dictionary",
         values: [
