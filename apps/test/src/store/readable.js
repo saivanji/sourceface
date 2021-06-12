@@ -26,6 +26,7 @@ export const settingFamily = selectorFamily({
 
       if (stages.length) {
         try {
+          // TODO: have stage result be available as variable
           return stages.reduce((acc, stage) => {
             const input = populateValues(stage.values, entities);
             const evaluate = (value) => get(valueFamily(value.id));
