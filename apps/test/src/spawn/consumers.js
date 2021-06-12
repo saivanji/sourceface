@@ -1,12 +1,13 @@
 import { useContext, useRef, useEffect } from "react";
 import {
-  useSetRecoilState,
+  // useSetRecoilState,
   useRecoilValue,
   useRecoilValueLoadable,
+  useRecoilCallback,
   waitForAll,
 } from "recoil";
 import { context } from "./Provider.jsx";
-import { moduleFamily, settingFamily, localVariableFamily } from "../store";
+import { moduleFamily, settingFamily, localVariableFamily, execSetting } from "../store";
 import { stock as modulesStock } from "../modules";
 
 export function useModuleId() {
@@ -35,7 +36,10 @@ export function useSettings(fields) {
 
 export function useSettingCallback(field) {
   const { module } = useModule();
-  const func = useSetRecoilState(settingFamily([module.id, field]));
+  // const func = useSetRecoilState(settingFamily([module.id, field]));
+  const func = useRecoilCallback(({snapshot, set}) => async (args) => {
+    await execSetting([module.id, field], snapshot.getPromise, set, { args });
+  });
 
   /**
    * Do not returning a function when no stages defined.

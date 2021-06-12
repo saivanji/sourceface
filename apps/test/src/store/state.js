@@ -1,13 +1,11 @@
-import { __, curry, sort, keys, mergeRight } from "ramda";
+import { keys, mergeRight } from "ramda";
 import { atom, atomFamily, selector, selectorFamily, waitForAll } from "recoil";
 import { normalize } from "normalizr";
 import * as api from "../api";
 import schema from "../schema";
 import { stock as modulesStock } from "../modules";
-import { evaluate as evaluateVariable } from "../pipeline/variable";
 import * as loader from "../loader";
 import * as wires from "../wires";
-import { stock as stagesStock } from "../stages";
 
 /**
  * Selected module state. Used in editor to represent currently
@@ -93,7 +91,7 @@ export const modulesFamily = selectorFamily({
 export const settingFamily = selectorFamily({
   key: "setting",
   get: (param) => (opts) => readSetting(param, opts),
-  set: (param) => (opts, args) => readSetting(param, opts, { args }),
+  // set: (param) => (opts, args) => readSetting(param, opts, { args }),
 });
 
 export const localVariableFamily = selectorFamily({
@@ -107,6 +105,7 @@ export const localVariableFamily = selectorFamily({
   },
 });
 
+// TODO: remove?
 export const localFunctionFamily = selectorFamily({
   key: "localFunction",
   get: ([moduleId, key]) => ({ get }) => {
@@ -119,6 +118,11 @@ export const localFunctionFamily = selectorFamily({
   },
 });
 
+// valueFamily? might be no, since value is unique part of a specific setting
+// wireFamily
+
+// TODO: move to evaluate?
+// TODO: renamo to wireFamily
 export const functionResultFamily = selectorFamily({
   key: "functionResult",
   get: (valueId) => ({ get }) => {
@@ -144,60 +148,25 @@ export const functionResultFamily = selectorFamily({
     //   set(countersFamily([staleid, referenceType]), prev => prev + 1)
     // }
   },
+  // set: (valueId) => ({ get }) => {
+  //   const { entities } = get(page);
+  //   const { id, category, args, references } = transformValue(
+  //     entities.values[valueId]
+  //   );
+
+  //   const { referenceType, select, execute, getStaleIds } = wires[category];
+
+  //   const reference = select(references);
+  //   const call = (args) => execute(reference, args);
+
+  //   const evaluatedArgs = evaluateArgs({ get }, args);
+
+  //   const staleIds = getStaleIds(reference);
+  //   loader.load(id, call, evaluatedArgs).then(res => {
+  //     // invalidate(staleIds, referenceType)
+  //   });
+  // },
 });
-
-const getMount = ({ get }, moduleId) => {
-  return get(settingFamily([moduleId, "@mount"]));
-};
-
-const getLocal = ({ get }, moduleId, key) => {
-  return get(localVariableFamily([moduleId, key]));
-};
-
-const evaluate = ({ get, set }, value, scope) => {
-  const data = transformValue(value);
-
-  if (data.type === "variable") {
-    return evaluateVariable(
-      data,
-      scope,
-      curry(getLocal)({ get, set }),
-      curry(getMount)({ get, set })
-    );
-  }
-
-  if (data.type === "function") {
-    const { id, category, args, references, payload } = data;
-
-    if (category === "module") {
-      const transition = (valueOrFn) =>
-        set?.(stateFamily(references.module.id), valueOrFn);
-
-      const evaluatedArgs = evaluateArgs({ get, set }, args, scope);
-
-      return get(localFunctionFamily([references.module.id, payload.property]))(
-        transition
-      )(evaluatedArgs);
-    }
-
-    // TODO: in case "set" is provided, might use "set(functionResultFamily)" instead so
-    // we can invalidate cache
-    return get(functionResultFamily(id));
-  }
-};
-
-const evaluateArgs = ({ get, set }, valueIds, scope) => {
-  const { entities } = get(page);
-
-  return valueIds.reduce((acc, valueId) => {
-    const value = entities.values[valueId];
-
-    return {
-      ...acc,
-      [value.name]: evaluate({ get, set }, value, scope),
-    };
-  }, {});
-};
 
 const parseCategory = (category) => category.split("/");
 
@@ -218,64 +187,6 @@ const transformValue = (value) => {
     }, {}),
   };
 };
-
-const getStages = (field, sequenceName, stageIds, entities) => {
-  const items = stageIds.reduce((acc, stageId) => {
-    const stage = entities.stages[stageId];
-
-    if (stage.group !== `${field}/${sequenceName}`) {
-      return acc;
-    }
-
-    return [...acc, stage];
-  }, []);
-
-  return sort((a, b) => a.order - b.order, items);
-};
-
-const readSetting = ([moduleId, field], { get, set }, scope) => {
-  const module = get(moduleFamily(moduleId));
-  const { entities } = get(page);
-
-  const stages = getStages(field, "default", module.stages, entities);
-
-  if (stages.length) {
-    try {
-      return stages.reduce((acc, stage) => {
-        const input = stage.values.reduce((acc, valueId) => {
-          const value = entities.values[valueId];
-
-          return { ...acc, [value.name]: value };
-        }, {});
-
-        const curriedEvaluate = curry(evaluate)({ get, set }, __, scope);
-
-        return stagesStock[stage.type].execute(curriedEvaluate, input);
-      }, null);
-    } catch (err) {
-      /**
-       * When pipeline is interrupted - returning that interruption as a result so
-       * it can be handled if needed.
-       */
-      if (err instanceof Break) {
-        return err;
-      }
-
-      throw err;
-    }
-  }
-
-  return module.config?.[field];
-};
-
-/**
- * Indicates interruption of sequence pipeline.
- */
-export class Break {
-  constructor(reason) {
-    this.reason = reason;
-  }
-}
 
 const createDependencies = (get, moduleId, setup) => {
   const settings = get(
