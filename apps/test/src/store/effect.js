@@ -1,4 +1,9 @@
 import { waitForAll } from "recoil";
+import { stock as modulesStock } from "../modules";
+import { stock as stagesStock } from "../stages";
+import * as wires from "../wires";
+import { evaluate } from "../pipeline/variable";
+import * as loader from "../loader";
 import {
   page,
   moduleFamily,
@@ -8,11 +13,6 @@ import {
   Break,
 } from "./common";
 import { populateStages, populateValues, transformValue } from "./utils";
-import { stock as modulesStock } from "../modules";
-import { stock as stagesStock } from "../stages";
-import * as wires from "../wires";
-import { evaluate } from "../pipeline/variable";
-import * as loader from "../loader";
 
 // Because recoil's selector does not support performing async actions in "set", we have to
 // replicate the whole flow in async function and use it in "useRecoilCallback" afterwards.
