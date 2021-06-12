@@ -8,6 +8,15 @@ export function listModules() {
 
 export const modules = [
   {
+    id: 49275,
+    parentId: null,
+    type: "button",
+    config: {
+      text: "Create order",
+    },
+    stages: [],
+  },
+  {
     id: 1,
     parentId: null,
     type: "table",
@@ -61,6 +70,7 @@ export const modules = [
                 operation: {
                   id: 1,
                   name: "ordersList",
+                  stale: [],
                 },
               },
             ],
@@ -315,6 +325,7 @@ export const modules = [
                 operation: {
                   id: 2,
                   name: "order",
+                  stale: [],
                 },
               },
             ],
