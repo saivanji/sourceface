@@ -105,9 +105,7 @@ export const modules = [
               {
                 id: 6,
                 name: "id",
-                // TODO: why not variable/argument?
-                category: "argument",
-                // category: "variable/argument",
+                category: "variable/argument",
                 payload: { property: "id" },
                 references: [],
               },

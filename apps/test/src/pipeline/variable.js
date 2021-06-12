@@ -31,13 +31,13 @@ export const evaluate = (
     const { property } = payload;
     const { module } = references;
 
-    value = getLocal(module.id, property);
+    return processAsync(getLocal(module.id, property), selectPath(path));
   }
 
   if (category === "mount") {
     const { module } = references;
 
-    value = getMount(module.id);
+    return processAsync(getMount(module.id), selectPath(path));
   }
 
   if (category === "argument") {
@@ -45,4 +45,12 @@ export const evaluate = (
   }
 
   return selectPath(path, value);
+};
+
+const processAsync = (value, fn) => {
+  if (value instanceof Promise) {
+    return value.then(fn);
+  }
+
+  return fn(value);
 };
