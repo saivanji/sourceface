@@ -28,14 +28,17 @@ export const execSetting = async ([moduleId, field], scope, getAsync, set) => {
   }
 
   let result;
+  let prevStages = {};
 
   for (let stage of stages) {
+    const nextScope = { ...scope, stages: prevStages };
     const input = populateValues(stage.values, entities);
     const evaluate = (value) =>
-      processValue(value, entities, scope, getAsync, set);
+      processValue(value, entities, nextScope, getAsync, set);
 
     try {
-      result = await stagesStock[stage.type].execute(evaluate, input);
+      result = await stagesStock[stage.type].execute(evaluate, input, true);
+      prevStages[stage.name] = result;
     } catch (err) {
       /**
        * When pipeline is interrupted - returning that interruption as a result so

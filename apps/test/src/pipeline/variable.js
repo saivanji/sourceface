@@ -11,8 +11,6 @@ const global = {
 //
 // The same applies to functions: `form_*.justify` will call justify functions on desired modules and return an object with results.
 
-// TODO: "stage" type
-
 export const evaluate = (
   { category, payload, references, path = [] },
   scope,

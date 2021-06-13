@@ -313,6 +313,24 @@ export const modules = [
           },
         ],
       },
+      {
+        id: 2242,
+        order: 1,
+        name: "stage_2",
+        group: "event/default",
+        type: "debug",
+        values: [
+          {
+            id: 4295,
+            name: "prev_stage_data",
+            category: "variable/stage",
+            payload: {
+              name: "form_data",
+            },
+            references: [],
+          },
+        ],
+      },
     ],
   },
   {
