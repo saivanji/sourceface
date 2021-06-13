@@ -6,6 +6,8 @@ export function listModules() {
   });
 }
 
+// TODO: should modules have name? default "module_{n}"
+// TODO: names for stages. default "stage_{n}"
 export const modules = [
   {
     id: 49275,
@@ -25,8 +27,27 @@ export const modules = [
     },
     stages: [
       {
-        id: 1,
+        id: 2952,
+        name: "stage_1",
         order: 0,
+        group: "data/default",
+        type: "value",
+        values: [
+          {
+            id: 40284,
+            name: "root",
+            category: "variable/constant",
+            payload: {
+              value: "foo",
+            },
+            references: [],
+          },
+        ],
+      },
+      {
+        id: 1,
+        name: "stage_2",
+        order: 1,
         group: "data/default",
         type: "value",
         values: [
@@ -79,6 +100,7 @@ export const modules = [
       },
       {
         id: 2,
+        name: "stage_1",
         order: 0,
         group: "page/default",
         type: "value",
@@ -103,6 +125,7 @@ export const modules = [
       },
       {
         id: 15,
+        name: "stage_1",
         order: 0,
         group: "remove/default",
         type: "value",
@@ -142,6 +165,7 @@ export const modules = [
     stages: [
       {
         id: 3,
+        name: "stage_1",
         order: 0,
         group: "content/default",
         type: "value",
@@ -179,6 +203,7 @@ export const modules = [
     stages: [
       {
         id: 10,
+        name: "stage_1",
         order: 0,
         group: "initial/default",
         type: "value",
@@ -211,6 +236,7 @@ export const modules = [
     stages: [
       {
         id: 18,
+        name: "stage_1",
         order: 0,
         group: "initial/default",
         type: "value",
@@ -296,6 +322,7 @@ export const modules = [
     stages: [
       {
         id: 6,
+        name: "stage_1",
         order: 0,
         group: "@mount/default",
         type: "value",

@@ -70,6 +70,9 @@ export const countersFamily = atomFamily({
   default: 0,
 });
 
+// TODO: should split on entities selectors to reduce amount of re-renders?
+// or might be have family selectors to get entity by it's id like stageEntityFamily, valueEntityFamily
+// and so on
 /**
  * Current page data including modules list and page information.
  */

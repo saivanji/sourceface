@@ -5,7 +5,12 @@ import * as wires from "../wires";
 import { evaluate } from "../pipeline/variable";
 import { stock as stagesStock } from "../stages";
 import { stock as modulesStock } from "../modules";
-import { populateStages, populateValues, transformValue } from "./utils";
+import {
+  populateStages,
+  populateValues,
+  transformValue,
+  getPrevStages,
+} from "./utils";
 import {
   page,
   moduleFamily,
@@ -26,13 +31,10 @@ export const settingFamily = selectorFamily({
 
       if (stages.length) {
         try {
-          // TODO: have stage result be available as variable
-          return stages.reduce((acc, stage) => {
-            const input = populateValues(stage.values, entities);
-            const evaluate = (value) => get(valueFamily(value.id));
-
-            return stagesStock[stage.type].execute(evaluate, input);
-          }, null);
+          return stages.reduce(
+            (_, stage) => get(stageFamily([module.id, field, stage.id])),
+            null
+          );
         } catch (err) {
           /**
            * When pipeline is interrupted - returning that interruption as a result so
@@ -50,13 +52,36 @@ export const settingFamily = selectorFamily({
     },
 });
 
+// TODO: stageDataFamily?
+export const stageFamily = selectorFamily({
+  key: "stage",
+  get:
+    ([moduleId, field, stageId]) =>
+    ({ get }) => {
+      const { entities } = get(page);
+      const stage = entities.stages[stageId];
+
+      const input = populateValues(stage.values, entities);
+      const evaluate = (value) => get(valueFamily([moduleId, field, value.id]));
+
+      return stagesStock[stage.type].execute(evaluate, input);
+    },
+});
+
+// TODO: valueDataFamily?
 export const valueFamily = selectorFamily({
   key: "value",
   get:
-    (valueId) =>
+    ([moduleId, field, valueId]) =>
     ({ get }) => {
       const { entities } = get(page);
       const data = transformValue(entities.values[valueId]);
+      const module = entities.modules[moduleId];
+      const stages = populateStages(field, "default", module.stages, entities);
+
+      const prevStages = getPrevStages(valueId, stages, entities, (stageId) =>
+        get(stageFamily([moduleId, field, stageId]))
+      );
 
       if (data.type === "variable") {
         const getMount = (moduleId) => {
@@ -67,7 +92,7 @@ export const valueFamily = selectorFamily({
           return get(localVariableFamily([moduleId, key]));
         };
 
-        return evaluate(data, {}, getLocal, getMount);
+        return evaluate(data, { stages: prevStages }, getLocal, getMount);
       }
 
       if (data.type === "function") {
@@ -75,7 +100,7 @@ export const valueFamily = selectorFamily({
 
         if (category === "module") {
           const evaluatedArgs = populateValues(args, entities, (value) =>
-            get(valueFamily(value.id))
+            get(valueFamily([moduleId, field, value.id]))
           );
 
           const module = get(moduleFamily(references.module.id));
@@ -89,7 +114,7 @@ export const valueFamily = selectorFamily({
           );
         }
 
-        return get(wireFamily(id));
+        return get(wireFamily([moduleId, field, id]));
       }
 
       throw new Error("Unknown value data type");
@@ -112,7 +137,7 @@ export const localVariableFamily = selectorFamily({
 export const wireFamily = selectorFamily({
   key: "wire",
   get:
-    (valueId) =>
+    ([moduleId, field, valueId]) =>
     ({ get }) => {
       const { entities } = get(page);
       const { id, category, args, references } = transformValue(
@@ -127,7 +152,7 @@ export const wireFamily = selectorFamily({
       get(countersFamily([reference.id, referenceType]));
 
       const evaluatedArgs = populateValues(args, entities, (value) =>
-        get(valueFamily(value.id))
+        get(valueFamily([moduleId, field, value.id]))
       );
 
       return loader.load(id, call, evaluatedArgs);
