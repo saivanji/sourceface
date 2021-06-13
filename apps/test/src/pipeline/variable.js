@@ -10,6 +10,8 @@ const global = {
 // with keys as patterns. Like `form_*.value` will return object with keys as patterns and "value" fields as values
 //
 // The same applies to functions: `form_*.justify` will call justify functions on desired modules and return an object with results.
+//
+// That will be resolved on the "value" level
 
 export const evaluate = (
   { category, payload, references, path = [] },
