@@ -279,7 +279,7 @@ export const modules = [
         values: [
           {
             id: 10,
-            name: "first_name",
+            name: "customer_name",
             category: "function/module",
             payload: {
               property: "reveal",
@@ -296,7 +296,7 @@ export const modules = [
           },
           {
             id: 11,
-            name: "last_name",
+            name: "address",
             category: "function/module",
             payload: {
               property: "reveal",
@@ -318,16 +318,55 @@ export const modules = [
         order: 1,
         name: "stage_2",
         group: "event/default",
-        type: "debug",
+        type: "value",
         values: [
           {
             id: 4295,
-            name: "prev_stage_data",
-            category: "variable/stage",
-            payload: {
-              name: "form_data",
-            },
-            references: [],
+            name: "root",
+            category: "function/operation",
+            dict_args: [],
+            args: [
+              {
+                id: 9245,
+                name: "id",
+                category: "variable/module",
+                payload: { property: "selected" },
+                references: [
+                  {
+                    name: "module",
+                    module: { id: 1 },
+                  },
+                ],
+              },
+              // TODO: implement passing "form_data" dictionary as spread so we don't need to specify the fields
+              // separately
+              {
+                id: 5284,
+                name: "customer_name",
+                category: "variable/stage",
+                payload: { name: "form_data" },
+                path: ["customer_name"],
+                references: [],
+              },
+              {
+                id: 5823,
+                name: "address",
+                category: "variable/stage",
+                payload: { name: "form_data" },
+                path: ["address"],
+                references: [],
+              },
+            ],
+            references: [
+              {
+                name: "root",
+                operation: {
+                  id: 83,
+                  name: "updateOrder",
+                  stale: [{ id: 1 }],
+                },
+              },
+            ],
           },
         ],
       },

@@ -21,6 +21,17 @@ const controllers = {
   removeOrder: ({ id }) => {
     db.orders = db.orders.filter((order) => order.id !== id);
   },
+  updateOrder: ({ id, customer_name, address }) => {
+    db.orders = db.orders.map((order) =>
+      order.id !== id
+        ? order
+        : {
+            ...order,
+            customer_name,
+            address,
+          }
+    );
+  },
   order: ({ id }) => db.orders.find((o) => o.id === id),
 };
 
