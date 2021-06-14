@@ -11,15 +11,44 @@ export function listModules() {
 export const modules = [
   {
     id: 49275,
+    position: 0,
     parentId: null,
     type: "button",
     config: {
       text: "Create order",
     },
-    stages: [],
+    stages: [
+      {
+        id: 2428,
+        order: 0,
+        name: "stage_1",
+        group: "event/default",
+        type: "value",
+        values: [
+          {
+            id: 2358,
+            name: "root",
+            category: "function/module",
+            payload: {
+              property: "open",
+            },
+            args: [],
+            references: [
+              {
+                name: "module",
+                module: {
+                  id: 823,
+                },
+              },
+            ],
+          },
+        ],
+      },
+    ],
   },
   {
     id: 1,
+    position: 1,
     parentId: null,
     type: "table",
     config: {
@@ -161,6 +190,7 @@ export const modules = [
   {
     id: 2,
     parentId: null,
+    position: 2,
     type: "text",
     stages: [
       {
@@ -192,12 +222,14 @@ export const modules = [
   },
   {
     id: 3,
+    position: 3,
     parentId: null,
     type: "counter",
     stages: [],
   },
   {
     id: 5,
+    position: 0,
     parentId: 7,
     type: "input",
     stages: [
@@ -231,6 +263,7 @@ export const modules = [
   },
   {
     id: 6,
+    position: 1,
     parentId: 7,
     type: "input",
     stages: [
@@ -264,6 +297,7 @@ export const modules = [
   },
   {
     id: 4,
+    position: 2,
     parentId: 7,
     type: "button",
     config: {
@@ -374,6 +408,7 @@ export const modules = [
   },
   {
     id: 7,
+    position: 4,
     parentId: null,
     type: "container",
     stages: [
@@ -411,6 +446,158 @@ export const modules = [
                   id: 2,
                   name: "order",
                   stale: [],
+                },
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 823,
+    position: null,
+    parentId: null,
+    type: "modal",
+    config: { title: "Create order" },
+    stages: [],
+  },
+  //
+  {
+    id: 8420,
+    position: 0,
+    parentId: 823,
+    type: "input",
+    stages: [],
+    config: {
+      placeholder: "Enter customer name",
+    },
+  },
+  {
+    id: 84024,
+    position: 1,
+    parentId: 823,
+    type: "input",
+    stages: [],
+    config: {
+      placeholder: "Enter address",
+    },
+  },
+  {
+    id: 24892,
+    position: 2,
+    parentId: 823,
+    type: "button",
+    config: {
+      text: "Submit",
+    },
+    stages: [
+      {
+        id: 4928,
+        order: 0,
+        name: "form_data",
+        group: "event/default",
+        type: "dictionary",
+        values: [
+          {
+            id: 194,
+            name: "customer_name",
+            category: "function/module",
+            payload: {
+              property: "reveal",
+            },
+            args: [],
+            references: [
+              {
+                name: "module",
+                module: {
+                  id: 8420,
+                },
+              },
+            ],
+          },
+          {
+            id: 149,
+            name: "address",
+            category: "function/module",
+            payload: {
+              property: "reveal",
+            },
+            args: [],
+            references: [
+              {
+                name: "module",
+                module: {
+                  id: 84024,
+                },
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 7238,
+        order: 1,
+        name: "stage_2",
+        group: "event/default",
+        type: "value",
+        values: [
+          {
+            id: 1042,
+            name: "root",
+            category: "function/operation",
+            dict_args: [],
+            args: [
+              {
+                id: 1035,
+                name: "customer_name",
+                category: "variable/stage",
+                payload: { name: "form_data" },
+                path: ["customer_name"],
+                references: [],
+              },
+              {
+                id: 75245,
+                name: "address",
+                category: "variable/stage",
+                payload: { name: "form_data" },
+                path: ["address"],
+                references: [],
+              },
+            ],
+            references: [
+              {
+                name: "root",
+                operation: {
+                  id: 95,
+                  name: "createOrder",
+                  stale: [{ id: 1 }],
+                },
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 85402,
+        order: 2,
+        name: "stage_3",
+        group: "event/default",
+        type: "value",
+        values: [
+          {
+            id: 45278,
+            name: "root",
+            category: "function/module",
+            payload: {
+              property: "close",
+            },
+            args: [],
+            references: [
+              {
+                name: "module",
+                module: {
+                  id: 823,
                 },
               },
             ],

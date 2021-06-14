@@ -32,28 +32,37 @@ const controllers = {
           }
     );
   },
+  createOrder: ({ customer_name, address }) => {
+    const order = createOrder(db.orders.length, customer_name, address);
+
+    db.orders = [order, ...db.orders];
+
+    return order;
+  },
   order: ({ id }) => db.orders.find((o) => o.id === id),
 };
 
 const db = {
-  orders: times(
-    (i) => ({
-      id: i,
-      created_at: moment().format(),
-      customer_name: `${faker.name.firstName()} ${faker.name.lastName()}`,
-      address: faker.address.streetAddress(),
-      delivery_type: faker.random.arrayElement(["delivery", "pickup"]),
-      status: faker.random.arrayElement([
-        "pending",
-        "in_progress",
-        "dispatched",
-        "delivered",
-        "canceled",
-      ]),
-      payment_type: faker.random.arrayElement(["credit_card", "cash"]),
-      amount: faker.finance.amount(),
-      currency: faker.finance.currencyCode(),
-    }),
-    200
-  ),
+  orders: times(createOrder, 200),
 };
+
+function createOrder(id, customerName, address) {
+  return {
+    id,
+    created_at: moment().format(),
+    customer_name:
+      customerName || `${faker.name.firstName()} ${faker.name.lastName()}`,
+    address: address || faker.address.streetAddress(),
+    delivery_type: faker.random.arrayElement(["delivery", "pickup"]),
+    status: faker.random.arrayElement([
+      "pending",
+      "in_progress",
+      "dispatched",
+      "delivered",
+      "canceled",
+    ]),
+    payment_type: faker.random.arrayElement(["credit_card", "cash"]),
+    amount: faker.finance.amount(),
+    currency: faker.finance.currencyCode(),
+  };
+}

@@ -2,6 +2,7 @@ import React from "react";
 import { useRecoilState } from "recoil";
 import Skeleton from "react-loading-skeleton";
 import cx from "classnames";
+import { isNil } from "ramda";
 import { stateFamily, selectedId } from "../store";
 import { either } from "../utils";
 import { useModule, useSettings, useLocalVariables } from "./consumers";
@@ -36,6 +37,20 @@ export default function Module() {
     return JSON.stringify(error);
   }
 
+  const root = (
+    <Root
+      state={state}
+      onStateChange={changeState}
+      settings={settings.data}
+      variables={variables.data}
+    />
+  );
+
+  // Temporary solution unless layout grid will be used
+  if (isNil(module.position)) {
+    return root;
+  }
+
   return (
     <div
       onClick={(e) => {
@@ -48,12 +63,7 @@ export default function Module() {
         selection === module.id ? "border-blue-500" : "border-green-300"
       )}
     >
-      <Root
-        state={state}
-        onStateChange={changeState}
-        settings={settings.data}
-        variables={variables.data}
-      />
+      {root}
     </div>
   );
 }

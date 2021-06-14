@@ -40,6 +40,9 @@ export function useSettings(fields) {
 }
 
 export function useSettingCallback(field) {
+  // TODO: define isLoading state, so then components using that hook can leverage it
+  // for example when displaying button spinner
+
   const { module } = useModule();
   // const func = useSetRecoilState(settingFamily([module.id, field]));
   const func = useRecoilCallback(({ snapshot, set }) => async (args) => {

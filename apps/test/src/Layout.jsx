@@ -8,7 +8,7 @@ export default function Layout() {
   const moduleIds = useRecoilValue(modulesFamily(parentId));
 
   return (
-    <div className="p-4 flex flex-col items-center text-center">
+    <div className="p-4 flex flex-col items-center">
       {moduleIds.map((moduleId) => (
         <Module key={moduleId} moduleId={moduleId} />
       ))}
