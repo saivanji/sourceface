@@ -9,7 +9,7 @@
 
 ```
 docker-compose up
-docker-compose exec agora sh -c "yarn migrate:up && yarn seed"
+docker-compose exec agora sh -c "yarn migrate:up && yarn seed:restore"
 docker-compose exec absinthe yarn start
 ```
 

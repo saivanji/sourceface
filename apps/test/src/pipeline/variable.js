@@ -11,7 +11,7 @@ const global = {
 //
 // The same applies to functions: `form_*.justify` will call justify functions on desired modules and return an object with results.
 //
-// That will be resolved on the "value" level
+// That will be resolved on the "dictionary" level since it returns dictionary. User will have option to compose dictionary manually or to use template
 
 export const evaluate = (
   { category, payload, references, path = [] },

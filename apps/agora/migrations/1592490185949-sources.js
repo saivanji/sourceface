@@ -13,7 +13,7 @@ export const up = () =>
       )
     `)
     await t.none(`
-      CREATE TABLE commands(
+      CREATE TABLE operations(
         id serial PRIMARY KEY,
         created_at timestamp NOT NULL DEFAULT NOW(),
         name text NOT NULL CHECK (name <> ''),
@@ -22,9 +22,9 @@ export const up = () =>
       )
     `)
     await t.none(`
-      CREATE TABLE stale_commands(
-        command_id integer NOT NULL REFERENCES commands(id) ON DELETE CASCADE,
-        stale_id integer NOT NULL REFERENCES commands(id) ON DELETE CASCADE,
+      CREATE TABLE stale_operations(
+        command_id integer NOT NULL REFERENCES operations(id) ON DELETE CASCADE,
+        stale_id integer NOT NULL REFERENCES operations(id) ON DELETE CASCADE,
         UNIQUE (command_id, stale_id)
       )
     `)
@@ -33,10 +33,10 @@ export const up = () =>
 export const down = () =>
   global.pg.tx(async (t) => {
     await t.none(`
-      DROP TABLE stale_commands
+      DROP TABLE stale_operations
     `)
     await t.none(`
-      DROP TABLE commands
+      DROP TABLE operations
     `)
     await t.none(`
       DROP TABLE sources
