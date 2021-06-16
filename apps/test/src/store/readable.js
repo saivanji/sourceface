@@ -8,16 +8,20 @@ import { stock as modulesStock } from "../modules";
 import {
   populateStages,
   populateValues,
+  evaluateValues,
   transformValue,
   getPrevStages,
+  WireResult,
 } from "./utils";
 import {
-  page,
   moduleFamily,
   countersFamily,
   stateFieldFamily,
   Break,
 } from "./common";
+import { page, stageEntityFamily } from "./entities";
+
+// TODO: have all logic in "utils" dir, here call only high level functions
 
 export const settingFamily = selectorFamily({
   key: "setting",
@@ -25,9 +29,7 @@ export const settingFamily = selectorFamily({
     ([moduleId, field]) =>
     ({ get }) => {
       const module = get(moduleFamily(moduleId));
-      const { entities } = get(page);
-
-      const stages = populateStages(field, "default", module.stages, entities);
+      const stages = populateStages(field, "default", module.stages, { get });
 
       if (stages.length) {
         try {
@@ -58,11 +60,20 @@ export const stageFamily = selectorFamily({
   get:
     ([moduleId, field, stageId]) =>
     ({ get }) => {
-      const { entities } = get(page);
-      const stage = entities.stages[stageId];
+      const stage = get(stageEntityFamily(stageId));
+      const input = populateValues(stage.values, { get });
+      const evaluate = (value) => {
+        // TODO: move to a separate util function and use in evaluating arguments(just in case and for the consistency),
+        // have optional "set" argument when provided execute cache invalidation logic
 
-      const input = populateValues(stage.values, entities);
-      const evaluate = (value) => get(valueFamily([moduleId, field, value.id]));
+        const out = get(valueFamily([moduleId, field, value.id]));
+
+        if (out instanceof WireResult) {
+          return out.data;
+        }
+
+        return out;
+      };
 
       return stagesStock[stage.type].execute(evaluate, input);
     },
@@ -77,7 +88,7 @@ export const valueFamily = selectorFamily({
       const { entities } = get(page);
       const data = transformValue(entities.values[valueId]);
       const module = entities.modules[moduleId];
-      const stages = populateStages(field, "default", module.stages, entities);
+      const stages = populateStages(field, "default", module.stages, { get });
 
       const prevStages = getPrevStages(valueId, stages, entities, (stageId) =>
         get(stageFamily([moduleId, field, stageId]))
@@ -99,10 +110,7 @@ export const valueFamily = selectorFamily({
         const { id, category, args, references, payload } = data;
 
         if (category === "module") {
-          const evaluatedArgs = populateValues(args, entities, (value) =>
-            get(valueFamily([moduleId, field, value.id]))
-          );
-
+          const evaluatedArgs = evaluateValues(args, moduleId, field, { get });
           const module = get(moduleFamily(references.module.id));
           const blueprint = modulesStock[module.type];
           const setup = blueprint.functions[payload.property];
@@ -138,24 +146,25 @@ export const wireFamily = selectorFamily({
   key: "wire",
   get:
     ([moduleId, field, valueId]) =>
-    ({ get }) => {
+    async ({ get }) => {
       const { entities } = get(page);
       const { id, category, args, references } = transformValue(
         entities.values[valueId]
       );
 
-      const { referenceType, select, execute } = wires[category];
+      const { referenceType, select, execute, getStaleIds } = wires[category];
 
       const reference = select(references);
       const call = (args) => execute(reference, args);
 
       get(countersFamily([reference.id, referenceType]));
 
-      const evaluatedArgs = populateValues(args, entities, (value) =>
-        get(valueFamily([moduleId, field, value.id]))
-      );
+      const evaluatedArgs = evaluateValues(args, moduleId, field, { get });
 
-      return loader.load(id, call, evaluatedArgs);
+      const staleIds = getStaleIds(reference);
+      const data = await loader.load(id, call, evaluatedArgs);
+
+      return new WireResult(data, staleIds);
     },
 });
 

@@ -1,8 +1,15 @@
 import { chain, sort, keys, identity } from "ramda";
+import { stageEntityFamily, valueEntityFamily } from "./entities";
+import { valueFamily } from "./readable";
 
-export const populateStages = (field, sequenceName, stageIds, entities) => {
+export const populateStages = (
+  field,
+  sequenceName,
+  stageIds,
+  { get, entities }
+) => {
   const items = stageIds.reduce((acc, stageId) => {
-    const stage = entities.stages[stageId];
+    const stage = get?.(stageEntityFamily(stageId)) || entities.stages[stageId];
 
     if (stage.group !== `${field}/${sequenceName}`) {
       return acc;
@@ -14,15 +21,21 @@ export const populateStages = (field, sequenceName, stageIds, entities) => {
   return sort((a, b) => a.order - b.order, items);
 };
 
-export const populateValues = (items, entities, fn = identity) =>
-  items.reduce((acc, valueId) => {
-    const value = entities.values[valueId];
+export const populateValues = (valueIds, { get, entities, fn = identity }) =>
+  valueIds.reduce((acc, valueId) => {
+    const value = get?.(valueEntityFamily(valueId)) || entities.values[valueId];
 
     return {
       ...acc,
       [value.name]: fn(value),
     };
   }, {});
+
+export const evaluateValues = (valueIds, moduleId, field, { get }) =>
+  populateValues(valueIds, {
+    get,
+    fn: (value) => get(valueFamily([moduleId, field, value.id])),
+  });
 
 export const getPrevStages = (valueId, stages, entities, getStageData) => {
   let result = {};
@@ -61,3 +74,10 @@ export const transformValue = (value) => {
 };
 
 const parseCategory = (category) => category.split("/");
+
+export class WireResult {
+  constructor(data, staleIds) {
+    this.data = data;
+    this.staleIds = staleIds;
+  }
+}

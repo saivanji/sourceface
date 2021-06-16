@@ -1,9 +1,7 @@
 import { mergeRight } from "ramda";
 import { atom, atomFamily, selector, selectorFamily } from "recoil";
-import { normalize } from "normalizr";
-import * as api from "../api";
-import schema from "../schema";
 import { stock as modulesStock } from "../modules";
+import { page, moduleEntityFamily } from "./entities";
 
 /**
  * Selected module state. Used in editor to represent currently
@@ -21,6 +19,7 @@ export const selectedId = atom({
  * Modules settings state. Used for real time module configuration in
  * editor.
  */
+// TODO: rename
 export const moduleFamily = atomFamily({
   key: "module",
   default: selectorFamily({
@@ -28,7 +27,7 @@ export const moduleFamily = atomFamily({
     get:
       (moduleId) =>
       ({ get }) => {
-        const module = get(page).entities.modules[moduleId];
+        const module = get(moduleEntityFamily(moduleId));
         const { initialConfig } = modulesStock[module.type];
 
         return mergeRight({ config: initialConfig }, module);
@@ -70,17 +69,6 @@ export const countersFamily = atomFamily({
   default: 0,
 });
 
-// TODO: should split on entities selectors to reduce amount of re-renders?
-// or might be have family selectors to get entity by it's id like stageEntityFamily, valueEntityFamily
-// and so on
-/**
- * Current page data including modules list and page information.
- */
-export const page = selector({
-  key: "page",
-  get: async () => normalize(await api.listModules(), schema),
-});
-
 /**
  * Modules list filtered by a parent module id
  */
@@ -89,11 +77,13 @@ export const modulesFamily = selectorFamily({
   get:
     (parentId) =>
     ({ get }) => {
-      const { result, entities } = get(page);
+      const { result } = get(page);
 
-      return result.filter(
-        (moduleId) => entities.modules[moduleId].parentId === parentId
-      );
+      return result.filter((moduleId) => {
+        const module = get(moduleEntityFamily(moduleId));
+
+        return module.parentId === parentId;
+      });
     },
 });
 
