@@ -1,5 +1,5 @@
 import { path as selectPath } from "ramda";
-import { Variable } from "../types";
+import { Variable } from "../../types";
 
 // const global = {
 //   page: "about",

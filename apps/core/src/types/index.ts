@@ -1,12 +1,10 @@
-import { stock as modulesStock } from "./modules";
-
 export type Module = {
   id: number;
   position: number;
-  type: keyof typeof modulesStock;
+  type: "text";
   stages: Stage[];
   config: {
-    content?: string;
+    [key: string]: unknown;
   };
   parentId?: number;
 };
@@ -15,7 +13,7 @@ export type Stage = {
   id: number;
   order: number;
   name: string;
-  group: string;
+  field: string;
   type: StageType;
   values: Value[];
 };
@@ -36,3 +34,9 @@ export type ConstantVariable = {
 export type Variable = ConstantVariable;
 
 export type Value = Variable;
+
+/**
+ * Utility types
+ */
+
+export type Override<T1, T2> = Omit<T1, keyof T2> & T2;

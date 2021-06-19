@@ -1,4 +1,4 @@
-import type { Module } from "./types";
+import type { Module } from "../types";
 
 export const modules: Module[] = [
   {
@@ -20,7 +20,7 @@ export const modules: Module[] = [
         id: 1935,
         order: 0,
         name: "stage_1",
-        group: "content/default",
+        field: "content",
         type: "value",
         values: [
           {

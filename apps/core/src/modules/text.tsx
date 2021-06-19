@@ -1,11 +1,7 @@
-import type { RootProps } from "./";
+import { useSetting } from "../store";
 
-export const Root = ({ settings: [content] }: RootProps<[string]>) => {
+export const Root = () => {
+  const content = useSetting<string>("content");
+
   return <span className="text-lg">{content}</span>;
-};
-
-export const rootSettings = ["content"] as const;
-
-export type Config = {
-  content: string;
 };
