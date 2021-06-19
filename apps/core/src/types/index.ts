@@ -27,13 +27,37 @@ export type ConstantVariable = {
   payload: {
     value: string;
   };
-  references: [];
+  references: References;
+  path?: [];
+};
+
+export type FutureFunc = {
+  id: number;
+  name: string;
+  category: "function/future";
+  payload: {
+    kind: "operation";
+  };
+  references: References;
   path?: [];
 };
 
 export type Variable = ConstantVariable;
+export type Func = FutureFunc;
 
-export type Value = Variable;
+export type Value = Variable | Func;
+
+export type Operation = {
+  id: number;
+  name: string;
+  stale: Operation["id"][];
+};
+
+export type References = {
+  operations?: {
+    [key: string]: Operation["id"];
+  };
+};
 
 /**
  * Utility types

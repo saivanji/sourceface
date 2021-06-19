@@ -77,6 +77,23 @@ export function groupStageValues(stage: NormalizedStage, entities: Entities) {
   }, {});
 }
 
+/**
+ * Computes settings of all modules groupped by module id and field.
+ */
+export function computeSettings(indexes: Indexes, entities: Entities) {
+  return mapObjIndexed(
+    (stagesByField) =>
+      mapObjIndexed(
+        (stageIds) => computeStages(stageIds, indexes, entities),
+        stagesByField
+      ),
+    indexes.stages
+  );
+}
+
+/**
+ * Compute specific setting for given stage ids.
+ */
 export function computeStages(
   stageIds: StageIds,
   indexes: Indexes,
@@ -89,6 +106,9 @@ export function computeStages(
   }, null);
 }
 
+/**
+ * Computes specific stage data
+ */
 export function computeSingleStage(
   stage: NormalizedStage,
   indexes: Indexes,
@@ -114,6 +134,7 @@ export function computeSingleStage(
         return computeValue(value);
       }, valueIndex);
     }
+    // TODO: probably should return result of a previous stage
     case "debug": {
       for (let valueId of values(valueIndex)) {
         const value = entities.values[valueId];
@@ -129,10 +150,16 @@ export function computeSingleStage(
   }
 }
 
+/**
+ * Computes value data.
+ */
 export function computeValue(value: Value) {
   if (value.category === "variable/constant") {
     const data = value.payload.value;
 
     return path(value.path || [], data);
   }
+
+  // function/future, for operations and other async things
+  // function/effect - for displaying notifications, making redirects doing other stuff
 }

@@ -30,7 +30,35 @@ export const modules: Module[] = [
             payload: {
               value: "foo",
             },
-            references: [],
+            references: {},
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 452,
+    position: 2,
+    type: "text",
+    config: {},
+    stages: [
+      {
+        id: 792,
+        order: 0,
+        name: "stage_1",
+        field: "content",
+        type: "value",
+        values: [
+          {
+            id: 514,
+            name: "root",
+            category: "function/future",
+            payload: { kind: "operation" },
+            references: {
+              operations: {
+                root: 5,
+              },
+            },
           },
         ],
       },

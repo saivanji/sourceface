@@ -4,7 +4,11 @@ import { normalize } from "normalizr";
 import { Provider as ReduxProvider } from "react-redux";
 import rootSchema from "./schema";
 import rootReducer from "./reducers";
-import { createStageIndexes, createValueIndexes } from "./utils";
+import {
+  createStageIndexes,
+  createValueIndexes,
+  computeSettings,
+} from "./utils";
 import type { Module } from "../types";
 import type { Entities, Result } from "./reducers";
 
@@ -20,12 +24,15 @@ function init(modules: Module[]) {
 
   const stageIndexes = createStageIndexes(entities);
   const valueIndexes = createValueIndexes(entities);
+  const indexes = { stages: stageIndexes, values: valueIndexes };
+
+  const computations = computeSettings(indexes, entities);
 
   return createStore(rootReducer, {
     moduleIds,
     entities,
-    indexes: { stages: stageIndexes, values: valueIndexes },
-    computations: {},
+    indexes,
+    computations,
   });
 }
 
