@@ -24,4 +24,10 @@ export const getSettingData = <T>(
   }
 
   return state.computations[moduleId]?.[field] as T;
+
+  // TODO: in case nothing got from computations, start async field computation, throw that Promise
+  // and dispatch to Redux store.
+  //
+  // Try creating custom middleware(which takes dispatched Promise and updates state accordingly
+  // after it resolves) instead of redux-saga first
 };

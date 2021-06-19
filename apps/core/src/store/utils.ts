@@ -135,6 +135,4 @@ export function computeValue(value: Value) {
 
     return path(value.path || [], data);
   }
-
-  throw new Error(`Unsupported value category ${value.category}`);
 }
