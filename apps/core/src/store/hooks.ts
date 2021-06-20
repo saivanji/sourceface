@@ -1,4 +1,4 @@
-import { useContext, useRef } from "react";
+import { useContext } from "react";
 import {
   useStore,
   useSelector as useSelectorUntyped,
@@ -29,15 +29,16 @@ export function useSetting<T>(field: string) {
 
   // TODO: make sure the requesting field is a Future
   if (typeof data === "undefined") {
+    // TODO: can that state be more fresh than the one in useSelector?
     const state = store.getState();
     const { entities, indexes } = state;
     const stageIds = getFieldStageIds(state, [moduleId, field]);
 
-    const result = computeStages(stageIds, indexes, entities, true);
+    // no need in global registry, no need in middleware
 
-    // console.log(result, loadingRef.current);
-
-    // throw result;
+    // throw computeStages(stageIds, indexes, entities, true).then((data) => {
+    //   // dispatch(update)
+    // });
   }
 
   return data;
