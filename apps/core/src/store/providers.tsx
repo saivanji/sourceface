@@ -16,6 +16,7 @@ import type { Entities, Result } from "./reducers";
 // TODO: split utils, refactor utils
 // TODO: learn more about Suspense and how to handle suspending in
 // useSettings hook
+// TODO: implement displaying subsequent loading state
 
 function init(modules: Module[]) {
   /**
