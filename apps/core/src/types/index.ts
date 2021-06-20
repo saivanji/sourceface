@@ -1,13 +1,25 @@
-export type Module = {
+export interface BaseModule {
   id: number;
   position: number;
-  type: "text";
   stages: Stage[];
-  config: {
+  config?: {
     [key: string]: unknown;
   };
   parentId?: number;
-};
+}
+
+export interface TextModule extends BaseModule {
+  type: "text";
+  config: {
+    content?: string;
+  };
+}
+
+export interface CounterModule extends BaseModule {
+  type: "counter";
+}
+
+export type Module = TextModule | CounterModule;
 
 export type Stage = {
   id: number;

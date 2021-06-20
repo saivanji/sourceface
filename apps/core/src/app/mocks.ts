@@ -64,6 +64,12 @@ export const modules: Module[] = [
       },
     ],
   },
+  {
+    id: 813,
+    position: 3,
+    type: "counter",
+    stages: [],
+  },
 ];
 
 // TODO: should modules have name? default "module_{n}"

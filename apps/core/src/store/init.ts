@@ -12,6 +12,7 @@ import {
 import type { Module } from "../types";
 import type { EntitiesState, ModulesState } from "./slices";
 
+// TODO: implement counter module(with state) without async operation(for now)
 // TODO: learn more about Suspense and how to handle suspending in
 // useSettings hook
 // TODO: implement displaying subsequent loading state
