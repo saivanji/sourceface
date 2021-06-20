@@ -1,11 +1,13 @@
 // import { createSelector } from "reselect";
 import { isNil } from "ramda";
 import type { Module } from "../types";
-import type { State } from "./reducers";
+import type { State } from "./init";
+
+// TODO: what if computation will be performed at selectors level, with the help of indexes?
 
 // TODO: Keep business logic out of selectors file
 
-export const getModuleIds = (state: State) => state.moduleIds;
+export const getModuleIds = (state: State) => state.modules;
 export const getModule = (state: State, moduleId: Module["id"]) =>
   state.entities.modules[moduleId];
 export const getFieldStageIds = (

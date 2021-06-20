@@ -1,19 +1,22 @@
 import { useContext } from "react";
 import {
   useStore,
+  useDispatch,
   useSelector as useSelectorUntyped,
   TypedUseSelectorHook,
 } from "react-redux";
 import { moduleContext } from "./providers";
+import { computationsSlice } from "./slices";
 import { getSettingData, getFieldStageIds } from "./selectors";
 import { computeStages } from "./utils";
-import type { State } from "./reducers";
+import type { State } from "./init";
 
 export const useSelector: TypedUseSelectorHook<State> = useSelectorUntyped;
 
 // TODO: might provide "defaultValue" as a second argument
 export function useSetting<T>(field: string) {
   const store = useStore<State>();
+  const dispatch = useDispatch();
   const moduleId = useContext(moduleContext);
 
   /**
@@ -29,16 +32,19 @@ export function useSetting<T>(field: string) {
 
   // TODO: make sure the requesting field is a Future
   if (typeof data === "undefined") {
-    // TODO: can that state be more fresh than the one in useSelector?
     const state = store.getState();
     const { entities, indexes } = state;
     const stageIds = getFieldStageIds(state, [moduleId, field]);
 
-    // no need in global registry, no need in middleware
+    const result = computeStages<T>(stageIds, indexes.values, entities, true);
 
-    // throw computeStages(stageIds, indexes, entities, true).then((data) => {
-    //   // dispatch(update)
-    // });
+    if (result instanceof Promise) {
+      throw result.then((data) => {
+        dispatch(
+          computationsSlice.actions.populateSetting({ moduleId, field, data })
+        );
+      });
+    }
   }
 
   return data;

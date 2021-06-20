@@ -1,20 +1,29 @@
 import { mapObjIndexed, path } from "ramda";
-import type { Stage, Value } from "../../types";
 import * as futures from "../futures";
 import { mapObj } from "./common";
-import type { NormalizedStage, Entities, Indexes } from "../reducers";
+import type { Stage, Value } from "../../types";
+import type {
+  EntitiesState,
+  StageIndexState,
+  ValueIndexState,
+} from "../slices";
+import type { NormalizedStage } from "../schema";
 
 /**
  * Computes settings of all modules groupped by module id and field.
  */
-export function computeSettings<V>(indexes: Indexes, entities: Entities) {
+export function computeSettings<V>(
+  stageIndex: StageIndexState,
+  valueIndex: ValueIndexState,
+  entities: EntitiesState
+) {
   return mapObjIndexed(
     (stagesByField) =>
       mapObjIndexed(
-        (stageIds) => computeStages<V>(stageIds, indexes, entities),
+        (stageIds) => computeStages<V>(stageIds, valueIndex, entities),
         stagesByField
       ),
-    indexes.stages
+    stageIndex
   );
 }
 
@@ -23,8 +32,8 @@ export function computeSettings<V>(indexes: Indexes, entities: Entities) {
  */
 export function computeStages<V>(
   stageIds: Stage["id"][],
-  indexes: Indexes,
-  entities: Entities,
+  valueIndex: ValueIndexState,
+  entities: EntitiesState,
   isAsync = false
 ) {
   /**
@@ -32,7 +41,7 @@ export function computeStages<V>(
    * do not support calling ReturnType on a function with a generic type arguments.
    */
   const wrapCompute = (stage: NormalizedStage) =>
-    computeSingleStage<V>(stage, indexes, entities, isAsync);
+    computeSingleStage<V>(stage, valueIndex, entities, isAsync);
 
   type Result = ReturnType<typeof wrapCompute> | null;
 
@@ -47,15 +56,15 @@ export function computeStages<V>(
  */
 export function computeSingleStage<V>(
   stage: NormalizedStage,
-  indexes: Indexes,
-  entities: Entities,
+  valueIndex: ValueIndexState,
+  entities: EntitiesState,
   isAsync: boolean
 ) {
   // TODO: do we need value index, since we don't use it in selectors
-  const valueIndex = indexes.values[stage.id];
+  const stageValueIndex = valueIndex[stage.id];
 
   if (stage.type === "value") {
-    const valueId = valueIndex["root"];
+    const valueId = stageValueIndex["root"];
 
     return computeValue<V>(entities.values[valueId], isAsync);
   }
@@ -64,7 +73,7 @@ export function computeSingleStage<V>(
     return mapObj((valueId) => {
       const value = entities.values[valueId];
       return computeValue<V>(value, isAsync);
-    }, valueIndex);
+    }, stageValueIndex);
   }
 }
 

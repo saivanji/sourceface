@@ -1,14 +1,16 @@
-import { createStore } from "redux";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { normalize } from "normalizr";
 import rootSchema from "./schema";
-import rootReducer from "./reducers";
+import { createStageIndex, createValueIndex, computeSettings } from "./utils";
 import {
-  createStageIndexes,
-  createValueIndexes,
-  computeSettings,
-} from "./utils";
+  computationsSlice,
+  entitiesSlice,
+  modulesSlice,
+  stageIndexSlice,
+  valueIndexSlice,
+} from "./slices";
 import type { Module } from "../types";
-import type { Entities, Result } from "./reducers";
+import type { EntitiesState, ModulesState } from "./slices";
 
 // TODO: learn more about Suspense and how to handle suspending in
 // useSettings hook
@@ -19,21 +21,41 @@ export default function init(modules: Module[]) {
    * Normalizes nested modules data in the plain structure to be
    * convenient to work in state.
    */
-  const { result: moduleIds, entities } = normalize<never, Entities, Result>(
-    modules,
-    rootSchema
+  const { result: moduleIds, entities } = normalize<
+    never,
+    EntitiesState,
+    ModulesState
+  >(modules, rootSchema);
+
+  const stageIndex = createStageIndex(entities);
+  const valueIndex = createValueIndex(entities);
+
+  const computations = computeSettings<unknown>(
+    stageIndex,
+    valueIndex,
+    entities
   );
 
-  const stageIndexes = createStageIndexes(entities);
-  const valueIndexes = createValueIndexes(entities);
-  const indexes = { stages: stageIndexes, values: valueIndexes };
-
-  const computations = computeSettings<unknown>(indexes, entities);
-
-  return createStore(rootReducer, {
-    moduleIds,
-    entities,
-    indexes,
-    computations,
+  return configureStore({
+    reducer: {
+      modules: modulesSlice.reducer,
+      entities: entitiesSlice.reducer,
+      computations: computationsSlice.reducer,
+      indexes: combineReducers({
+        stages: stageIndexSlice.reducer,
+        values: valueIndexSlice.reducer,
+      }),
+    },
+    preloadedState: {
+      modules: moduleIds,
+      entities,
+      computations,
+      indexes: {
+        stages: stageIndex,
+        values: valueIndex,
+      },
+    },
   });
 }
+
+export type State = ReturnType<ReturnType<typeof init>["getState"]>;
