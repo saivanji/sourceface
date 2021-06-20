@@ -12,6 +12,11 @@ import {
 import type { Module } from "../types";
 import type { Entities, Result } from "./reducers";
 
+// TODO: resolve types, especially in utils and hooks
+// TODO: split utils, refactor utils
+// TODO: learn more about Suspense and how to handle suspending in
+// useSettings hook
+
 function init(modules: Module[]) {
   /**
    * Normalizes nested modules data in the plain structure to be

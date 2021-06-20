@@ -2,6 +2,7 @@ import { times } from "ramda";
 import moment from "moment";
 import faker from "faker";
 import type { References } from "../../types";
+import type { Response } from "./types";
 
 faker.seed(1);
 
@@ -25,7 +26,10 @@ type CreateOrderArgs = {
 };
 type OrderArgs = { id: number };
 
-export function execute(references: References, args: Args) {
+export function execute<T>(
+  references: References,
+  args: Args
+): Promise<Response<T>> {
   const operationId = references?.operations?.root;
 
   if (typeof operationId === "undefined") {
@@ -45,7 +49,7 @@ export function execute(references: References, args: Args) {
     setTimeout(() => {
       const fn = controllers[operationName];
 
-      resolve(fn(args as any));
+      resolve(fn(args as any) as Response<T>);
     }, Math.random() * 1000);
   });
 }
@@ -56,7 +60,7 @@ const controllers = {
   }),
   removeOrder: ({ id }: RemoveOrderArgs) => {
     db.orders = db.orders.filter((order) => order.id !== id);
-    return { stale: [1] };
+    return { data: null, stale: [1] };
   },
   updateOrder: ({ id, customer_name, address }: UpdateOrderArgs) => {
     db.orders = db.orders.map((order) =>
@@ -68,7 +72,7 @@ const controllers = {
             address,
           }
     );
-    return { stale: [1] };
+    return { data: null, stale: [1] };
   },
   createOrder: ({ customer_name, address }: CreateOrderArgs) => {
     const order = createOrder(db.orders.length, customer_name, address);
@@ -78,6 +82,7 @@ const controllers = {
     return { data: order, stale: [1] };
   },
   order: ({ id }: OrderArgs) => ({ data: db.orders.find((o) => o.id === id) }),
+  echo: () => ({ data: "Hello from the operation" }),
 };
 
 const ids = {
@@ -86,6 +91,7 @@ const ids = {
   3: "updateOrder",
   4: "createOrder",
   5: "order",
+  6: "echo",
 };
 
 const db = {

@@ -1,16 +1,19 @@
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import {
+  useStore,
   useSelector as useSelectorUntyped,
   TypedUseSelectorHook,
 } from "react-redux";
 import { moduleContext } from "./providers";
+import { getSettingData, getFieldStageIds } from "./selectors";
+import { computeStages } from "./utils";
 import type { State } from "./reducers";
-import { getSettingData } from "./selectors";
 
 export const useSelector: TypedUseSelectorHook<State> = useSelectorUntyped;
 
 // TODO: might provide "defaultValue" as a second argument
 export function useSetting<T>(field: string) {
+  const store = useStore<State>();
   const moduleId = useContext(moduleContext);
 
   /**
@@ -23,6 +26,19 @@ export function useSetting<T>(field: string) {
   const data = useSelector((state) =>
     getSettingData<T>(state, [moduleId, field])
   );
+
+  // TODO: make sure the requesting field is a Future
+  if (typeof data === "undefined") {
+    const state = store.getState();
+    const { entities, indexes } = state;
+    const stageIds = getFieldStageIds(state, [moduleId, field]);
+
+    const result = computeStages(stageIds, indexes, entities, true);
+
+    // console.log(result, loadingRef.current);
+
+    // throw result;
+  }
 
   return data;
 }

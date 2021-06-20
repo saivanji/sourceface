@@ -56,7 +56,7 @@ export const modules: Module[] = [
             payload: { kind: "operation" },
             references: {
               operations: {
-                root: 5,
+                root: 6,
               },
             },
           },

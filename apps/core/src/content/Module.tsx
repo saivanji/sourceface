@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { getModule, useSelector, ModuleProvider } from "../store";
 import { stock as modulesStock } from "../modules";
 import type { Module } from "../types";
@@ -13,7 +14,9 @@ export default function ModuleElement({ moduleId }: ModuleProps) {
   return (
     <ModuleProvider moduleId={moduleId}>
       <div className="rounded-md border-2 border-dashed p-4 bg-white mb-3">
-        <Root />
+        <Suspense fallback={"Loading..."}>
+          <Root />
+        </Suspense>
       </div>
     </ModuleProvider>
   );

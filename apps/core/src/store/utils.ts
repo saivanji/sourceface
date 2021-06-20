@@ -1,4 +1,5 @@
-import { mapObjIndexed, sort, path, values } from "ramda";
+import { mapObjIndexed, sort, path, keys, zipObj } from "ramda";
+import * as futures from "./futures";
 import type { Module, Stage, Value } from "../types";
 import type {
   NormalizedModule,
@@ -97,12 +98,13 @@ export function computeSettings(indexes: Indexes, entities: Entities) {
 export function computeStages(
   stageIds: StageIds,
   indexes: Indexes,
-  entities: Entities
+  entities: Entities,
+  isAsync = false
 ) {
   return stageIds.reduce<unknown>((_, stageId) => {
     const stage = entities.stages[stageId];
 
-    return computeSingleStage(stage, indexes, entities);
+    return computeSingleStage(stage, indexes, entities, isAsync);
   }, null);
 }
 
@@ -112,7 +114,8 @@ export function computeStages(
 export function computeSingleStage(
   stage: NormalizedStage,
   indexes: Indexes,
-  entities: Entities
+  entities: Entities,
+  isAsync: boolean
 ) {
   const valueIndex = indexes.values[stage.id];
 
@@ -126,26 +129,26 @@ export function computeSingleStage(
         );
       }
 
-      return computeValue(entities.values[valueId]);
+      return computeValue(entities.values[valueId], isAsync);
     }
     case "dictionary": {
-      return mapObjIndexed((valueId) => {
+      return mapObj((valueId) => {
         const value = entities.values[valueId];
-        return computeValue(value);
+        return computeValue(value, isAsync);
       }, valueIndex);
     }
     // TODO: probably should return result of a previous stage
     case "debug": {
-      for (let valueId of values(valueIndex)) {
-        const value = entities.values[valueId];
-        const data = computeValue(value);
-
-        console.log(
-          `Field: ${stage.field}, Stage: ${stage.name}, Value: ${value.name} = ${data}`
-        );
-      }
-
-      return;
+      return mapObj(
+        (valueId) => {
+          const value = entities.values[valueId];
+          return computeValue(value, isAsync);
+        },
+        valueIndex,
+        (data) => {
+          console.log(`Field: ${stage.field}, Stage: ${stage.name}, ${data}`);
+        }
+      );
     }
   }
 }
@@ -153,13 +156,58 @@ export function computeSingleStage(
 /**
  * Computes value data.
  */
-export function computeValue(value: Value) {
+export function computeValue(value: Value, isAsync: boolean) {
+  const p = value.path || [];
+
   if (value.category === "variable/constant") {
     const data = value.payload.value;
 
-    return path(value.path || [], data);
+    return path(p, data);
   }
 
+  if (isAsync && value.category === "function/future") {
+    const { execute } = futures[value.payload.kind];
+
+    // TODO: pass down arguments
+    return execute<unknown>(value.references, {} as any).then((response) => {
+      // TODO: how to invalidate cache at that point?
+
+      return path(p, response.data);
+    });
+  }
   // function/future, for operations and other async things
   // function/effect - for displaying notifications, making redirects doing other stuff
+  // both future and effect are not applicable for the preload computation
+  // TODO: should module function type be part of effect?
+}
+
+/**
+ * Maps object values by a provided function. Function can optionally return
+ * a Promise.
+ */
+export function mapObj<I, O>(
+  fn: (x: I) => O,
+  obj: Record<string, I>,
+  debug?: (x: O) => void
+) {
+  const fields = keys(obj);
+  const out = fields.map((x) => fn(obj[x]));
+
+  if (out[0] instanceof Promise) {
+    return Promise.all(out).then((items) => zipRecord(fields, items, debug));
+  }
+
+  return zipRecord(fields, out, debug);
+}
+
+export function zipRecord<T>(
+  keys: string[],
+  values: T[],
+  debug?: (x: T) => void
+) {
+  if (debug) {
+    values.forEach(debug);
+  }
+
+  return zipObj(keys, values);
 }

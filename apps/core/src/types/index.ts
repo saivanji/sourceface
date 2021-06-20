@@ -25,6 +25,7 @@ export type ConstantVariable = {
   name: string;
   category: "variable/constant";
   payload: {
+    // TODO: value could be any literal type
     value: string;
   };
   references: References;
@@ -43,6 +44,7 @@ export type FutureFunc = {
 };
 
 export type Variable = ConstantVariable;
+
 export type Func = FutureFunc;
 
 export type Value = Variable | Func;
