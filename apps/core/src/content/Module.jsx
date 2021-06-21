@@ -1,13 +1,9 @@
 import { Suspense } from "react";
-import { getModule, useSelector, ModuleProvider } from "../store";
+import { useSelector } from "react-redux";
+import { getModule, ModuleProvider } from "../store";
 import { stock as modulesStock } from "../modules";
-import type { Module } from "../types";
 
-type ModuleProps = {
-  moduleId: Module["id"];
-};
-
-export default function ModuleElement({ moduleId }: ModuleProps) {
+export default function ModuleElement({ moduleId }) {
   const module = useSelector((state) => getModule(state, moduleId));
   const { Root } = modulesStock[module.type];
 

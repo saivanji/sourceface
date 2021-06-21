@@ -1,6 +1,4 @@
-import type { Module } from "../types";
-
-export const modules: Module[] = [
+export const modules = [
   {
     id: 832,
     position: 0,

@@ -1,4 +1,5 @@
-import { getModuleIds, useSelector } from "../store";
+import { useSelector } from "react-redux";
+import { getModuleIds } from "../store";
 import Module from "./Module";
 
 export default function Layout() {

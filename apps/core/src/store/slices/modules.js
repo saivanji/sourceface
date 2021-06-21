@@ -1,9 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { Module } from "../../types";
 
-export type ModulesState = Module["id"][];
-
-const initialState: ModulesState = [];
+const initialState = [];
 
 export const modulesSlice = createSlice({
   name: "modules",

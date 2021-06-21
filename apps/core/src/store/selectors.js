@@ -1,40 +1,43 @@
-// import { createSelector } from "reselect";
 import { isNil } from "ramda";
-import type { Module, ValueOf } from "../types";
-import type { State } from "./init";
 
 // TODO: what if computation will be performed at selectors level, with the help of indexes?
 
 // TODO: Keep business logic out of selectors file
 
-export const getModuleIds = (state: State) => state.modules;
-export const getModule = <M extends Module>(
-  state: State<M>,
-  moduleId: M["id"]
-) => state.entities.modules[moduleId];
-export const getFieldStageIds = <M extends Module>(
-  state: State<M>,
-  [moduleId, field]: [M["id"], keyof M["config"]]
-) => state.indexes.stages[moduleId][field];
+/**
+ * Returns all module ids of the page.
+ */
+export const getModuleIds = (state) => state.modules;
 
-export const getSettingData = <M extends Module>(
-  state: State<M>,
-  [moduleId, field]: [M["id"], keyof M["config"]]
-) => {
-  const module = getModule<M>(state, moduleId);
+/**
+ * Returns module by it's id.
+ */
+export const getModule = (state, moduleId) => state.entities.modules[moduleId];
+
+/**
+ * Returns stage ids of a module from the index.
+ */
+export const getFieldStageIds = (state, [moduleId, field]) =>
+  state.indexes.stages[moduleId][field];
+
+/**
+ * Returns module state value for the key.
+ */
+export const getModuleStateValue = (state, [moduleId, key]) =>
+  state.modulesState[moduleId]?.[key];
+
+/**
+ * Returns calculated setting data for the specific module field.
+ */
+export const getSettingData = (state, [moduleId, field]) => {
+  const module = getModule(state, moduleId);
   const stages = getFieldStageIds(state, [moduleId, field]);
 
   /**
    * No stages for that field, using config value.
    */
   if (isNil(stages) || stages.length === 0) {
-    type Config = {
-      [k in keyof M["config"]]: ValueOf<M["config"]>;
-    };
-
-    return (module.config as Config)[field];
-
-    //     return module.config[field]
+    return module.config[field];
   }
 
   return state.computations[moduleId]?.[field];

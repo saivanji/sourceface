@@ -1,35 +1,10 @@
 import { times } from "ramda";
 import moment from "moment";
 import faker from "faker";
-import type { References } from "../../types";
-import type { Response } from "./types";
 
 faker.seed(1);
 
-type Args =
-  | OrdersListArgs
-  | RemoveOrderArgs
-  | UpdateOrderArgs
-  | CreateOrderArgs
-  | OrderArgs;
-
-type OrdersListArgs = { limit: number; offset: number };
-type RemoveOrderArgs = { id: number };
-type UpdateOrderArgs = {
-  id: number;
-  customer_name: string;
-  address: string;
-};
-type CreateOrderArgs = {
-  customer_name: string;
-  address: string;
-};
-type OrderArgs = { id: number };
-
-export function execute<T>(
-  references: References,
-  args: Args
-): Promise<Response<T>> {
+export function execute(references, args) {
   const operationId = references?.operations?.root;
 
   if (typeof operationId === "undefined") {
@@ -40,29 +15,26 @@ export function execute<T>(
     throw new Error("Unknown operation id");
   }
 
-  type OperationId = keyof typeof ids;
-  type OperationName = keyof typeof controllers;
-
-  const operationName = ids[operationId as OperationId] as OperationName;
+  const operationName = ids[operationId];
 
   return new Promise((resolve) => {
     setTimeout(() => {
       const fn = controllers[operationName];
 
-      resolve(fn(args as any) as Response<T>);
+      resolve(fn(args));
     }, Math.random() * 1000);
   });
 }
 
 const controllers = {
-  ordersList: ({ limit, offset }: OrdersListArgs) => ({
+  ordersList: ({ limit, offset }) => ({
     data: db.orders.slice(offset, offset + limit),
   }),
-  removeOrder: ({ id }: RemoveOrderArgs) => {
+  removeOrder: ({ id }) => {
     db.orders = db.orders.filter((order) => order.id !== id);
     return { data: null, stale: [1] };
   },
-  updateOrder: ({ id, customer_name, address }: UpdateOrderArgs) => {
+  updateOrder: ({ id, customer_name, address }) => {
     db.orders = db.orders.map((order) =>
       order.id !== id
         ? order
@@ -74,14 +46,14 @@ const controllers = {
     );
     return { data: null, stale: [1] };
   },
-  createOrder: ({ customer_name, address }: CreateOrderArgs) => {
+  createOrder: ({ customer_name, address }) => {
     const order = createOrder(db.orders.length, customer_name, address);
 
     db.orders = [order, ...db.orders];
 
     return { data: order, stale: [1] };
   },
-  order: ({ id }: OrderArgs) => ({ data: db.orders.find((o) => o.id === id) }),
+  order: ({ id }) => ({ data: db.orders.find((o) => o.id === id) }),
   echo: () => ({ data: "Hello from the operation" }),
 };
 
@@ -98,7 +70,7 @@ const db = {
   orders: times((id) => createOrder(id), 200),
 };
 
-function createOrder(id: number, customerName?: string, address?: string) {
+function createOrder(id, customerName, address) {
   return {
     id,
     created_at: moment().format(),

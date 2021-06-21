@@ -1,7 +1,7 @@
-export function Root() {
-  const changeCount = (fn: (x: number) => void) => {};
+import { useStateValue } from "../store";
 
-  const value = 0;
+export function Root() {
+  const [value, setValue] = useStateValue("value");
 
   return (
     <div className="flex flex-col items-center">
@@ -9,13 +9,13 @@ export function Root() {
       <div className="grid grid-flow-col gap-2">
         <button
           className="px-2 border border-gray-400 bg-gray-200 shadow rounded"
-          onClick={() => changeCount((value) => value - 1)}
+          onClick={() => setValue(value - 1)}
         >
           -
         </button>
         <button
           className="px-2 border border-gray-400 bg-gray-200 shadow rounded"
-          onClick={() => changeCount((value) => value + 1)}
+          onClick={() => setValue(value + 1)}
         >
           +
         </button>

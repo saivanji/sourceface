@@ -1,21 +1,19 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { normalize } from "normalizr";
-import rootSchema, { NormalizedModule } from "./schema";
-import { createStageIndex, createValueIndex, computeSettings } from "./utils";
+import rootSchema from "./schema";
+import {
+  createStageIndex,
+  createValueIndex,
+  computeSettings,
+  populateModulesState,
+} from "./utils";
 import {
   computationsSlice,
   entitiesSlice,
   modulesSlice,
   stageIndexSlice,
+  modulesStateSlice,
   valueIndexSlice,
-} from "./slices";
-import type { Module } from "../types";
-import type {
-  EntitiesState,
-  ModulesState,
-  ComputationsState,
-  StageIndexState,
-  ValueIndexState,
 } from "./slices";
 
 // TODO: implement counter module(with state) without async operation(for now)
@@ -23,25 +21,18 @@ import type {
 // useSettings hook
 // TODO: implement displaying subsequent loading state
 
-export default function init(modules: Module[]) {
+export default function init(modules, stock) {
   /**
    * Normalizes nested modules data in the plain structure to be
    * convenient to work in state.
    */
-  const { result: moduleIds, entities } = normalize<
-    never,
-    EntitiesState,
-    ModulesState
-  >(modules, rootSchema);
+  const { result: moduleIds, entities } = normalize(modules, rootSchema);
 
   const stageIndex = createStageIndex(entities);
   const valueIndex = createValueIndex(entities);
 
-  const computations = computeSettings<unknown>(
-    stageIndex,
-    valueIndex,
-    entities
-  );
+  const computations = computeSettings(stageIndex, valueIndex, entities);
+  const modulesState = populateModulesState(moduleIds, stock, entities);
 
   return configureStore({
     reducer: {
@@ -52,6 +43,7 @@ export default function init(modules: Module[]) {
         stages: stageIndexSlice.reducer,
         values: valueIndexSlice.reducer,
       }),
+      modulesState: modulesStateSlice.reducer,
     },
     preloadedState: {
       modules: moduleIds,
@@ -61,16 +53,8 @@ export default function init(modules: Module[]) {
         stages: stageIndex,
         values: valueIndex,
       },
+      modulesState,
     },
+    devTools: true,
   });
 }
-
-export type State<M extends NormalizedModule = NormalizedModule> = {
-  modules: Module["id"][];
-  entities: EntitiesState<M>;
-  computations: ComputationsState<M>;
-  indexes: {
-    stages: StageIndexState;
-    values: ValueIndexState;
-  };
-};

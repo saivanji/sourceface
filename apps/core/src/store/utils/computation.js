@@ -1,26 +1,15 @@
 import { mapObjIndexed, path } from "ramda";
 import * as futures from "../futures";
 import { mapObj } from "./common";
-import type { Stage, Value } from "../../types";
-import type {
-  EntitiesState,
-  StageIndexState,
-  ValueIndexState,
-  NormalizedStage,
-} from "../slices";
 
 /**
  * Computes settings of all modules groupped by module id and field.
  */
-export function computeSettings<V>(
-  stageIndex: StageIndexState,
-  valueIndex: ValueIndexState,
-  entities: EntitiesState
-) {
+export function computeSettings(stageIndex, valueIndex, entities) {
   return mapObjIndexed(
     (stagesByField) =>
       mapObjIndexed(
-        (stageIds) => computeStages<V>(stageIds, valueIndex, entities),
+        (stageIds) => computeStages(stageIds, valueIndex, entities),
         stagesByField
       ),
     stageIndex
@@ -30,22 +19,15 @@ export function computeSettings<V>(
 /**
  * Compute specific setting for given stage ids.
  */
-export function computeStages<V>(
-  stageIds: Stage["id"][],
-  valueIndex: ValueIndexState,
-  entities: EntitiesState,
-  isAsync = false
-) {
+export function computeStages(stageIds, valueIndex, entities, isAsync = false) {
   /**
    * We're wrapping "computeSingleStage" function because Typescript 4.2
    * do not support calling ReturnType on a function with a generic type arguments.
    */
-  const wrapCompute = (stage: NormalizedStage) =>
-    computeSingleStage<V>(stage, valueIndex, entities, isAsync);
+  const wrapCompute = (stage) =>
+    computeSingleStage(stage, valueIndex, entities, isAsync);
 
-  type Result = ReturnType<typeof wrapCompute> | null;
-
-  return stageIds.reduce<Result>((_, stageId) => {
+  return stageIds.reduce((_, stageId) => {
     const stage = entities.stages[stageId];
     return wrapCompute(stage);
   }, null);
@@ -54,25 +36,20 @@ export function computeStages<V>(
 /**
  * Computes specific stage data
  */
-export function computeSingleStage<V>(
-  stage: NormalizedStage,
-  valueIndex: ValueIndexState,
-  entities: EntitiesState,
-  isAsync: boolean
-) {
+export function computeSingleStage(stage, valueIndex, entities, isAsync) {
   // TODO: do we need value index, since we don't use it in selectors
   const stageValueIndex = valueIndex[stage.id];
 
   if (stage.type === "value") {
     const valueId = stageValueIndex["root"];
 
-    return computeValue<V>(entities.values[valueId], isAsync);
+    return computeValue(entities.values[valueId], isAsync);
   }
 
   if (stage.type === "dictionary") {
     return mapObj((valueId) => {
       const value = entities.values[valueId];
-      return computeValue<V>(value, isAsync);
+      return computeValue(value, isAsync);
     }, stageValueIndex);
   }
 }
@@ -80,22 +57,22 @@ export function computeSingleStage<V>(
 /**
  * Computes value data.
  */
-export function computeValue<T>(value: Value, isAsync: boolean) {
+export function computeValue(value, isAsync) {
   const p = value.path || [];
 
   if (value.category === "variable/constant") {
     const data = value.payload.value;
-    return path<T>(p, data);
+    return path(p, data);
   }
 
   if (isAsync && value.category === "function/future") {
     const { execute } = futures[value.payload.kind];
 
     // TODO: pass down arguments
-    return execute<unknown>(value.references, {} as any).then((response) => {
+    return execute(value.references, {}).then((response) => {
       // TODO: how to invalidate cache at that point?
 
-      return path<T>(p, response.data);
+      return path(p, response.data);
     });
   }
 
