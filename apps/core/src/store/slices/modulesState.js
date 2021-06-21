@@ -8,11 +8,12 @@ export const modulesStateSlice = createSlice({
   reducers: {
     update(state, action) {
       const { moduleId, key, nextValue } = action.payload;
+      const prevValue = state[moduleId];
 
       /**
        * If module has no initial state defined, it might not have the record in state object.
        */
-      if (typeof state[moduleId] === "undefined") {
+      if (typeof prevValue === "undefined") {
         state[moduleId] = { [key]: nextValue };
         return;
       }

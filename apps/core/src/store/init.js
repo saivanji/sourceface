@@ -34,6 +34,17 @@ export default function init(modules, stock) {
   const computations = computeSettings(stageIndex, valueIndex, entities);
   const modulesState = populateModulesState(moduleIds, stock, entities);
 
+  const preloadedState = {
+    modules: moduleIds,
+    entities,
+    computations,
+    indexes: {
+      stages: stageIndex,
+      values: valueIndex,
+    },
+    modulesState,
+  };
+
   return configureStore({
     reducer: {
       modules: modulesSlice.reducer,
@@ -45,16 +56,7 @@ export default function init(modules, stock) {
       }),
       modulesState: modulesStateSlice.reducer,
     },
-    preloadedState: {
-      modules: moduleIds,
-      entities,
-      computations,
-      indexes: {
-        stages: stageIndex,
-        values: valueIndex,
-      },
-      modulesState,
-    },
+    preloadedState,
     devTools: true,
   });
 }

@@ -29,3 +29,11 @@ export const initialState = {
 };
 
 export const initialConfig = {};
+
+export const variables = {
+  value: {
+    selector: ({ state: [value] }) => value,
+    state: ["value"],
+    type: "Number",
+  },
+};
