@@ -6,8 +6,8 @@ import type {
   EntitiesState,
   StageIndexState,
   ValueIndexState,
+  NormalizedStage,
 } from "../slices";
-import type { NormalizedStage } from "../schema";
 
 /**
  * Computes settings of all modules groupped by module id and field.

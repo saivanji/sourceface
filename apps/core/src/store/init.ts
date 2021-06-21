@@ -1,6 +1,6 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { normalize } from "normalizr";
-import rootSchema from "./schema";
+import rootSchema, { NormalizedModule } from "./schema";
 import { createStageIndex, createValueIndex, computeSettings } from "./utils";
 import {
   computationsSlice,
@@ -10,7 +10,13 @@ import {
   valueIndexSlice,
 } from "./slices";
 import type { Module } from "../types";
-import type { EntitiesState, ModulesState } from "./slices";
+import type {
+  EntitiesState,
+  ModulesState,
+  ComputationsState,
+  StageIndexState,
+  ValueIndexState,
+} from "./slices";
 
 // TODO: implement counter module(with state) without async operation(for now)
 // TODO: learn more about Suspense and how to handle suspending in
@@ -59,4 +65,12 @@ export default function init(modules: Module[]) {
   });
 }
 
-export type State = ReturnType<ReturnType<typeof init>["getState"]>;
+export type State<M extends NormalizedModule = NormalizedModule> = {
+  modules: Module["id"][];
+  entities: EntitiesState<M>;
+  computations: ComputationsState<M>;
+  indexes: {
+    stages: StageIndexState;
+    values: ValueIndexState;
+  };
+};

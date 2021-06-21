@@ -1,16 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { Module } from "../../types";
+import type { Module, ValueOf } from "../../types";
 
-export type ComputationsState = {
+export type ComputationsState<M extends Module = Module> = {
   [moduleId: number]: {
-    [field: string]: unknown;
+    [field in keyof M["config"]]?: ValueOf<M["config"]>;
   };
 };
 
-export type PopulateSettingPayload = {
-  moduleId: Module["id"];
-  field: string;
-  data: unknown;
+export type PopulateSettingPayload<M extends Module> = {
+  moduleId: M["id"];
+  field: keyof M["config"];
+  data: ValueOf<M["config"]>;
 };
 
 const initialState: ComputationsState = {};
@@ -19,7 +19,10 @@ export const computationsSlice = createSlice({
   name: "computations",
   initialState,
   reducers: {
-    populateSetting(state, action: PayloadAction<PopulateSettingPayload>) {
+    populateSetting<M extends Module>(
+      state: ComputationsState<M>,
+      action: PayloadAction<PopulateSettingPayload<M>>
+    ) {
       const { moduleId, field, data } = action.payload;
 
       state[moduleId][field] = data;

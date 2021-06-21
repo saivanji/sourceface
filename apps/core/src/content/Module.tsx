@@ -11,8 +11,6 @@ export default function ModuleElement({ moduleId }: ModuleProps) {
   const module = useSelector((state) => getModule(state, moduleId));
   const { Root } = modulesStock[module.type];
 
-  // TODO: provide initialState and initialConfig
-
   return (
     <ModuleProvider moduleId={moduleId}>
       <div className="rounded-md border-2 border-dashed p-4 bg-white mb-3">

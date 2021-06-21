@@ -1,7 +1,11 @@
 import { mapObjIndexed, sort } from "ramda";
 import type { Module, Stage } from "../../types";
-import type { EntitiesState, StageIndexState } from "../slices";
-import type { NormalizedStage, NormalizedModule } from "../schema";
+import type {
+  EntitiesState,
+  StageIndexState,
+  NormalizedStage,
+  NormalizedModule,
+} from "../slices";
 
 /**
  * Makes indexes object for the stages, groupped by module id and field.

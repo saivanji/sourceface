@@ -2,21 +2,21 @@ export interface BaseModule {
   id: number;
   position: number;
   stages: Stage[];
-  config?: {
-    [key: string]: unknown;
-  };
   parentId?: number;
 }
 
 export interface TextModule extends BaseModule {
   type: "text";
-  config: {
+  config?: {
     content?: string;
   };
 }
 
 export interface CounterModule extends BaseModule {
   type: "counter";
+  config?: {
+    foo?: string;
+  };
 }
 
 export type Module = TextModule | CounterModule;
@@ -73,8 +73,18 @@ export type References = {
   };
 };
 
+export type Config = UnionToIntersection<Module["config"]>;
+
 /**
  * Utility types
  */
 
 export type Override<T1, T2> = Omit<T1, keyof T2> & T2;
+
+export type UnionToIntersection<T> = (
+  T extends any ? (x: T) => any : never
+) extends (x: infer R) => any
+  ? R
+  : never;
+
+export type ValueOf<T> = T[keyof T];

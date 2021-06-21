@@ -1,6 +1,6 @@
 // import { createSelector } from "reselect";
 import { isNil } from "ramda";
-import type { Module } from "../types";
+import type { Module, ValueOf } from "../types";
 import type { State } from "./init";
 
 // TODO: what if computation will be performed at selectors level, with the help of indexes?
@@ -8,28 +8,36 @@ import type { State } from "./init";
 // TODO: Keep business logic out of selectors file
 
 export const getModuleIds = (state: State) => state.modules;
-export const getModule = (state: State, moduleId: Module["id"]) =>
-  state.entities.modules[moduleId];
-export const getFieldStageIds = (
-  state: State,
-  [moduleId, field]: [Module["id"], string]
+export const getModule = <M extends Module>(
+  state: State<M>,
+  moduleId: M["id"]
+) => state.entities.modules[moduleId];
+export const getFieldStageIds = <M extends Module>(
+  state: State<M>,
+  [moduleId, field]: [M["id"], keyof M["config"]]
 ) => state.indexes.stages[moduleId][field];
 
-export const getSettingData = <T>(
-  state: State,
-  [moduleId, field]: [Module["id"], string]
+export const getSettingData = <M extends Module>(
+  state: State<M>,
+  [moduleId, field]: [M["id"], keyof M["config"]]
 ) => {
-  const module = getModule(state, moduleId);
+  const module = getModule<M>(state, moduleId);
   const stages = getFieldStageIds(state, [moduleId, field]);
 
   /**
    * No stages for that field, using config value.
    */
   if (isNil(stages) || stages.length === 0) {
-    return module.config[field] as T;
+    type Config = {
+      [k in keyof M["config"]]: ValueOf<M["config"]>;
+    };
+
+    return (module.config as Config)[field];
+
+    //     return module.config[field]
   }
 
-  return state.computations[moduleId]?.[field] as T;
+  return state.computations[moduleId]?.[field];
 
   // TODO: in case nothing got from computations, start async field computation, throw that Promise
   // and dispatch to Redux store.
