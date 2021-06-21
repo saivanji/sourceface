@@ -7,12 +7,13 @@ import { modules } from "./mocks";
 
 const rootElement = document.getElementById("root");
 
-ReactDOM.createRoot(rootElement).render(
+ReactDOM.render(
   <React.StrictMode>
     <StoreProvider modules={modules} stock={stock}>
       <div className="bg-gray-200 min-h-screen">
         <Layout />
       </div>
     </StoreProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
+  rootElement
 );

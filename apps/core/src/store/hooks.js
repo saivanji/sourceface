@@ -24,22 +24,22 @@ export function useSetting(field) {
 
   const data = useSelector((state) => getSettingData(state, [moduleId, field]));
 
-  //   // // TODO: make sure the requesting field is a Future
-  //   if (typeof data === "undefined") {
-  //     const state = store.getState();
-  //     const { entities, indexes } = state;
-  //     const stageIds = getFieldStageIds(state, [moduleId, field]);
+  // // TODO: make sure the requesting field is a Future
+  if (typeof data === "undefined") {
+    const state = store.getState();
+    const { entities, indexes } = state;
+    const stageIds = getFieldStageIds(state, [moduleId, field]);
 
-  //     const result = computeStages(stageIds, indexes.values, entities, true);
+    const result = computeStages(stageIds, indexes.values, entities, true);
 
-  //     if (result instanceof Promise) {
-  //       throw result.then((data) => {
-  //         dispatch(
-  //           computationsSlice.actions.populateSetting({ moduleId, field, data })
-  //         );
-  //       });
-  //     }
-  //   }
+    if (result instanceof Promise) {
+      throw result.then((data) => {
+        dispatch(
+          computationsSlice.actions.populateSetting({ moduleId, field, data })
+        );
+      });
+    }
+  }
 
   return data;
 }
