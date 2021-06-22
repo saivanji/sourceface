@@ -1,5 +1,7 @@
 import { mapObjIndexed, sort } from "ramda";
 
+// TODO: pass state and use selectors instead
+
 /**
  * Makes indexes object for the stages, groupped by module id and field.
  */

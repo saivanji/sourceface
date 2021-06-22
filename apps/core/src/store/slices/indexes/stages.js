@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = [];
+const initialState = {};
 
-export const modulesSlice = createSlice({
-  name: "modules",
+export default createSlice({
+  name: "indexes/stages",
   initialState,
   reducers: {},
 });

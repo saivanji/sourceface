@@ -7,20 +7,16 @@ import {
   computeSettings,
   populateModulesState,
 } from "./utils";
-import {
-  computationsSlice,
-  entitiesSlice,
-  modulesSlice,
-  stageIndexSlice,
-  modulesStateSlice,
-  valueIndexSlice,
-} from "./slices";
+import * as rootSlices from "./slices";
+import * as computationsSlices from "./slices/computations";
+import * as indexesSlices from "./slices/indexes";
+import * as modulesSlices from "./slices/modules";
 
-// TODO: add flow?
 // TODO: implement counter module(with state) without async operation(for now)
 // TODO: learn more about Suspense and how to handle suspending in
 // useSettings hook
 // TODO: implement displaying subsequent loading state
+// TODO: add flow?
 
 export default function init(modules, stock) {
   /**
@@ -39,32 +35,45 @@ export default function init(modules, stock) {
    * the function for creating these computations.
    */
   const preloadedState = {
-    modules: moduleIds,
     entities,
-    computations: {},
+    modules: {
+      ids: moduleIds,
+      state: modulesState,
+    },
+    computations: {
+      data: {},
+      stale: {},
+    },
     indexes: {
       stages: stageIndex,
       values: valueIndex,
     },
-    modulesState,
   };
 
-  const computations = computeSettings(preloadedState);
+  const computationsData = computeSettings(preloadedState);
 
   return configureStore({
     reducer: {
-      modules: modulesSlice.reducer,
-      entities: entitiesSlice.reducer,
-      computations: computationsSlice.reducer,
-      indexes: combineReducers({
-        stages: stageIndexSlice.reducer,
-        values: valueIndexSlice.reducer,
+      entities: rootSlices.entities.reducer,
+      modules: combineReducers({
+        ids: modulesSlices.ids.reducer,
+        state: modulesSlices.state.reducer,
       }),
-      modulesState: modulesStateSlice.reducer,
+      computations: combineReducers({
+        data: computationsSlices.data.reducer,
+        stale: computationsSlices.stale.reducer,
+      }),
+      indexes: combineReducers({
+        stages: indexesSlices.stages.reducer,
+        values: indexesSlices.values.reducer,
+      }),
     },
     preloadedState: {
       ...preloadedState,
-      computations,
+      computations: {
+        ...preloadedState.computations,
+        data: computationsData,
+      },
     },
     devTools: true,
   });

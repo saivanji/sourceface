@@ -1,11 +1,13 @@
 import { useContext, useCallback } from "react";
 import { useStore, useDispatch, useSelector } from "react-redux";
 import { moduleContext } from "./providers";
-import { computationsSlice, modulesStateSlice } from "./slices";
+import * as modulesSlices from "./slices/modules";
+import * as computationsSlices from "./slices/computations";
 import {
   getSettingData,
   getFieldStageIds,
   getModuleStateValue,
+  isComputationStale,
 } from "./selectors";
 import { computeStages } from "./utils";
 
@@ -23,9 +25,12 @@ export function useSetting(field) {
   }
 
   const data = useSelector((state) => getSettingData(state, [moduleId, field]));
+  const isStale = useSelector((state) =>
+    isComputationStale(state, [moduleId, field])
+  );
 
   // // TODO: make sure the requesting field is a Future
-  if (typeof data === "undefined") {
+  if (typeof data === "undefined" || isStale) {
     const state = store.getState();
     const stageIds = getFieldStageIds(state, [moduleId, field]);
 
@@ -34,7 +39,11 @@ export function useSetting(field) {
     if (result instanceof Promise) {
       throw result.then((data) => {
         dispatch(
-          computationsSlice.actions.populateSetting({ moduleId, field, data })
+          computationsSlices.data.actions.populateSetting({
+            moduleId,
+            field,
+            data,
+          })
         );
       });
     }
@@ -56,7 +65,9 @@ export function useStateValue(key) {
 
   const update = useCallback(
     (nextValue) => {
-      dispatch(modulesStateSlice.actions.update({ moduleId, key, nextValue }));
+      dispatch(
+        modulesSlices.state.actions.update({ moduleId, key, nextValue })
+      );
     },
     [moduleId, key, dispatch]
   );

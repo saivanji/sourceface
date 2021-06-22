@@ -7,7 +7,7 @@ const initialState = {
   values: {},
 };
 
-export const entitiesSlice = createSlice({
+export default createSlice({
   name: "entities",
   initialState,
   reducers: {},

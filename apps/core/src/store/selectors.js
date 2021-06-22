@@ -7,7 +7,7 @@ import { isNil } from "ramda";
 /**
  * Returns all module ids of the page.
  */
-export const getModuleIds = (state) => state.modules;
+export const getModuleIds = (state) => state.modules.ids;
 
 /**
  * Returns module by it's id.
@@ -38,13 +38,17 @@ export const getSettingData = (state, [moduleId, field]) => {
     return module.config[field];
   }
 
-  return state.computations[moduleId]?.[field];
+  return state.computations.data[moduleId]?.[field];
 
   // TODO: in case nothing got from computations, start async field computation, throw that Promise
   // and dispatch to Redux store.
   //
   // Try creating custom middleware(which takes dispatched Promise and updates state accordingly
   // after it resolves) instead of redux-saga first
+};
+
+export const isComputationStale = (state, [moduleId, field]) => {
+  return Boolean(state.computations.stale[moduleId]?.[field]);
 };
 
 /**
@@ -68,4 +72,4 @@ export const getStageValueIndex = (state, stageId) =>
  * Returns module state value for the key.
  */
 export const getModuleStateValue = (state, [moduleId, key]) =>
-  state.modulesState[moduleId]?.[key];
+  state.modules.state[moduleId]?.[key];

@@ -10,9 +10,7 @@ import {
 } from "../selectors";
 import { mapObj } from "./common";
 
-// TODO: provide state instead of entities, indexes etc
-// use selectors for selecting state data
-
+// TODO: do not return empty object if no stage index or computations data created
 /**
  * Computes settings of all modules groupped by module id and field.
  */

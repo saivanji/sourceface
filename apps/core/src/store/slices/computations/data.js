@@ -2,8 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {};
 
-export const computationsSlice = createSlice({
-  name: "computations",
+export default createSlice({
+  name: "computations/data",
   initialState,
   reducers: {
     populateSetting(state, action) {
