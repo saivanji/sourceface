@@ -16,6 +16,7 @@ import {
   valueIndexSlice,
 } from "./slices";
 
+// TODO: add flow?
 // TODO: implement counter module(with state) without async operation(for now)
 // TODO: learn more about Suspense and how to handle suspending in
 // useSettings hook
@@ -31,19 +32,24 @@ export default function init(modules, stock) {
   const stageIndex = createStageIndex(entities);
   const valueIndex = createValueIndex(entities);
 
-  const computations = computeSettings(stageIndex, valueIndex, entities);
   const modulesState = populateModulesState(moduleIds, stock, entities);
 
+  /**
+   * Constructing initial state without computation, so we can pass it to
+   * the function for creating these computations.
+   */
   const preloadedState = {
     modules: moduleIds,
     entities,
-    computations,
+    computations: {},
     indexes: {
       stages: stageIndex,
       values: valueIndex,
     },
     modulesState,
   };
+
+  const computations = computeSettings(preloadedState);
 
   return configureStore({
     reducer: {
@@ -56,7 +62,10 @@ export default function init(modules, stock) {
       }),
       modulesState: modulesStateSlice.reducer,
     },
-    preloadedState,
+    preloadedState: {
+      ...preloadedState,
+      computations,
+    },
     devTools: true,
   });
 }

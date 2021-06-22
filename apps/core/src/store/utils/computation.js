@@ -1,5 +1,13 @@
 import { mapObjIndexed, path } from "ramda";
 import * as futures from "../futures";
+import {
+  getStageValueIndex,
+  getStageIndex,
+  getStage,
+  getValue,
+  getModule,
+  getModuleStateValue,
+} from "../selectors";
 import { mapObj } from "./common";
 
 // TODO: provide state instead of entities, indexes etc
@@ -8,51 +16,42 @@ import { mapObj } from "./common";
 /**
  * Computes settings of all modules groupped by module id and field.
  */
-export function computeSettings(stageIndex, valueIndex, entities) {
+export function computeSettings(state) {
   return mapObjIndexed(
     (stagesByField) =>
       mapObjIndexed(
-        (stageIds) => computeStages(stageIds, valueIndex, entities),
+        (stageIds) => computeStages(stageIds, state),
         stagesByField
       ),
-    stageIndex
+    getStageIndex(state)
   );
 }
 
 /**
  * Compute specific setting for given stage ids.
  */
-export function computeStages(stageIds, valueIndex, entities, isAsync = false) {
-  /**
-   * We're wrapping "computeSingleStage" function because Typescript 4.2
-   * do not support calling ReturnType on a function with a generic type arguments.
-   */
-  const wrapCompute = (stage) =>
-    computeSingleStage(stage, valueIndex, entities, isAsync);
-
+export function computeStages(stageIds, state, isAsync = false) {
   return stageIds.reduce((_, stageId) => {
-    const stage = entities.stages[stageId];
-    return wrapCompute(stage);
+    return computeSingleStage(stageId, state, isAsync);
   }, null);
 }
 
 /**
  * Computes specific stage data
  */
-export function computeSingleStage(stage, valueIndex, entities, isAsync) {
+export function computeSingleStage(stageId, state, isAsync) {
+  const stage = getStage(state, stageId);
   // TODO: do we need value index, since we don't use it in selectors
-  const stageValueIndex = valueIndex[stage.id];
+  const stageValueIndex = getStageValueIndex(state, stage.id);
 
   if (stage.type === "value") {
     const valueId = stageValueIndex["root"];
-
-    return computeValue(entities.values[valueId], isAsync);
+    return computeValue(valueId, state, isAsync);
   }
 
   if (stage.type === "dictionary") {
     return mapObj((valueId) => {
-      const value = entities.values[valueId];
-      return computeValue(value, isAsync);
+      return computeValue(valueId, state, isAsync);
     }, stageValueIndex);
   }
 }
@@ -60,7 +59,8 @@ export function computeSingleStage(stage, valueIndex, entities, isAsync) {
 /**
  * Computes value data.
  */
-export function computeValue(value, isAsync) {
+export function computeValue(valueId, state, isAsync) {
+  const value = getValue(state, valueId);
   const p = value.path || [];
 
   if (value.category === "variable/constant") {
@@ -70,10 +70,9 @@ export function computeValue(value, isAsync) {
 
   if (value.category === "variable/module") {
     const stock = {};
-    const state = {};
 
     const { property } = value.payload;
-    const module = state.entities.modules[value.references.module];
+    const module = getModule(state, value.references.module);
     const definition = stock[module.type][property];
     const data = applyVariableSelector(state, module, definition);
 
@@ -106,7 +105,9 @@ export function applyVariableSelector(
   { selector, state: moduleState = [] }
 ) {
   const input = {
-    state: moduleState.map((key) => state.modulesState[module.id][key]),
+    state: moduleState.map((key) =>
+      getModuleStateValue(state, [module.id, key])
+    ),
   };
 
   return selector(input);

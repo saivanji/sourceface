@@ -15,16 +15,14 @@ export const getModuleIds = (state) => state.modules;
 export const getModule = (state, moduleId) => state.entities.modules[moduleId];
 
 /**
- * Returns stage ids of a module from the index.
+ * Returns stage by it's id
  */
-export const getFieldStageIds = (state, [moduleId, field]) =>
-  state.indexes.stages[moduleId][field];
+export const getStage = (state, stageId) => state.entities.stages[stageId];
 
 /**
- * Returns module state value for the key.
+ * Returns value by it's id
  */
-export const getModuleStateValue = (state, [moduleId, key]) =>
-  state.modulesState[moduleId]?.[key];
+export const getValue = (state, valueId) => state.entities.values[valueId];
 
 /**
  * Returns calculated setting data for the specific module field.
@@ -48,3 +46,26 @@ export const getSettingData = (state, [moduleId, field]) => {
   // Try creating custom middleware(which takes dispatched Promise and updates state accordingly
   // after it resolves) instead of redux-saga first
 };
+
+/**
+ * Returns stage ids of a module from the index.
+ */
+export const getFieldStageIds = (state, [moduleId, field]) =>
+  state.indexes.stages[moduleId][field];
+
+/**
+ * Returns index of stages groupped by module id and field.
+ */
+export const getStageIndex = (state) => state.indexes.stages;
+
+/**
+ * Returns index of stage values groupped by value name.
+ */
+export const getStageValueIndex = (state, stageId) =>
+  state.indexes.values[stageId];
+
+/**
+ * Returns module state value for the key.
+ */
+export const getModuleStateValue = (state, [moduleId, key]) =>
+  state.modulesState[moduleId]?.[key];
