@@ -1,6 +1,11 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import {
+  configureStore,
+  combineReducers,
+  getDefaultMiddleware,
+} from "@reduxjs/toolkit";
 import { normalize } from "normalizr";
 import rootSchema from "./schema";
+import { invalidation } from "./middlewares";
 import {
   createStageIndex,
   createValueIndex,
@@ -19,6 +24,12 @@ import * as modulesSlices from "./slices/modules";
 // TODO: add flow?
 
 export default function init(modules, stock) {
+  const defaultMiddleware = getDefaultMiddleware({
+    immutableCheck: true,
+    serializableCheck: true,
+    thunk: false,
+  });
+
   /**
    * Normalizes nested modules data in the plain structure to be
    * convenient to work in state.
@@ -75,6 +86,7 @@ export default function init(modules, stock) {
         data: computationsData,
       },
     },
+    middleware: [...defaultMiddleware, invalidation],
     devTools: true,
   });
 }
