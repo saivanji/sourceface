@@ -24,11 +24,15 @@ export const modules = [
           {
             id: 402,
             name: "root",
-            category: "variable/constant",
+            category: "variable/module",
             payload: {
-              value: "foo",
+              property: "value",
             },
-            references: {},
+            references: {
+              modules: {
+                module: 813,
+              },
+            },
           },
         ],
       },

@@ -14,11 +14,11 @@ import { mapObj } from "./common";
 /**
  * Computes settings of all modules groupped by module id and field.
  */
-export function computeSettings(state) {
+export function computeSettings(state, stock) {
   return mapObjIndexed(
     (stagesByField) =>
       mapObjIndexed(
-        (stageIds) => computeStages(stageIds, state),
+        (stageIds) => computeStages(stageIds, state, stock),
         stagesByField
       ),
     getStageIndex(state)
@@ -28,28 +28,28 @@ export function computeSettings(state) {
 /**
  * Compute specific setting for given stage ids.
  */
-export function computeStages(stageIds, state, isAsync = false) {
+export function computeStages(stageIds, state, stock, isAsync = false) {
   return stageIds.reduce((_, stageId) => {
-    return computeSingleStage(stageId, state, isAsync);
+    return computeSingleStage(stageId, state, stock, isAsync);
   }, null);
 }
 
 /**
  * Computes specific stage data
  */
-export function computeSingleStage(stageId, state, isAsync) {
+export function computeSingleStage(stageId, state, stock, isAsync) {
   const stage = getStage(state, stageId);
   // TODO: do we need value index, since we don't use it in selectors
   const stageValueIndex = getStageValueIndex(state, stage.id);
 
   if (stage.type === "value") {
     const valueId = stageValueIndex["root"];
-    return computeValue(valueId, state, isAsync);
+    return computeValue(valueId, state, stock, isAsync);
   }
 
   if (stage.type === "dictionary") {
     return mapObj((valueId) => {
-      return computeValue(valueId, state, isAsync);
+      return computeValue(valueId, state, stock, isAsync);
     }, stageValueIndex);
   }
 }
@@ -57,7 +57,7 @@ export function computeSingleStage(stageId, state, isAsync) {
 /**
  * Computes value data.
  */
-export function computeValue(valueId, state, isAsync) {
+export function computeValue(valueId, state, stock, isAsync) {
   const value = getValue(state, valueId);
   const p = value.path || [];
 
@@ -67,11 +67,9 @@ export function computeValue(valueId, state, isAsync) {
   }
 
   if (value.category === "variable/module") {
-    const stock = {};
-
     const { property } = value.payload;
-    const module = getModule(state, value.references.module);
-    const definition = stock[module.type][property];
+    const module = getModule(state, value.references.modules.module);
+    const definition = stock[module.type].variables[property];
     const data = applyVariableSelector(state, module, definition);
 
     return path(p, data);

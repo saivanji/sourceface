@@ -50,7 +50,7 @@ export default function init(modules, stock) {
     },
   };
 
-  const computationsData = computeSettings(preloadedState);
+  const computationsData = computeSettings(preloadedState, stock);
 
   return configureStore({
     reducer: {

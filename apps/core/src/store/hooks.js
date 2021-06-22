@@ -1,6 +1,6 @@
 import { useContext, useCallback } from "react";
 import { useStore, useDispatch, useSelector } from "react-redux";
-import { moduleContext } from "./providers";
+import { moduleContext, stockContext } from "./providers";
 import * as modulesSlices from "./slices/modules";
 import * as computationsSlices from "./slices/computations";
 import {
@@ -16,6 +16,7 @@ export function useSetting(field) {
   const store = useStore();
   const dispatch = useDispatch();
   const moduleId = useContext(moduleContext);
+  const stock = useContext(stockContext);
 
   /**
    * Making sure we use the hook only inside of a module.
@@ -33,8 +34,7 @@ export function useSetting(field) {
   if (typeof data === "undefined" || isStale) {
     const state = store.getState();
     const stageIds = getFieldStageIds(state, [moduleId, field]);
-
-    const result = computeStages(stageIds, state, true);
+    const result = computeStages(stageIds, state, stock, true);
 
     if (result instanceof Promise) {
       throw result.then((data) => {
