@@ -60,7 +60,10 @@ export default function init(modules, stock) {
       // Mock
       dependencies: {
         813: {
-          value: [{ moduleId: 109, fields: ["content"] }],
+          value: [
+            { moduleId: 109, fields: ["content"] },
+            { moduleId: 452, fields: ["content"] },
+          ],
         },
       },
       stages: stageIndex,
