@@ -73,3 +73,9 @@ export const getStageValueIndex = (state, stageId) =>
  */
 export const getModuleStateValue = (state, [moduleId, key]) =>
   state.modules.state[moduleId]?.[key];
+
+/**
+ * Returns the modules list, which depend on the module state field.
+ */
+export const getModuleStateDependencies = (state, [moduleId, key]) =>
+  state.indexes.dependencies[moduleId][key];

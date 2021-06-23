@@ -1,5 +1,5 @@
 import { useContext, useCallback } from "react";
-import { useStore, useDispatch, useSelector } from "react-redux";
+import { useStore, useSelector } from "react-redux";
 import { moduleContext, stockContext } from "./providers";
 import * as modulesSlices from "./slices/modules";
 import * as computationsSlices from "./slices/computations";
@@ -7,6 +7,7 @@ import {
   getSettingData,
   getFieldStageIds,
   getModuleStateValue,
+  getModuleStateDependencies,
   isComputationStale,
 } from "./selectors";
 import { computeStages } from "./utils";
@@ -14,7 +15,6 @@ import { computeStages } from "./utils";
 // TODO: might provide "defaultValue" as a second argument
 export function useSetting(field) {
   const store = useStore();
-  const dispatch = useDispatch();
   const moduleId = useContext(moduleContext);
   const stock = useContext(stockContext);
 
@@ -30,15 +30,15 @@ export function useSetting(field) {
     isComputationStale(state, [moduleId, field])
   );
 
-  // // TODO: make sure the requesting field is a Future
+  // TODO: make sure the requesting field is a Future
   if (typeof data === "undefined" || isStale) {
     const state = store.getState();
     const stageIds = getFieldStageIds(state, [moduleId, field]);
-    const result = computeStages(stageIds, state, stock, true);
+    const result = computeStages(stageIds, state, stock);
 
     if (result instanceof Promise) {
       throw result.then((data) => {
-        dispatch(
+        store.dispatch(
           computationsSlices.data.actions.populateSetting({
             moduleId,
             field,
@@ -57,7 +57,7 @@ export function useSetting(field) {
  */
 export function useStateValue(key) {
   const moduleId = useContext(moduleContext);
-  const dispatch = useDispatch();
+  const store = useStore();
 
   const value = useSelector((state) =>
     getModuleStateValue(state, [moduleId, key])
@@ -65,11 +65,19 @@ export function useStateValue(key) {
 
   const update = useCallback(
     (nextValue) => {
-      dispatch(
-        modulesSlices.state.actions.update({ moduleId, key, nextValue })
+      const state = store.getState();
+      const dependencies = getModuleStateDependencies(state, [moduleId, key]);
+
+      store.dispatch(
+        modulesSlices.state.actions.update({
+          moduleId,
+          key,
+          nextValue,
+          dependencies,
+        })
       );
     },
-    [moduleId, key, dispatch]
+    [moduleId, key, store]
   );
 
   return [value, update];

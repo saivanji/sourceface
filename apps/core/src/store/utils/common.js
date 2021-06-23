@@ -29,3 +29,17 @@ export function zipRecord(keys, values, debug) {
 
   return zipObj(keys, values);
 }
+
+/**
+ * Safely mutates given object at 2 level nested path.
+ */
+export function assocMutable(obj, [key1, key2], value) {
+  if (!obj[key1]) {
+    obj[key1] = {
+      [key2]: value,
+    };
+    return;
+  }
+
+  obj[key1][key2] = value;
+}

@@ -5,17 +5,17 @@ import {
 } from "@reduxjs/toolkit";
 import { normalize } from "normalizr";
 import rootSchema from "./schema";
-import { invalidation } from "./middlewares";
 import {
   createStageIndex,
   createValueIndex,
-  computeSettings,
+  pureComputeSettings,
   populateModulesState,
 } from "./utils";
 import * as rootSlices from "./slices";
-import * as computationsSlices from "./slices/computations";
 import * as indexesSlices from "./slices/indexes";
 import * as modulesSlices from "./slices/modules";
+import * as computationsSlices from "./slices/computations";
+import { createRootReducer } from "./reducers";
 
 // TODO: implement counter module(with state) without async operation(for now)
 // TODO: learn more about Suspense and how to handle suspending in
@@ -51,20 +51,27 @@ export default function init(modules, stock) {
       ids: moduleIds,
       state: modulesState,
     },
+    // TODO: rename to "settings"?
     computations: {
       data: {},
       stale: {},
     },
     indexes: {
+      // Mock
+      dependencies: {
+        813: {
+          value: [{ moduleId: 109, fields: ["content"] }],
+        },
+      },
       stages: stageIndex,
       values: valueIndex,
     },
   };
 
-  const computationsData = computeSettings(preloadedState, stock);
+  const computationsData = pureComputeSettings(preloadedState, stock);
 
   return configureStore({
-    reducer: {
+    reducer: createRootReducer(stock, {
       entities: rootSlices.entities.reducer,
       modules: combineReducers({
         ids: modulesSlices.ids.reducer,
@@ -75,10 +82,11 @@ export default function init(modules, stock) {
         stale: computationsSlices.stale.reducer,
       }),
       indexes: combineReducers({
+        dependencies: indexesSlices.dependencies.reducer,
         stages: indexesSlices.stages.reducer,
         values: indexesSlices.values.reducer,
       }),
-    },
+    }),
     preloadedState: {
       ...preloadedState,
       computations: {
@@ -86,7 +94,7 @@ export default function init(modules, stock) {
         data: computationsData,
       },
     },
-    middleware: [...defaultMiddleware, invalidation],
+    middleware: defaultMiddleware,
     devTools: true,
   });
 }
