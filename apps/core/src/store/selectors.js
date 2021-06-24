@@ -10,9 +10,18 @@ import { isNil } from "ramda";
 export const getModuleIds = (state) => state.modules.ids;
 
 /**
+ * Returns object of all available modules
+ */
+export const getModulesEntities = (state) => state.entities.modules;
+
+/**
  * Returns module by it's id.
  */
-export const getModule = (state, moduleId) => state.entities.modules[moduleId];
+export const getModule = (state, moduleId) => {
+  const modules = getModulesEntities(state);
+
+  return modules[moduleId];
+};
 
 /**
  * Returns stage by it's id
@@ -23,6 +32,12 @@ export const getStage = (state, stageId) => state.entities.stages[stageId];
  * Returns value by it's id
  */
 export const getValue = (state, valueId) => state.entities.values[valueId];
+
+export const getFieldStageIds = (state, [moduleId, field]) => {
+  const module = getModule(state, moduleId);
+
+  return module.fields?.[field];
+};
 
 /**
  * Returns calculated setting data for the specific module field.
@@ -52,23 +67,6 @@ export const isComputationStale = (state, [moduleId, field]) => {
 };
 
 /**
- * Returns stage ids of a module from the index.
- */
-export const getFieldStageIds = (state, [moduleId, field]) =>
-  state.indexes.stages[moduleId][field];
-
-/**
- * Returns index of stages groupped by module id and field.
- */
-export const getStageIndex = (state) => state.indexes.stages;
-
-/**
- * Returns index of stage values groupped by value name.
- */
-export const getStageValueIndex = (state, stageId) =>
-  state.indexes.values[stageId];
-
-/**
  * Returns module state value for the key.
  */
 export const getModuleStateValue = (state, [moduleId, key]) =>
@@ -78,4 +76,4 @@ export const getModuleStateValue = (state, [moduleId, key]) =>
  * Returns the modules list, which depend on the module state field.
  */
 export const getModuleStateDependencies = (state, [moduleId, key]) =>
-  state.indexes.dependencies[moduleId][key];
+  state.dependencies[moduleId][key];

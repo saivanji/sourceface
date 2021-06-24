@@ -1,18 +1,11 @@
+import { keys } from "ramda";
 import {
   configureStore,
   combineReducers,
   getDefaultMiddleware,
 } from "@reduxjs/toolkit";
-import { normalize } from "normalizr";
-import rootSchema from "./schema";
-import {
-  createStageIndex,
-  createValueIndex,
-  pureComputeSettings,
-  populateModulesState,
-} from "./utils";
+import { pureComputeSettings, populateModulesState } from "./utils";
 import * as rootSlices from "./slices";
-import * as indexesSlices from "./slices/indexes";
 import * as modulesSlices from "./slices/modules";
 import * as computationsSlices from "./slices/computations";
 import { createRootReducer } from "./reducers";
@@ -21,24 +14,15 @@ import { createRootReducer } from "./reducers";
 // TODO: learn more about Suspense and how to handle suspending in
 // useSettings hook
 // TODO: implement displaying subsequent loading state
-// TODO: add flow?
 
-export default function init(modules, stock) {
+export default function init(entities, stock) {
   const defaultMiddleware = getDefaultMiddleware({
     immutableCheck: true,
     serializableCheck: true,
     thunk: false,
   });
 
-  /**
-   * Normalizes nested modules data in the plain structure to be
-   * convenient to work in state.
-   */
-  const { result: moduleIds, entities } = normalize(modules, rootSchema);
-
-  const stageIndex = createStageIndex(entities);
-  const valueIndex = createValueIndex(entities);
-
+  const moduleIds = keys(entities.modules);
   const modulesState = populateModulesState(moduleIds, stock, entities);
 
   /**
@@ -56,18 +40,11 @@ export default function init(modules, stock) {
       data: {},
       stale: {},
     },
-    indexes: {
-      // Mock
-      dependencies: {
-        813: {
-          value: [
-            { moduleId: 109, fields: ["content"] },
-            { moduleId: 452, fields: ["content"] },
-          ],
-        },
+    // Mock
+    dependencies: {
+      813: {
+        value: [{ moduleId: 109, fields: ["content"] }],
       },
-      stages: stageIndex,
-      values: valueIndex,
     },
   };
 
@@ -84,11 +61,7 @@ export default function init(modules, stock) {
         data: computationsSlices.data.reducer,
         stale: computationsSlices.stale.reducer,
       }),
-      indexes: combineReducers({
-        dependencies: indexesSlices.dependencies.reducer,
-        stages: indexesSlices.stages.reducer,
-        values: indexesSlices.values.reducer,
-      }),
+      dependencies: rootSlices.dependencies.reducer,
     }),
     preloadedState: {
       ...preloadedState,

@@ -4,10 +4,10 @@ import init from "../init";
 
 export const stockContext = createContext(null);
 
-export default function StoreProvider({ children, modules, stock }) {
+export default function StoreProvider({ children, data, stock }) {
   // TODO: since "core" will be exported as a library, keep in mind behavior of
   // the store creation on parent component re-render.
-  const store = init(modules, stock);
+  const store = init(data, stock);
 
   return (
     <stockContext.Provider value={stock}>

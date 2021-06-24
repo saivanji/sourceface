@@ -1,3 +1,75 @@
+export const data = {
+  modules: {
+    832: {
+      position: 0,
+      type: "text",
+      config: {
+        content: "Hello world",
+      },
+    },
+    109: {
+      position: 1,
+      type: "text",
+      // TODO: have better name similar to "computations", "dynamic", "calcs" etc
+      fields: {
+        content: [1935],
+      },
+    },
+    452: {
+      position: 2,
+      type: "text",
+      fields: {
+        content: [792],
+      },
+    },
+    813: {
+      position: 3,
+      type: "counter",
+    },
+  },
+  stages: {
+    1935: {
+      order: 0,
+      name: "stage_1",
+      type: "value",
+      values: {
+        root: 402,
+      },
+    },
+    792: {
+      order: 0,
+      name: "stage_1",
+      type: "value",
+      values: {
+        root: 514,
+      },
+    },
+  },
+  values: {
+    402: {
+      id: 402,
+      category: "variable/module",
+      payload: {
+        property: "value",
+      },
+      references: {
+        modules: {
+          module: 813,
+        },
+      },
+    },
+    514: {
+      category: "function/future",
+      payload: { kind: "operation" },
+      references: {
+        operations: {
+          root: 6,
+        },
+      },
+    },
+  },
+};
+
 export const modules = [
   {
     id: 832,

@@ -1,11 +1,10 @@
-import { mapObjIndexed, path } from "ramda";
+import { mapObjIndexed, path, keys } from "ramda";
 import * as futures from "../futures";
 import {
-  getStageValueIndex,
-  getStageIndex,
   getStage,
   getValue,
   getModule,
+  getModulesEntities,
   getModuleStateValue,
 } from "../selectors";
 import { ImpureComputation } from "../exceptions";
@@ -17,7 +16,7 @@ import { mapObj } from "./common";
  */
 export function pureComputeSettings(state, stock) {
   return mapObjIndexed(
-    (stagesByField) =>
+    (module) =>
       mapObjIndexed((stageIds) => {
         try {
           return computeStages(stageIds, state, stock, true);
@@ -36,8 +35,8 @@ export function pureComputeSettings(state, stock) {
 
           throw err;
         }
-      }, stagesByField),
-    getStageIndex(state)
+      }, module.fields),
+    getModulesEntities(state)
   );
 }
 
@@ -55,18 +54,16 @@ export function computeStages(stageIds, state, stock, pure = false) {
  */
 export function computeSingleStage(stageId, state, stock, pure) {
   const stage = getStage(state, stageId);
-  // TODO: do we need value index, since we don't use it in selectors
-  const stageValueIndex = getStageValueIndex(state, stage.id);
 
   if (stage.type === "value") {
-    const valueId = stageValueIndex["root"];
+    const valueId = stage.values.root;
     return computeValue(valueId, state, stock, pure);
   }
 
   if (stage.type === "dictionary") {
     return mapObj((valueId) => {
       return computeValue(valueId, state, stock, pure);
-    }, stageValueIndex);
+    }, stage.values);
   }
 }
 
@@ -96,15 +93,14 @@ export function computeValue(valueId, state, stock, pure) {
 
   if (value.category === "variable/module") {
     const { property } = value.payload;
-    const module = getModule(state, value.references.modules.module);
+    const moduleId = value.references.modules.module;
+    const module = getModule(state, moduleId);
     const definition = stock[module.type].variables[property];
-    const data = applyVariableSelector(state, module, definition);
+    const data = applyVariableSelector(state, moduleId, definition);
 
     return path(p, data);
   }
 
-  // TODO: consider throwing an error in case pure = true for the future so
-  // we can omit calculating that field in pure mode.
   if (!pure && value.category === "function/future") {
     const { execute } = futures[value.payload.kind];
 
@@ -127,12 +123,12 @@ export function computeValue(valueId, state, stock, pure) {
  */
 export function applyVariableSelector(
   state,
-  module,
+  moduleId,
   { selector, state: moduleState = [] }
 ) {
   const input = {
     state: moduleState.map((key) =>
-      getModuleStateValue(state, [module.id, key])
+      getModuleStateValue(state, [moduleId, key])
     ),
   };
 
