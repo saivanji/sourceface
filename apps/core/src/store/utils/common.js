@@ -7,6 +7,7 @@ import { keys, zipObj } from "ramda";
  * When "debug" parameter is provided, every resulting key/value pair
  * is given as argument to that function.
  */
+// TODO: use "for in" for the traversal
 export function mapObj(fn, obj, debug) {
   const fields = keys(obj);
   const out = fields.map((x) => fn(obj[x]));
@@ -42,4 +43,28 @@ export function assocMutable(obj, [key1, key2], value) {
   }
 
   obj[key1][key2] = value;
+}
+
+/**
+ * Maps over given object and skips the fields where supplied function
+ * returned undefined.
+ */
+export function cleanMapObj(fn, obj) {
+  let result;
+
+  for (let key in obj) {
+    const data = fn(obj[key]);
+
+    if (typeof data !== "undefined") {
+      if (!result) {
+        result = {
+          [key]: data,
+        };
+      } else {
+        result[key] = data;
+      }
+    }
+  }
+
+  return result;
 }

@@ -4,7 +4,11 @@ import {
   combineReducers,
   getDefaultMiddleware,
 } from "@reduxjs/toolkit";
-import { pureComputeSettings, populateModulesState } from "./utils";
+import {
+  populateComputations,
+  populateModulesState,
+  populateDependencies,
+} from "./utils";
 import * as rootSlices from "./slices";
 import * as modulesSlices from "./slices/modules";
 import * as computationsSlices from "./slices/computations";
@@ -14,6 +18,9 @@ import { createRootReducer } from "./reducers";
 // TODO: learn more about Suspense and how to handle suspending in
 // useSettings hook
 // TODO: implement displaying subsequent loading state
+// TODO: have index of module ids groupped by parent id
+// TODO: google for "data structures" in js to get inspiration on how to better structure
+// state
 
 export default function init(entities, stock) {
   const defaultMiddleware = getDefaultMiddleware({
@@ -22,8 +29,11 @@ export default function init(entities, stock) {
     thunk: false,
   });
 
+  // TODO: remove in favor of groupped index
   const moduleIds = keys(entities.modules);
-  const modulesState = populateModulesState(moduleIds, stock, entities);
+
+  const modulesState = populateModulesState(stock, entities);
+  const dependencies = populateDependencies(stock, entities);
 
   /**
    * Constructing initial state without computation, so we can pass it to
@@ -32,6 +42,7 @@ export default function init(entities, stock) {
   const preloadedState = {
     entities,
     modules: {
+      // TODO: replace by groupped by parent module index
       ids: moduleIds,
       state: modulesState,
     },
@@ -40,15 +51,10 @@ export default function init(entities, stock) {
       data: {},
       stale: {},
     },
-    // Mock
-    dependencies: {
-      813: {
-        value: [{ moduleId: 109, fields: ["content"] }],
-      },
-    },
+    dependencies,
   };
 
-  const computationsData = pureComputeSettings(preloadedState, stock);
+  const computationsData = populateComputations(preloadedState, stock);
 
   return configureStore({
     reducer: createRootReducer(stock, {

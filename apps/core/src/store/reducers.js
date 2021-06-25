@@ -1,4 +1,5 @@
 import produce from "immer";
+import { toPairs } from "ramda";
 import { combineReducers } from "@reduxjs/toolkit";
 import * as modulesSlices from "./slices/modules";
 import { computeStages, assocMutable } from "./utils";
@@ -37,7 +38,7 @@ const createDependeciesReducer = (stock) =>
      * When module state is updated, traversing over that state dependent modules
      * and their fields to either compute the data or mark them as stale.
      */
-    for (let { moduleId, fields } of dependencies) {
+    for (let [moduleId, fields] of toPairs(dependencies)) {
       for (let field of fields) {
         const stageIds = getFieldStageIds(state, [moduleId, field]);
 

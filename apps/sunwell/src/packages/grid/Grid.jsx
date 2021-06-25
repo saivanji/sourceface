@@ -30,7 +30,12 @@ const Grid = forwardRef(function Grid(
     rows = 10,
     rowHeight = 20,
     isStatic,
+    // TODO: accept "keys" prop, if provided, we'll map over them instead of calling Object.keys, for the
+    // performance reasons.
+    // TODO: layout should be provided as: {[moduleId]: Position} without providing data, since it can be
+    // accessed independently
     layout: initialLayout,
+    // TODO: do not pass "data" to render item, data will be retrieved via redux selector by the given id
     renderItem,
     onChange,
     components = {},

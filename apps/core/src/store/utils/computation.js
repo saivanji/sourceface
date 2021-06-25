@@ -1,44 +1,13 @@
-import { mapObjIndexed, path, keys } from "ramda";
+import { path } from "ramda";
 import * as futures from "../futures";
 import {
   getStage,
   getValue,
   getModule,
-  getModulesEntities,
   getModuleStateValue,
 } from "../selectors";
 import { ImpureComputation } from "../exceptions";
 import { mapObj } from "./common";
-
-// TODO: do not return empty object if no stage index or computations data created
-/**
- * Computes settings of all modules groupped by module id and field.
- */
-export function pureComputeSettings(state, stock) {
-  return mapObjIndexed(
-    (module) =>
-      mapObjIndexed((stageIds) => {
-        try {
-          return computeStages(stageIds, state, stock, true);
-        } catch (err) {
-          /**
-           * We do not expect impured function to be called when we perform
-           * computation in pure mode.
-           *
-           * Returning "undefined" for the impure setting computation so it won't
-           * get populated in the state. Therefore that computation will be performed
-           * from the component.
-           */
-          if (err instanceof ImpureComputation) {
-            return undefined;
-          }
-
-          throw err;
-        }
-      }, module.fields),
-    getModulesEntities(state)
-  );
-}
 
 /**
  * Compute specific setting for given stage ids.
