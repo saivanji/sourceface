@@ -3,7 +3,6 @@ import { toPairs } from "ramda";
 import { combineReducers } from "@reduxjs/toolkit";
 import * as modulesSlices from "./slices/modules";
 import { computeStages, set } from "./utils";
-import { getFieldStageIds } from "./selectors";
 import { ImpureComputation } from "./exceptions";
 
 const initialState = {};
@@ -40,15 +39,13 @@ const createDependeciesReducer = (stock) =>
      */
     for (let [moduleId, fields] of toPairs(dependencies)) {
       for (let field of fields) {
-        const stageIds = getFieldStageIds(state, [moduleId, field]);
-
         try {
           /**
            * Computing stages of a specific setting. Making computation pure
            * by passing "true" as the last argument, since no side-effects
            * can be possible when calculating next state inside of a reducer.
            */
-          const data = computeStages(stageIds, state, stock, true);
+          const data = computeStages(moduleId, field, state, stock, true);
 
           set(dataState, [moduleId, field], data);
         } catch (err) {

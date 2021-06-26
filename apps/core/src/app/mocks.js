@@ -33,6 +33,13 @@ export const data = {
         content: [248],
       },
     },
+    931: {
+      position: 5,
+      type: "button",
+      config: {
+        text: "Create order",
+      },
+    },
   },
   stages: {
     1935: {

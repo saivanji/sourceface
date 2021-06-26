@@ -13,7 +13,9 @@ import { mapObjectAsync, reduceAsync, pathAsync, mapAsync } from "./common";
 /**
  * Compute specific setting for given stage ids.
  */
-export function computeStages(stageIds, state, stock, pure = false) {
+export function computeStages(moduleId, field, state, stock, pure = false) {
+  const stageIds = getFieldStageIds(state, [moduleId, field]);
+
   return reduceAsync(
     (_, stageId) => computeSingleStage(stageId, state, stock, pure),
     null,
@@ -105,9 +107,7 @@ export function computeSelector(moduleId, definition, state, stock, pure) {
       return cached;
     }
 
-    const stageIds = getFieldStageIds(state, [moduleId, field]);
-
-    return computeStages(stageIds, state, stock, pure);
+    return computeStages(moduleId, field, state, stock, pure);
   }, settings);
 
   const resultState = moduleState?.map((key) =>

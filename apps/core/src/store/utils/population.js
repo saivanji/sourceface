@@ -11,10 +11,10 @@ export function populateComputations(state, stock) {
   const modules = getModulesEntities(state);
 
   return cleanMapObj(
-    (module) =>
-      cleanMapObj((stageIds) => {
+    (module, moduleId) =>
+      cleanMapObj((_, field) => {
         try {
-          return computeStages(stageIds, state, stock, true);
+          return computeStages(moduleId, field, state, stock, true);
         } catch (err) {
           /**
            * We do not expect impure function to be called when we perform

@@ -25,12 +25,16 @@ export function mapObjectAsync(fn, obj) {
 /**
  * Maps over given object and skips the fields where supplied function
  * returned undefined.
+ *
+ * @param {function} fn function to apply on every object field/value pair.
+ * @param {object} obj object to be mapped.
+ * @returns {object} resulting object
  */
 export function cleanMapObj(fn, obj) {
   let result;
 
   for (let key in obj) {
-    const data = fn(obj[key]);
+    const data = fn(obj[key], key);
 
     if (typeof data !== "undefined") {
       if (!result) {

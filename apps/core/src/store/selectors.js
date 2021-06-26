@@ -1,4 +1,4 @@
-import { isNil } from "ramda";
+const emptyList = [];
 
 // TODO: what if computation will be performed at selectors level, with the help of indexes?
 
@@ -36,7 +36,7 @@ export const getValue = (state, valueId) => state.entities.values[valueId];
 export const getFieldStageIds = (state, [moduleId, field]) => {
   const module = getModule(state, moduleId);
 
-  return module.fields?.[field];
+  return module.fields?.[field] || emptyList;
 };
 
 /**
@@ -49,7 +49,7 @@ export const getSettingData = (state, [moduleId, field]) => {
   /**
    * No stages for that field, using config value.
    */
-  if (isNil(stages) || stages.length === 0) {
+  if (stages.length === 0) {
     return module.config[field];
   }
 

@@ -32,6 +32,7 @@ import { createRootReducer } from "./reducers";
 // TODO: have index of module ids groupped by parent id
 // TODO: google for "data structures" in js to get inspiration on how to better structure
 // state
+// TODO: use ts
 
 export default function init(entities, stock) {
   const defaultMiddleware = getDefaultMiddleware({
