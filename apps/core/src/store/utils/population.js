@@ -1,6 +1,7 @@
+import { pick } from "ramda";
 import { getModulesEntities } from "../selectors";
 import { ImpureComputation } from "../exceptions";
-import { cleanMapObj } from "./common";
+import { cleanMapObj, set } from "./common";
 import { computeStages } from "./computation";
 
 /**
@@ -46,60 +47,91 @@ export function populateModulesState(stock, entities) {
 /**
  * Returns object of module state dependencies groupped by module id and state key.
  */
-// TODO: test for cross state referencing
 export function populateDependencies(stock, entities) {
   let result = {};
 
-  for (let moduleId in entities.modules) {
-    const module = entities.modules[moduleId];
+  /**
+   * Looking for a state dependency of a "targetModuleId" on the module state
+   * mentioned in the provided fields.
+   */
+  function iterateSettings(targetModuleId, fields) {
+    for (let field in fields) {
+      const stageIds = fields[field];
 
-    for (let field in module?.fields) {
-      for (let stageId of module.fields[field]) {
+      for (let stageId of stageIds) {
         const stage = entities.stages[stageId];
 
         for (let valueName in stage.values) {
           const valueId = stage.values[valueName];
           const value = entities.values[valueId];
 
-          // TODO: should we consider other categories?
+          /**
+           * Ignoring other variables, since module state could be accessed
+           * only through a "variable/module" value.
+           */
           if (value.category !== "variable/module") {
             continue;
           }
 
-          const refModuleId = value.references.modules.module;
-          const refModule = entities.modules[refModuleId];
+          /**
+           * Accessing source module. That module potentially can have state
+           * other modules can depend on.
+           *
+           * "variable/module" value has it's module reference as "module" key
+           * therefore accessing it accordingly.
+           */
+          const sourceModuleId = value.references.modules.module;
+          const sourceModule = entities.modules[sourceModuleId];
 
-          const { state } = stock[refModule.type].variables.value;
+          /**
+           * Extracting state and settings dependencies of a module variable
+           * definition so we can add our target module to the dependencies list of
+           * that module.
+           */
+          const { state, settings } =
+            stock[sourceModule.type].variables[value.payload.property];
 
-          // TODO: go deeper to find cross referenced state?
-          if (!state || state.length === 0) {
-            continue;
+          /**
+           * Adding target module as a dependency of that state.
+           */
+          if (state?.length > 0) {
+            for (let stateField of state) {
+              const prev =
+                result[sourceModuleId]?.[stateField]?.[targetModuleId];
+
+              if (prev) {
+                prev.push(field);
+                continue;
+              }
+
+              set(
+                result,
+                [sourceModuleId, stateField, targetModuleId],
+                [field]
+              );
+            }
           }
 
-          for (let stateField of state) {
-            // TODO: use mutable variant
-            const x = result[refModuleId]?.[stateField]?.[moduleId];
-
-            if (x) {
-              x.push(field);
-              continue;
-            }
-
-            // TODO: use mutable approach
-            result = {
-              ...result,
-              [refModuleId]: {
-                ...result[refModuleId],
-                [stateField]: {
-                  ...result[refModuleId]?.[stateField],
-                  [moduleId]: [field],
-                },
-              },
-            };
+          /**
+           * Recursively looking for a state source in dependent settings of
+           * a module variable
+           */
+          if (settings?.length > 0) {
+            const fields = pick(settings, sourceModule.fields);
+            iterateSettings(targetModuleId, fields);
           }
         }
       }
     }
+  }
+
+  /**
+   * Going through all available modules to find out whether the current module
+   * depends on a state from another module.
+   */
+  for (let targetModuleId in entities.modules) {
+    const fields = entities.modules[targetModuleId].fields;
+    iterateSettings(targetModuleId, fields);
   }
 
   return result;

@@ -2,7 +2,7 @@ import produce from "immer";
 import { toPairs } from "ramda";
 import { combineReducers } from "@reduxjs/toolkit";
 import * as modulesSlices from "./slices/modules";
-import { computeStages, assocMutable } from "./utils";
+import { computeStages, set } from "./utils";
 import { getFieldStageIds } from "./selectors";
 import { ImpureComputation } from "./exceptions";
 
@@ -43,12 +43,24 @@ const createDependeciesReducer = (stock) =>
         const stageIds = getFieldStageIds(state, [moduleId, field]);
 
         try {
+          /**
+           * Computing stages of a specific setting. Making computation pure
+           * by passing "true" as the last argument, since no side-effects
+           * can be possible when calculating next state inside of a reducer.
+           */
           const data = computeStages(stageIds, state, stock, true);
 
-          assocMutable(dataState, [moduleId, field], data);
+          set(dataState, [moduleId, field], data);
         } catch (err) {
+          /**
+           * ImpureComputation will be thrown when computing field contains asynchronous
+           * job. That is not possible to evaluate while being inside of a reducer.
+           *
+           * Therefore, marking the computing field as stale, so the corresponding computation
+           * will be triggered inside of a React component.
+           */
           if (err instanceof ImpureComputation) {
-            assocMutable(staleState, [moduleId, field], true);
+            set(staleState, [moduleId, field], true);
 
             continue;
           }

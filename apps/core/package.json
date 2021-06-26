@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^12.1.10",
     "faker": "^5.5.3",
     "immer": "^9.0.3",
+    "lodash.setwith": "^4.3.2",
     "moment": "^2.29.1",
     "normalizr": "^3.6.1",
     "ramda": "^0.27.1",

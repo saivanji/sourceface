@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { assocMutable } from "../../utils";
+import { set } from "../../utils";
 
 const initialState = {};
 
@@ -10,7 +10,7 @@ export default createSlice({
     populateSetting(state, action) {
       const { moduleId, field, data } = action.payload;
 
-      assocMutable(state, [moduleId, field], data);
+      set(state, [moduleId, field], data);
     },
   },
 });

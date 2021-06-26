@@ -1,21 +1,24 @@
-import { path } from "ramda";
 import * as futures from "../futures";
 import {
   getStage,
   getValue,
   getModule,
   getModuleStateValue,
+  getSettingData,
+  getFieldStageIds,
 } from "../selectors";
 import { ImpureComputation } from "../exceptions";
-import { mapObj } from "./common";
+import { mapObjectAsync, reduceAsync, pathAsync, mapAsync } from "./common";
 
 /**
  * Compute specific setting for given stage ids.
  */
 export function computeStages(stageIds, state, stock, pure = false) {
-  return stageIds.reduce((_, stageId) => {
-    return computeSingleStage(stageId, state, stock, pure);
-  }, null);
+  return reduceAsync(
+    (_, stageId) => computeSingleStage(stageId, state, stock, pure),
+    null,
+    stageIds
+  );
 }
 
 /**
@@ -30,7 +33,7 @@ export function computeSingleStage(stageId, state, stock, pure) {
   }
 
   if (stage.type === "dictionary") {
-    return mapObj((valueId) => {
+    return mapObjectAsync((valueId) => {
       return computeValue(valueId, state, stock, pure);
     }, stage.values);
   }
@@ -57,7 +60,7 @@ export function computeValue(valueId, state, stock, pure) {
 
   if (value.category === "variable/constant") {
     const data = value.payload.value;
-    return path(p, data);
+    return pathAsync(p, data);
   }
 
   if (value.category === "variable/module") {
@@ -65,9 +68,9 @@ export function computeValue(valueId, state, stock, pure) {
     const moduleId = value.references.modules.module;
     const module = getModule(state, moduleId);
     const definition = stock[module.type].variables[property];
-    const data = applyVariableSelector(state, moduleId, definition);
+    const data = computeSelector(moduleId, definition, state, stock, pure);
 
-    return path(p, data);
+    return pathAsync(p, data);
   }
 
   if (!pure && value.category === "function/future") {
@@ -77,7 +80,7 @@ export function computeValue(valueId, state, stock, pure) {
     return execute(value.references, {}).then((response) => {
       // TODO: how to invalidate cache at that point?
 
-      return path(p, response.data);
+      return pathAsync(p, response.data);
     });
   }
 
@@ -88,18 +91,34 @@ export function computeValue(valueId, state, stock, pure) {
 }
 
 /**
- * Applies variable selector of a specific module.
+ * Applies variable selector of a specific module. Computes dependent
+ * settings if they're not found in state. When computation is async,
+ * then function will return a Promise.
  */
-export function applyVariableSelector(
-  state,
-  moduleId,
-  { selector, state: moduleState = [] }
-) {
-  const input = {
-    state: moduleState.map((key) =>
-      getModuleStateValue(state, [moduleId, key])
-    ),
-  };
+export function computeSelector(moduleId, definition, state, stock, pure) {
+  const { selector, settings = [], state: moduleState = [] } = definition;
 
-  return selector(input);
+  const resultSettings = mapAsync((field) => {
+    const cached = getSettingData(state, [moduleId, field]);
+
+    if (cached) {
+      return cached;
+    }
+
+    const stageIds = getFieldStageIds(state, [moduleId, field]);
+
+    return computeStages(stageIds, state, stock, pure);
+  }, settings);
+
+  const resultState = moduleState?.map((key) =>
+    getModuleStateValue(state, [moduleId, key])
+  );
+
+  if (resultSettings instanceof Promise) {
+    return resultSettings.then((resultSettings) =>
+      selector({ settings: resultSettings, state: resultState })
+    );
+  }
+
+  return selector({ settings: resultSettings, state: resultState });
 }

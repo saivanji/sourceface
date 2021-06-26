@@ -26,6 +26,13 @@ export const data = {
       position: 3,
       type: "counter",
     },
+    731: {
+      position: 4,
+      type: "text",
+      fields: {
+        content: [248],
+      },
+    },
   },
   stages: {
     1935: {
@@ -44,10 +51,17 @@ export const data = {
         root: 514,
       },
     },
+    248: {
+      order: 0,
+      name: "stage_1",
+      type: "value",
+      values: {
+        root: 819,
+      },
+    },
   },
   values: {
     402: {
-      id: 402,
       category: "variable/module",
       payload: {
         property: "value",
@@ -64,6 +78,17 @@ export const data = {
       references: {
         operations: {
           root: 6,
+        },
+      },
+    },
+    819: {
+      category: "variable/module",
+      payload: {
+        property: "value",
+      },
+      references: {
+        modules: {
+          module: 109,
         },
       },
     },

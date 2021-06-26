@@ -1,4 +1,5 @@
-import { keys, zipObj } from "ramda";
+import setWith from "lodash.setwith";
+import { keys, zipObj, path } from "ramda";
 
 /**
  * Maps object values by a provided function. Function can optionally return
@@ -8,41 +9,17 @@ import { keys, zipObj } from "ramda";
  * is given as argument to that function.
  */
 // TODO: use "for in" for the traversal
-export function mapObj(fn, obj, debug) {
+// TODO: combine with "cleanMapObj"
+export function mapObjectAsync(fn, obj) {
   const fields = keys(obj);
   const out = fields.map((x) => fn(obj[x]));
 
+  // TODO: consider either one Promise instead of only the first one?
   if (out[0] instanceof Promise) {
-    return Promise.all(out).then((items) => zipRecord(fields, items, debug));
+    return Promise.all(out).then((items) => zipObj(fields, items));
   }
 
-  return zipRecord(fields, out, debug);
-}
-
-/**
- * Combines keys with values into an object. When "debug" is provided,
- * every key/value pair is being called with that function.
- */
-export function zipRecord(keys, values, debug) {
-  if (debug) {
-    values.forEach((item, i) => debug(keys[i], item));
-  }
-
-  return zipObj(keys, values);
-}
-
-/**
- * Safely mutates given object at 2 level nested path.
- */
-export function assocMutable(obj, [key1, key2], value) {
-  if (!obj[key1]) {
-    obj[key1] = {
-      [key2]: value,
-    };
-    return;
-  }
-
-  obj[key1][key2] = value;
+  return zipObj(fields, out);
 }
 
 /**
@@ -68,3 +45,64 @@ export function cleanMapObj(fn, obj) {
 
   return result;
 }
+
+/**
+ * Maps over a list of items applying given function on every iteration.
+ * If function returns Promise at least one time then all mapped items are
+ * resolved asynchronously and Promise is returned from the function below.
+ */
+export function mapAsync(fn, list) {
+  let result = [];
+  let hasPromise = false;
+
+  for (let item of list) {
+    const data = fn(item);
+
+    if (data instanceof Promise) {
+      hasPromise = true;
+    }
+
+    result.push(data);
+  }
+
+  if (hasPromise) {
+    return Promise.all(result);
+  }
+
+  return result;
+}
+
+/**
+ * Reduces a given list to the value returned from the supplied function.
+ * If at any iteration that function returns a Promise, we go to the next
+ * iteration after the mentioned Promise resolved and therefore Promise is
+ * returned from the function below.
+ */
+export function reduceAsync(fn, acc, items) {
+  if (items.length === 0) {
+    return acc;
+  }
+
+  const [head, ...tail] = items;
+  const result = fn(acc, head);
+
+  if (result instanceof Promise) {
+    return result.then((result) => reduceAsync(fn, result, tail));
+  }
+
+  return reduceAsync(fn, result, tail);
+}
+
+/**
+ * Returns data at a path of the supplied object. If object is a Promise
+ * then we wait for it's resution before calculate path.
+ */
+export function pathAsync(p, obj) {
+  if (obj instanceof Promise) {
+    return obj.then(path(p));
+  }
+
+  return path(p, obj);
+}
+
+export const set = (...args) => setWith(...args, Object);

@@ -14,7 +14,18 @@ import * as modulesSlices from "./slices/modules";
 import * as computationsSlices from "./slices/computations";
 import { createRootReducer } from "./reducers";
 
-// TODO: implement counter module(with state) without async operation(for now)
+// TODO: implement Button component
+// TODO: implement Input component
+// TODO: implement Container component
+// TODO: implement module functions
+// TODO: implement @mount field
+// TODO: implement wildcard values. form_*.reveal(), form_*.value
+// TODO: implement caching operations, invalidating their cache
+// How to avoid duplicating cached data in operations and computations?
+//
+// TODO: integrate grid
+// TODO: implement editor, implement separation of settings and computations
+//
 // TODO: learn more about Suspense and how to handle suspending in
 // useSettings hook
 // TODO: implement displaying subsequent loading state
