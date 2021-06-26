@@ -3,7 +3,7 @@ import {
   getStage,
   getValue,
   getModule,
-  getModuleStateValue,
+  getAtom,
   getSettingData,
   getFieldStageIds,
 } from "../selectors";
@@ -65,12 +65,10 @@ export function computeValue(valueId, state, stock, pure) {
     return pathAsync(p, data);
   }
 
-  if (value.category === "variable/module") {
+  if (value.category === "variable/attribute") {
     const { property } = value.payload;
     const moduleId = value.references.modules.module;
-    const module = getModule(state, moduleId);
-    const definition = stock[module.type].variables[property];
-    const data = computeSelector(moduleId, definition, state, stock, pure);
+    const data = computeAttribute(moduleId, property, state, stock, pure);
 
     return pathAsync(p, data);
   }
@@ -79,6 +77,8 @@ export function computeValue(valueId, state, stock, pure) {
     const { execute } = futures[value.payload.kind];
 
     // TODO: pass down arguments
+    // TODO: return cached values instead of execution if they exist in the state.
+    // TODO: apply loader on a "future" level
     return execute(value.references, {}).then((response) => {
       // TODO: how to invalidate cache at that point?
 
@@ -93,12 +93,20 @@ export function computeValue(valueId, state, stock, pure) {
 }
 
 /**
- * Applies variable selector of a specific module. Computes dependent
+ * Applies attribute selector of a specific module. Computes dependent
  * settings if they're not found in state. When computation is async,
  * then function will return a Promise.
  */
-export function computeSelector(moduleId, definition, state, stock, pure) {
-  const { selector, settings = [], state: moduleState = [] } = definition;
+// TODO: have state cache for computed variables? May be not, since all async computation
+// is related to settings only
+// TODO: do not compute if variable is in cache
+// TODO: if compute will be performed - update store with computed data?
+// TODO: can we accumulate all async calculation/store update in React components and here
+// just throw ImpureComputation in case of pure is true
+export function computeAttribute(moduleId, key, state, stock, pure) {
+  const module = getModule(state, moduleId);
+  const definition = stock[module.type].variables[key];
+  const { selector, settings = [], atoms = [] } = definition;
 
   const resultSettings = mapAsync((field) => {
     const cached = getSettingData(state, [moduleId, field]);
@@ -110,15 +118,13 @@ export function computeSelector(moduleId, definition, state, stock, pure) {
     return computeStages(moduleId, field, state, stock, pure);
   }, settings);
 
-  const resultState = moduleState?.map((key) =>
-    getModuleStateValue(state, [moduleId, key])
-  );
+  const resultAtoms = atoms?.map((key) => getAtom(state, [moduleId, key]));
 
   if (resultSettings instanceof Promise) {
     return resultSettings.then((resultSettings) =>
-      selector({ settings: resultSettings, state: resultState })
+      selector({ settings: resultSettings, atoms: resultAtoms })
     );
   }
 
-  return selector({ settings: resultSettings, state: resultState });
+  return selector({ settings: resultSettings, atoms: resultAtoms });
 }

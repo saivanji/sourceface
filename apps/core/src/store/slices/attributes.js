@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = [];
+const initialState = {};
 
 export default createSlice({
-  name: "modules/ids",
+  name: "attributes",
   initialState,
   reducers: {},
 });

@@ -69,7 +69,7 @@ export const data = {
   },
   values: {
     402: {
-      category: "variable/module",
+      category: "variable/attribute",
       payload: {
         property: "value",
       },
@@ -89,7 +89,7 @@ export const data = {
       },
     },
     819: {
-      category: "variable/module",
+      category: "variable/attribute",
       payload: {
         property: "value",
       },
@@ -128,7 +128,7 @@ export const modules = [
           {
             id: 402,
             name: "root",
-            category: "variable/module",
+            category: "variable/attribute",
             payload: {
               property: "value",
             },
@@ -260,7 +260,7 @@ export const _modules = [
               {
                 id: 2,
                 name: "limit",
-                category: "variable/module",
+                category: "variable/attribute",
                 payload: { property: "limit" },
                 references: [
                   {
@@ -274,7 +274,7 @@ export const _modules = [
               {
                 id: 3,
                 name: "offset",
-                category: "variable/module",
+                category: "variable/attribute",
                 payload: { property: "offset" },
                 references: [
                   {
@@ -309,7 +309,7 @@ export const _modules = [
           {
             id: 4,
             name: "root",
-            category: "variable/module",
+            category: "variable/attribute",
             payload: {
               property: "value",
             },
@@ -375,7 +375,7 @@ export const _modules = [
           {
             id: 7,
             name: "root",
-            category: "variable/module",
+            category: "variable/attribute",
             payload: {
               property: "value",
             },
@@ -535,7 +535,7 @@ export const _modules = [
               {
                 id: 9245,
                 name: "id",
-                category: "variable/module",
+                category: "variable/attribute",
                 payload: { property: "selected" },
                 references: [
                   {
@@ -599,7 +599,7 @@ export const _modules = [
               {
                 id: 13,
                 name: "id",
-                category: "variable/module",
+                category: "variable/attribute",
                 payload: { property: "selected" },
                 references: [
                   {

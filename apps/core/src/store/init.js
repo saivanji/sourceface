@@ -1,20 +1,11 @@
 import { keys } from "ramda";
-import {
-  configureStore,
-  combineReducers,
-  getDefaultMiddleware,
-} from "@reduxjs/toolkit";
-import {
-  populateComputations,
-  populateModulesState,
-  populateDependencies,
-} from "./utils";
-import * as rootSlices from "./slices";
-import * as modulesSlices from "./slices/modules";
-import * as computationsSlices from "./slices/computations";
+import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
+import { populateSettings, populateAtoms, populateDependencies } from "./utils";
+import * as slices from "./slices";
 import { createRootReducer } from "./reducers";
 
-// TODO: implement Button component
+// TODO: implement attributes
+//
 // TODO: implement Input component
 // TODO: implement Container component
 // TODO: implement module functions
@@ -33,6 +24,7 @@ import { createRootReducer } from "./reducers";
 // TODO: google for "data structures" in js to get inspiration on how to better structure
 // state
 // TODO: use ts
+// TODO: rename computations to evaluations?
 
 export default function init(entities, stock) {
   const defaultMiddleware = getDefaultMiddleware({
@@ -44,49 +36,39 @@ export default function init(entities, stock) {
   // TODO: remove in favor of groupped index
   const moduleIds = keys(entities.modules);
 
-  const modulesState = populateModulesState(stock, entities);
+  const atoms = populateAtoms(stock, entities);
   const dependencies = populateDependencies(stock, entities);
 
   /**
-   * Constructing initial state without computation, so we can pass it to
-   * the function for creating these computations.
+   * Constructing initial state without settings, so we can pass it to
+   * the function for computing initial settings.
    */
   const preloadedState = {
     entities,
-    modules: {
-      // TODO: replace by groupped by parent module index
-      ids: moduleIds,
-      state: modulesState,
-    },
-    // TODO: rename to "settings"?
-    computations: {
-      data: {},
-      stale: {},
-    },
+    // TODO: replace by groupped by parent module index
+    ids: moduleIds,
+    atoms,
+    attributes: {},
+    settings: {},
+    stale: {},
     dependencies,
   };
 
-  const computationsData = populateComputations(preloadedState, stock);
+  const settings = populateSettings(preloadedState, stock);
 
   return configureStore({
     reducer: createRootReducer(stock, {
-      entities: rootSlices.entities.reducer,
-      modules: combineReducers({
-        ids: modulesSlices.ids.reducer,
-        state: modulesSlices.state.reducer,
-      }),
-      computations: combineReducers({
-        data: computationsSlices.data.reducer,
-        stale: computationsSlices.stale.reducer,
-      }),
-      dependencies: rootSlices.dependencies.reducer,
+      entities: slices.entities.reducer,
+      ids: slices.ids.reducer,
+      atoms: slices.atoms.reducer,
+      attributes: slices.attributes.reducer,
+      settings: slices.settings.reducer,
+      stale: slices.stale.reducer,
+      dependencies: slices.dependencies.reducer,
     }),
     preloadedState: {
       ...preloadedState,
-      computations: {
-        ...preloadedState.computations,
-        data: computationsData,
-      },
+      settings,
     },
     middleware: defaultMiddleware,
     devTools: true,

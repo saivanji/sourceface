@@ -2,12 +2,10 @@ const emptyList = [];
 
 // TODO: what if computation will be performed at selectors level, with the help of indexes?
 
-// TODO: Keep business logic out of selectors file
-
 /**
  * Returns all module ids of the page.
  */
-export const getModuleIds = (state) => state.modules.ids;
+export const getModuleIds = (state) => state.ids;
 
 /**
  * Returns object of all available modules
@@ -42,6 +40,7 @@ export const getFieldStageIds = (state, [moduleId, field]) => {
 /**
  * Returns calculated setting data for the specific module field.
  */
+// TODO: rename to getSetting
 export const getSettingData = (state, [moduleId, field]) => {
   const module = getModule(state, moduleId);
   const stages = getFieldStageIds(state, [moduleId, field]);
@@ -53,27 +52,25 @@ export const getSettingData = (state, [moduleId, field]) => {
     return module.config[field];
   }
 
-  return state.computations.data[moduleId]?.[field];
+  const isStale = Boolean(state.stale[moduleId]?.[field]);
 
-  // TODO: in case nothing got from computations, start async field computation, throw that Promise
-  // and dispatch to Redux store.
-  //
-  // Try creating custom middleware(which takes dispatched Promise and updates state accordingly
-  // after it resolves) instead of redux-saga first
-};
-
-export const isComputationStale = (state, [moduleId, field]) => {
-  return Boolean(state.computations.stale[moduleId]?.[field]);
+  /**
+   * Returning data only if it is not stale. Otherwise selector
+   * will return undefined. Which will trigger recomputation in the
+   * React component.
+   */
+  if (!isStale) {
+    return state.settings[moduleId]?.[field];
+  }
 };
 
 /**
- * Returns module state value for the key.
+ * Returns module atom value for the key.
  */
-export const getModuleStateValue = (state, [moduleId, key]) =>
-  state.modules.state[moduleId]?.[key];
+export const getAtom = (state, [moduleId, key]) => state.atoms[moduleId]?.[key];
 
 /**
- * Returns the modules list, which depend on the module state field.
+ * Returns the modules list, which depend on the module atom field.
  */
-export const getModuleStateDependencies = (state, [moduleId, key]) =>
+export const getAtomDependencies = (state, [moduleId, key]) =>
   state.dependencies[moduleId][key];

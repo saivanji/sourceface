@@ -1,7 +1,7 @@
 import produce from "immer";
 import { toPairs } from "ramda";
 import { combineReducers } from "@reduxjs/toolkit";
-import * as modulesSlices from "./slices/modules";
+import * as slices from "./slices";
 import { computeStages, set } from "./utils";
 import { ImpureComputation } from "./exceptions";
 
@@ -14,7 +14,7 @@ export const createRootReducer = (stock, spec) => {
   return function (state = initialState, action) {
     const nextState = reducer(state, action);
 
-    if (action.type === modulesSlices.state.actions.update.type) {
+    if (action.type === slices.atoms.actions.update.type) {
       return dependenciesReducer(nextState, action);
     }
 
@@ -24,17 +24,17 @@ export const createRootReducer = (stock, spec) => {
 
 /**
  * Reducer, responsible for populating settings data and marking async
- * settings as stale in response to module state change.
+ * settings as stale in response to module atom change.
  */
 const createDependeciesReducer = (stock) =>
   produce((state, action) => {
-    const dataState = state.computations.data;
-    const staleState = state.computations.stale;
+    const settingsState = state.settings;
+    const staleState = state.stale;
 
     const { dependencies } = action.payload;
 
     /**
-     * When module state is updated, traversing over that state dependent modules
+     * When module atom is updated, traversing over that atom dependent modules
      * and their fields to either compute the data or mark them as stale.
      */
     for (let [moduleId, fields] of toPairs(dependencies)) {
@@ -47,7 +47,7 @@ const createDependeciesReducer = (stock) =>
            */
           const data = computeStages(moduleId, field, state, stock, true);
 
-          set(dataState, [moduleId, field], data);
+          set(settingsState, [moduleId, field], data);
         } catch (err) {
           /**
            * ImpureComputation will be thrown when computing field contains asynchronous

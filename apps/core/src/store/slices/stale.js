@@ -1,20 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
-import data from "./data";
+import settings from "./settings";
 
 const initialState = {};
 
 /**
- * State of stale async computations.
+ * State of stale async settings.
  */
 export default createSlice({
-  name: "computations/stale",
+  name: "stale",
   initialState,
   extraReducers: (builder) => {
     /**
-     * When "populateSetting" is dispatched, we need to make its computation fresh so
+     * When "populate" action is dispatched, we need to make its setting data fresh so
      * components can get that data available.
      */
-    builder.addCase(data.actions.populateSetting, (state, action) => {
+    builder.addCase(settings.actions.populate, (state, action) => {
       const { moduleId, field } = action.payload;
 
       delete state[moduleId]?.[field];

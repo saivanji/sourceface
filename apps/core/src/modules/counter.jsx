@@ -1,7 +1,7 @@
-import { useStateValue } from "../store";
+import { useAtom } from "../store";
 
 export function Root() {
-  const [value, setValue] = useStateValue("value");
+  const [value, setValue] = useAtom("value");
 
   return (
     <div className="flex flex-col items-center">
@@ -24,7 +24,7 @@ export function Root() {
   );
 }
 
-export const initialState = {
+export const initialAtoms = {
   value: 0,
 };
 
@@ -32,8 +32,8 @@ export const initialConfig = {};
 
 export const variables = {
   value: {
-    selector: ({ state: [value] }) => value,
-    state: ["value"],
+    selector: ({ atoms: [value] }) => value,
+    atoms: ["value"],
     type: "Number",
   },
 };
