@@ -1,11 +1,13 @@
 import * as futures from "../futures";
 import {
+  isSettingStale,
   getStage,
   getValue,
   getModule,
   getAtom,
-  getSettingData,
+  getSetting,
   getFieldStageIds,
+  getAttribute,
 } from "../selectors";
 import { ImpureComputation } from "../exceptions";
 import { mapObjectAsync, reduceAsync, pathAsync, mapAsync } from "./common";
@@ -13,7 +15,7 @@ import { mapObjectAsync, reduceAsync, pathAsync, mapAsync } from "./common";
 /**
  * Compute specific setting for given stage ids.
  */
-export function computeStages(moduleId, field, state, stock, pure = false) {
+export function computeSetting(moduleId, field, state, stock, pure = false) {
   const stageIds = getFieldStageIds(state, [moduleId, field]);
 
   return reduceAsync(
@@ -68,8 +70,16 @@ export function computeValue(valueId, state, stock, pure) {
   if (value.category === "variable/attribute") {
     const { property } = value.payload;
     const moduleId = value.references.modules.module;
-    const data = computeAttribute(moduleId, property, state, stock, pure);
 
+    /**
+     * Do not computing attribute when in cache
+     */
+    const cached = getAttribute(state, [moduleId, property]);
+    if (cached) {
+      return pathAsync(p, cached);
+    }
+
+    const data = computeAttribute(moduleId, property, state, stock, pure);
     return pathAsync(p, data);
   }
 
@@ -97,25 +107,20 @@ export function computeValue(valueId, state, stock, pure) {
  * settings if they're not found in state. When computation is async,
  * then function will return a Promise.
  */
-// TODO: have state cache for computed variables? May be not, since all async computation
-// is related to settings only
-// TODO: do not compute if variable is in cache
-// TODO: if compute will be performed - update store with computed data?
-// TODO: can we accumulate all async calculation/store update in React components and here
-// just throw ImpureComputation in case of pure is true
 export function computeAttribute(moduleId, key, state, stock, pure) {
   const module = getModule(state, moduleId);
-  const definition = stock[module.type].variables[key];
+  const definition = stock[module.type].attributes[key];
   const { selector, settings = [], atoms = [] } = definition;
 
   const resultSettings = mapAsync((field) => {
-    const cached = getSettingData(state, [moduleId, field]);
+    const cached = getSetting(state, [moduleId, field]);
+    const isStale = isSettingStale(state, [moduleId, field]);
 
-    if (cached) {
+    if (cached && !isStale) {
       return cached;
     }
 
-    return computeStages(moduleId, field, state, stock, pure);
+    return computeSetting(moduleId, field, state, stock, pure);
   }, settings);
 
   const resultAtoms = atoms?.map((key) => getAtom(state, [moduleId, key]));

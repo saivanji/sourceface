@@ -6,7 +6,7 @@ export const Root = () => {
   return <span className="text-lg">{content}</span>;
 };
 
-export const variables = {
+export const attributes = {
   value: {
     selector: ({ settings: [content] }) => content,
     settings: ["content"],

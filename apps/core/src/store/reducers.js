@@ -2,7 +2,7 @@ import produce from "immer";
 import { toPairs } from "ramda";
 import { combineReducers } from "@reduxjs/toolkit";
 import * as slices from "./slices";
-import { computeStages, set } from "./utils";
+import { computeSetting, set } from "./utils";
 import { ImpureComputation } from "./exceptions";
 
 const initialState = {};
@@ -45,7 +45,7 @@ const createDependeciesReducer = (stock) =>
            * by passing "true" as the last argument, since no side-effects
            * can be possible when calculating next state inside of a reducer.
            */
-          const data = computeStages(moduleId, field, state, stock, true);
+          const data = computeSetting(moduleId, field, state, stock, true);
 
           set(settingsState, [moduleId, field], data);
         } catch (err) {

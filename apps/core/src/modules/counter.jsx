@@ -30,7 +30,7 @@ export const initialAtoms = {
 
 export const initialConfig = {};
 
-export const variables = {
+export const attributes = {
   value: {
     selector: ({ atoms: [value] }) => value,
     atoms: ["value"],

@@ -4,8 +4,6 @@ import { populateSettings, populateAtoms, populateDependencies } from "./utils";
 import * as slices from "./slices";
 import { createRootReducer } from "./reducers";
 
-// TODO: implement attributes
-//
 // TODO: implement Input component
 // TODO: implement Container component
 // TODO: implement module functions
@@ -27,50 +25,41 @@ import { createRootReducer } from "./reducers";
 // TODO: rename computations to evaluations?
 
 export default function init(entities, stock) {
-  const defaultMiddleware = getDefaultMiddleware({
+  const middleware = getDefaultMiddleware({
     immutableCheck: true,
     serializableCheck: true,
     thunk: false,
   });
 
-  // TODO: remove in favor of groupped index
-  const moduleIds = keys(entities.modules);
-
-  const atoms = populateAtoms(stock, entities);
-  const dependencies = populateDependencies(stock, entities);
-
-  /**
-   * Constructing initial state without settings, so we can pass it to
-   * the function for computing initial settings.
-   */
-  const preloadedState = {
-    entities,
+  const reducer = createRootReducer(stock, {
+    entities: slices.entities.reducer,
     // TODO: replace by groupped by parent module index
-    ids: moduleIds,
-    atoms,
-    attributes: {},
-    settings: {},
-    stale: {},
-    dependencies,
-  };
+    ids: slices.ids.reducer,
+    atoms: slices.atoms.reducer,
+    attributes: slices.attributes.reducer,
+    settings: slices.settings.reducer,
+    stale: slices.stale.reducer,
+    dependencies: slices.dependencies.reducer,
+  });
 
-  const settings = populateSettings(preloadedState, stock);
+  const moduleIds = keys(entities.modules);
+  let preloadedState = reducer({ entities, ids: moduleIds }, {});
+
+  preloadedState.atoms = populateAtoms(stock, preloadedState);
+  preloadedState.settings = populateSettings(stock, preloadedState);
+
+  const { dependencies, attributes } = populateDependencies(
+    stock,
+    preloadedState
+  );
+
+  preloadedState.dependencies = dependencies;
+  preloadedState.attributes = attributes;
 
   return configureStore({
-    reducer: createRootReducer(stock, {
-      entities: slices.entities.reducer,
-      ids: slices.ids.reducer,
-      atoms: slices.atoms.reducer,
-      attributes: slices.attributes.reducer,
-      settings: slices.settings.reducer,
-      stale: slices.stale.reducer,
-      dependencies: slices.dependencies.reducer,
-    }),
-    preloadedState: {
-      ...preloadedState,
-      settings,
-    },
-    middleware: defaultMiddleware,
+    reducer,
+    preloadedState,
+    middleware,
     devTools: true,
   });
 }

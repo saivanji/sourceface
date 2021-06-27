@@ -1,3 +1,5 @@
+import { createSelector } from "@reduxjs/toolkit";
+
 const emptyList = [];
 
 // TODO: what if computation will be performed at selectors level, with the help of indexes?
@@ -22,6 +24,14 @@ export const getModule = (state, moduleId) => {
 };
 
 /**
+ * Returns module type by it's id.
+ */
+export const getModuleType = (state, moduleId) => {
+  const module = getModule(state, moduleId);
+  return module.type;
+};
+
+/**
  * Returns stage by it's id
  */
 export const getStage = (state, stageId) => state.entities.stages[stageId];
@@ -40,8 +50,7 @@ export const getFieldStageIds = (state, [moduleId, field]) => {
 /**
  * Returns calculated setting data for the specific module field.
  */
-// TODO: rename to getSetting
-export const getSettingData = (state, [moduleId, field]) => {
+export const getSetting = (state, [moduleId, field]) => {
   const module = getModule(state, moduleId);
   const stages = getFieldStageIds(state, [moduleId, field]);
 
@@ -52,17 +61,17 @@ export const getSettingData = (state, [moduleId, field]) => {
     return module.config[field];
   }
 
-  const isStale = Boolean(state.stale[moduleId]?.[field]);
-
-  /**
-   * Returning data only if it is not stale. Otherwise selector
-   * will return undefined. Which will trigger recomputation in the
-   * React component.
-   */
-  if (!isStale) {
-    return state.settings[moduleId]?.[field];
-  }
+  return state.settings[moduleId]?.[field];
 };
+
+export const isSettingStale = (state, [moduleId, field]) =>
+  state.stale[moduleId]?.[field];
+
+export const eitherOneSettingStale = createSelector(
+  (state, [moduleId]) => state.settings.stale[moduleId],
+  (_, [, settings]) => settings,
+  (stale, settings) => settings.some((field) => stale?.[field])
+);
 
 /**
  * Returns module atom value for the key.
@@ -74,3 +83,9 @@ export const getAtom = (state, [moduleId, key]) => state.atoms[moduleId]?.[key];
  */
 export const getAtomDependencies = (state, [moduleId, key]) =>
   state.dependencies[moduleId][key];
+
+/**
+ * Returns module attribute by it's key.
+ */
+export const getAttribute = (state, [moduleId, key]) =>
+  state.attributes[moduleId]?.[key];

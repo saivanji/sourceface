@@ -1,20 +1,20 @@
-import { pick } from "ramda";
+import { pick, isNil } from "ramda";
 import { getModulesEntities } from "../selectors";
 import { ImpureComputation } from "../exceptions";
 import { cleanMapObj, set } from "./common";
-import { computeStages } from "./computation";
+import { computeSetting, computeAttribute } from "./computation";
 
 /**
  * Computes settings of all modules groupped by module id and field.
  */
-export function populateSettings(state, stock) {
+export function populateSettings(stock, state) {
   const modules = getModulesEntities(state);
 
   return cleanMapObj(
     (module, moduleId) =>
       cleanMapObj((_, field) => {
         try {
-          return computeStages(moduleId, field, state, stock, true);
+          return computeSetting(moduleId, field, state, stock, true);
         } catch (err) {
           /**
            * We do not expect impure function to be called when we perform
@@ -35,22 +35,25 @@ export function populateSettings(state, stock) {
   );
 }
 
-export function populateAttributes(state, stock) {}
-
 /**
  * Populates modules atoms object with initial atoms from the stock.
  */
-export function populateAtoms(stock, entities) {
+export function populateAtoms(stock, state) {
   return cleanMapObj((module) => {
     return stock[module.type].initialAtoms;
-  }, entities.modules);
+  }, state.entities.modules);
 }
 
 /**
- * Returns object of module atoms dependencies groupped by module id and atom key.
+ * Returns object of module atoms dependencies groupped by module id and atom key
+ * and computed attributes.
  */
-export function populateDependencies(stock, entities) {
-  let result = {};
+// TODO: give a better name.
+export function populateDependencies(stock, state) {
+  const { entities } = state;
+
+  let dependencies = {};
+  let attributes = {};
 
   /**
    * Looking for a atom dependency of a "targetModuleId" on the module atom
@@ -75,6 +78,8 @@ export function populateDependencies(stock, entities) {
             continue;
           }
 
+          const attributeKey = value.payload.property;
+
           /**
            * Accessing source module. That module potentially can have atom
            * other modules can depend on.
@@ -86,26 +91,58 @@ export function populateDependencies(stock, entities) {
           const sourceModule = entities.modules[sourceModuleId];
 
           /**
+           * Computing attributes in use and adding them to the cache.
+           */
+          try {
+            const isComputed = !isNil(
+              attributes[sourceModuleId]?.[attributeKey]
+            );
+
+            /**
+             * Computing only if attribute was not computed previously.
+             */
+            if (!isComputed) {
+              const attribute = computeAttribute(
+                sourceModuleId,
+                attributeKey,
+                state,
+                stock,
+                true
+              );
+
+              set(attributes, [sourceModuleId, attributeKey], attribute);
+            }
+          } catch (err) {
+            /**
+             * Ignoring impure computations
+             */
+            if (!(err instanceof ImpureComputation)) {
+              throw err;
+            }
+          }
+
+          /**
            * Extracting atom and settings dependencies of a module variable
            * definition so we can add our target module to the dependencies list of
            * that module.
            */
           const { atoms, settings } =
-            stock[sourceModule.type].variables[value.payload.property];
+            stock[sourceModule.type].attributes[attributeKey];
 
           /**
            * Adding target module as a dependency of that atom.
            */
           if (atoms?.length > 0) {
             for (let key of atoms) {
-              const prev = result[sourceModuleId]?.[key]?.[targetModuleId];
+              const prev =
+                dependencies[sourceModuleId]?.[key]?.[targetModuleId];
 
               if (prev) {
                 prev.push(field);
                 continue;
               }
 
-              set(result, [sourceModuleId, key, targetModuleId], [field]);
+              set(dependencies, [sourceModuleId, key, targetModuleId], [field]);
             }
           }
 
@@ -131,5 +168,5 @@ export function populateDependencies(stock, entities) {
     iterateSettings(targetModuleId, fields);
   }
 
-  return result;
+  return { dependencies, attributes };
 }
