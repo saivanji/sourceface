@@ -4,6 +4,8 @@ import { computeValue } from "../../computation";
 import * as computation from "../../computation";
 import { ImpureComputation } from "../../../exceptions";
 
+const purityOptions = [true, false];
+
 beforeEach(() => {
   global.fakeState = new FakeState();
   global.fakeStock = new FakeStock();
@@ -19,41 +21,33 @@ it("throws with ImpureComputation when trying to compute future function in pure
   );
 });
 
-it("computes constant variable in pure mode", () => {
+it.each(purityOptions)("computes constant variable when pure is %s", (pure) => {
   const [valueId] = global.fakeState.addConstantVariable("foo");
   const state = global.fakeState.contents();
   const stock = global.fakeStock.contents();
 
-  expect(computeValue(valueId, state, stock, true)).toEqual("foo");
+  expect(computeValue(valueId, state, stock, pure)).toEqual("foo");
 });
 
-it("computes constant variable in impure mode", () => {
-  const [valueId] = global.fakeState.addConstantVariable("foo");
-  const state = global.fakeState.contents();
-  const stock = global.fakeStock.contents();
+// it.each(purityOptions)("computes attribute variable when pure is %s", (pure) => {
+//   const attributeKey = "value";
 
-  expect(computeValue(valueId, state, stock, false)).toEqual("foo");
-});
+//   const [moduleId] = global.fakeState.addModule("text");
+//   const [valueId] = global.fakeState.addAttributeVariable(
+//     moduleId,
+//     attributeKey
+//   );
 
-it("computes attribute variable in pure mode", () => {
-  const attributeKey = "value";
+//   const state = global.fakeState.contents();
+//   const stock = global.fakeStock.contents();
 
-  const [moduleId] = global.fakeState.addModule("text");
-  const [valueId] = global.fakeState.addAttributeVariable(
-    moduleId,
-    attributeKey
-  );
+//   const spy = jest
+//     .spyOn(computation, "computeAttribute")
+//     .mockImplementation(() => "mocked");
 
-  const state = global.fakeState.contents();
-  const stock = global.fakeStock.contents();
-
-  const spy = jest
-    .spyOn(computation, "computeAttribute")
-    .mockImplementation(() => "mocked");
-
-  expect(computation.computeValue(valueId, state, stock, true)).toEqual(
-    "mocked"
-  );
-  expect(spy).toHaveBeenCalledTimes(1);
-  expect(spy).toHaveBeenCalledWith(moduleId, attributeKey, state, stock, true);
-});
+//   expect(computation.computeValue(valueId, state, stock, pure)).toEqual(
+//     "mocked"
+//   );
+//   expect(spy).toHaveBeenCalledTimes(1);
+//   expect(spy).toHaveBeenCalledWith(moduleId, attributeKey, state, stock, pure);
+// });
