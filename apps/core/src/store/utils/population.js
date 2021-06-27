@@ -1,4 +1,4 @@
-import { pick, isNil } from "ramda";
+import { pick } from "ramda";
 import { getModulesEntities } from "../selectors";
 import { ImpureComputation } from "../exceptions";
 import { cleanMapObj, set } from "./common";
@@ -36,6 +36,52 @@ export function populateSettings(stock, state) {
 }
 
 /**
+ * Computes attributes of all modules groupped by module id and attribute key
+ */
+export function populateAttributes(stock, state) {
+  const modules = getModulesEntities(state);
+
+  return cleanMapObj(
+    (module, moduleId) =>
+      cleanMapObj((_, key) => {
+        try {
+          return computeAttribute(moduleId, key, state, stock, true);
+        } catch (err) {
+          /**
+           * Since we perform settings computations during computation of the
+           * attribute, we need to ignore impure computations by the same reason.
+           */
+          if (err instanceof ImpureComputation) {
+            return undefined;
+          }
+
+          throw err;
+        }
+      }, stock[module.type].attributes),
+    modules
+  );
+}
+
+/**
+ * Merges modules config data with initial config from the definition.
+ */
+export function populateConfigs(stock, state) {
+  const modules = getModulesEntities(state);
+
+  return cleanMapObj((module) => {
+    const { initialConfig } = stock[module.type];
+
+    return {
+      ...module,
+      config: {
+        ...initialConfig,
+        ...module.config,
+      },
+    };
+  }, modules);
+}
+
+/**
  * Populates modules atoms object with initial atoms from the stock.
  */
 export function populateAtoms(stock, state) {
@@ -48,12 +94,10 @@ export function populateAtoms(stock, state) {
  * Returns object of module atoms dependencies groupped by module id and atom key
  * and computed attributes.
  */
-// TODO: give a better name.
 export function populateDependencies(stock, state) {
   const { entities } = state;
 
   let dependencies = {};
-  let attributes = {};
 
   /**
    * Looking for a atom dependency of a "targetModuleId" on the module atom
@@ -89,37 +133,6 @@ export function populateDependencies(stock, state) {
            */
           const sourceModuleId = value.references.modules.module;
           const sourceModule = entities.modules[sourceModuleId];
-
-          /**
-           * Computing attributes in use and adding them to the cache.
-           */
-          try {
-            const isComputed = !isNil(
-              attributes[sourceModuleId]?.[attributeKey]
-            );
-
-            /**
-             * Computing only if attribute was not computed previously.
-             */
-            if (!isComputed) {
-              const attribute = computeAttribute(
-                sourceModuleId,
-                attributeKey,
-                state,
-                stock,
-                true
-              );
-
-              set(attributes, [sourceModuleId, attributeKey], attribute);
-            }
-          } catch (err) {
-            /**
-             * Ignoring impure computations
-             */
-            if (!(err instanceof ImpureComputation)) {
-              throw err;
-            }
-          }
 
           /**
            * Extracting atom and settings dependencies of a module variable
@@ -168,5 +181,5 @@ export function populateDependencies(stock, state) {
     iterateSettings(targetModuleId, fields);
   }
 
-  return { dependencies, attributes };
+  return dependencies;
 }

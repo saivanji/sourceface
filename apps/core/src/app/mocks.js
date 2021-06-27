@@ -40,6 +40,10 @@ export const data = {
         text: "Create order",
       },
     },
+    943: {
+      position: 6,
+      type: "input",
+    },
   },
   stages: {
     1935: {

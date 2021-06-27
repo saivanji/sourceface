@@ -1,6 +1,12 @@
 import { keys } from "ramda";
 import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
-import { populateSettings, populateAtoms, populateDependencies } from "./utils";
+import {
+  populateSettings,
+  populateAtoms,
+  populateDependencies,
+  populateAttributes,
+  populateConfigs,
+} from "./utils";
 import * as slices from "./slices";
 import { createRootReducer } from "./reducers";
 
@@ -23,6 +29,12 @@ import { createRootReducer } from "./reducers";
 // state
 // TODO: use ts
 // TODO: rename computations to evaluations?
+//
+// TODO: we might need to replace upfront settings/attributes population by on-demand computation
+// inside of a component. In that case we'll be not computating all settings/attributes upfront
+// which are not going to be used right away.
+// TODO: keep in mind that we also need to populate computed settings data when we first time
+// compute setting within an attribute
 
 export default function init(entities, stock) {
   const middleware = getDefaultMiddleware({
@@ -45,16 +57,11 @@ export default function init(entities, stock) {
   const moduleIds = keys(entities.modules);
   let preloadedState = reducer({ entities, ids: moduleIds }, {});
 
+  preloadedState.entities.modules = populateConfigs(stock, preloadedState);
   preloadedState.atoms = populateAtoms(stock, preloadedState);
   preloadedState.settings = populateSettings(stock, preloadedState);
-
-  const { dependencies, attributes } = populateDependencies(
-    stock,
-    preloadedState
-  );
-
-  preloadedState.dependencies = dependencies;
-  preloadedState.attributes = attributes;
+  preloadedState.dependencies = populateDependencies(stock, preloadedState);
+  preloadedState.attributes = populateAttributes(stock, preloadedState);
 
   return configureStore({
     reducer,

@@ -68,7 +68,7 @@ export const isSettingStale = (state, [moduleId, field]) =>
   state.stale[moduleId]?.[field];
 
 export const eitherOneSettingStale = createSelector(
-  (state, [moduleId]) => state.settings.stale[moduleId],
+  (state, [moduleId]) => state.stale[moduleId],
   (_, [, settings]) => settings,
   (stale, settings) => settings.some((field) => stale?.[field])
 );

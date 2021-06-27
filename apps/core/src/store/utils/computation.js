@@ -120,6 +120,7 @@ export function computeAttribute(moduleId, key, state, stock, pure) {
       return cached;
     }
 
+    // TODO: most likely should update cache to not repeat computation
     return computeSetting(moduleId, field, state, stock, pure);
   }, settings);
 
