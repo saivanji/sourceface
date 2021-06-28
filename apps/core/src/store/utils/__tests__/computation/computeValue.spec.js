@@ -29,25 +29,34 @@ it.each(purityOptions)("computes constant variable when pure is %s", (pure) => {
   expect(computeValue(valueId, state, stock, pure)).toEqual("foo");
 });
 
-// it.each(purityOptions)("computes attribute variable when pure is %s", (pure) => {
-//   const attributeKey = "value";
+it.each(purityOptions)(
+  "computes attribute variable when pure is %s",
+  (pure) => {
+    const attributeKey = "value";
 
-//   const [moduleId] = global.fakeState.addModule("text");
-//   const [valueId] = global.fakeState.addAttributeVariable(
-//     moduleId,
-//     attributeKey
-//   );
+    const [moduleId] = global.fakeState.addModule("text");
+    const [valueId] = global.fakeState.addAttributeVariable(
+      moduleId,
+      attributeKey
+    );
 
-//   const state = global.fakeState.contents();
-//   const stock = global.fakeStock.contents();
+    const state = global.fakeState.contents();
+    const stock = global.fakeStock.contents();
 
-//   const spy = jest
-//     .spyOn(computation, "computeAttribute")
-//     .mockImplementation(() => "mocked");
+    const spy = jest
+      .spyOn(computation, "computeAttribute")
+      .mockImplementation(() => "mocked");
 
-//   expect(computation.computeValue(valueId, state, stock, pure)).toEqual(
-//     "mocked"
-//   );
-//   expect(spy).toHaveBeenCalledTimes(1);
-//   expect(spy).toHaveBeenCalledWith(moduleId, attributeKey, state, stock, pure);
-// });
+    expect(computation.computeValue(valueId, state, stock, pure)).toEqual(
+      "mocked"
+    );
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith(
+      moduleId,
+      attributeKey,
+      state,
+      stock,
+      pure
+    );
+  }
+);
