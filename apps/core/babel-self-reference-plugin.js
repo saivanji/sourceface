@@ -1,10 +1,8 @@
 const { basename: getBasename } = require("path");
-const { default: template } = require("@babel/template");
-const types = require("@babel/types");
 
 const prefix = "__babel_self";
 
-module.exports = function () {
+module.exports = function ({ template, types }) {
   return {
     visitor: {
       CallExpression(path) {
