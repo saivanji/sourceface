@@ -1,10 +1,11 @@
-import { useSetting, useAttribute, useAtom } from "../store";
+import { useSetting, useAttribute, useAtom, useBatch } from "../store";
 
 export function Root() {
   const placeholder = useSetting("placeholder");
   const value = useAttribute("value");
-  const [error] = useAtom("error");
-  // const [isRevealed] = useAtom("isRevealed")
+  const [error, setError] = useAtom("error");
+  const [, setRevealed] = useAtom("isRevealed");
+  const batch = useBatch(setError, setRevealed);
 
   const change = (e) => {};
 

@@ -23,7 +23,8 @@ export default function useAtom(key) {
 
   const value = useSelector((state) => getAtom(state, [moduleId, key]));
 
-  const update = useCallback(
+  const setValue = useCallback(
+    // TODO: consider "nextValue" to be a function
     (nextValue) => {
       const state = store.getState();
       const dependencies = getAtomDependencies(state, [moduleId, key]);
@@ -40,5 +41,5 @@ export default function useAtom(key) {
     [moduleId, key, store]
   );
 
-  return [value, update];
+  return [value, setValue];
 }
