@@ -88,7 +88,7 @@ export const getAtom = (state, [moduleId, key]) =>
  * Returns the modules list, which depend on the module atom field.
  */
 export const getAtomDependencies = (state, [moduleId, key]) =>
-  state.dependencies[moduleId][key];
+  state.dependencies[moduleId]?.[key];
 
 /**
  * Returns module attribute by it's key.

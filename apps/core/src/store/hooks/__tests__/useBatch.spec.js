@@ -29,11 +29,7 @@ it("should return a function dispatching update action, where func argument is o
 
 it("should return a function dispatching update action, where func argument is updater", () => {
   const moduleId = 2;
-  const prev = {
-    foo: 6,
-    bar: 9,
-    baz: 3,
-  };
+  const prev = { foo: 6, bar: 9, baz: 3 };
   const next = (prev) => ({
     foo: prev.foo + 1,
     bar: prev.bar + 1,
@@ -59,6 +55,43 @@ it("should return a function dispatching update action, where func argument is u
   });
 });
 
+it("should have dependencies in a dispatching action", () => {
+  const moduleId = 4;
+  const prev = { foo: 6, bar: 9, baz: 3 };
+  const fragment = { foo: 4, bar: 1, baz: 7 };
+  const dependencies = {
+    foo: {
+      8: ["a"],
+      10: ["b", "c"],
+    },
+    bar: {
+      21: ["d", "e"],
+      35: ["f"],
+    },
+  };
+  const expecting = {
+    8: ["a"],
+    10: ["b", "c"],
+    21: ["d", "e"],
+    35: ["f"],
+  };
+
+  const { store, result } = render(moduleId, prev, dependencies);
+
+  act(() => {
+    result.current(fragment);
+  });
+
+  expect(store.getActions()).toContainEqual({
+    type,
+    payload: {
+      moduleId,
+      fragment,
+      dependencies: expecting,
+    },
+  });
+});
+
 it("should return referentially equal function as a result", () => {
   const { result, rerender } = render();
 
@@ -69,10 +102,13 @@ it("should return referentially equal function as a result", () => {
   expect(first).toBe(second);
 });
 
-function render(moduleId, prev) {
+function render(moduleId, prev, dependencies) {
   const store = mockStore({
     atoms: {
       [moduleId]: prev,
+    },
+    dependencies: {
+      [moduleId]: dependencies,
     },
   });
   const Wrapper = ({ children }) => (

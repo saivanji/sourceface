@@ -3,4 +3,3 @@ export { default as useAttribute } from "./useAttribute";
 export { default as useBatch } from "./useBatch";
 export { default as useSetting } from "./useSetting";
 export { default as useSettingCallback } from "./useSettingCallback";
-export { default as useUpdateAtoms } from "./useUpdateAtoms";

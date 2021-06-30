@@ -28,6 +28,7 @@ import { createRootReducer } from "./reducers";
 // TODO: google for "data structures" in js to get inspiration on how to better structure
 // state
 // TODO: use ts
+// TODO: have complete test coverage
 // TODO: rename computations to evaluations?
 //
 // TODO: we might need to replace upfront settings/attributes population by on-demand computation

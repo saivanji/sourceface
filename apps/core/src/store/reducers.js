@@ -2,7 +2,8 @@ import produce from "immer";
 import { toPairs } from "ramda";
 import { combineReducers } from "@reduxjs/toolkit";
 import * as slices from "./slices";
-import { computeSetting, set } from "./utils";
+import { computeSetting, computeAttribute, set } from "./utils";
+import { getModuleType } from "./selectors";
 import { ImpureComputation } from "./exceptions";
 
 const initialState = {};
@@ -14,7 +15,10 @@ export const createRootReducer = (stock, spec) => {
   return function (state = initialState, action) {
     const nextState = reducer(state, action);
 
-    if (action.type === slices.atoms.actions.update.type) {
+    if (
+      action.type === slices.atoms.actions.update.type ||
+      action.type === slices.atoms.actions.updateMany.type
+    ) {
       return dependenciesReducer(nextState, action);
     }
 
@@ -32,6 +36,26 @@ const createDependeciesReducer = (stock) =>
     const staleState = state.stale;
 
     const { dependencies } = action.payload;
+
+    /**
+     * Recomputing attributes dependent on the updating atom.
+     */
+    if (action.type === slices.atoms.actions.update.type) {
+      const { moduleId, key } = action.payload;
+
+      processSelfAttributes(moduleId, key, state, stock);
+    }
+
+    /**
+     * Recomputing attributes dependent on the updating multiple atoms.
+     */
+    if (action.type === slices.atoms.actions.updateMany.type) {
+      const { moduleId, fragment } = action.payload;
+
+      for (let atomKey in fragment) {
+        processSelfAttributes(moduleId, atomKey, state, stock);
+      }
+    }
 
     /**
      * When module atom is updated, traversing over that atom dependent modules
@@ -67,3 +91,38 @@ const createDependeciesReducer = (stock) =>
       }
     }
   }, initialState);
+
+/**
+ * Recomputes attributes depending on the updating atom.
+ */
+function processSelfAttributes(moduleId, atomKey, draftState, stock) {
+  const attributesState = draftState.attributes;
+  const moduleType = getModuleType(draftState, moduleId);
+  const attributeKeys = stock[moduleType].atomDependencies?.[atomKey];
+
+  /**
+   * Doing nothing when no dependent attributes where found for the
+   * current atom.
+   */
+  if (!attributeKeys) {
+    return;
+  }
+
+  for (let key of attributeKeys) {
+    try {
+      const data = computeAttribute(moduleId, key, draftState, stock, true);
+
+      set(attributesState, [moduleId, key], data);
+    } catch (err) {
+      /**
+       * Ignoring impure computations, since in that case, attributes dependent
+       * on stale settings will be recomputed in the component.
+       */
+      if (err instanceof ImpureComputation) {
+        continue;
+      }
+
+      throw err;
+    }
+  }
+}

@@ -9,8 +9,8 @@ export function Root() {
   const change = (e) => {
     const { value } = e.target;
 
-    batch(({ isRevealed }) => ({
-      error: !isRevealed ? null : validate(value),
+    batch(({ revealed }) => ({
+      error: !revealed ? null : validate(value),
       value,
     }));
   };
@@ -34,8 +34,9 @@ export const initialConfig = {
 };
 
 export const initialAtoms = {
-  value: null,
-  isRevealed: false,
+  value: "",
+  revealed: false,
+  touched: false,
   error: null,
 };
 

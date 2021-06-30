@@ -2,6 +2,7 @@ import { useCallback, useContext } from "react";
 import { useStore } from "react-redux";
 import { moduleContext } from "../providers";
 import { getAtoms } from "../selectors";
+import { makeAtomsDependencies } from "../utils";
 import * as slices from "../slices";
 
 /**
@@ -21,8 +22,11 @@ export default function useBatch() {
       const state = store.getState();
       const atoms = getAtoms(state, moduleId);
       const fragment = typeof input === "function" ? input(atoms) : input;
+      const dependencies = makeAtomsDependencies(state, moduleId, atoms);
 
-      store.dispatch(slices.atoms.actions.updateMany({ moduleId, fragment }));
+      store.dispatch(
+        slices.atoms.actions.updateMany({ moduleId, fragment, dependencies })
+      );
     },
     [store, moduleId]
   );
