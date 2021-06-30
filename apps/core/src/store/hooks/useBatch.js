@@ -1,17 +1,15 @@
-import { useCallback } from "react";
-import { keys, pick } from "ramda";
-import { useDispatch } from "react-redux";
+import { useCallback, useContext } from "react";
+import { useStore } from "react-redux";
+import { moduleContext } from "../providers";
+import { getAtoms } from "../selectors";
+import * as slices from "../slices";
 
 /**
- * Combines multiple setters(dispatchers of redux actions) into a single action dispatch.
- * Supplied setter should return desired action type and it's key with previous value.
- * Setters will be provided with 2nd argument equal to "true" so their implementation
- * could distinguish regular calls from batch invocations.
- *
- * @param {function[]} ...setters list of setter functions need to be batched.
+ * Returns a function for updating multiple atoms at once.
  */
-export default function useBatch(...setters) {
-  const dispatch = useDispatch();
+export default function useBatch() {
+  const store = useStore();
+  const moduleId = useContext(moduleContext);
 
   /**
    * Could be used in different ways:
@@ -19,33 +17,14 @@ export default function useBatch(...setters) {
    * - "batch(prevAtoms => ({ ...prevAtoms, b: 2 }))"
    */
   const callback = useCallback(
-    (next) => {
-      const { actionType, prev } = setters.reduce((acc, setter) => {
-        const { actionType, key, value } = setter(undefined, true);
+    (input) => {
+      const state = store.getState();
+      const atoms = getAtoms(state, moduleId);
+      const fragment = typeof input === "function" ? input(atoms) : input;
 
-        if (acc && acc.actionType !== actionType) {
-          throw new Error("Setter functions should have the same action types");
-        }
-
-        return {
-          actionType,
-          prev: {
-            ...acc?.prev,
-            [key]: value,
-          },
-        };
-      }, null);
-
-      const whitelist = keys(prev);
-      const payload = typeof next === "function" ? next(prev) : next;
-
-      return dispatch({
-        type: actionType,
-        payload: pick(whitelist, payload),
-      });
+      store.dispatch(slices.atoms.actions.updateMany({ moduleId, fragment }));
     },
-    // eslint-disable-next-line
-    [dispatch, ...setters]
+    [store, moduleId]
   );
 
   return callback;

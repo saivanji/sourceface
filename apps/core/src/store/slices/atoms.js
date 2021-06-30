@@ -17,7 +17,6 @@ export default createSlice({
 
       for (let key in fragment) {
         const nextValue = fragment[key];
-
         set(state, [moduleId, key], nextValue);
       }
     },

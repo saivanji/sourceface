@@ -3,9 +3,8 @@ import { useSetting, useAttribute, useAtom, useBatch } from "../store";
 export function Root() {
   const placeholder = useSetting("placeholder");
   const value = useAttribute("value");
-  const [error, setError] = useAtom("error");
-  const [, setRevealed] = useAtom("isRevealed");
-  const batch = useBatch(setError, setRevealed);
+  const [error] = useAtom("error");
+  const batch = useBatch();
 
   const change = (e) => {
     const { value } = e.target;

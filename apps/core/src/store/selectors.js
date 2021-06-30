@@ -74,9 +74,15 @@ export const eitherOneSettingStale = createSelector(
 );
 
 /**
+ * Returns module atom values.
+ */
+export const getAtoms = (state, moduleId) => state.atoms[moduleId];
+
+/**
  * Returns module atom value for the key.
  */
-export const getAtom = (state, [moduleId, key]) => state.atoms[moduleId]?.[key];
+export const getAtom = (state, [moduleId, key]) =>
+  getAtoms(state, moduleId)?.[key];
 
 /**
  * Returns the modules list, which depend on the module atom field.
