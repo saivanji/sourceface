@@ -6,15 +6,12 @@ import { ImpureComputation } from "../../../exceptions";
 
 const purityOptions = [true, false];
 
-beforeEach(() => {
-  global.fakeState = new FakeState();
-  global.fakeStock = new FakeStock();
-});
-
 it("throws with ImpureComputation when trying to compute future function in pure mode", () => {
-  const [valueId] = global.fakeState.addOperationFutureFunction();
-  const state = global.fakeState.contents();
-  const stock = global.fakeStock.contents();
+  const { fakeState, fakeStock } = prepare();
+
+  const [valueId] = fakeState.addOperationFutureFunction();
+  const state = fakeState.contents();
+  const stock = fakeStock.contents();
 
   expect(() => computeValue(valueId, state, stock, true)).toThrowError(
     ImpureComputation
@@ -22,9 +19,11 @@ it("throws with ImpureComputation when trying to compute future function in pure
 });
 
 it.each(purityOptions)("computes constant variable when pure is %s", (pure) => {
-  const [valueId] = global.fakeState.addConstantVariable("foo");
-  const state = global.fakeState.contents();
-  const stock = global.fakeStock.contents();
+  const { fakeState, fakeStock } = prepare();
+
+  const [valueId] = fakeState.addConstantVariable("foo");
+  const state = fakeState.contents();
+  const stock = fakeStock.contents();
 
   expect(computeValue(valueId, state, stock, pure)).toEqual("foo");
 });
@@ -32,16 +31,14 @@ it.each(purityOptions)("computes constant variable when pure is %s", (pure) => {
 it.each(purityOptions)(
   "computes attribute variable when pure is %s",
   (pure) => {
+    const { fakeState, fakeStock } = prepare();
     const attributeKey = "value";
 
-    const [moduleId] = global.fakeState.addModule("text");
-    const [valueId] = global.fakeState.addAttributeVariable(
-      moduleId,
-      attributeKey
-    );
+    const [moduleId] = fakeState.addModule("text");
+    const [valueId] = fakeState.addAttributeVariable(moduleId, attributeKey);
 
-    const state = global.fakeState.contents();
-    const stock = global.fakeStock.contents();
+    const state = fakeState.contents();
+    const stock = fakeStock.contents();
 
     const spy = jest
       .spyOn(computation, "computeAttribute")
@@ -60,3 +57,10 @@ it.each(purityOptions)(
     );
   }
 );
+
+function prepare() {
+  const fakeState = new FakeState();
+  const fakeStock = new FakeStock();
+
+  return { fakeState, fakeStock };
+}
