@@ -1,30 +1,33 @@
+import React from "react";
+import { Provider } from "react-redux";
 import { keys } from "ramda";
+import configureStore from "redux-mock-store";
+import { renderHook, act } from "@testing-library/react-hooks";
 import useBatch from "../useBatch";
 
+const type = "SOME_TYPE";
+const mockStore = configureStore([]);
+
 it("should return a function dispatching action created from setters result, where func argument is object", () => {
-  const { batch, mockDispatch } = prepare();
   const next = { foo: 4, bar: 1, baz: 7 };
+  const { actions } = prepare(next);
 
-  batch(next);
-
-  expect(mockDispatch).toBeCalledWith({
-    type: "SOME_TYPE",
+  expect(actions).toContainEqual({
+    type,
     payload: next,
   });
 });
 
 it("should return a function dispatching action created from setters result, where func argument is updater", () => {
-  const { batch, mockDispatch } = prepare();
   const next = (prev) => ({
     foo: prev.foo + 1,
     bar: prev.bar + 1,
     baz: prev.baz + 1,
   });
+  const { actions } = prepare(next);
 
-  batch(next);
-
-  expect(mockDispatch).toBeCalledWith({
-    type: "SOME_TYPE",
+  expect(actions).toContainEqual({
+    type,
     payload: {
       foo: 7,
       bar: 10,
@@ -34,30 +37,26 @@ it("should return a function dispatching action created from setters result, whe
 });
 
 it("should ignore extra fields provided as object argument", () => {
-  const { batch, mockDispatch } = prepare();
   const next = { foo: 4, bar: 1, baz: 7 };
+  const { actions } = prepare({ ...next, extra: 2 });
 
-  batch({ ...next, extra: 2 });
-
-  expect(mockDispatch).toBeCalledWith({
-    type: "SOME_TYPE",
+  expect(actions).toContainEqual({
+    type,
     payload: next,
   });
 });
 
 it("should ignore extra fields provided as a result of function argument", () => {
-  const { batch, mockDispatch } = prepare();
   const next = (prev) => ({
     foo: prev.foo + 1,
     bar: prev.bar + 1,
     baz: prev.baz + 1,
     extra: 5,
   });
+  const { actions } = prepare(next);
 
-  batch(next);
-
-  expect(mockDispatch).toBeCalledWith({
-    type: "SOME_TYPE",
+  expect(actions).toContainEqual({
+    type,
     payload: {
       foo: 7,
       bar: 10,
@@ -67,28 +66,24 @@ it("should ignore extra fields provided as a result of function argument", () =>
 });
 
 it("should keep the structure of the supplied data when fewer fields are provided as object argument", () => {
-  const { batch, mockDispatch } = prepare();
   const next = { foo: 4, bar: 1 };
+  const { actions } = prepare(next);
 
-  batch(next);
-
-  expect(mockDispatch).toBeCalledWith({
-    type: "SOME_TYPE",
+  expect(actions).toContainEqual({
+    type,
     payload: next,
   });
 });
 
 it("should keep the structure of the supplied data when fewer fields are provided as function argument result", () => {
-  const { batch, mockDispatch } = prepare();
   const next = (prev) => ({
     foo: prev.foo + 1,
     bar: prev.bar + 1,
   });
+  const { actions } = prepare(next);
 
-  batch(next);
-
-  expect(mockDispatch).toBeCalledWith({
-    type: "SOME_TYPE",
+  expect(actions).toContainEqual({
+    type,
     payload: {
       foo: 7,
       bar: 10,
@@ -98,24 +93,63 @@ it("should keep the structure of the supplied data when fewer fields are provide
 
 it("should supply 'true' as a second argument to every setter function", () => {
   const setter1 = jest.fn(() => ({
-    actionType: "SOME_TYPE",
+    actionType: type,
     key: "foo",
     value: 1,
   }));
   const setter2 = jest.fn(() => ({
-    actionType: "SOME_TYPE",
+    actionType: type,
     key: "bar",
     value: 2,
   }));
 
-  const { batch } = prepare([setter1, setter2]);
-  batch({ foo: 2, bar: 3 });
+  prepare({ foo: 2, bar: 3 }, [setter1, setter2]);
 
   expect(setter1).toBeCalledWith(undefined, true);
   expect(setter2).toBeCalledWith(undefined, true);
 });
 
-function prepare(initialSetters) {
+it("should return referentially equal function as a result", () => {
+  const { result, rerender } = renderHookWithStore(() => useBatch());
+
+  const first = result.current;
+
+  rerender();
+
+  expect(first).toBe(result.current);
+});
+
+it("should throw when setters resulting in different action types", () => {
+  const setter1 = jest.fn(() => ({
+    actionType: type,
+    key: "foo",
+    value: 1,
+  }));
+  const setter2 = jest.fn(() => ({
+    actionType: "OTHER_TYPE",
+    key: "bar",
+    value: 2,
+  }));
+
+  expect(() => prepare({}, [setter1, setter2])).toThrowError(
+    /Setter functions should have the same action types/
+  );
+});
+
+function renderHookWithStore(callback) {
+  const store = mockStore({});
+  const Wrapper = ({ children }) => (
+    <Provider store={store}>{children}</Provider>
+  );
+
+  const { result, rerender } = renderHook(callback, {
+    wrapper: Wrapper,
+  });
+
+  return { result, rerender, store };
+}
+
+function prepare(next, initialSetters) {
   const data = {
     foo: 6,
     bar: 9,
@@ -126,22 +160,20 @@ function prepare(initialSetters) {
     initialSetters ||
     keys(data).map((key) => () => {
       return {
-        actionType: "SOME_TYPE",
+        actionType: type,
         key,
         value: data[key],
       };
     });
 
-  const mockDispatch = jest.fn();
-  jest
-    .spyOn(require("react-redux"), "useDispatch")
-    .mockImplementation(() => mockDispatch);
+  const { result, store } = renderHookWithStore(() => useBatch(...setters));
 
-  //eslint-disable-next-line
-  const batch = useBatch(...setters);
+  act(() => {
+    result.current(next);
+  });
 
   return {
-    batch,
-    mockDispatch,
+    actions: store.getActions(),
+    result,
   };
 }
