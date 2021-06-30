@@ -7,7 +7,14 @@ export function Root() {
   const [, setRevealed] = useAtom("isRevealed");
   const batch = useBatch(setError, setRevealed);
 
-  const change = (e) => {};
+  const change = (e) => {
+    const { value } = e.target;
+
+    batch(({ isRevealed }) => ({
+      error: !isRevealed ? null : validate(value),
+      value,
+    }));
+  };
 
   return (
     <div>
@@ -44,3 +51,12 @@ export const attributes = {
 };
 
 export const methods = {};
+
+const regexp = /^.+$/;
+const validate = (value) => {
+  if (regexp.test(value)) {
+    return null;
+  }
+
+  return "Invalid input";
+};

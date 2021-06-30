@@ -9,24 +9,32 @@ const type = "SOME_TYPE";
 const mockStore = configureStore([]);
 
 it("should return a function dispatching action created from setters result, where func argument is object", () => {
+  const { store, result } = prepare();
   const next = { foo: 4, bar: 1, baz: 7 };
-  const { actions } = prepare(next);
 
-  expect(actions).toContainEqual({
+  act(() => {
+    result.current(next);
+  });
+
+  expect(store.getActions()).toContainEqual({
     type,
     payload: next,
   });
 });
 
 it("should return a function dispatching action created from setters result, where func argument is updater", () => {
+  const { store, result } = prepare();
   const next = (prev) => ({
     foo: prev.foo + 1,
     bar: prev.bar + 1,
     baz: prev.baz + 1,
   });
-  const { actions } = prepare(next);
 
-  expect(actions).toContainEqual({
+  act(() => {
+    result.current(next);
+  });
+
+  expect(store.getActions()).toContainEqual({
     type,
     payload: {
       foo: 7,
@@ -37,25 +45,33 @@ it("should return a function dispatching action created from setters result, whe
 });
 
 it("should ignore extra fields provided as object argument", () => {
+  const { store, result } = prepare();
   const next = { foo: 4, bar: 1, baz: 7 };
-  const { actions } = prepare({ ...next, extra: 2 });
 
-  expect(actions).toContainEqual({
+  act(() => {
+    result.current({ ...next, extra: 2 });
+  });
+
+  expect(store.getActions()).toContainEqual({
     type,
     payload: next,
   });
 });
 
 it("should ignore extra fields provided as a result of function argument", () => {
+  const { store, result } = prepare();
   const next = (prev) => ({
     foo: prev.foo + 1,
     bar: prev.bar + 1,
     baz: prev.baz + 1,
     extra: 5,
   });
-  const { actions } = prepare(next);
 
-  expect(actions).toContainEqual({
+  act(() => {
+    result.current(next);
+  });
+
+  expect(store.getActions()).toContainEqual({
     type,
     payload: {
       foo: 7,
@@ -66,23 +82,31 @@ it("should ignore extra fields provided as a result of function argument", () =>
 });
 
 it("should keep the structure of the supplied data when fewer fields are provided as object argument", () => {
+  const { store, result } = prepare();
   const next = { foo: 4, bar: 1 };
-  const { actions } = prepare(next);
 
-  expect(actions).toContainEqual({
+  act(() => {
+    result.current(next);
+  });
+
+  expect(store.getActions()).toContainEqual({
     type,
     payload: next,
   });
 });
 
 it("should keep the structure of the supplied data when fewer fields are provided as function argument result", () => {
+  const { store, result } = prepare();
   const next = (prev) => ({
     foo: prev.foo + 1,
     bar: prev.bar + 1,
   });
-  const { actions } = prepare(next);
 
-  expect(actions).toContainEqual({
+  act(() => {
+    result.current(next);
+  });
+
+  expect(store.getActions()).toContainEqual({
     type,
     payload: {
       foo: 7,
@@ -103,20 +127,50 @@ it("should supply 'true' as a second argument to every setter function", () => {
     value: 2,
   }));
 
-  prepare({ foo: 2, bar: 3 }, [setter1, setter2]);
+  const { result } = prepare([setter1, setter2]);
+
+  act(() => {
+    result.current({ foo: 2, bar: 3 });
+  });
 
   expect(setter1).toBeCalledWith(undefined, true);
   expect(setter2).toBeCalledWith(undefined, true);
 });
 
 it("should return referentially equal function as a result", () => {
-  const { result, rerender } = renderHookWithStore(() => useBatch());
+  const { result, rerender } = prepare();
 
   const first = result.current;
+  rerender();
+  const second = result.current;
 
+  expect(first).toBe(second);
+});
+
+it("should consider recent previous data to be returned from setter on every render", () => {
+  let value = 7;
+
+  const setter = () => ({
+    actionType: type,
+    key: "foo",
+    value,
+  });
+
+  const { store, result, rerender } = prepare([setter]);
+
+  value = 20;
   rerender();
 
-  expect(first).toBe(result.current);
+  act(() => {
+    result.current((prev) => ({ foo: prev.foo + 1 }));
+  });
+
+  expect(store.getActions()).toContainEqual({
+    type,
+    payload: {
+      foo: 21,
+    },
+  });
 });
 
 it("should throw when setters resulting in different action types", () => {
@@ -131,7 +185,9 @@ it("should throw when setters resulting in different action types", () => {
     value: 2,
   }));
 
-  expect(() => prepare({}, [setter1, setter2])).toThrowError(
+  const { result } = prepare([setter1, setter2]);
+
+  expect(() => act(() => result.current({}))).toThrowError(
     /Setter functions should have the same action types/
   );
 });
@@ -149,7 +205,7 @@ function renderHookWithStore(callback) {
   return { result, rerender, store };
 }
 
-function prepare(next, initialSetters) {
+function prepare(initialSetters) {
   const data = {
     foo: 6,
     bar: 9,
@@ -166,14 +222,13 @@ function prepare(next, initialSetters) {
       };
     });
 
-  const { result, store } = renderHookWithStore(() => useBatch(...setters));
-
-  act(() => {
-    result.current(next);
-  });
+  const { result, store, rerender } = renderHookWithStore(() =>
+    useBatch(...setters)
+  );
 
   return {
-    actions: store.getActions(),
+    store,
     result,
+    rerender,
   };
 }

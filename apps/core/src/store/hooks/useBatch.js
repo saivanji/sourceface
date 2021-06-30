@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { keys, pick } from "ramda";
 import { useDispatch } from "react-redux";
 
@@ -13,25 +13,6 @@ import { useDispatch } from "react-redux";
 export default function useBatch(...setters) {
   const dispatch = useDispatch();
 
-  const data = useMemo(() => {
-    return setters.reduce((acc, setter) => {
-      const { actionType, key, value } = setter(undefined, true);
-
-      if (acc && acc.actionType !== actionType) {
-        throw new Error("Setter functions should have the same action types");
-      }
-
-      return {
-        actionType,
-        prev: {
-          ...acc?.prev,
-          [key]: value,
-        },
-      };
-    }, null);
-    // eslint-disable-next-line
-  }, setters);
-
   /**
    * Could be used in different ways:
    * - "batch({a: 1, b: 2})"
@@ -39,15 +20,32 @@ export default function useBatch(...setters) {
    */
   const callback = useCallback(
     (next) => {
-      const whitelist = keys(data.prev);
-      const payload = typeof next === "function" ? next(data.prev) : next;
+      const { actionType, prev } = setters.reduce((acc, setter) => {
+        const { actionType, key, value } = setter(undefined, true);
+
+        if (acc && acc.actionType !== actionType) {
+          throw new Error("Setter functions should have the same action types");
+        }
+
+        return {
+          actionType,
+          prev: {
+            ...acc?.prev,
+            [key]: value,
+          },
+        };
+      }, null);
+
+      const whitelist = keys(prev);
+      const payload = typeof next === "function" ? next(prev) : next;
 
       return dispatch({
-        type: data.actionType,
+        type: actionType,
         payload: pick(whitelist, payload),
       });
     },
-    [dispatch, data]
+    // eslint-disable-next-line
+    [dispatch, ...setters]
   );
 
   return callback;
