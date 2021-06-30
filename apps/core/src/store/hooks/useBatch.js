@@ -5,6 +5,7 @@ import { getAtoms } from "../selectors";
 import { makeAtomsDependencies } from "../utils";
 import * as slices from "../slices";
 
+// TODO: rename to useAtomsTransition?
 /**
  * Returns a function for updating multiple atoms at once.
  */

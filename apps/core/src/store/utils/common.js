@@ -1,6 +1,8 @@
 import setWith from "lodash.setwith";
 import { keys, zipObj, path } from "ramda";
 
+// TODO: give *Async more meaningful name
+
 /**
  * Maps object values by a provided function. Function can optionally return
  * a Promise.
@@ -110,3 +112,29 @@ export function pathAsync(p, obj) {
 }
 
 export const set = (...args) => setWith(...args, Object);
+
+/**
+ * If provided input is a Promise, we resolve it and after apply function
+ * on a result, otherwise simply applying function on provided data.
+ */
+export function then(x, fn) {
+  if (x instanceof Promise) {
+    return x.then(fn);
+  }
+
+  return fn(x);
+}
+
+/**
+ * If provided items has at least one Promise, we resolve it and after apply
+ * function on a result, otherwise simply applying function on provided items.
+ */
+export function all(items, fn) {
+  for (let item of items) {
+    if (item instanceof Promise) {
+      return Promise.all(items).then(fn);
+    }
+  }
+
+  return fn(items);
+}

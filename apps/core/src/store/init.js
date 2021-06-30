@@ -11,8 +11,9 @@ import * as slices from "./slices";
 import { createRootReducer } from "./reducers";
 
 // TODO: implement Input component
+// TODO: implement "attributes" dependencies in another attribute
+// TODO: implement module methods. What should we do when we need to compute async stuff before calling method?
 // TODO: implement Container component
-// TODO: implement module functions
 // TODO: implement @mount field
 // TODO: implement wildcard values. form_*.reveal(), form_*.value
 // TODO: implement caching operations, invalidating their cache
@@ -27,8 +28,11 @@ import { createRootReducer } from "./reducers";
 // TODO: have index of module ids groupped by parent id
 // TODO: google for "data structures" in js to get inspiration on how to better structure
 // state
+//
+// TODO: measure performance
 // TODO: use ts
 // TODO: have complete test coverage
+//
 // TODO: rename computations to evaluations?
 //
 // TODO: we might need to replace upfront settings/attributes population by on-demand computation

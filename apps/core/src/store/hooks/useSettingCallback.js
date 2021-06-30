@@ -24,11 +24,14 @@ export default function useSettingCallback(field) {
     );
   }
 
-  const callback = useCallback(() => {
-    const state = store.getState();
+  const callback = useCallback(
+    (_args) => {
+      const state = store.getState();
 
-    return computeSetting(moduleId, field, state, stock, false);
-  }, [store, moduleId, field, stock]);
+      return computeSetting(moduleId, field, state, stock, false);
+    },
+    [store, moduleId, field, stock]
+  );
 
   return callback;
 }

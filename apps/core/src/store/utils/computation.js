@@ -3,14 +3,22 @@ import {
   isSettingStale,
   getStage,
   getValue,
-  getModule,
+  getModuleType,
   getAtom,
+  getAtoms,
   getSetting,
   getFieldStageIds,
   getAttribute,
 } from "../selectors";
 import { ImpureComputation } from "../exceptions";
-import { mapObjectAsync, reduceAsync, pathAsync, mapAsync } from "./common";
+import {
+  mapObjectAsync,
+  reduceAsync,
+  pathAsync,
+  mapAsync,
+  then,
+  all,
+} from "./common";
 
 /**
  * Compute specific setting for given stage ids.
@@ -57,7 +65,8 @@ export function computeValue(valueId, state, stock, pure) {
   if (
     pure &&
     (value.category === "function/future" ||
-      value.category === "function/effect")
+      value.category === "function/effect" ||
+      value.category === "function/method")
   ) {
     throw new ImpureComputation();
   }
@@ -96,6 +105,32 @@ export function computeValue(valueId, state, stock, pure) {
     });
   }
 
+  if (!pure && value.category === "function/method") {
+    const { property } = value.payload;
+    const moduleId = value.references.modules.module;
+
+    const atoms = getAtoms(state, moduleId);
+    const moduleType = getModuleType(state, moduleId);
+    const {
+      call,
+      settings = [],
+      attributes = [],
+    } = stock[moduleType].methods[property];
+
+    const resultSettings = mapAsync(
+      (field) => computeSetting(moduleId, field, state, stock, pure),
+      settings
+    );
+    const resultAttributes = mapAsync(
+      (key) => computeAttribute(moduleId, key, state, stock, pure),
+      attributes
+    );
+
+    return all([resultSettings, resultAttributes], (settings, attributes) => {
+      return call(null, { batch: null, atoms, settings, attributes });
+    });
+  }
+
   // function/future, for operations and other async things
   // function/effect - for displaying notifications, making redirects doing other stuff
   // both future and effect are not applicable for the preload computation
@@ -108,9 +143,12 @@ export function computeValue(valueId, state, stock, pure) {
  * then function will return a Promise.
  */
 export function computeAttribute(moduleId, key, state, stock, pure) {
-  const module = getModule(state, moduleId);
-  const definition = stock[module.type].attributes[key];
-  const { selector, settings = [], atoms = [] } = definition;
+  const moduleType = getModuleType(state, moduleId);
+  const {
+    selector,
+    settings = [],
+    atoms = [],
+  } = stock[moduleType].attributes[key];
 
   const resultSettings = mapAsync((field) => {
     const cached = getSetting(state, [moduleId, field]);
@@ -126,11 +164,9 @@ export function computeAttribute(moduleId, key, state, stock, pure) {
 
   const resultAtoms = atoms?.map((key) => getAtom(state, [moduleId, key]));
 
-  if (resultSettings instanceof Promise) {
-    return resultSettings.then((resultSettings) =>
-      selector({ settings: resultSettings, atoms: resultAtoms })
-    );
-  }
-
-  return selector({ settings: resultSettings, atoms: resultAtoms });
+  // TODO: provide "attributes" as well, so attribute can depend on other
+  // attributes values
+  return then(resultSettings, (resultSettings) =>
+    selector({ settings: resultSettings, atoms: resultAtoms })
+  );
 }
