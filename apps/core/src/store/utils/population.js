@@ -14,7 +14,15 @@ export function populateSettings(stock, state) {
     (module, moduleId) =>
       cleanMapObj((_, field) => {
         try {
-          return computeSetting(moduleId, field, state, stock, true);
+          return computeSetting(
+            moduleId,
+            field,
+            { state, stock },
+            {
+              pure: true,
+              forceComputation: true,
+            }
+          );
         } catch (err) {
           /**
            * We do not expect impure function to be called when we perform
@@ -45,7 +53,15 @@ export function populateAttributes(stock, state) {
     (module, moduleId) =>
       cleanMapObj((_, key) => {
         try {
-          return computeAttribute(moduleId, key, state, stock, true);
+          return computeAttribute(
+            moduleId,
+            key,
+            { state, stock },
+            {
+              pure: true,
+              forceComputation: true,
+            }
+          );
         } catch (err) {
           /**
            * Since we perform settings computations during computation of the

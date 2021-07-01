@@ -21,32 +21,57 @@ import {
 } from "./common";
 
 /**
+ * Providing defaults to dependencies object
+ */
+function defaultOpts(opts) {
+  return {
+    pure: opts?.pure || false,
+    forceComputation: opts?.forceComputation || false,
+  };
+}
+
+/**
  * Compute specific setting for given stage ids.
  */
-export function computeSetting(moduleId, field, state, stock, pure = false) {
-  const stageIds = getFieldStageIds(state, [moduleId, field]);
+export function computeSetting(moduleId, field, deps, opts) {
+  opts = defaultOpts(opts);
+
+  /**
+   * Returning cached data if it exists and not stale unless "forceComputation"
+   * is specified.
+   */
+  const cached = getSetting(deps.state, [moduleId, field]);
+  const isStale = isSettingStale(deps.state, [moduleId, field]);
+
+  if (!opts.forceComputation && cached && !isStale) {
+    return cached;
+  }
+
+  const stageIds = getFieldStageIds(deps.state, [moduleId, field]);
 
   return reduceAsync(
-    (_, stageId) => computeSingleStage(stageId, state, stock, pure),
+    (_, stageId) => computeSingleStage(stageId, deps, opts),
     null,
     stageIds
   );
+
+  // TODO: if deps.dispatch is provided and "opts.pure" is false - populate store
 }
 
 /**
  * Computes specific stage data
  */
-export function computeSingleStage(stageId, state, stock, pure) {
-  const stage = getStage(state, stageId);
+export function computeSingleStage(stageId, deps, opts) {
+  const stage = getStage(deps.state, stageId);
 
   if (stage.type === "value") {
     const valueId = stage.values.root;
-    return computeValue(valueId, state, stock, pure);
+    return computeValue(valueId, deps, opts);
   }
 
   if (stage.type === "dictionary") {
     return mapObjectAsync((valueId) => {
-      return computeValue(valueId, state, stock, pure);
+      return computeValue(valueId, deps, opts);
     }, stage.values);
   }
 }
@@ -54,8 +79,8 @@ export function computeSingleStage(stageId, state, stock, pure) {
 /**
  * Computes value data.
  */
-export function computeValue(valueId, state, stock, pure) {
-  const value = getValue(state, valueId);
+export function computeValue(valueId, deps, opts) {
+  const value = getValue(deps.state, valueId);
   const p = value.path || [];
 
   /**
@@ -63,7 +88,7 @@ export function computeValue(valueId, state, stock, pure) {
    * in pure mode.
    */
   if (
-    pure &&
+    opts.pure &&
     (value.category === "function/future" ||
       value.category === "function/effect" ||
       value.category === "function/method")
@@ -80,19 +105,11 @@ export function computeValue(valueId, state, stock, pure) {
     const { property } = value.payload;
     const moduleId = value.references.modules.module;
 
-    /**
-     * Do not computing attribute when in cache
-     */
-    const cached = getAttribute(state, [moduleId, property]);
-    if (cached) {
-      return pathAsync(p, cached);
-    }
-
-    const data = computeAttribute(moduleId, property, state, stock, pure);
+    const data = computeAttribute(moduleId, property, deps, opts);
     return pathAsync(p, data);
   }
 
-  if (!pure && value.category === "function/future") {
+  if (!opts.pure && value.category === "function/future") {
     const { execute } = futures[value.payload.kind];
 
     // TODO: pass down arguments
@@ -105,24 +122,24 @@ export function computeValue(valueId, state, stock, pure) {
     });
   }
 
-  if (!pure && value.category === "function/method") {
+  if (!opts.pure && value.category === "function/method") {
     const { property } = value.payload;
     const moduleId = value.references.modules.module;
 
-    const atoms = getAtoms(state, moduleId);
-    const moduleType = getModuleType(state, moduleId);
+    const atoms = getAtoms(deps.state, moduleId);
+    const moduleType = getModuleType(deps.state, moduleId);
     const {
       call,
       settings = [],
       attributes = [],
-    } = stock[moduleType].methods[property];
+    } = deps.stock[moduleType].methods[property];
 
     const resultSettings = mapAsync(
-      (field) => computeSetting(moduleId, field, state, stock, pure),
+      (field) => computeSetting(moduleId, field, deps, opts),
       settings
     );
     const resultAttributes = mapAsync(
-      (key) => computeAttribute(moduleId, key, state, stock, pure),
+      (key) => computeAttribute(moduleId, key, deps, opts),
       attributes
     );
 
@@ -142,31 +159,41 @@ export function computeValue(valueId, state, stock, pure) {
  * settings if they're not found in state. When computation is async,
  * then function will return a Promise.
  */
-export function computeAttribute(moduleId, key, state, stock, pure) {
-  const moduleType = getModuleType(state, moduleId);
+export function computeAttribute(moduleId, key, deps, opts) {
+  opts = defaultOpts(opts);
+
+  /**
+   * Returning cached data if it exists unless "forceComputation"
+   * is specified.
+   */
+  const cached = getAttribute(deps.state, [moduleId, key]);
+
+  // TODO: should consider staleness same way is done in setting?
+  if (!opts.forceComputation && cached) {
+    return cached;
+  }
+
+  const moduleType = getModuleType(deps.state, moduleId);
   const {
     selector,
     settings = [],
     atoms = [],
-  } = stock[moduleType].attributes[key];
+  } = deps.stock[moduleType].attributes[key];
 
   const resultSettings = mapAsync((field) => {
-    const cached = getSetting(state, [moduleId, field]);
-    const isStale = isSettingStale(state, [moduleId, field]);
-
-    if (cached && !isStale) {
-      return cached;
-    }
-
     // TODO: most likely should update cache to not repeat computation
-    return computeSetting(moduleId, field, state, stock, pure);
+    // remove population code from "useSetting" hook and keep it in one place
+    // so we populate only when the data is computed
+    return computeSetting(moduleId, field, deps, opts);
   }, settings);
 
-  const resultAtoms = atoms?.map((key) => getAtom(state, [moduleId, key]));
+  const resultAtoms = atoms?.map((key) => getAtom(deps.state, [moduleId, key]));
 
   // TODO: provide "attributes" as well, so attribute can depend on other
   // attributes values
   return then(resultSettings, (resultSettings) =>
     selector({ settings: resultSettings, atoms: resultAtoms })
   );
+
+  // TODO: if deps.dispatch is provided and "opts.pure" is false - populate store
 }

@@ -32,7 +32,7 @@ export default function useSetting(field) {
   // TODO: make sure the requesting field is a Future
   if (typeof data === "undefined" || isStale) {
     const state = store.getState();
-    const result = computeSetting(moduleId, field, state, stock, false);
+    const result = computeSetting(moduleId, field, { state, stock });
 
     if (result instanceof Promise) {
       throw result.then((data) => {

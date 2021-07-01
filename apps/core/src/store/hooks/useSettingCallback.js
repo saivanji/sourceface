@@ -28,7 +28,7 @@ export default function useSettingCallback(field) {
     (_args) => {
       const state = store.getState();
 
-      return computeSetting(moduleId, field, state, stock, false);
+      return computeSetting(moduleId, field, { state, stock });
     },
     [store, moduleId, field, stock]
   );
