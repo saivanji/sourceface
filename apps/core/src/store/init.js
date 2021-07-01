@@ -10,7 +10,6 @@ import {
 import * as slices from "./slices";
 import { createRootReducer } from "./reducers";
 
-// TODO: check todos of computation file(integrate dispatch)
 // TODO: implement "attributes" dependencies in another attribute
 // TODO: implement Input component
 // TODO: implement module methods. What should we do when we need to compute async stuff before calling method?

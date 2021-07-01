@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { useStore, useSelector } from "react-redux";
 import { moduleContext, stockContext } from "../providers";
-import * as slices from "../slices";
 import { isSettingStale, getSetting } from "../selectors";
 import { computeSetting } from "../utils";
 
@@ -32,18 +31,14 @@ export default function useSetting(field) {
   // TODO: make sure the requesting field is a Future
   if (typeof data === "undefined" || isStale) {
     const state = store.getState();
-    const result = computeSetting(moduleId, field, { state, stock });
+    const result = computeSetting(moduleId, field, {
+      state,
+      stock,
+      dispatch: store.dispatch,
+    });
 
     if (result instanceof Promise) {
-      throw result.then((data) => {
-        store.dispatch(
-          slices.settings.actions.populate({
-            moduleId,
-            field,
-            data,
-          })
-        );
-      });
+      throw result;
     }
   }
 

@@ -1,4 +1,5 @@
 import * as futures from "../futures";
+import * as slices from "../slices";
 import {
   isSettingStale,
   getStage,
@@ -49,13 +50,30 @@ export function computeSetting(moduleId, field, deps, opts) {
 
   const stageIds = getFieldStageIds(deps.state, [moduleId, field]);
 
-  return reduceAsync(
-    (_, stageId) => computeSingleStage(stageId, deps, opts),
-    null,
-    stageIds
-  );
+  return then(
+    reduceAsync(
+      (_, stageId) => computeSingleStage(stageId, deps, opts),
+      null,
+      stageIds
+    ),
+    (data) => {
+      /**
+       * When in pure mode and dispatch is supplied - populating settings
+       * state with new data.
+       */
+      if (deps.dispatch && !opts.pure) {
+        deps.dispatch(
+          slices.settings.actions.populate({
+            moduleId,
+            field,
+            data,
+          })
+        );
+      }
 
-  // TODO: if deps.dispatch is provided and "opts.pure" is false - populate store
+      return data;
+    }
+  );
 }
 
 /**
@@ -180,20 +198,35 @@ export function computeAttribute(moduleId, key, deps, opts) {
     atoms = [],
   } = deps.stock[moduleType].attributes[key];
 
-  const resultSettings = mapAsync((field) => {
-    // TODO: most likely should update cache to not repeat computation
-    // remove population code from "useSetting" hook and keep it in one place
-    // so we populate only when the data is computed
-    return computeSetting(moduleId, field, deps, opts);
-  }, settings);
+  const resultSettings = mapAsync(
+    (field) => computeSetting(moduleId, field, deps, opts),
+    settings
+  );
 
   const resultAtoms = atoms?.map((key) => getAtom(deps.state, [moduleId, key]));
 
   // TODO: provide "attributes" as well, so attribute can depend on other
   // attributes values
-  return then(resultSettings, (resultSettings) =>
-    selector({ settings: resultSettings, atoms: resultAtoms })
-  );
+  return then(
+    then(resultSettings, (resultSettings) =>
+      selector({ settings: resultSettings, atoms: resultAtoms })
+    ),
+    (data) => {
+      /**
+       * When in pure mode and dispatch is supplied - populating attributes
+       * state with new data.
+       */
+      if (deps.dispatch && !opts.pure) {
+        deps.dispatch(
+          slices.attributes.actions.populate({
+            moduleId,
+            key,
+            data,
+          })
+        );
+      }
 
-  // TODO: if deps.dispatch is provided and "opts.pure" is false - populate store
+      return data;
+    }
+  );
 }

@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { useStore, useSelector } from "react-redux";
 import { moduleContext, stockContext } from "../providers";
-import * as slices from "../slices";
 import {
   eitherOneSettingStale,
   getModuleType,
@@ -41,18 +40,14 @@ export default function useAttribute(key) {
 
   if (typeof data === "undefined" || isStale) {
     const state = store.getState();
-    const result = computeAttribute(moduleId, key, { state, stock });
+    const result = computeAttribute(moduleId, key, {
+      state,
+      stock,
+      dispatch: store.dispatch,
+    });
 
     if (result instanceof Promise) {
-      throw result.then((data) => {
-        store.dispatch(
-          slices.attributes.actions.populate({
-            moduleId,
-            key,
-            data,
-          })
-        );
-      });
+      throw result;
     }
   }
 
