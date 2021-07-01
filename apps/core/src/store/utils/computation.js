@@ -20,6 +20,7 @@ import {
   then,
   all,
 } from "./common";
+import { makeAtomsDependencies } from "./dependencies";
 
 /**
  * Providing defaults to dependencies object
@@ -130,10 +131,10 @@ export function computeValue(valueId, deps, opts) {
   if (!opts.pure && value.category === "function/future") {
     const { execute } = futures[value.payload.kind];
 
-    // TODO: pass down arguments
+    // TODO: pass down and compute arguments
     // TODO: return cached values instead of execution if they exist in the state.
     // TODO: apply loader on a "future" level
-    return execute(value.references, {}).then((response) => {
+    return execute(null, value.references).then((response) => {
       // TODO: how to invalidate cache at that point?
 
       return pathAsync(p, response.data);
@@ -162,7 +163,16 @@ export function computeValue(valueId, deps, opts) {
     );
 
     return all([resultSettings, resultAttributes], ([settings, attributes]) => {
-      return call(null, { batch: null, atoms, settings, attributes });
+      const batch = (fragment) => {
+        const dependencies = makeAtomsDependencies(deps.state, moduleId, atoms);
+
+        deps.dispatch(
+          slices.atoms.actions.updateMany({ moduleId, fragment, dependencies })
+        );
+      };
+
+      // TODO: "args" should be computed
+      return call(null, { batch, atoms, settings, attributes });
     });
   }
 

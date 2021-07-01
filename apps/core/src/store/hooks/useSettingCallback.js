@@ -28,6 +28,7 @@ export default function useSettingCallback(field) {
     (_args) => {
       const state = store.getState();
 
+      // TODO: provide scope object containing arg
       return computeSetting(moduleId, field, {
         state,
         stock,
