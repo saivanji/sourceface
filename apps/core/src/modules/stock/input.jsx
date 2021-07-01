@@ -1,4 +1,4 @@
-import { useSetting, useAttribute, useAtom, useBatch } from "../store";
+import { useSetting, useAttribute, useAtom, useBatch } from "../../store";
 
 export function Root() {
   const placeholder = useSetting("placeholder");

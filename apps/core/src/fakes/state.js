@@ -1,4 +1,5 @@
 import produce from "immer";
+import setWith from "lodash.setwith";
 import { keys } from "ramda";
 
 export default class FakeState {
@@ -120,4 +121,33 @@ export default class FakeState {
     // TODO: create actual operation here and use it's id instead of "1"
     return this.addFutureFunction("operation", { operations: { root: 1 } });
   }
+
+  /**
+   * Adds new atom value for the specific module.
+   */
+  addAtom(moduleId, key, value) {
+    this.updateState((state) => {
+      set(state, ["atoms", moduleId, key], value);
+    });
+  }
+
+  /**
+   * Replaces atoms data for the specific module.
+   */
+  replaceAtoms(moduleId, atoms) {
+    this.updateState((state) => {
+      set(state, ["atoms", moduleId], atoms);
+    });
+  }
+
+  /**
+   * Adds computed attribute data.
+   */
+  addAttribute(moduleId, key, data) {
+    this.updateState((state) => {
+      set(state, ["attributes", moduleId, key], data);
+    });
+  }
 }
+
+const set = (...args) => setWith(...args, Object);

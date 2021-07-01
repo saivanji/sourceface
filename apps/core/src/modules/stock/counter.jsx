@@ -1,4 +1,4 @@
-import { useAtom } from "../store";
+import { useAtom } from "../../store";
 
 export function Root() {
   const [value, setValue] = useAtom("value");

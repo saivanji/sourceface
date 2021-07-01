@@ -161,7 +161,7 @@ export function computeValue(valueId, deps, opts) {
       attributes
     );
 
-    return all([resultSettings, resultAttributes], (settings, attributes) => {
+    return all([resultSettings, resultAttributes], ([settings, attributes]) => {
       return call(null, { batch: null, atoms, settings, attributes });
     });
   }
@@ -194,22 +194,32 @@ export function computeAttribute(moduleId, key, deps, opts) {
   const moduleType = getModuleType(deps.state, moduleId);
   const {
     selector,
+    attributes = [],
     settings = [],
     atoms = [],
   } = deps.stock[moduleType].attributes[key];
+
+  const resultAttributes = mapAsync(
+    (key) => computeAttribute(moduleId, key, deps, opts),
+    attributes
+  );
 
   const resultSettings = mapAsync(
     (field) => computeSetting(moduleId, field, deps, opts),
     settings
   );
 
-  const resultAtoms = atoms?.map((key) => getAtom(deps.state, [moduleId, key]));
+  const resultAtoms = atoms.map((key) => getAtom(deps.state, [moduleId, key]));
 
-  // TODO: provide "attributes" as well, so attribute can depend on other
-  // attributes values
   return then(
-    then(resultSettings, (resultSettings) =>
-      selector({ settings: resultSettings, atoms: resultAtoms })
+    all(
+      [resultSettings, resultAttributes],
+      ([resultSettings, resultAttributes]) =>
+        selector({
+          atoms: resultAtoms,
+          settings: resultSettings,
+          attributes: resultAttributes,
+        })
     ),
     (data) => {
       /**

@@ -30,7 +30,7 @@ export const createRootReducer = (stock, spec) => {
  * Reducer, responsible for populating settings data and marking async
  * settings as stale in response to module atom change.
  */
-const createDependeciesReducer = (stock) =>
+export const createDependeciesReducer = (stock) =>
   produce((state, action) => {
     const settingsState = state.settings;
     const staleState = state.stale;

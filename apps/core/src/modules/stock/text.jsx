@@ -1,4 +1,4 @@
-import { useSetting } from "../store";
+import { useSetting } from "../../store";
 
 export const Root = () => {
   const content = useSetting("content");
