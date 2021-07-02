@@ -2,8 +2,8 @@
 /**
  * After the computation we might have either Promise or regular data.
  * Because of nature of a Promise, even it has non async data inside,
- * it takes one loop to resolve which causes spinner to display short
- * amount of time in the UI, which could be avoided.
+ * it takes one loop to resolve it's data which causes spinner to
+ * display short amount of time in the UI, which could be avoided.
  *
  * That data structure represents data which can be either Promise or regular data.
  * If it's a regular data - we can extract it immediately.
