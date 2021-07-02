@@ -31,6 +31,7 @@ export default function useSetting(field) {
   // TODO: make sure the requesting field is a Future
   if (typeof data === "undefined" || isStale) {
     const state = store.getState();
+    // TODO: can we kick-off computing setting earlier to leverage Suspense more?
     const result = computeSetting(moduleId, field, {
       state,
       stock,

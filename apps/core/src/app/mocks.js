@@ -91,6 +91,22 @@ export const data = {
           root: 6,
         },
       },
+      args: {
+        limit: 281,
+        offset: 423,
+      },
+    },
+    281: {
+      category: "variable/constant",
+      payload: {
+        value: 10,
+      },
+    },
+    423: {
+      category: "variable/constant",
+      payload: {
+        value: 20,
+      },
     },
     819: {
       category: "variable/attribute",

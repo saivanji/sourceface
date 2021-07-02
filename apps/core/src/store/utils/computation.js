@@ -130,20 +130,32 @@ export function computeValue(valueId, deps, opts) {
 
   if (!opts.pure && value.category === "function/future") {
     const { execute } = futures[value.payload.kind];
+    const { args = {} } = value;
+
+    // TODO: restrict function calls
+    const resultArgs = mapObjectAsync(
+      (valueId) => computeValue(valueId, deps, opts),
+      args
+    );
 
     // TODO: pass down and compute arguments
     // TODO: return cached values instead of execution if they exist in the state.
     // TODO: apply loader on a "future" level
-    return execute(null, value.references).then((response) => {
-      // TODO: how to invalidate cache at that point?
+    return then(resultArgs, (args) => {
+      return execute(args, value.references).then((response) => {
+        // TODO: how to invalidate cache at that point?
+        // TODO: most likely invalidation should be performed on a future and not on the operation
+        // level, since "controller" kind of future may also need invalidation
 
-      return pathAsync(p, response.data);
+        return pathAsync(p, response.data);
+      });
     });
   }
 
   if (!opts.pure && value.category === "function/method") {
     const { property } = value.payload;
     const moduleId = value.references.modules.module;
+    const { args = {} } = value;
 
     const atoms = getAtoms(deps.state, moduleId);
     const moduleType = getModuleType(deps.state, moduleId);
@@ -161,19 +173,34 @@ export function computeValue(valueId, deps, opts) {
       (key) => computeAttribute(moduleId, key, deps, opts),
       attributes
     );
+    // TODO: restrict function calls
+    const resultArgs = mapObjectAsync(
+      (valueId) => computeValue(valueId, deps, opts),
+      args
+    );
 
-    return all([resultSettings, resultAttributes], ([settings, attributes]) => {
-      const batch = (fragment) => {
-        const dependencies = makeAtomsDependencies(deps.state, moduleId, atoms);
+    return all(
+      [resultSettings, resultAttributes, resultArgs],
+      ([settings, attributes, args]) => {
+        const batch = (fragment) => {
+          const dependencies = makeAtomsDependencies(
+            deps.state,
+            moduleId,
+            atoms
+          );
 
-        deps.dispatch(
-          slices.atoms.actions.updateMany({ moduleId, fragment, dependencies })
-        );
-      };
+          deps.dispatch(
+            slices.atoms.actions.updateMany({
+              moduleId,
+              fragment,
+              dependencies,
+            })
+          );
+        };
 
-      // TODO: "args" should be computed
-      return call(null, { batch, atoms, settings, attributes });
-    });
+        return call(args, { batch, atoms, settings, attributes });
+      }
+    );
   }
 
   // function/future, for operations and other async things
