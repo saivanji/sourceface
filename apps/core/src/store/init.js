@@ -18,6 +18,7 @@ import { createRootReducer } from "./reducers";
 // TODO: implement wildcard values. form_*.reveal(), form_*.value
 // TODO: implement caching operations, invalidating their cache
 // How to avoid duplicating cached data in operations and computations?
+// TODO: implement linking and global data caching
 //
 // TODO: integrate grid
 // TODO: implement editor, implement separation of settings and computations
