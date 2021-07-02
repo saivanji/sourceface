@@ -25,14 +25,16 @@ export default function useSettingCallback(field) {
   }
 
   const callback = useCallback(
-    (_args) => {
+    (input) => {
       const state = store.getState();
 
-      // TODO: provide scope object containing arg
       return computeSetting(moduleId, field, {
-        state,
-        stock,
-        dispatch: store.dispatch,
+        deps: {
+          state,
+          stock,
+          dispatch: store.dispatch,
+        },
+        scope: { input },
       });
     },
     [store, moduleId, field, stock]

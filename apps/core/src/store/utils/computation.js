@@ -35,7 +35,7 @@ function defaultOpts(opts) {
 /**
  * Compute specific setting for given stage ids.
  */
-export function computeSetting(moduleId, field, deps, opts) {
+export function computeSetting(moduleId, field, { deps, opts, scope }) {
   opts = defaultOpts(opts);
 
   /**
@@ -53,7 +53,7 @@ export function computeSetting(moduleId, field, deps, opts) {
 
   return then(
     reduceAsync(
-      (_, stageId) => computeSingleStage(stageId, deps, opts),
+      (_, stageId) => computeSingleStage(stageId, { deps, opts, scope }),
       null,
       stageIds
     ),
@@ -80,17 +80,17 @@ export function computeSetting(moduleId, field, deps, opts) {
 /**
  * Computes specific stage data
  */
-export function computeSingleStage(stageId, deps, opts) {
+export function computeSingleStage(stageId, { deps, opts, scope }) {
   const stage = getStage(deps.state, stageId);
 
   if (stage.type === "value") {
     const valueId = stage.values.root;
-    return computeValue(valueId, deps, opts);
+    return computeValue(valueId, { deps, opts, scope });
   }
 
   if (stage.type === "dictionary") {
     return mapObjectAsync((valueId) => {
-      return computeValue(valueId, deps, opts);
+      return computeValue(valueId, { deps, opts, scope });
     }, stage.values);
   }
 }
@@ -98,7 +98,7 @@ export function computeSingleStage(stageId, deps, opts) {
 /**
  * Computes value data.
  */
-export function computeValue(valueId, deps, opts) {
+export function computeValue(valueId, { deps, opts, scope }) {
   const value = getValue(deps.state, valueId);
   const p = value.path || [];
 
@@ -124,8 +124,12 @@ export function computeValue(valueId, deps, opts) {
     const { property } = value.payload;
     const moduleId = value.references.modules.module;
 
-    const data = computeAttribute(moduleId, property, deps, opts);
+    const data = computeAttribute(moduleId, property, { deps, opts, scope });
     return pathAsync(p, data);
+  }
+
+  if (value.category === "variable/input") {
+    return pathAsync(p, scope?.input);
   }
 
   if (!opts.pure && value.category === "function/future") {
@@ -134,7 +138,7 @@ export function computeValue(valueId, deps, opts) {
 
     // TODO: restrict function calls
     const resultArgs = mapObjectAsync(
-      (valueId) => computeValue(valueId, deps, opts),
+      (valueId) => computeValue(valueId, { deps, opts, scope }),
       args
     );
 
@@ -166,16 +170,16 @@ export function computeValue(valueId, deps, opts) {
     } = deps.stock[moduleType].methods[property];
 
     const resultSettings = mapAsync(
-      (field) => computeSetting(moduleId, field, deps, opts),
+      (field) => computeSetting(moduleId, field, { deps, opts, scope }),
       settings
     );
     const resultAttributes = mapAsync(
-      (key) => computeAttribute(moduleId, key, deps, opts),
+      (key) => computeAttribute(moduleId, key, { deps, opts, scope }),
       attributes
     );
     // TODO: restrict function calls
     const resultArgs = mapObjectAsync(
-      (valueId) => computeValue(valueId, deps, opts),
+      (valueId) => computeValue(valueId, { deps, opts, scope }),
       args
     );
 
@@ -214,7 +218,7 @@ export function computeValue(valueId, deps, opts) {
  * settings if they're not found in state. When computation is async,
  * then function will return a Promise.
  */
-export function computeAttribute(moduleId, key, deps, opts) {
+export function computeAttribute(moduleId, key, { deps, opts, scope }) {
   opts = defaultOpts(opts);
 
   /**
@@ -237,12 +241,12 @@ export function computeAttribute(moduleId, key, deps, opts) {
   } = deps.stock[moduleType].attributes[key];
 
   const resultAttributes = mapAsync(
-    (key) => computeAttribute(moduleId, key, deps, opts),
+    (key) => computeAttribute(moduleId, key, { deps, opts, scope }),
     attributes
   );
 
   const resultSettings = mapAsync(
-    (field) => computeSetting(moduleId, field, deps, opts),
+    (field) => computeSetting(moduleId, field, { deps, opts, scope }),
     settings
   );
 

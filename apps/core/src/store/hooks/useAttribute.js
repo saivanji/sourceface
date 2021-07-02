@@ -41,9 +41,11 @@ export default function useAttribute(key) {
   if (typeof data === "undefined" || isStale) {
     const state = store.getState();
     const result = computeAttribute(moduleId, key, {
-      state,
-      stock,
-      dispatch: store.dispatch,
+      deps: {
+        state,
+        stock,
+        dispatch: store.dispatch,
+      },
     });
 
     if (result instanceof Promise) {

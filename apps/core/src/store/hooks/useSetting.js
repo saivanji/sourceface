@@ -33,9 +33,11 @@ export default function useSetting(field) {
     const state = store.getState();
     // TODO: can we kick-off computing setting earlier to leverage Suspense more?
     const result = computeSetting(moduleId, field, {
-      state,
-      stock,
-      dispatch: store.dispatch,
+      deps: {
+        state,
+        stock,
+        dispatch: store.dispatch,
+      },
     });
 
     if (result instanceof Promise) {

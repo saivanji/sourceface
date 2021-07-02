@@ -10,12 +10,6 @@ import {
 import * as slices from "./slices";
 import { createRootReducer } from "./reducers";
 
-// TODO: implement "scope" support for computeSetting and most likely computeAttribute
-// TODO: provide args object from "useSettingCallback" to "scope" in "computeSetting". These args
-// have nothing in common between "args" definition from function. Find another name for that args
-// maybe "input"?
-// TODO: introduce new variable type for the input - variable/input
-
 // TODO: implement Input component
 // TODO: implement module methods. What should we do when we need to compute async stuff before calling method?
 // TODO: implement Container component

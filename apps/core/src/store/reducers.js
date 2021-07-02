@@ -69,15 +69,13 @@ export const createDependeciesReducer = (stock) =>
            * by passing "true" as the last argument, since no side-effects
            * can be possible when calculating next state inside of a reducer.
            */
-          const data = computeSetting(
-            moduleId,
-            field,
-            { state, stock },
-            {
+          const data = computeSetting(moduleId, field, {
+            deps: { state, stock },
+            opts: {
               pure: true,
               forceComputation: true,
-            }
-          );
+            },
+          });
 
           set(settingsState, [moduleId, field], data);
         } catch (err) {
@@ -118,15 +116,13 @@ function processSelfAttributes(moduleId, atomKey, draftState, stock) {
 
   for (let key of attributeKeys) {
     try {
-      const data = computeAttribute(
-        moduleId,
-        key,
-        { state: draftState, stock },
-        {
+      const data = computeAttribute(moduleId, key, {
+        deps: { state: draftState, stock },
+        opts: {
           pure: true,
           forceComputation: true,
-        }
-      );
+        },
+      });
 
       set(attributesState, [moduleId, key], data);
     } catch (err) {
