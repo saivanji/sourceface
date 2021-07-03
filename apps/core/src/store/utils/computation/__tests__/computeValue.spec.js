@@ -1,8 +1,8 @@
 import FakeState from "../../../../fakes/state";
 import FakeStock from "../../../../fakes/stock";
-import { computeValue } from "../../computation";
-import * as computation from "../../computation";
 import { ImpureComputation } from "../../../exceptions";
+import computeValue from "../computeValue";
+import * as computeAttribute from "../computeAttribute";
 
 const purityOptions = [true, false];
 
@@ -43,11 +43,11 @@ it.each(purityOptions)(
     const stock = fakeStock.contents();
 
     const spy = jest
-      .spyOn(computation, "computeAttribute")
+      .spyOn(computeAttribute, "default")
       .mockImplementation(() => "mocked");
 
     expect(
-      computation.computeValue(valueId, {
+      computeValue(valueId, {
         deps: { state, stock },
         opts: { pure },
       })
