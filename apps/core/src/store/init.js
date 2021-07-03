@@ -16,8 +16,11 @@ import { createRootReducer } from "./reducers";
 // TODO: use worker threads to compute non critical computation code or state update in the background.
 // Compute in a separate thread sync dependencies(dependenciesReducer - after atom update) and async dependencies(hooks - after populate update).
 // Moreover, inside of dependenciesReducer spawn new threads for independent computation parts.
-// Implement in form of middleware? Which listens for atom update, data cache populate actions, and spawns
-// new threads to perform all computation as independently as possible in the background.
+// Implement in form of middleware? Which listens for atom update and spawns new threads to perform all computation as independently as possible in the background.
+//
+// Optimization will be done in 2 places:
+// 1. Middleware, which listens atom update actions and performs post atom update logic from dependenciesReducer in the background.
+// 2. Async computation in hooks(useSetting and useAttribute) will be spawned in the new thread.
 //
 // First, make test with a huge slowdown.
 // 1. With current thread blocking setup(make counter really laggy, simulate current module computation fast, and dependent modules computation slower)
