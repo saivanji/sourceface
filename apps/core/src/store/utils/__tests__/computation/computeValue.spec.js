@@ -14,7 +14,7 @@ it("throws with ImpureComputation when trying to compute future function in pure
   const stock = fakeStock.contents();
 
   expect(() =>
-    computeValue(valueId, { state, stock }, { pure: true })
+    computeValue(valueId, { deps: { state, stock }, opts: { pure: true } })
   ).toThrowError(ImpureComputation);
 });
 
@@ -25,7 +25,9 @@ it.each(purityOptions)("computes constant variable when pure is %s", (pure) => {
   const state = fakeState.contents();
   const stock = fakeStock.contents();
 
-  expect(computeValue(valueId, { state, stock }, { pure })).toEqual("foo");
+  expect(
+    computeValue(valueId, { deps: { state, stock }, opts: { pure } })
+  ).toEqual("foo");
 });
 
 it.each(purityOptions)(
@@ -45,15 +47,16 @@ it.each(purityOptions)(
       .mockImplementation(() => "mocked");
 
     expect(
-      computation.computeValue(valueId, { state, stock }, { pure })
+      computation.computeValue(valueId, {
+        deps: { state, stock },
+        opts: { pure },
+      })
     ).toEqual("mocked");
     expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy).toHaveBeenCalledWith(
-      moduleId,
-      attributeKey,
-      { state, stock },
-      { pure }
-    );
+    expect(spy).toHaveBeenCalledWith(moduleId, attributeKey, {
+      deps: { state, stock },
+      opts: { pure },
+    });
   }
 );
 

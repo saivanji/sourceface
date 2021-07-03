@@ -117,7 +117,7 @@ export const set = (...args) => setWith(...args, Object);
  * If provided input is a Promise, we resolve it and after apply function
  * on a result, otherwise simply applying function on provided data.
  */
-export function then(x, fn) {
+export function pipe(x, fn) {
   if (x instanceof Promise) {
     return x.then(fn);
   }

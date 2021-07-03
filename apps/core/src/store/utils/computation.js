@@ -3,6 +3,7 @@ import * as slices from "../slices";
 import {
   isSettingStale,
   getStage,
+  getStageName,
   getValue,
   getModuleType,
   getAtom,
@@ -17,7 +18,7 @@ import {
   reduceAsync,
   pathAsync,
   mapAsync,
-  then,
+  pipe,
   all,
 } from "./common";
 import { makeAtomsDependencies } from "./dependencies";
@@ -50,10 +51,26 @@ export function computeSetting(moduleId, field, { deps, opts, scope }) {
   }
 
   const stageIds = getFieldStageIds(deps.state, [moduleId, field]);
+  let stages = {};
 
-  return then(
+  return pipe(
     reduceAsync(
-      (_, stageId) => computeSingleStage(stageId, { deps, opts, scope }),
+      (_, stageId) => {
+        const nextScope = { ...scope, stages };
+
+        return pipe(
+          computeSingleStage(stageId, { deps, opts, scope: nextScope }),
+          (data) => {
+            /**
+             * Adding stage result to the scope object.
+             */
+            const stageName = getStageName(deps.state, stageId);
+            stages[stageName] = data;
+
+            return data;
+          }
+        );
+      },
       null,
       stageIds
     ),
@@ -145,7 +162,7 @@ export function computeValue(valueId, { deps, opts, scope }) {
     // TODO: pass down and compute arguments
     // TODO: return cached values instead of execution if they exist in the state.
     // TODO: apply loader on a "future" level
-    return then(resultArgs, (args) => {
+    return pipe(resultArgs, (args) => {
       return execute(args, value.references).then((response) => {
         // TODO: how to invalidate cache at that point?
         // TODO: most likely invalidation should be performed on a future and not on the operation
@@ -252,7 +269,7 @@ export function computeAttribute(moduleId, key, { deps, opts, scope }) {
 
   const resultAtoms = atoms.map((key) => getAtom(deps.state, [moduleId, key]));
 
-  return then(
+  return pipe(
     all(
       [resultSettings, resultAttributes],
       ([resultSettings, resultAttributes]) =>

@@ -37,6 +37,11 @@ export const getModuleType = (state, moduleId) => {
 export const getStage = (state, stageId) => state.entities.stages[stageId];
 
 /**
+ * Returns stage name by it's id
+ */
+export const getStageName = (state, stageId) => getStage(state, stageId).name;
+
+/**
  * Returns value by it's id
  */
 export const getValue = (state, valueId) => state.entities.values[valueId];
