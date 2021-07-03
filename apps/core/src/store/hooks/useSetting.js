@@ -32,6 +32,7 @@ export default function useSetting(field) {
   if (typeof data === "undefined" || isStale) {
     const state = store.getState();
     // TODO: can we kick-off computing setting earlier to leverage Suspense more?
+    // TODO: compute in a separate thread
     const result = computeSetting(moduleId, field, {
       deps: {
         state,

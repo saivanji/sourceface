@@ -10,14 +10,25 @@ import {
 import * as slices from "./slices";
 import { createRootReducer } from "./reducers";
 
+// TODO: use worker threads to compute non critical computation code or state update in the background.
+// Compute in a separate thread sync dependencies(dependenciesReducer - after atom update) and async dependencies(hooks - after populate update).
+// Moreover, inside of dependenciesReducer spawn new threads for independent computation parts.
+// Implement in form of middleware? Which listens for atom update, data cache populate actions, and spawns
+// new threads to perform all computation as independently as possible in the background.
+//
+// First, make test with a huge slowdown.
+// 1. With current thread blocking setup(make counter really laggy, simulate current module computation fast, and dependent modules computation slower)
+// 2. With multi-thread setup
+//
+// TODO: How to avoid duplicating cached data in operations and computations?
+// implement linking and global data caching
+
 // TODO: implement Input component
 // TODO: implement module methods. What should we do when we need to compute async stuff before calling method?
 // TODO: implement Container component
 // TODO: implement @mount field
 // TODO: implement wildcard values. form_*.reveal(), form_*.value
 // TODO: implement caching operations, invalidating their cache
-// How to avoid duplicating cached data in operations and computations?
-// TODO: implement linking and global data caching
 //
 // TODO: integrate grid
 // TODO: implement editor, implement separation of settings and computations

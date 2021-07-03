@@ -1,3 +1,4 @@
+import { isNil } from "ramda";
 import * as slices from "../../slices";
 import { getModuleType, getAtom, getAttribute } from "../../selectors";
 import { mapAsync, pipe, all } from "../common";
@@ -19,7 +20,7 @@ export default function computeAttribute(moduleId, key, { deps, opts, scope }) {
   const cached = getAttribute(deps.state, [moduleId, key]);
 
   // TODO: should consider staleness same way is done in setting?
-  if (!opts.forceComputation && cached) {
+  if (!opts.forceComputation && !isNil(cached)) {
     return cached;
   }
 

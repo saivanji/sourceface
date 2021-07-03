@@ -26,6 +26,7 @@ export const createRootReducer = (stock, spec) => {
   };
 };
 
+// TODO: compute in a separate thread
 /**
  * Reducer, responsible for populating settings data and marking async
  * settings as stale in response to module atom change.

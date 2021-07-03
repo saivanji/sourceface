@@ -1,3 +1,4 @@
+import { isNil } from "ramda";
 import * as slices from "../../slices";
 import {
   isSettingStale,
@@ -22,7 +23,7 @@ export default function computeSetting(moduleId, field, { deps, opts, scope }) {
   const cached = getSetting(deps.state, [moduleId, field]);
   const isStale = isSettingStale(deps.state, [moduleId, field]);
 
-  if (!opts.forceComputation && cached && !isStale) {
+  if (!opts.forceComputation && !isNil(cached) && !isStale) {
     return cached;
   }
 
