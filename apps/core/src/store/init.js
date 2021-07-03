@@ -10,6 +10,9 @@ import {
 import * as slices from "./slices";
 import { createRootReducer } from "./reducers";
 
+// TODO: How to avoid duplicating cached data in operations and computations?
+// implement linking and global data caching
+
 // TODO: use worker threads to compute non critical computation code or state update in the background.
 // Compute in a separate thread sync dependencies(dependenciesReducer - after atom update) and async dependencies(hooks - after populate update).
 // Moreover, inside of dependenciesReducer spawn new threads for independent computation parts.
@@ -19,9 +22,6 @@ import { createRootReducer } from "./reducers";
 // First, make test with a huge slowdown.
 // 1. With current thread blocking setup(make counter really laggy, simulate current module computation fast, and dependent modules computation slower)
 // 2. With multi-thread setup
-//
-// TODO: How to avoid duplicating cached data in operations and computations?
-// implement linking and global data caching
 
 // TODO: implement Input component
 // TODO: implement module methods. What should we do when we need to compute async stuff before calling method?
