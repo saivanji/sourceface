@@ -25,6 +25,13 @@ import { createRootReducer } from "./reducers";
 // First, make test with a huge slowdown.
 // 1. With current thread blocking setup(make counter really laggy, simulate current module computation fast, and dependent modules computation slower)
 // 2. With multi-thread setup
+//
+// We might not need "stale" state, since instead of marking impure computations as stale in dependenciesReducer we can compute impure things right away
+// in the middleware in response to atom update actions.
+//
+// Code of dependenciesReducer will be moved into middleware and splitted on independent threads.
+//
+// TODO: also how we perform dependencies recomputation after setting/attribute is populated with new data but atoms not changed?
 
 // TODO: implement Input component
 // TODO: implement module methods. What should we do when we need to compute async stuff before calling method?
