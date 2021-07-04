@@ -82,12 +82,21 @@ export default function init(entities, stock) {
   });
 
   const moduleIds = keys(entities.modules);
-  let preloadedState = reducer({ entities, ids: moduleIds }, {});
+
+  let preloadedState = {
+    entities,
+    ids: moduleIds,
+    atoms: {},
+    attributes: {},
+    data: { items: {}, lastId: 0 },
+    stale: {},
+    dependencies: {},
+    settings: {},
+  };
 
   preloadedState.entities.modules = populateConfigs(stock, preloadedState);
   preloadedState.atoms = populateAtoms(stock, preloadedState);
   preloadedState.dependencies = populateDependencies(stock, preloadedState);
-
   preloadedState.settings = populateSettings(stock, preloadedState);
   preloadedState.attributes = populateAttributes(stock, preloadedState);
 

@@ -23,8 +23,8 @@ export function populateSettings(stock, state) {
           });
 
           if (!state.data.items.hasOwnProperty(data.id)) {
-            // console.log(data);
             state.data.items[data.id] = data.value;
+            state.data.lastId = data.id;
           }
 
           return { path: data.path, data: data.id };
@@ -68,6 +68,7 @@ export function populateAttributes(stock, state) {
 
           if (!state.data.items.hasOwnProperty(data.id)) {
             state.data.items[data.id] = data.value;
+            state.data.lastId = data.id;
           }
 
           return {

@@ -15,14 +15,13 @@ export default createSlice({
   name: "data",
   initialState,
   extraReducers: (builder) => {
-    builder.addMatcher(
-      isAssocAction,
-      settings.actions.assoc,
-      (state, action) => {
-        const { id, data } = action.payload;
+    builder.addMatcher(isAssocAction, (state, action) => {
+      const { id, data } = action.payload;
 
+      if (data) {
         state.items[id] = data;
+        state.lastId = id;
       }
-    );
+    });
   },
 });
