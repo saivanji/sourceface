@@ -11,13 +11,13 @@ export default createSlice({
   initialState,
   extraReducers: (builder) => {
     /**
-     * When "populate" action is dispatched, we need to make its setting data fresh so
+     * When "assoc" action is dispatched, we need to make its setting data fresh so
      * components can get that data available.
      */
-    builder.addCase(settings.actions.populate, (state, action) => {
-      const { moduleId, field } = action.payload;
+    builder.addCase(settings.actions.assoc, (state, action) => {
+      const { info } = action.payload;
 
-      delete state[moduleId]?.[field];
+      delete state[info.moduleId]?.[info.field];
     });
   },
 });

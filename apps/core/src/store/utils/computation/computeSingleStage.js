@@ -1,5 +1,5 @@
 import { getStage } from "../../selectors";
-import { mapObjectAsync } from "../common";
+// import { mapObjectAsync } from "../common";
 import computeValue from "./computeValue";
 
 /**
@@ -13,9 +13,9 @@ export default function computeSingleStage(stageId, { deps, opts, scope }) {
     return computeValue(valueId, { deps, opts, scope });
   }
 
-  if (stage.type === "dictionary") {
-    return mapObjectAsync((valueId) => {
-      return computeValue(valueId, { deps, opts, scope });
-    }, stage.values);
-  }
+  // if (stage.type === "dictionary") {
+  //   return mapObjectAsync((valueId) => {
+  //     return computeValue(valueId, { deps, opts, scope });
+  //   }, stage.values);
+  // }
 }

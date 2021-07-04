@@ -7,10 +7,10 @@ export default createSlice({
   name: "attributes",
   initialState,
   reducers: {
-    populate(state, action) {
-      const { moduleId, key, data } = action.payload;
+    assoc(state, action) {
+      const { id, info, path } = action.payload;
 
-      set(state, [moduleId, key], data);
+      set(state, [info.moduleId, info.key], { data: id, path });
     },
   },
 });

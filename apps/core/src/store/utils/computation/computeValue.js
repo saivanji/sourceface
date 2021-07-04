@@ -2,17 +2,17 @@ import * as futures from "../../futures";
 import * as slices from "../../slices";
 import { getValue, getModuleType, getAtoms } from "../../selectors";
 import { ImpureComputation } from "../../exceptions";
-import { mapObjectAsync, pathAsync, mapAsync, pipe, all } from "../common";
+import { mapObjectAsync, mapAsync, pipe, all } from "../common";
 import { makeAtomsDependencies } from "../dependencies";
 import computeAttribute from "./computeAttribute";
 import computeSetting from "./computeSetting";
+import Data from "./data";
 
 /**
  * Computes value data.
  */
 export default function computeValue(valueId, { deps, opts, scope }) {
   const value = getValue(deps.state, valueId);
-  const p = value.path || [];
 
   /**
    * Making sure we do not perform impure computations
@@ -29,27 +29,30 @@ export default function computeValue(valueId, { deps, opts, scope }) {
 
   if (value.category === "variable/constant") {
     const data = value.payload.value;
-    return pathAsync(p, data);
+
+    return new Data(data, value.path, { deps, opts });
   }
 
   if (value.category === "variable/attribute") {
     const { property } = value.payload;
     const moduleId = value.references.modules.module;
 
-    const data = computeAttribute(moduleId, property, { deps, opts, scope });
-    return pathAsync(p, data);
+    return pipe(
+      computeAttribute(moduleId, property, { deps, opts, scope }),
+      (data) => data.assignPath(value.path)
+    );
   }
 
   if (value.category === "variable/input") {
-    return pathAsync(p, scope?.input);
+    return new Data(scope?.input, value.path, { deps, opts });
   }
 
   if (!opts.pure && value.category === "function/future") {
-    return computeFuture(value, p, { deps, opts, scope });
+    return computeFuture(value, { deps, opts, scope });
   }
 
   if (!opts.pure && value.category === "function/method") {
-    return computeMethod(value, p, { deps, opts, scope });
+    return computeMethod(value, { deps, opts, scope });
   }
 
   // function/future, for operations and other async things
@@ -58,7 +61,7 @@ export default function computeValue(valueId, { deps, opts, scope }) {
   // TODO: should module function type be part of effect?
 }
 
-function computeFuture(value, path, { deps, opts, scope }) {
+function computeFuture(value, { deps, opts, scope }) {
   const { execute } = futures[value.payload.kind];
   const { args = {} } = value;
 
@@ -77,12 +80,12 @@ function computeFuture(value, path, { deps, opts, scope }) {
       // TODO: most likely invalidation should be performed on a future and not on the operation
       // level, since "controller" kind of future may also need invalidation
 
-      return pathAsync(path, response.data);
+      return new Data(response.data, value.path, { deps, opts });
     });
   });
 }
 
-function computeMethod(value, _path, { deps, opts, scope }) {
+function computeMethod(value, { deps, opts, scope }) {
   const { property } = value.payload;
   const moduleId = value.references.modules.module;
   const { args = {} } = value;

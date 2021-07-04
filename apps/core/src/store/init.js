@@ -75,6 +75,7 @@ export default function init(entities, stock) {
     ids: slices.ids.reducer,
     atoms: slices.atoms.reducer,
     attributes: slices.attributes.reducer,
+    data: slices.data.reducer,
     settings: slices.settings.reducer,
     stale: slices.stale.reducer,
     dependencies: slices.dependencies.reducer,
@@ -85,8 +86,9 @@ export default function init(entities, stock) {
 
   preloadedState.entities.modules = populateConfigs(stock, preloadedState);
   preloadedState.atoms = populateAtoms(stock, preloadedState);
-  preloadedState.settings = populateSettings(stock, preloadedState);
   preloadedState.dependencies = populateDependencies(stock, preloadedState);
+
+  preloadedState.settings = populateSettings(stock, preloadedState);
   preloadedState.attributes = populateAttributes(stock, preloadedState);
 
   return configureStore({

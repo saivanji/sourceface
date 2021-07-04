@@ -1,9 +1,15 @@
 import { isNil } from "ramda";
 import * as slices from "../../slices";
-import { getModuleType, getAtom, getAttribute } from "../../selectors";
+import {
+  getModuleType,
+  getAtom,
+  getAttribute,
+  getAttributeDataId,
+} from "../../selectors";
 import { mapAsync, pipe, all } from "../common";
 import { defaultOpts } from "./defaults";
 import computeSetting from "./computeSetting";
+import Data from "./data";
 
 /**
  * Applies attribute selector of a specific module. Computes dependent
@@ -21,7 +27,8 @@ export default function computeAttribute(moduleId, key, { deps, opts, scope }) {
 
   // TODO: should consider staleness same way is done in setting?
   if (!opts.forceComputation && !isNil(cached)) {
-    return cached;
+    const id = getAttributeDataId(deps.state, [moduleId, key]);
+    return new Data(cached, undefined, { id, deps, opts });
   }
 
   const moduleType = getModuleType(deps.state, moduleId);
@@ -56,20 +63,16 @@ export default function computeAttribute(moduleId, key, { deps, opts, scope }) {
     ),
     (data) => {
       /**
-       * When not in pure mode and dispatch is supplied - populating attributes
-       * state with new data.
+       * Data coming from selector above might be not wrapped in Data.
+       * In that case wrapping it so we have consistent type.
        */
-      if (deps.dispatch && !opts.pure) {
-        deps.dispatch(
-          slices.attributes.actions.populate({
-            moduleId,
-            key,
-            data,
-          })
-        );
-      }
+      const nextData = !(data instanceof Data)
+        ? new Data(data, undefined, { deps, opts })
+        : data;
 
-      return data;
+      nextData.save(slices.attributes.actions.assoc, { moduleId, key });
+
+      return nextData;
     }
   );
 }

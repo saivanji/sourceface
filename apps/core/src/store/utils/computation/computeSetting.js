@@ -4,11 +4,13 @@ import {
   isSettingStale,
   getStageName,
   getSetting,
+  getSettingDataId,
   getFieldStageIds,
 } from "../../selectors";
 import { reduceAsync, pipe } from "../common";
 import { defaultOpts } from "./defaults";
 import computeSingleStage from "./computeSingleStage";
+import Data from "./data";
 
 /**
  * Compute specific setting for given stage ids.
@@ -24,7 +26,8 @@ export default function computeSetting(moduleId, field, { deps, opts, scope }) {
   const isStale = isSettingStale(deps.state, [moduleId, field]);
 
   if (!opts.forceComputation && !isNil(cached) && !isStale) {
-    return cached;
+    const id = getSettingDataId(deps.state, [moduleId, field]);
+    return new Data(cached, undefined, { id, deps, opts });
   }
 
   const stageIds = getFieldStageIds(deps.state, [moduleId, field]);
@@ -52,19 +55,7 @@ export default function computeSetting(moduleId, field, { deps, opts, scope }) {
       stageIds
     ),
     (data) => {
-      /**
-       * When not in pure mode and dispatch is supplied - populating settings
-       * state with new data.
-       */
-      if (deps.dispatch && !opts.pure) {
-        deps.dispatch(
-          slices.settings.actions.populate({
-            moduleId,
-            field,
-            data,
-          })
-        );
-      }
+      data?.save(slices.settings.actions.assoc, { moduleId, field });
 
       return data;
     }

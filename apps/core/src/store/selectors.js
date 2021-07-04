@@ -1,3 +1,4 @@
+import { path } from "ramda";
 import { createSelector } from "@reduxjs/toolkit";
 
 const emptyList = [];
@@ -52,6 +53,9 @@ export const getFieldStageIds = (state, [moduleId, field]) => {
   return module.fields?.[field] || emptyList;
 };
 
+export const getSettingDataId = (state, [moduleId, field]) =>
+  state.settings[moduleId]?.[field]?.data;
+
 /**
  * Returns calculated setting data for the specific module field.
  */
@@ -66,7 +70,13 @@ export const getSetting = (state, [moduleId, field]) => {
     return module.config[field];
   }
 
-  return state.settings[moduleId]?.[field];
+  const association = state.settings[moduleId]?.[field];
+
+  if (association) {
+    const { data: dataId, path: p = emptyList } = association;
+
+    return path(p, state.data.items[dataId]);
+  }
 };
 
 export const isSettingStale = (state, [moduleId, field]) =>
@@ -95,8 +105,20 @@ export const getAtom = (state, [moduleId, key]) =>
 export const getAtomDependencies = (state, [moduleId, key]) =>
   state.dependencies[moduleId]?.[key];
 
+export const getAttributeDataId = (state, [moduleId, key]) =>
+  state.attributes[moduleId]?.[key]?.data;
+
 /**
  * Returns module attribute by it's key.
  */
-export const getAttribute = (state, [moduleId, key]) =>
-  state.attributes[moduleId]?.[key];
+export const getAttribute = (state, [moduleId, key]) => {
+  const association = state.attributes[moduleId]?.[key];
+
+  if (association) {
+    const { data: dataId, path: p = emptyList } = association;
+
+    return path(p, state.data.items[dataId]);
+  }
+};
+
+export const getNextDataId = (state) => state.data.lastId + 1;

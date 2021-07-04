@@ -14,13 +14,20 @@ export function populateSettings(stock, state) {
     (module, moduleId) =>
       cleanMapObj((_, field) => {
         try {
-          return computeSetting(moduleId, field, {
+          const data = computeSetting(moduleId, field, {
             deps: { state, stock },
             opts: {
               pure: true,
               forceComputation: true,
             },
           });
+
+          if (!state.data.items.hasOwnProperty(data.id)) {
+            // console.log(data);
+            state.data.items[data.id] = data.value;
+          }
+
+          return { path: data.path, data: data.id };
         } catch (err) {
           /**
            * We do not expect impure function to be called when we perform
@@ -51,13 +58,22 @@ export function populateAttributes(stock, state) {
     (module, moduleId) =>
       cleanMapObj((_, key) => {
         try {
-          return computeAttribute(moduleId, key, {
+          const data = computeAttribute(moduleId, key, {
             deps: { state, stock },
             opts: {
               pure: true,
               forceComputation: true,
             },
           });
+
+          if (!state.data.items.hasOwnProperty(data.id)) {
+            state.data.items[data.id] = data.value;
+          }
+
+          return {
+            path: data.path,
+            data: data.id,
+          };
         } catch (err) {
           /**
            * Since we perform settings computations during computation of the
