@@ -38,20 +38,20 @@ export default function useAttribute(key) {
   );
   const data = useSelector((state) => getAttribute(state, [moduleId, key]));
 
-  if (typeof data === "undefined" || isStale) {
-    const state = store.getState();
-    const result = computeAttribute(moduleId, key, {
-      deps: {
-        state,
-        stock,
-        dispatch: store.dispatch,
-      },
-    });
+  //   if (typeof data === "undefined" || isStale) {
+  //     const state = store.getState();
+  //     const result = computeAttribute(moduleId, key, {
+  //       deps: {
+  //         state,
+  //         stock,
+  //         dispatch: store.dispatch,
+  //       },
+  //     });
 
-    if (result instanceof Promise) {
-      throw result;
-    }
-  }
+  //     if (result instanceof Promise) {
+  //       throw result;
+  //     }
+  //   }
 
   return data;
 }

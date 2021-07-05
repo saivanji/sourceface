@@ -29,22 +29,22 @@ export default function useSetting(field) {
   );
 
   // TODO: make sure the requesting field is a Future
-  if (typeof data === "undefined" || isStale) {
-    const state = store.getState();
-    // TODO: can we kick-off computing setting earlier to leverage Suspense more?
-    // TODO: compute in a separate thread
-    const result = computeSetting(moduleId, field, {
-      deps: {
-        state,
-        stock,
-        dispatch: store.dispatch,
-      },
-    });
+  // if (typeof data === "undefined" || isStale) {
+  //   const state = store.getState();
+  //   // TODO: can we kick-off computing setting earlier to leverage Suspense more?
+  //   // TODO: compute in a separate thread
+  //   const result = computeSetting(moduleId, field, {
+  //     deps: {
+  //       state,
+  //       stock,
+  //       dispatch: store.dispatch,
+  //     },
+  //   });
 
-    if (result instanceof Promise) {
-      throw result;
-    }
-  }
+  //   if (result instanceof Promise) {
+  //     throw result;
+  //   }
+  // }
 
   return data;
 }

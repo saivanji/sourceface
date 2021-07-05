@@ -10,17 +10,17 @@ const initialState = {};
 
 export const createRootReducer = (stock, spec) => {
   const reducer = combineReducers(spec);
-  const dependenciesReducer = createDependeciesReducer(stock);
+  // const dependenciesReducer = createDependeciesReducer(stock);
 
   return function (state = initialState, action) {
     const nextState = reducer(state, action);
 
-    if (
-      action.type === slices.atoms.actions.update.type ||
-      action.type === slices.atoms.actions.updateMany.type
-    ) {
-      return dependenciesReducer(nextState, action);
-    }
+    // if (
+    //   action.type === slices.atoms.actions.update.type ||
+    //   action.type === slices.atoms.actions.updateMany.type
+    // ) {
+    //   return dependenciesReducer(nextState, action);
+    // }
 
     return nextState;
   };

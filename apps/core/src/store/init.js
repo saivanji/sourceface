@@ -1,11 +1,11 @@
 import { keys } from "ramda";
 import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import {
-  populateSettings,
   populateAtoms,
   populateDependencies,
-  populateAttributes,
   populateConfigs,
+  loadSettings,
+  loadAttributes,
 } from "./utils";
 import * as slices from "./slices";
 import { createRootReducer } from "./reducers";
@@ -97,13 +97,16 @@ export default function init(entities, stock) {
   preloadedState.entities.modules = populateConfigs(stock, preloadedState);
   preloadedState.atoms = populateAtoms(stock, preloadedState);
   preloadedState.dependencies = populateDependencies(stock, preloadedState);
-  preloadedState.settings = populateSettings(stock, preloadedState);
-  preloadedState.attributes = populateAttributes(stock, preloadedState);
 
-  return configureStore({
+  const store = configureStore({
     reducer,
     preloadedState,
     middleware,
     devTools: true,
   });
+
+  loadSettings(stock, store);
+  loadAttributes(stock, store);
+
+  return store;
 }

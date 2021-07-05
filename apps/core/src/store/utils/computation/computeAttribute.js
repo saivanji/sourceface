@@ -19,19 +19,21 @@ import Data from "./data";
 export default function computeAttribute(moduleId, key, { deps, opts, scope }) {
   opts = defaultOpts(opts);
 
+  const state = deps.store.getState();
+
   /**
    * Returning cached data if it exists unless "forceComputation"
    * is specified.
    */
-  const cached = getAttribute(deps.state, [moduleId, key]);
+  const cached = getAttribute(state, [moduleId, key]);
 
   // TODO: should consider staleness same way is done in setting?
   if (!opts.forceComputation && !isNil(cached)) {
-    const id = getAttributeDataId(deps.state, [moduleId, key]);
+    const id = getAttributeDataId(state, [moduleId, key]);
     return new Data(cached, undefined, { id, deps, opts });
   }
 
-  const moduleType = getModuleType(deps.state, moduleId);
+  const moduleType = getModuleType(state, moduleId);
   const {
     selector,
     attributes = [],
@@ -49,7 +51,7 @@ export default function computeAttribute(moduleId, key, { deps, opts, scope }) {
     settings
   );
 
-  const resultAtoms = atoms.map((key) => getAtom(deps.state, [moduleId, key]));
+  const resultAtoms = atoms.map((key) => getAtom(state, [moduleId, key]));
 
   return pipe(
     all(

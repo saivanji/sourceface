@@ -1,95 +1,37 @@
 import { pick } from "ramda";
 import { getModulesEntities } from "../selectors";
-import { ImpureComputation } from "../exceptions";
 import { cleanMapObj, set } from "./common";
 import { computeSetting, computeAttribute } from "./computation";
 
-/**
- * Computes settings of all modules groupped by module id and field.
- */
-export function populateSettings(stock, state) {
-  const modules = getModulesEntities(state);
+export const loadSettings = (stock, store) => {
+  const state = store.getState();
+  const { modules } = state.entities;
 
-  return cleanMapObj(
-    (module, moduleId) =>
-      cleanMapObj((_, field) => {
-        try {
-          const data = computeSetting(moduleId, field, {
-            deps: { state, stock },
-            opts: {
-              pure: true,
-              forceComputation: true,
-            },
-          });
+  for (let moduleId in modules) {
+    const module = modules[moduleId];
 
-          if (!state.data.items.hasOwnProperty(data.id)) {
-            state.data.items[data.id] = data.value;
-            state.data.lastId = data.id;
-          }
+    for (let field in module.fields) {
+      computeSetting(moduleId, field, {
+        deps: { store, stock },
+      });
+    }
+  }
+};
 
-          return { path: data.path, data: data.id };
-        } catch (err) {
-          /**
-           * We do not expect impure function to be called when we perform
-           * computation in pure mode.
-           *
-           * Returning "undefined" for the impure setting computation so it won't
-           * get populated in the state. Therefore that computation will be performed
-           * from the component.
-           */
-          if (err instanceof ImpureComputation) {
-            return undefined;
-          }
+export const loadAttributes = (stock, store) => {
+  const state = store.getState();
+  const { modules } = state.entities;
 
-          throw err;
-        }
-      }, module.fields),
-    modules
-  );
-}
+  for (let moduleId in modules) {
+    const module = modules[moduleId];
 
-/**
- * Computes attributes of all modules groupped by module id and attribute key
- */
-export function populateAttributes(stock, state) {
-  const modules = getModulesEntities(state);
-
-  return cleanMapObj(
-    (module, moduleId) =>
-      cleanMapObj((_, key) => {
-        try {
-          const data = computeAttribute(moduleId, key, {
-            deps: { state, stock },
-            opts: {
-              pure: true,
-              forceComputation: true,
-            },
-          });
-
-          if (!state.data.items.hasOwnProperty(data.id)) {
-            state.data.items[data.id] = data.value;
-            state.data.lastId = data.id;
-          }
-
-          return {
-            path: data.path,
-            data: data.id,
-          };
-        } catch (err) {
-          /**
-           * Since we perform settings computations during computation of the
-           * attribute, we need to ignore impure computations by the same reason.
-           */
-          if (err instanceof ImpureComputation) {
-            return undefined;
-          }
-
-          throw err;
-        }
-      }, stock[module.type].attributes),
-    modules
-  );
-}
+    for (let key in stock[module.type].attributes) {
+      computeAttribute(moduleId, key, {
+        deps: { store, stock },
+      });
+    }
+  }
+};
 
 /**
  * Merges modules config data with initial config from the definition.

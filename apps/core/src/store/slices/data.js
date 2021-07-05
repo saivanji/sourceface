@@ -18,7 +18,7 @@ export default createSlice({
     builder.addMatcher(isAssocAction, (state, action) => {
       const { id, data } = action.payload;
 
-      if (data) {
+      if (typeof data !== "undefined") {
         state.items[id] = data;
         state.lastId = id;
       }

@@ -26,18 +26,17 @@ export default class Data {
   }
 
   save(createAction, info) {
+    const state = this.deps.store.getState();
     const cached = !isNil(this.id);
-    const id = this.id || getNextDataId(this.deps.state);
+    const id = this.id || getNextDataId(state);
 
-    if (this.deps.dispatch && !this.opts.pure) {
-      const payload = {
-        info,
-        id,
-        path: this.path,
-        data: !cached ? this.value : undefined,
-      };
-      this.deps.dispatch(createAction(payload));
-    }
+    const payload = {
+      info,
+      id,
+      path: this.path,
+      data: !cached ? this.value : undefined,
+    };
+    this.deps.store.dispatch(createAction(payload));
 
     if (!cached) {
       this.id = id;

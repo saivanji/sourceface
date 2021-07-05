@@ -1,7 +1,6 @@
 import * as futures from "../../futures";
 import * as slices from "../../slices";
 import { getValue, getModuleType, getAtoms } from "../../selectors";
-import { ImpureComputation } from "../../exceptions";
 import { mapObjectAsync, mapAsync, pipe, all } from "../common";
 import { makeAtomsDependencies } from "../dependencies";
 import computeAttribute from "./computeAttribute";
@@ -12,20 +11,8 @@ import Data from "./data";
  * Computes value data.
  */
 export default function computeValue(valueId, { deps, opts, scope }) {
-  const value = getValue(deps.state, valueId);
-
-  /**
-   * Making sure we do not perform impure computations
-   * in pure mode.
-   */
-  if (
-    opts.pure &&
-    (value.category === "function/future" ||
-      value.category === "function/effect" ||
-      value.category === "function/method")
-  ) {
-    throw new ImpureComputation();
-  }
+  const state = deps.store.getState();
+  const value = getValue(state, valueId);
 
   if (value.category === "variable/constant") {
     const data = value.payload.value;
@@ -47,11 +34,11 @@ export default function computeValue(valueId, { deps, opts, scope }) {
     return new Data(scope?.input, value.path, { deps, opts });
   }
 
-  if (!opts.pure && value.category === "function/future") {
+  if (value.category === "function/future") {
     return computeFuture(value, { deps, opts, scope });
   }
 
-  if (!opts.pure && value.category === "function/method") {
+  if (value.category === "function/method") {
     return computeMethod(value, { deps, opts, scope });
   }
 
@@ -89,9 +76,10 @@ function computeMethod(value, { deps, opts, scope }) {
   const { property } = value.payload;
   const moduleId = value.references.modules.module;
   const { args = {} } = value;
+  const state = deps.store.getState();
 
-  const atoms = getAtoms(deps.state, moduleId);
-  const moduleType = getModuleType(deps.state, moduleId);
+  const atoms = getAtoms(state, moduleId);
+  const moduleType = getModuleType(state, moduleId);
   const {
     call,
     settings = [],
@@ -116,9 +104,10 @@ function computeMethod(value, { deps, opts, scope }) {
     [resultSettings, resultAttributes, resultArgs],
     ([settings, attributes, args]) => {
       const batch = (fragment) => {
-        const dependencies = makeAtomsDependencies(deps.state, moduleId, atoms);
+        const state = deps.store.getState();
+        const dependencies = makeAtomsDependencies(state, moduleId, atoms);
 
-        deps.dispatch(
+        deps.store.dispatch(
           slices.atoms.actions.updateMany({
             moduleId,
             fragment,

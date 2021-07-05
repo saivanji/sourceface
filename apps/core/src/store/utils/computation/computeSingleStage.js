@@ -6,7 +6,8 @@ import computeValue from "./computeValue";
  * Computes specific stage data
  */
 export default function computeSingleStage(stageId, { deps, opts, scope }) {
-  const stage = getStage(deps.state, stageId);
+  const state = deps.store.getState();
+  const stage = getStage(state, stageId);
 
   if (stage.type === "value") {
     const valueId = stage.values.root;
