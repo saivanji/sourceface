@@ -1,4 +1,4 @@
-import produce from "immer";
+import setWith from "lodash.setwith";
 
 export default class FakeStock {
   constructor() {
@@ -9,16 +9,28 @@ export default class FakeStock {
     return this.stock;
   }
 
-  updateStock(fn) {
-    this.stock = produce(this.stock, fn);
-  }
-
   /**
    * Adds new module definition to the stock.
    */
-  addDefinition(type, { Root = () => {}, ...optionalSetup }) {
-    this.updateStock((stock) => {
-      stock[type] = { Root, ...optionalSetup };
-    });
+  addDefinition(type) {
+    const definition = new FakeDefinition(type);
+
+    this.stock[type] = definition.content;
+
+    return definition;
   }
 }
+
+class FakeDefinition {
+  constructor() {
+    this.content = { Root: () => {} };
+  }
+
+  addAttribute(name, selector, extras) {
+    set(this.content, ["attributes", name], { selector, ...extras });
+
+    return this;
+  }
+}
+
+const set = (...args) => setWith(...args, Object);
