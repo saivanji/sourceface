@@ -33,7 +33,7 @@ it("should compute module attribute with computed setting dependency", () => {
   const { fakeRegistry, fakeStock, dependencies } = fake();
 
   const value = fakeRegistry.addConstantVariable("Foo bar");
-  const stage = fakeRegistry.addStage(value.id, "value");
+  const stage = fakeRegistry.addValueStage(value.id);
   const module = fakeRegistry.addModule("input", {
     fields: { initial: [stage.id] },
   });
@@ -108,4 +108,18 @@ it("should recompute module attribute when atom dependency changed", () => {
   expect(callback.mock.calls.length).toBe(2);
   expect(callback.mock.calls[0][0]).toBe("Foo bar");
   expect(callback.mock.calls[1][0]).toBe("Baz");
+});
+
+it("should not compute the same attribute twice or more times", async () => {
+  const { fakeRegistry, fakeStock, dependencies } = fake();
+
+  const mock = jest.fn();
+
+  const module = fakeRegistry.addModule("input");
+  fakeStock.addDefinition("input").addAttribute("foo", mock);
+
+  await computeAttribute(module.id, "foo", dependencies).toPromise();
+  await computeAttribute(module.id, "foo", dependencies).toPromise();
+
+  expect(mock).toBeCalledTimes(1);
 });

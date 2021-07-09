@@ -1,5 +1,7 @@
 import { of, combineLatest } from "rxjs";
-import { map, switchMap } from "rxjs/operators";
+import { map, switchMap, shareReplay } from "rxjs/operators";
+import { isNil } from "ramda";
+import { set } from "./utils";
 import computeSetting from "./computeSetting";
 
 /**
@@ -7,8 +9,16 @@ import computeSetting from "./computeSetting";
  */
 export default function computeAttribute(moduleId, key, { registry, stock }) {
   const module$ = registry.entities.modules[moduleId];
+  const existing$ = registry.attributes[moduleId]?.[key];
 
-  return module$.pipe(
+  /**
+   * Leveraging existing stream from the registry
+   */
+  if (!isNil(existing$)) {
+    return existing$;
+  }
+
+  const attribute$ = module$.pipe(
     switchMap((module) => {
       const { selector, settings, attributes, atoms } =
         stock[module.type].attributes[key];
@@ -32,8 +42,16 @@ export default function computeAttribute(moduleId, key, { registry, stock }) {
           selector({ settings, attributes, atoms })
         )
       );
-    })
+    }),
+    /**
+     * Avoiding re-computation of the same attribute
+     */
+    shareReplay(1)
   );
+
+  set(registry, ["attributes", moduleId, key], attribute$);
+
+  return attribute$;
 }
 
 /**

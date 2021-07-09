@@ -31,6 +31,10 @@ class FakeDefinition {
 
     return this;
   }
+
+  addInitialConfig(config) {
+    this.content.initialConfig = config;
+  }
 }
 
 const set = (...args) => setWith(...args, Object);

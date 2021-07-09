@@ -1,5 +1,5 @@
 import { path, isNil } from "ramda";
-import { of } from "rxjs";
+import { of, throwError } from "rxjs";
 import { switchMap, map } from "rxjs/operators";
 import computeAttribute from "./computeAttribute";
 
@@ -10,7 +10,11 @@ export default function computeValue(valueId, { registry, stock, futures }) {
   const value$ = registry.entities.values[valueId];
 
   if (isNil(value$)) {
-    throw new Error("Can not find value in registry");
+    /**
+     * Using "throwError" helper to explicitly return a failed observable instead
+     * of crashing the current function.
+     */
+    return throwError(new Error("Can not find value in registry"));
   }
 
   return value$.pipe(

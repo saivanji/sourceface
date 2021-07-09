@@ -22,3 +22,21 @@ it("should compute attribute variable value", () => {
     "Foo bar"
   );
 });
+
+it("should throw an error when value is not found in registry", () => {
+  const { dependencies } = fake();
+
+  return expect(computeValue(1, dependencies).toPromise()).rejects.toEqual(
+    new Error("Can not find value in registry")
+  );
+});
+
+it("should throw an error when unrecognized value category supplied", () => {
+  const { fakeRegistry, dependencies } = fake();
+
+  const value = fakeRegistry.addValue("wrong");
+
+  return expect(
+    computeValue(value.id, dependencies).toPromise()
+  ).rejects.toEqual(new Error("Unrecognized value category"));
+});

@@ -1,6 +1,7 @@
-import { isNil } from "ramda";
 import { of } from "rxjs";
-import { switchMap } from "rxjs/operators";
+import { switchMap, shareReplay } from "rxjs/operators";
+import { isNil } from "ramda";
+import { set } from "./utils";
 import computeValue from "./computeValue";
 
 /**
@@ -9,8 +10,16 @@ import computeValue from "./computeValue";
 // TODO: where to assign resulting stream in the registry?
 export default function computeSetting(moduleId, field, { registry, stock }) {
   const module$ = registry.entities.modules[moduleId];
+  const existing$ = registry.settings[moduleId]?.[field];
 
-  return module$.pipe(
+  /**
+   * Leveraging existing stream from the registry
+   */
+  if (!isNil(existing$)) {
+    return existing$;
+  }
+
+  const setting$ = module$.pipe(
     switchMap((module) => {
       const stageIds = module.fields?.[field];
 
@@ -22,8 +31,13 @@ export default function computeSetting(moduleId, field, { registry, stock }) {
       }
 
       return computeStages(stageIds, of(null), { registry, stock });
-    })
+    }),
+    shareReplay(1)
   );
+
+  set(registry, ["settings", moduleId, field], setting$);
+
+  return setting$;
 }
 
 function computeStages(stageIds, prev, dependencies) {
@@ -48,6 +62,8 @@ function computeStage(stageId, { registry }) {
       if (stage.type === "value") {
         return computeValue(stage.values.root, { registry });
       }
+
+      throw new Error("Unrecognized stage type");
     })
   );
 }

@@ -11,6 +11,8 @@ export default class FakeRegistry {
         values: {},
       },
       atoms: {},
+      settings: {},
+      attributes: {},
     };
   }
 
@@ -72,15 +74,20 @@ export default class FakeRegistry {
   /**
    * Adds new stage to the registry
    */
-  addStage(moduleId, type) {
+  addStage(type, values) {
     return this.addEntity("stages", {
       order: 0,
       name: "stage_1",
       type,
-      values: {
-        root: moduleId,
-      },
+      values,
     });
+  }
+
+  /**
+   * Adds new value stage to the registry
+   */
+  addValueStage(valueId) {
+    return this.addStage("value", { root: valueId });
   }
 
   /**
