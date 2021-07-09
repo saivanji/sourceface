@@ -1,3 +1,4 @@
+import { debounceTime } from "rxjs";
 import fake from "../fakes";
 import computeAttribute from "../computeAttribute";
 
@@ -123,3 +124,27 @@ it("should not compute the same attribute twice or more times", async () => {
 
   expect(mock).toBeCalledTimes(1);
 });
+
+it("should not emit multiple times in the same event loop tick", () => {
+  const { fakeRegistry, fakeStock, dependencies } = fake();
+
+  const module = fakeRegistry.addModule("input");
+  fakeRegistry.addAtom(module.id, "foo", "some text");
+
+  const definition = fakeStock.addDefinition("input");
+  definition.addAttribute(
+    "x",
+    ({ atoms: [foo], attributes: [y] }) => `${foo} ${y}`,
+    { atoms: ["foo"], attributes: ["y"] }
+  );
+  definition.addAttribute("y", ({ atoms: [foo] }) => foo, { atoms: ["foo"] });
+
+  const mock = jest.fn();
+  computeAttribute(module.id, "x", dependencies).subscribe(mock);
+
+  dependencies.registry.atoms[module.id].foo.next("another text");
+
+  expect(mock).toBeCalledTimes(1);
+});
+
+// it("should not emit if the next value is the same as the previous one");

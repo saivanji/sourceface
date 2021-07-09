@@ -7,7 +7,6 @@ import computeValue from "./computeValue";
 /**
  * Computes specific module setting field.
  */
-// TODO: where to assign resulting stream in the registry?
 export default function computeSetting(moduleId, field, { registry, stock }) {
   const module$ = registry.entities.modules[moduleId];
   const existing$ = registry.settings[moduleId]?.[field];
@@ -32,6 +31,9 @@ export default function computeSetting(moduleId, field, { registry, stock }) {
 
       return computeStages(stageIds, of(null), { registry, stock });
     }),
+    /**
+     * Avoiding re-computation of the same setting
+     */
     shareReplay(1)
   );
 
