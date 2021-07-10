@@ -1,3 +1,5 @@
+// TODO: consider testing library through a public interface and rename FakeRegistry to FakeData/FakeEntities
+//
 // TODO: use "subscribe" instead of "toPromise" in tests
 // TODO: use real data instead of foo/bar in tests?
 //
