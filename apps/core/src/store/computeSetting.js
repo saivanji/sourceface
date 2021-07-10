@@ -56,13 +56,13 @@ function computeStages(stageIds, prev, dependencies) {
 /**
  * Computes setting stage.
  */
-function computeStage(stageId, { registry }) {
+function computeStage(stageId, { registry, stock }) {
   const stage$ = registry.entities.stages[stageId];
 
   return stage$.pipe(
     switchMap((stage) => {
       if (stage.type === "value") {
-        return computeValue(stage.values.root, { registry });
+        return computeValue(stage.values.root, { registry, stock });
       }
 
       throw new Error("Unrecognized stage type");

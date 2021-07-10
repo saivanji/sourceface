@@ -84,8 +84,8 @@ it("should compute module attribute with atom dependency", () => {
   const callback = jest.fn();
   computeAttribute(module.id, "value", dependencies).subscribe(callback);
 
-  expect(callback.mock.calls.length).toBe(1);
-  expect(callback.mock.calls[0][0]).toBe("Foo bar");
+  expect(callback).toBeCalledTimes(1);
+  expect(callback).toHaveBeenCalledWith("Foo bar");
 });
 
 it("should recompute module attribute when atom dependency changed", () => {
@@ -104,9 +104,7 @@ it("should recompute module attribute when atom dependency changed", () => {
 
   dependencies.registry.atoms[module.id].current.next("Baz");
 
-  // TODO: should be 1 call instead. Multiple sync dispatches should lead to one
-  // subscriber notification
-  expect(callback.mock.calls.length).toBe(2);
+  expect(callback).toBeCalledTimes(2);
   expect(callback.mock.calls[0][0]).toBe("Foo bar");
   expect(callback.mock.calls[1][0]).toBe("Baz");
 });
@@ -125,26 +123,21 @@ it("should not compute the same attribute twice or more times", async () => {
   expect(mock).toBeCalledTimes(1);
 });
 
-it("should not emit multiple times in the same event loop tick", () => {
+it("should not emit if the next value is the same as the previous one", () => {
   const { fakeRegistry, fakeStock, dependencies } = fake();
 
   const module = fakeRegistry.addModule("input");
-  fakeRegistry.addAtom(module.id, "foo", "some text");
+  fakeRegistry.addAtom(module.id, "current", "foo");
+  fakeStock
+    .addDefinition("input")
+    .addAttribute("value", ({ atoms: [current] }) => current, {
+      atoms: ["current"],
+    });
 
-  const definition = fakeStock.addDefinition("input");
-  definition.addAttribute(
-    "x",
-    ({ atoms: [foo], attributes: [y] }) => `${foo} ${y}`,
-    { atoms: ["foo"], attributes: ["y"] }
-  );
-  definition.addAttribute("y", ({ atoms: [foo] }) => foo, { atoms: ["foo"] });
+  const callback = jest.fn();
+  computeAttribute(module.id, "value", dependencies).subscribe(callback);
 
-  const mock = jest.fn();
-  computeAttribute(module.id, "x", dependencies).subscribe(mock);
+  dependencies.registry.atoms[module.id].current.next("foo");
 
-  dependencies.registry.atoms[module.id].foo.next("another text");
-
-  expect(mock).toBeCalledTimes(1);
+  expect(callback).toBeCalledTimes(1);
 });
-
-// it("should not emit if the next value is the same as the previous one");

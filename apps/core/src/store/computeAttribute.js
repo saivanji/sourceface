@@ -1,5 +1,10 @@
 import { of, combineLatest } from "rxjs";
-import { map, switchMap, shareReplay } from "rxjs/operators";
+import {
+  map,
+  switchMap,
+  shareReplay,
+  distinctUntilChanged,
+} from "rxjs/operators";
 import { isNil } from "ramda";
 import { set } from "./utils";
 import computeSetting from "./computeSetting";
@@ -46,7 +51,12 @@ export default function computeAttribute(moduleId, key, { registry, stock }) {
     /**
      * Avoiding re-computation of the same attribute
      */
-    shareReplay(1)
+    shareReplay(1),
+    /**
+     * Avoiding emitting to the subscribers when next value
+     * is the same as current.
+     */
+    distinctUntilChanged()
   );
 
   set(registry, ["attributes", moduleId, key], attribute$);

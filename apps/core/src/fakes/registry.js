@@ -30,7 +30,7 @@ export default class FakeRegistry {
       return 1;
     }
 
-    return Math.max(...ids);
+    return Math.max(...ids) + 1;
   }
 
   /**

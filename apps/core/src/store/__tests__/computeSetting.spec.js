@@ -92,7 +92,3 @@ it("should not compute the same setting twice or more times", async () => {
 
   expect(spy).toBeCalledTimes(1);
 });
-
-// it("should not emit multiple times in the same event loop tick");
-
-// it("should not emit if the next value is the same as the previous one");
