@@ -1,6 +1,7 @@
 import FakeRegistry from "../fakes/registry";
 import FakeStock from "../fakes/stock";
 
+// TODO: will be moved to jest configuration
 export default function fake() {
   const fakeRegistry = new FakeRegistry();
   const fakeStock = new FakeStock();
