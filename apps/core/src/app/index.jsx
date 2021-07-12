@@ -1,19 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import * as core from "../core";
+import { RootProvider, Layout } from "../core";
 import * as stock from "../modules";
-import { Layout } from "../content";
 import { data } from "./mocks";
 
 const rootElement = document.getElementById("root");
 
 ReactDOM.render(
   <React.StrictMode>
-    <core.RootProvider data={data} stock={stock}>
-      <div className="bg-gray-200 min-h-screen">
+    <RootProvider data={data} stock={stock}>
+      <div className="bg-gray-200 min-h-screen p-4 flex flex-col items-center">
         <Layout />
       </div>
-    </core.RootProvider>
+    </RootProvider>
   </React.StrictMode>,
   rootElement
 );

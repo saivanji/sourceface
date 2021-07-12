@@ -43,11 +43,12 @@ export default class FakeEntities {
   /**
    * Adds new value
    */
-  addValue(category, payload, { references, path } = {}) {
+  addValue(category, payload, { references, path, args } = {}) {
     return this.addEntity("values", {
       category,
       payload,
       references,
+      args,
       path,
     });
   }

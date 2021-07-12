@@ -1,4 +1,4 @@
-import { path, isNil, prop, map as mapCollection } from "ramda";
+import { path, isNil, map as mapCollection } from "ramda";
 import { of, throwError, combineLatest, from } from "rxjs";
 import { switchMap, map } from "rxjs/operators";
 import computeAttribute from "./computeAttribute";
@@ -59,7 +59,11 @@ function computeFutureValue(value, dependencies) {
   // TODO: restrict function calls
   return computeFunctionArgs(value.args, dependencies).pipe(
     switchMap((args) =>
-      from(execute(args, value.references).then(prop("data")))
+      // TODO: each future should be globally identified(ex. "operation:4")
+      // so we can avoid calling the same future multiple times if it's done
+      // from different values by adding future streams to registry the same
+      // way we did with attributes and settings.
+      from(execute(args, value.references).then((res) => res.data))
     )
   );
 }

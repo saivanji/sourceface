@@ -34,6 +34,14 @@ class FakeDefinition {
 
   addInitialConfig(config) {
     this.content.initialConfig = config;
+
+    return this;
+  }
+
+  addInitialAtoms(atoms) {
+    this.content.initialAtoms = atoms;
+
+    return this;
   }
 }
 
