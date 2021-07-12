@@ -1,17 +1,15 @@
 import { createContext } from "react";
-import { Provider as ReduxProvider } from "react-redux";
-import init from "../init";
+import { createStore } from "../../store";
+import * as futures from "../futures";
 
-export const stockContext = createContext(null);
+export const storeContext = createContext(null);
 
 export default function StoreProvider({ children, data, stock }) {
   // TODO: since "core" will be exported as a library, keep in mind behavior of
   // the store creation on parent component re-render.
-  const store = init(data, stock);
+  const store = createStore(data, stock, futures);
 
   return (
-    <stockContext.Provider value={stock}>
-      <ReduxProvider store={store}>{children}</ReduxProvider>
-    </stockContext.Provider>
+    <storeContext.Provider value={store}>{children}</storeContext.Provider>
   );
 }

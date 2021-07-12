@@ -23,6 +23,51 @@ it("should compute attribute variable value", () => {
   expect(callback).toBeCalledWith("some text");
 });
 
+it("should compute future function value", (done) => {
+  const { fakeRegistry, fakeFutures, dependencies } = fake();
+
+  const execute = (_args, references) => {
+    if (references.operations.root === 7) {
+      return { data: true };
+    }
+  };
+
+  fakeFutures.addFuture("operation", execute);
+
+  const value = fakeRegistry.addFutureFunction("operation", undefined, {
+    operations: { root: 7 },
+  });
+
+  computeValue(value.id, dependencies).subscribe((value) => {
+    expect(value).toBe(true);
+    done();
+  });
+});
+
+it("should compute future function value with args", (done) => {
+  const { fakeRegistry, fakeFutures, dependencies } = fake();
+
+  const execute = (args, references) => {
+    if (args.content === "foo" && references.operations.root === 7) {
+      return { data: true };
+    }
+  };
+
+  fakeFutures.addFuture("operation", execute);
+
+  const content = fakeRegistry.addConstantVariable("foo");
+  const value = fakeRegistry.addFutureFunction(
+    "operation",
+    { content: content.id },
+    { operations: { root: 7 } }
+  );
+
+  computeValue(value.id, dependencies).subscribe((value) => {
+    expect(value).toBe(true);
+    done();
+  });
+});
+
 it("should throw an error when value is not found in registry", () => {
   const { dependencies } = fake();
 

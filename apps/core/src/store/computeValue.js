@@ -1,12 +1,13 @@
-import { path, isNil } from "ramda";
-import { of, throwError } from "rxjs";
+import { path, isNil, prop, map as mapCollection } from "ramda";
+import { of, throwError, combineLatest, from } from "rxjs";
 import { switchMap, map } from "rxjs/operators";
 import computeAttribute from "./computeAttribute";
 
 /**
  * Computes requesting value.
  */
-export default function computeValue(valueId, { registry, stock, futures }) {
+export default function computeValue(valueId, dependencies) {
+  const { registry } = dependencies;
   const value$ = registry.entities.values[valueId];
 
   if (isNil(value$)) {
@@ -20,18 +21,13 @@ export default function computeValue(valueId, { registry, stock, futures }) {
   return value$.pipe(
     switchMap((value) => {
       const selectPath = map(path(value.path || []));
+      const compute = categories[value.category];
 
-      if (value.category === "variable/constant") {
-        return computeConstantValue(value).pipe(selectPath);
+      if (isNil(compute)) {
+        throw new Error("Unrecognized value category");
       }
 
-      if (value.category === "variable/attribute") {
-        return computeAttributeValue(value, { registry, stock }).pipe(
-          selectPath
-        );
-      }
-
-      throw new Error("Unrecognized value category");
+      return compute(value, dependencies).pipe(selectPath);
     })
   );
 }
@@ -46,9 +42,38 @@ function computeConstantValue(value) {
 /**
  * Computes attribute variable value.
  */
-function computeAttributeValue(value, { registry, stock }) {
+function computeAttributeValue(value, dependencies) {
   const moduleId = value.references.modules.module;
   const { property } = value.payload;
 
-  return computeAttribute(moduleId, property, { registry, stock });
+  return computeAttribute(moduleId, property, dependencies);
 }
+
+/**
+ * Computes future function value.
+ */
+function computeFutureValue(value, dependencies) {
+  const { futures } = dependencies;
+  const execute = futures[value.payload.kind];
+
+  // TODO: restrict function calls
+  return computeFunctionArgs(value.args, dependencies).pipe(
+    switchMap((args) =>
+      from(execute(args, value.references).then(prop("data")))
+    )
+  );
+}
+
+/**
+ * Computes function args object.
+ */
+function computeFunctionArgs(args, dependencies) {
+  const argToValue = (valueId) => computeValue(valueId, dependencies);
+  return args ? combineLatest(mapCollection(argToValue, args)) : of({});
+}
+
+const categories = {
+  "variable/constant": computeConstantValue,
+  "variable/attribute": computeAttributeValue,
+  "function/future": computeFutureValue,
+};

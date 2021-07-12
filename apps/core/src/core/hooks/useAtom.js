@@ -1,8 +1,6 @@
 import { useContext, useCallback } from "react";
-import { useStore, useSelector } from "react-redux";
-import { moduleContext } from "../providers";
-import * as slices from "../slices";
-import { getAtom, getAtomDependencies } from "../selectors";
+import { moduleContext, storeContext } from "../providers";
+import useSubscription from "./useSubscription";
 
 /**
  * Returns module atom value for a given key. To be used in module definitions.
@@ -12,7 +10,7 @@ import { getAtom, getAtomDependencies } from "../selectors";
  */
 export default function useAtom(key) {
   const moduleId = useContext(moduleContext);
-  const store = useStore();
+  const store = useContext(storeContext);
 
   /**
    * Making sure we use the hook only inside of a module.
@@ -21,23 +19,11 @@ export default function useAtom(key) {
     throw new Error("useAtom hook should be called inside of a module");
   }
 
-  const value = useSelector((state) => getAtom(state, [moduleId, key]));
+  const value = useSubscription(store.data.atom(moduleId, key));
 
   const setValue = useCallback(
     // TODO: consider "nextValue" to be a function
-    (nextValue) => {
-      const state = store.getState();
-      const dependencies = getAtomDependencies(state, [moduleId, key]);
-
-      store.dispatch(
-        slices.atoms.actions.update({
-          moduleId,
-          key,
-          nextValue,
-          dependencies,
-        })
-      );
-    },
+    (nextValue) => store.actions.updateAtom(moduleId, key, nextValue),
     [moduleId, key, store]
   );
 

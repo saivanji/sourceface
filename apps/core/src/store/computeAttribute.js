@@ -12,7 +12,8 @@ import computeSetting from "./computeSetting";
 /**
  * Computes specific module attribute.
  */
-export default function computeAttribute(moduleId, key, { registry, stock }) {
+export default function computeAttribute(moduleId, key, dependencies) {
+  const { registry, stock } = dependencies;
   const module$ = registry.entities.modules[moduleId];
   const existing$ = registry.attributes[moduleId]?.[key];
 
@@ -29,14 +30,10 @@ export default function computeAttribute(moduleId, key, { registry, stock }) {
         stock[module.type].attributes[key];
 
       const settings$ = combineSafe(
-        settings?.map((field) =>
-          computeSetting(moduleId, field, { registry, stock })
-        )
+        settings?.map((field) => computeSetting(moduleId, field, dependencies))
       );
       const attributes$ = combineSafe(
-        attributes?.map((key) =>
-          computeAttribute(moduleId, key, { registry, stock })
-        )
+        attributes?.map((key) => computeAttribute(moduleId, key, dependencies))
       );
       const atoms$ = combineSafe(
         atoms?.map((key) => registry.atoms[moduleId][key])

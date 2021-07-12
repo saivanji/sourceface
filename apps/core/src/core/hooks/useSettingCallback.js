@@ -1,7 +1,5 @@
 import { useContext, useCallback } from "react";
-import { useStore } from "react-redux";
-import { moduleContext, stockContext } from "../providers";
-import { computeSetting } from "../utils";
+import { moduleContext } from "../providers";
 
 /**
  * Returns callback function which will resolve required setting field
@@ -10,9 +8,8 @@ import { computeSetting } from "../utils";
  * @param {string} field requesting setting field.
  * @returns {function} callback function for the setting resolution.
  */
-export default function useSettingCallback(field) {
-  const store = useStore();
-  const stock = useContext(stockContext);
+export default function useSettingCallback(_field) {
+  // const store = useContext(storeContext);
   const moduleId = useContext(moduleContext);
 
   /**
@@ -24,21 +21,9 @@ export default function useSettingCallback(field) {
     );
   }
 
-  const callback = useCallback(
-    (input) => {
-      const state = store.getState();
-
-      return computeSetting(moduleId, field, {
-        deps: {
-          state,
-          stock,
-          dispatch: store.dispatch,
-        },
-        scope: { input },
-      });
-    },
-    [store, moduleId, field, stock]
-  );
+  const callback = useCallback((_input) => {
+    console.log("TODO");
+  }, []);
 
   return callback;
 }

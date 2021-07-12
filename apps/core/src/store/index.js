@@ -1,4 +1,5 @@
 // TODO: consider testing library through a public interface and rename FakeRegistry to FakeData/FakeEntities
+// test files should be named differently since we do not focus on specifics such "computeValue".
 //
 // As alternative solution, we might apply debounceTime(0) in the hook only when we subscribe
 // to the next update and use raw compute* without debouncing when we need initial value.

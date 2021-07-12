@@ -121,17 +121,7 @@ export default class FakeEntities {
   /**
    * Adds new future function
    */
-  addFutureFunction(kind, extras) {
-    return this.addFunction("future", { kind }, extras);
-  }
-
-  /**
-   * Adds new operation future function
-   */
-  addOperationFutureFunction() {
-    // TODO: create actual operation here and use it's id instead of "1"
-    return this.addFutureFunction("operation", {
-      references: { operations: { root: 1 } },
-    });
+  addFutureFunction(kind, args, references) {
+    return this.addFunction("future", { kind }, { args, references });
   }
 }

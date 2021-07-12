@@ -5,9 +5,9 @@ import createRegistry from "./createRegistry";
 /**
  * Creates new store based on initial entities data and stock definition.
  */
-export default function createStore(entities, stock) {
+export default function createStore(entities, stock, futures) {
   const registry = createRegistry(entities, stock);
-  const dependencies = { registry, stock };
+  const dependencies = { registry, stock, futures };
 
   return {
     data: {
@@ -29,7 +29,7 @@ export default function createStore(entities, stock) {
     },
     actions: {
       updateAtom(moduleId, key, nextValue) {
-        return registry.atoms[moduleId][key].next(nextValue);
+        registry.atoms[moduleId][key].next(nextValue);
       },
     },
   };

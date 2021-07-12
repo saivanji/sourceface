@@ -50,12 +50,13 @@ export default class FakeRegistry {
   /**
    * Adds new value to the registry.
    */
-  addValue(category, payload, { references, path } = {}) {
+  addValue(category, payload, { references, path, args } = {}) {
     return this.addEntity("values", {
       category,
       payload,
       references,
       path,
+      args,
     });
   }
 
@@ -128,18 +129,8 @@ export default class FakeRegistry {
   /**
    * Adds new future function to the registry.
    */
-  addFutureFunction(kind, extras) {
-    return this.addFunction("future", { kind }, extras);
-  }
-
-  /**
-   * Adds new operation future function to the registry.
-   */
-  addOperationFutureFunction() {
-    // TODO: create actual operation here and use it's id instead of "1"
-    return this.addFutureFunction("operation", {
-      references: { operations: { root: 1 } },
-    });
+  addFutureFunction(kind, args, references) {
+    return this.addFunction("future", { kind }, { args, references });
   }
 
   /**

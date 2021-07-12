@@ -1,18 +1,18 @@
-import { useSetting, useAttribute, useAtom, useBatch } from "../../store";
+import { useSetting, useAttribute, useAtom } from "../core";
 
 export function Root() {
   const placeholder = useSetting("placeholder");
   const value = useAttribute("value");
-  const [error] = useAtom("error");
-  const batch = useBatch();
+  const [error, setError] = useAtom("error");
+  const [revealed] = useAtom("revealed");
+  const [, setValue] = useAtom("value");
 
   const change = (e) => {
     const { value } = e.target;
 
-    batch(({ revealed }) => ({
-      error: !revealed ? null : validate(value),
-      value,
-    }));
+    // TODO: how to avoid race conditions and set atom based on another atom value?
+    setError(!revealed ? null : validate(value));
+    setValue(value);
   };
 
   return (

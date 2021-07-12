@@ -1,13 +1,6 @@
-import { mapObjIndexed } from "ramda";
-import { createAtomDependencies } from "./utils";
-import * as rawStock from "./stock";
+import * as button from "./button";
+import * as counter from "./counter";
+import * as input from "./input";
+import * as text from "./text";
 
-export const stock = mapObjIndexed(
-  (value, type) => ({
-    ...value,
-    type,
-    atomDependencies:
-      value.attributes && createAtomDependencies(value.attributes),
-  }),
-  rawStock
-);
+export { button, counter, input, text };

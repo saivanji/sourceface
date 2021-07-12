@@ -1,4 +1,4 @@
-import { useSetting, useSettingCallback } from "../../store";
+import { useSetting, useSettingCallback } from "../core";
 
 export const Root = () => {
   const text = useSetting("text");

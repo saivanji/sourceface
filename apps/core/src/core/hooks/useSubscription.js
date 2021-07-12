@@ -1,2 +1,8 @@
-// internal hook to incapsulate usage of rxjs in store
-// probably will leverage useObservableEagerState under the hood
+import { useObservableEagerState } from "observable-hooks";
+
+/**
+ * Incapsulates usage of rxjs in store.
+ */
+export default function useSubscription(stream) {
+  return useObservableEagerState(stream);
+}

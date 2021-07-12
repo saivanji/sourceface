@@ -1,9 +1,8 @@
-import { useSelector } from "react-redux";
-import { getModuleIds } from "../store";
+import { useModuleIds } from "../core";
 import Module from "./Module";
 
 export default function Layout() {
-  const moduleIds = useSelector(getModuleIds);
+  const moduleIds = useModuleIds();
 
   return (
     <div className="p-4 flex flex-col items-center">

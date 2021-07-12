@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import * as core from "../core";
-import { stock } from "../modules";
+import * as stock from "../modules";
 import { Layout } from "../content";
 import { data } from "./mocks";
 
