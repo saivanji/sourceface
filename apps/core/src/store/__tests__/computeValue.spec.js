@@ -6,29 +6,29 @@ it("should compute constant variable value", () => {
 
   const value = fakeRegistry.addConstantVariable(6);
 
-  return expect(computeValue(value.id, dependencies).toPromise()).resolves.toBe(
-    6
-  );
+  const callback = jest.fn();
+  computeValue(value.id, dependencies).subscribe(callback);
+  expect(callback).toBeCalledWith(6);
 });
 
 it("should compute attribute variable value", () => {
   const { fakeRegistry, fakeStock, dependencies } = fake();
 
+  fakeStock.addDefinition("input").addAttribute("value", () => "some text");
   const module = fakeRegistry.addModule("input");
   const value = fakeRegistry.addAttributeVariable(module.id, "value");
-  fakeStock.addDefinition("input").addAttribute("value", () => "Foo bar");
 
-  return expect(computeValue(value.id, dependencies).toPromise()).resolves.toBe(
-    "Foo bar"
-  );
+  const callback = jest.fn();
+  computeValue(value.id, dependencies).subscribe(callback);
+  expect(callback).toBeCalledWith("some text");
 });
 
 it("should throw an error when value is not found in registry", () => {
   const { dependencies } = fake();
 
-  return expect(computeValue(1, dependencies).toPromise()).rejects.toEqual(
-    new Error("Can not find value in registry")
-  );
+  const callback = jest.fn();
+  computeValue(1, dependencies).subscribe(jest.fn, callback);
+  expect(callback).toBeCalledWith(new Error("Can not find value in registry"));
 });
 
 it("should throw an error when unrecognized value category supplied", () => {
@@ -36,7 +36,9 @@ it("should throw an error when unrecognized value category supplied", () => {
 
   const value = fakeRegistry.addValue("wrong");
 
-  return expect(
-    computeValue(value.id, dependencies).toPromise()
-  ).rejects.toEqual(new Error("Unrecognized value category"));
+  const callback = jest.fn();
+  computeValue(value.id, dependencies).subscribe(jest.fn, callback);
+  return expect(callback).toBeCalledWith(
+    new Error("Unrecognized value category")
+  );
 });
