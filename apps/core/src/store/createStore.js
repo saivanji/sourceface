@@ -34,10 +34,13 @@ export default function createStore(entities, stock, futures) {
         const atom$ = registry.atoms[moduleId][key];
 
         // if (typeof nextValue === "function") {
-        //   let prev;
-
-        //   atom$.subscribe(value => {prev = value})
-        //   atom$.next(nextValue(prev))
+        //   /**
+        //    * Update is guaranteed to be sync since we subscribing on
+        //    * BehaviourSubject.
+        //    */
+        //   atom$.subscribe((prev) => {
+        //     atom$.next(nextValue(prev));
+        //   });
 
         //   return;
         // }
