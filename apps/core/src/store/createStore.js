@@ -1,3 +1,4 @@
+import { combineLatest } from "rxjs";
 import computeSetting from "./computeSetting";
 import computeAttribute from "./computeAttribute";
 import createRegistry from "./createRegistry";
@@ -27,10 +28,36 @@ export default function createStore(entities, stock, futures) {
         return registry.entities.modules[moduleId];
       },
     },
+    // TODO: move both functions in a separate file
     actions: {
       updateAtom(moduleId, key, nextValue) {
-        registry.atoms[moduleId][key].next(nextValue);
+        const atom$ = registry.atoms[moduleId][key];
+
+        // if (typeof nextValue === "function") {
+        //   let prev;
+
+        //   atom$.subscribe(value => {prev = value})
+        //   atom$.next(nextValue(prev))
+
+        //   return;
+        // }
+
+        atom$.next(nextValue);
       },
+      // updateAtoms(moduleId, nextValues) {
+      //   if (typeof nextValues === "function") {
+      //     combineLatest(registry.atoms[moduleId]).subscribe((prevValues) => {
+      //       this.updateAtoms(moduleId, nextValues(prevValues));
+      //     });
+
+      //     return;
+      //   }
+
+      //   for (let key of nextValues) {
+      //     const nextValue = nextValues[key];
+      //     registry.atoms[moduleId][key].next(nextValue);
+      //   }
+      // },
     },
   };
 }
