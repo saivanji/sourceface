@@ -1,3 +1,7 @@
+// TODO: when editing modules/stages/values, do not split every field on streams, instead keep streams as we have now(on entry level)
+// and apply value memoization in hooks to avoid extra re-renderings when another entry field is updated the same way it's done
+// in react-redux.
+//
 // TODO: consider testing library through a public interface and rename FakeRegistry to FakeData/FakeEntities
 // test files should be named differently since we do not focus on specifics such "computeValue".
 //
