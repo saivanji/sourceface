@@ -1,3 +1,6 @@
+// TODO: have separate stream for editor updates, which will contain actions. modules/stages/values streams will subscribe
+// on that stream and will apply updates accordingly with reducer pattern.
+//
 // TODO: when editing modules/stages/values, do not split every field on streams, instead keep streams as we have now(on entry level)
 // and apply value memoization in hooks to avoid extra re-renderings when another entry field is updated the same way it's done
 // in react-redux.

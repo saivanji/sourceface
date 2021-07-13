@@ -1,7 +1,8 @@
-import { combineLatest } from "rxjs";
 import computeSetting from "./computeSetting";
 import computeAttribute from "./computeAttribute";
 import createRegistry from "./createRegistry";
+import updateAtom from "./updateAtom";
+import updateAtoms from "./updateAtoms";
 
 /**
  * Creates new store based on initial entities data and stock definition.
@@ -28,41 +29,13 @@ export default function createStore(entities, stock, futures) {
         return registry.entities.modules[moduleId];
       },
     },
-    // TODO: move both functions in a separate file
-    // TODO: should functional atom update be moved to react side since
-    // it's a react limitation?
     actions: {
       updateAtom(moduleId, key, nextValue) {
-        const atom$ = registry.atoms[moduleId][key];
-
-        // if (typeof nextValue === "function") {
-        //   /**
-        //    * Update is guaranteed to be sync since we subscribing on
-        //    * BehaviourSubject.
-        //    */
-        //   atom$.subscribe((prev) => {
-        //     atom$.next(nextValue(prev));
-        //   });
-
-        //   return;
-        // }
-
-        atom$.next(nextValue);
+        return updateAtom(moduleId, key, nextValue, dependencies);
       },
-      // updateAtoms(moduleId, nextValues) {
-      //   if (typeof nextValues === "function") {
-      //     combineLatest(registry.atoms[moduleId]).subscribe((prevValues) => {
-      //       this.updateAtoms(moduleId, nextValues(prevValues));
-      //     });
-
-      //     return;
-      //   }
-
-      //   for (let key of nextValues) {
-      //     const nextValue = nextValues[key];
-      //     registry.atoms[moduleId][key].next(nextValue);
-      //   }
-      // },
+      updateAtoms(moduleId, nextValues) {
+        return updateAtoms(moduleId, nextValues, dependencies);
+      },
     },
   };
 }
