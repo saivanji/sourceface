@@ -3,10 +3,12 @@ import { of, throwError, combineLatest, from } from "rxjs";
 import { switchMap, map } from "rxjs/operators";
 import computeAttribute from "./computeAttribute";
 
+// TODO: some values should be labeled as "callback", so they can be computed only
+// for the "callback" setting type, such as "method" or "effect"
 /**
  * Computes requesting value.
  */
-export default function computeValue(valueId, dependencies) {
+export default function computeValue(valueId, scope, dependencies) {
   const { registry } = dependencies;
   const value$ = registry.entities.values[valueId];
 
@@ -27,7 +29,7 @@ export default function computeValue(valueId, dependencies) {
         throw new Error("Unrecognized value category");
       }
 
-      return compute(value, dependencies).pipe(selectPath);
+      return compute(value, scope, dependencies).pipe(selectPath);
     })
   );
 }
@@ -42,22 +44,29 @@ function computeConstantValue(value) {
 /**
  * Computes attribute variable value.
  */
-function computeAttributeValue(value, dependencies) {
+function computeAttributeValue(value, scope, dependencies) {
   const moduleId = value.references.modules.module;
   const { property } = value.payload;
 
-  return computeAttribute(moduleId, property, dependencies);
+  return computeAttribute(moduleId, property, scope, dependencies);
+}
+
+/**
+ * Computes input variable value.
+ */
+function computeInputValue(_value, scope) {
+  return of(scope.input);
 }
 
 /**
  * Computes future function value.
  */
-function computeFutureValue(value, dependencies) {
+function computeFutureValue(value, scope, dependencies) {
   const { futures, registry } = dependencies;
   const { identify, execute } = futures[value.payload.kind];
 
   // TODO: restrict function calls
-  return computeFunctionArgs(value.args, dependencies).pipe(
+  return computeFunctionArgs(value.args, scope, dependencies).pipe(
     switchMap((args) => {
       const identifier = identify(args, value.references);
       const existing$ = registry.futures[identifier];
@@ -90,13 +99,14 @@ function computeFutureValue(value, dependencies) {
 /**
  * Computes function args object.
  */
-function computeFunctionArgs(args, dependencies) {
-  const argToValue = (valueId) => computeValue(valueId, dependencies);
+function computeFunctionArgs(args, scope, dependencies) {
+  const argToValue = (valueId) => computeValue(valueId, scope, dependencies);
   return args ? combineLatest(mapCollection(argToValue, args)) : of({});
 }
 
 const categories = {
   "variable/constant": computeConstantValue,
   "variable/attribute": computeAttributeValue,
+  "variable/input": computeInputValue,
   "function/future": computeFutureValue,
 };

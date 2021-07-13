@@ -1,5 +1,5 @@
 import { useContext, useCallback } from "react";
-import { moduleContext } from "../providers";
+import { moduleContext, storeContext } from "../providers";
 
 /**
  * Returns callback function which will resolve required setting field
@@ -8,8 +8,8 @@ import { moduleContext } from "../providers";
  * @param {string} field requesting setting field.
  * @returns {function} callback function for the setting resolution.
  */
-export default function useSettingCallback(_field) {
-  // const store = useContext(storeContext);
+export default function useSettingCallback(field) {
+  const store = useContext(storeContext);
   const moduleId = useContext(moduleContext);
 
   /**
@@ -21,9 +21,13 @@ export default function useSettingCallback(_field) {
     );
   }
 
-  const callback = useCallback((_input) => {
-    console.log("TODO");
-  }, []);
+  const callback = useCallback(
+    (input) =>
+      new Promise((resolve) => {
+        store.data.setting(moduleId, field, { input }).subscribe(resolve);
+      }),
+    [moduleId, field, store]
+  );
 
   return callback;
 }

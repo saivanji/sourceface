@@ -1,11 +1,12 @@
 // TODO:
-// 3. provide "input" scope to computeSetting
 // 4. implement "stage" scope
-// 5. implement wildcard value. form_*.reveal(), form_*.value
-// 6. implement methods
+// 5. implement methods
+// 6. implement wildcard value. form_*.reveal(), form_*.value
 // 7. implement future invalidations
 // 8. implement "container" module
 // 9. implement @mount field
+// 10. error handling
+// 11. typescript
 //
 //
 // TODO: have separate stream for editor updates, which will contain actions. modules/stages/values streams will subscribe

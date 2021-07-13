@@ -120,6 +120,13 @@ export default class FakeEntities {
   }
 
   /**
+   * Adds new input
+   */
+  addInputVariable(path) {
+    return this.addVariable("input", undefined, { path });
+  }
+
+  /**
    * Adds new future function
    */
   addFutureFunction(kind, args, references) {

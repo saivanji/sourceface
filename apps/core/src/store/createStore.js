@@ -13,11 +13,11 @@ export default function createStore(entities, stock, futures) {
 
   return {
     data: {
-      setting(moduleId, field) {
-        return computeSetting(moduleId, field, dependencies);
+      setting(moduleId, field, scope) {
+        return computeSetting(moduleId, field, scope, dependencies);
       },
       attribute(moduleId, key) {
-        return computeAttribute(moduleId, key, dependencies);
+        return computeAttribute(moduleId, key, undefined, dependencies);
       },
       atom(moduleId, key) {
         return registry.atoms[moduleId][key];

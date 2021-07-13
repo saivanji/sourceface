@@ -7,7 +7,7 @@ import computeValue from "./computeValue";
 /**
  * Computes specific module setting field.
  */
-export default function computeSetting(moduleId, field, dependencies) {
+export default function computeSetting(moduleId, field, scope, dependencies) {
   const { registry, stock } = dependencies;
   const module$ = registry.entities.modules[moduleId];
   const existing$ = registry.settings[moduleId]?.[field];
@@ -30,7 +30,7 @@ export default function computeSetting(moduleId, field, dependencies) {
         return of(value || initialValue);
       }
 
-      return computeStages(stageIds, of(null), dependencies);
+      return computeStages(stageIds, of(null), scope, dependencies);
     }),
     /**
      * Avoiding re-computation of the same setting
@@ -43,28 +43,28 @@ export default function computeSetting(moduleId, field, dependencies) {
   return setting$;
 }
 
-function computeStages(stageIds, prev, dependencies) {
+function computeStages(stageIds, prev, scope, dependencies) {
   if (stageIds.length === 0) {
     return prev;
   }
 
   const [head, ...tail] = stageIds;
 
-  const current$ = computeStage(head, dependencies);
+  const current$ = computeStage(head, scope, dependencies);
   return computeStages(tail, current$, dependencies);
 }
 
 /**
  * Computes setting stage.
  */
-function computeStage(stageId, dependencies) {
+function computeStage(stageId, scope, dependencies) {
   const { registry } = dependencies;
   const stage$ = registry.entities.stages[stageId];
 
   return stage$.pipe(
     switchMap((stage) => {
       if (stage.type === "value") {
-        return computeValue(stage.values.root, dependencies);
+        return computeValue(stage.values.root, scope, dependencies);
       }
 
       throw new Error("Unrecognized stage type");
