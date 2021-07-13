@@ -53,16 +53,14 @@ function computeStages(stageIds, acc$, scope, dependencies) {
 
   const nextAcc$ = acc$.pipe(
     switchMap((acc) => {
-      return computeStage(
-        head,
-        { ...scope, stages: acc.prev },
-        dependencies
-      ).pipe(
-        map(({ name, data }) => ({
-          prev: { ...acc.prev, [name]: data },
-          name,
-        }))
-      );
+      // TODO: move that code to "computeStage"?
+      const nextScope = { ...scope, stages: acc.prev };
+      const toAcc = ({ name, data }) => ({
+        prev: { ...acc.prev, [name]: data },
+        name,
+      });
+
+      return computeStage(head, nextScope, dependencies).pipe(map(toAcc));
     })
   );
 
