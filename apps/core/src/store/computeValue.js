@@ -59,6 +59,15 @@ function computeInputValue(_value, scope) {
 }
 
 /**
+ * Computes stage variable value.
+ */
+function computeStageValue(value, scope) {
+  const { name } = value.payload;
+
+  return of(scope.stages[name]);
+}
+
+/**
  * Computes future function value.
  */
 function computeFutureValue(value, scope, dependencies) {
@@ -108,5 +117,6 @@ const categories = {
   "variable/constant": computeConstantValue,
   "variable/attribute": computeAttributeValue,
   "variable/input": computeInputValue,
+  "variable/stage": computeStageValue,
   "function/future": computeFutureValue,
 };

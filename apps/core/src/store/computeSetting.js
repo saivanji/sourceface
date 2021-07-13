@@ -1,5 +1,5 @@
 import { of } from "rxjs";
-import { switchMap, shareReplay } from "rxjs/operators";
+import { map, switchMap, shareReplay } from "rxjs/operators";
 import { isNil } from "ramda";
 import { set } from "./utils";
 import computeValue from "./computeValue";
@@ -30,7 +30,7 @@ export default function computeSetting(moduleId, field, scope, dependencies) {
         return of(value || initialValue);
       }
 
-      return computeStages(stageIds, of(null), scope, dependencies);
+      return computeStages(stageIds, of({ prev: {} }), scope, dependencies);
     }),
     /**
      * Avoiding re-computation of the same setting
@@ -43,15 +43,30 @@ export default function computeSetting(moduleId, field, scope, dependencies) {
   return setting$;
 }
 
-function computeStages(stageIds, prev, scope, dependencies) {
+// TODO: refactor
+function computeStages(stageIds, acc$, scope, dependencies) {
   if (stageIds.length === 0) {
-    return prev;
+    return acc$.pipe(map((acc) => acc.prev[acc.name]));
   }
 
   const [head, ...tail] = stageIds;
 
-  const current$ = computeStage(head, scope, dependencies);
-  return computeStages(tail, current$, dependencies);
+  const nextAcc$ = acc$.pipe(
+    switchMap((acc) => {
+      return computeStage(
+        head,
+        { ...scope, stages: acc.prev },
+        dependencies
+      ).pipe(
+        map(({ name, data }) => ({
+          prev: { ...acc.prev, [name]: data },
+          name,
+        }))
+      );
+    })
+  );
+
+  return computeStages(tail, nextAcc$, scope, dependencies);
 }
 
 /**
@@ -64,7 +79,9 @@ function computeStage(stageId, scope, dependencies) {
   return stage$.pipe(
     switchMap((stage) => {
       if (stage.type === "value") {
-        return computeValue(stage.values.root, scope, dependencies);
+        return computeValue(stage.values.root, scope, dependencies).pipe(
+          map((data) => ({ name: stage.name, data }))
+        );
       }
 
       throw new Error("Unrecognized stage type");

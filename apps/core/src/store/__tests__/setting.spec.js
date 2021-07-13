@@ -78,6 +78,24 @@ it("should compute attribute variable value", () => {
   expect(callback).toBeCalledWith("some text");
 });
 
+it("should compute stage variable value", () => {
+  const { fakes, createStore } = init();
+
+  fakes.stock.addDefinition("text");
+  const constantValue = fakes.entities.addConstantVariable("foo");
+  const stageValue = fakes.entities.addStageVariable("stage_1");
+  const stage1 = fakes.entities.addValueStage(constantValue.id, 0);
+  const stage2 = fakes.entities.addValueStage(stageValue.id, 1);
+  const module = fakes.entities.addModule("text", {
+    fields: { content: [stage1.id, stage2.id] },
+  });
+
+  const callback = jest.fn();
+  const store = createStore();
+  store.data.setting(module.id, "content").subscribe(callback);
+  expect(callback).toBeCalledWith("foo");
+});
+
 it("should compute input variable value", () => {
   const { fakes, createStore } = init();
 

@@ -68,10 +68,10 @@ export default class FakeEntities {
   /**
    * Adds new stage
    */
-  addStage(type, values) {
+  addStage(type, values, order = 0) {
     return this.addEntity("stages", {
-      order: 0,
-      name: "stage_1",
+      order,
+      name: `stage_${order + 1}`,
       type,
       values,
     });
@@ -80,8 +80,8 @@ export default class FakeEntities {
   /**
    * Adds new value stage
    */
-  addValueStage(valueId) {
-    return this.addStage("value", { root: valueId });
+  addValueStage(valueId, order) {
+    return this.addStage("value", { root: valueId }, order);
   }
 
   /**
@@ -99,14 +99,14 @@ export default class FakeEntities {
   }
 
   /**
-   * Adds new constant
+   * Adds new constant variable
    */
   addConstantVariable(value, extras) {
     return this.addVariable("constant", { value }, extras);
   }
 
   /**
-   * Adds new attribute
+   * Adds new attribute variable
    */
   addAttributeVariable(moduleId, property, extras) {
     return this.addVariable(
@@ -120,7 +120,14 @@ export default class FakeEntities {
   }
 
   /**
-   * Adds new input
+   * Adds new stage variable
+   */
+  addStageVariable(name, extras) {
+    return this.addVariable("stage", { name }, extras);
+  }
+
+  /**
+   * Adds new stage variable
    */
   addInputVariable(path) {
     return this.addVariable("input", undefined, { path });

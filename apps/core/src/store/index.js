@@ -1,5 +1,5 @@
 // TODO:
-// 4. implement "stage" scope
+// 4. implement "stage" scope (refactor)
 // 5. implement methods
 // 6. implement wildcard value. form_*.reveal(), form_*.value
 // 7. implement future invalidations
@@ -23,4 +23,17 @@
 // TODO: spawn new thread in hook for subsequent recomputations
 //
 // TODO: migrate to ts
+//
+// TODO: when do not consuming errors as a second argument of "susbscribe" it's propagated somewhere so it can appear in another test
+// with "done" definition by a very strange reason. - https://github.com/ReactiveX/rxjs/blob/e04dc573c97cdba89d599fb0a5f4bf51ffd99e01/src/internal/Subscriber.ts#L199 might be useful
+//
+// Clarification:
+// When error handling function is not provided to the 2nd argument of the subscribe function, that error is thrown on a new call stack. Since all tests which accept "done" are executed on a new call stack(which took the thrown error)
+//
+// That need to be fixed. When 2nd argument is not provided to "subscribe" - silently swallow the error. Since it may cause the confusion that wrong tests might be failed.
+//
+// Alternatively how to throw these errors so they be displayed in failing tests?
+// In case of sync update/errors throw errors synchronously?
+//
+// Or have test helper to convert observable data to promise
 export { default as createStore } from "./createStore";
