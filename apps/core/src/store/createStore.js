@@ -29,6 +29,8 @@ export default function createStore(entities, stock, futures) {
       },
     },
     // TODO: move both functions in a separate file
+    // TODO: should functional atom update be moved to react side since
+    // it's a react limitation?
     actions: {
       updateAtom(moduleId, key, nextValue) {
         const atom$ = registry.atoms[moduleId][key];
