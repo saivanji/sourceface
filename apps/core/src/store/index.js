@@ -1,12 +1,11 @@
 // TODO:
-// 4. implement "stage" scope (refactor)
-// 5. implement methods
-// 6. implement wildcard value. form_*.reveal(), form_*.value
-// 7. implement future invalidations
-// 8. implement "container" module
-// 9. implement @mount field
-// 10. error handling
-// 11. typescript
+// - implement methods
+// - implement "container" module
+// - implement @mount field
+// - implement future invalidations
+// - implement wildcard value. form_*.reveal(), form_*.value
+// - error handling
+// - typescript
 //
 //
 // TODO: have separate stream for editor updates, which will contain actions. modules/stages/values streams will subscribe

@@ -43,7 +43,6 @@ export default function computeSetting(moduleId, field, scope, dependencies) {
   return setting$;
 }
 
-// TODO: refactor
 function computeStages(stageIds, acc$, scope, dependencies) {
   if (stageIds.length === 0) {
     return acc$.pipe(map((acc) => acc.prev[acc.name]));
@@ -52,16 +51,7 @@ function computeStages(stageIds, acc$, scope, dependencies) {
   const [head, ...tail] = stageIds;
 
   const nextAcc$ = acc$.pipe(
-    switchMap((acc) => {
-      // TODO: move that code to "computeStage"?
-      const nextScope = { ...scope, stages: acc.prev };
-      const toAcc = ({ name, data }) => ({
-        prev: { ...acc.prev, [name]: data },
-        name,
-      });
-
-      return computeStage(head, nextScope, dependencies).pipe(map(toAcc));
-    })
+    switchMap((acc) => computeStage(head, acc, scope, dependencies))
   );
 
   return computeStages(tail, nextAcc$, scope, dependencies);
@@ -70,15 +60,20 @@ function computeStages(stageIds, acc$, scope, dependencies) {
 /**
  * Computes setting stage.
  */
-function computeStage(stageId, scope, dependencies) {
+function computeStage(stageId, acc, scope, dependencies) {
   const { registry } = dependencies;
   const stage$ = registry.entities.stages[stageId];
 
   return stage$.pipe(
     switchMap((stage) => {
+      const nextScope = { ...scope, stages: acc.prev };
+
       if (stage.type === "value") {
-        return computeValue(stage.values.root, scope, dependencies).pipe(
-          map((data) => ({ name: stage.name, data }))
+        return computeValue(stage.values.root, nextScope, dependencies).pipe(
+          map((data) => ({
+            name: stage.name,
+            prev: { ...acc.prev, [stage.name]: data },
+          }))
         );
       }
 
