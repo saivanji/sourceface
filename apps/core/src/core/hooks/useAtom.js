@@ -22,7 +22,6 @@ export default function useAtom(key) {
   const value = useSubscription(store.data.atom(moduleId, key));
 
   const setValue = useCallback(
-    // TODO: consider "nextValue" to be a function
     (nextValue) => store.actions.updateAtom(moduleId, key, nextValue),
     [moduleId, key, store]
   );

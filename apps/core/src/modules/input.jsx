@@ -1,18 +1,18 @@
-import { useSetting, useAttribute, useAtom } from "../core";
+import { useSetting, useAttribute, useAtom, useUpdateAtoms } from "../core";
 
 export function Root() {
   const placeholder = useSetting("placeholder");
   const value = useAttribute("value");
-  const [error, setError] = useAtom("error");
-  const [revealed] = useAtom("revealed");
-  const [, setValue] = useAtom("value");
+  const update = useUpdateAtoms();
+  const [error] = useAtom("error");
 
   const change = (e) => {
     const { value } = e.target;
 
-    // TODO: how to avoid race conditions and set atom based on another atom value?
-    setError(!revealed ? null : validate(value));
-    setValue(value);
+    update((prev) => ({
+      error: !prev.revealed ? null : validate(value),
+      value,
+    }));
   };
 
   return (

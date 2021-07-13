@@ -1,6 +1,4 @@
 // TODO:
-// 1. share promise in future value computation
-// 2. use functional updates in input module
 // 3. provide "input" scope to computeSetting
 // 4. implement "stage" scope
 // 5. implement wildcard value. form_*.reveal(), form_*.value

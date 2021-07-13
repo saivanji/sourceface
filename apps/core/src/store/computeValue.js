@@ -58,35 +58,32 @@ function computeFutureValue(value, dependencies) {
 
   // TODO: restrict function calls
   return computeFunctionArgs(value.args, dependencies).pipe(
-    switchMap(
-      (args) => {
-        const identifier = identify(args, value.references);
-        const existing$ = registry.futures[identifier];
+    switchMap((args) => {
+      const identifier = identify(args, value.references);
+      const existing$ = registry.futures[identifier];
 
-        /**
-         * Leveraging existing stream to not duplicate async future
-         * requests.
-         */
-        if (!isNil(existing$)) {
-          return existing$;
-        }
-
-        const future$ = from(
-          execute(args, value.references).then((res) => res.data)
-        );
-
-        /**
-         * Adding stream to the registry so it's result can be cached.
-         */
-        registry.futures[identifier] = future$;
-
-        return future$;
+      /**
+       * Leveraging existing stream to not duplicate async future
+       * requests.
+       */
+      if (!isNil(existing$)) {
+        return existing$;
       }
-      // TODO: each future should be globally identified(ex. "operation:4")
-      // so we can avoid calling the same future multiple times if it's done
-      // from different values by adding future streams to registry the same
-      // way we did with attributes and settings. Apply "shareReplay" as well.
-    )
+
+      // TODO: consider having counters(as BehaviourSubject's) in the registry
+      // which will be switchMapped to the stream below, so we can invalidate cache
+      // this way. Apply "shareReplay(1)" as well.
+      const future$ = from(
+        execute(args, value.references).then((res) => res.data)
+      );
+
+      /**
+       * Adding stream to the registry so it's result can be cached.
+       */
+      registry.futures[identifier] = future$;
+
+      return future$;
+    })
   );
 }
 
