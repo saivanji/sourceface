@@ -81,6 +81,7 @@ it("should compute attribute variable value", () => {
 it("should compute future function value", (done) => {
   const { fakes, createStore } = init();
 
+  const identify = () => 3;
   const execute = (_args, references) => {
     if (references.operations.root === 7) {
       return { data: true };
@@ -88,7 +89,7 @@ it("should compute future function value", (done) => {
   };
 
   fakes.stock.addDefinition("text");
-  fakes.futures.addFuture("operation", execute);
+  fakes.futures.addFuture("operation", identify, execute);
 
   const value = fakes.entities.addFutureFunction("operation", undefined, {
     operations: { root: 7 },
@@ -108,6 +109,7 @@ it("should compute future function value", (done) => {
 it("should compute future function value with args", (done) => {
   const { fakes, createStore } = init();
 
+  const identify = () => 3;
   const execute = (args, references) => {
     if (args.content === "foo" && references.operations.root === 7) {
       return { data: true };
@@ -115,7 +117,7 @@ it("should compute future function value with args", (done) => {
   };
 
   fakes.stock.addDefinition("text");
-  fakes.futures.addFuture("operation", execute);
+  fakes.futures.addFuture("operation", identify, execute);
 
   const content = fakes.entities.addConstantVariable("foo");
   const value = fakes.entities.addFutureFunction(
@@ -136,6 +138,54 @@ it("should compute future function value with args", (done) => {
     expect(value).toBe(true);
     done();
   });
+});
+
+it("should not need to execute future function if the same future is executing at the same time", async () => {
+  const { fakes, createStore } = init();
+
+  const callback = jest.fn();
+
+  const identify = () => 3;
+  const execute = (_args, references) => {
+    if (references.operations.root === 7) {
+      callback();
+
+      return { data: true };
+    }
+  };
+
+  fakes.stock.addDefinition("text");
+  fakes.futures.addFuture("operation", identify, execute);
+
+  const value1 = fakes.entities.addFutureFunction("operation", undefined, {
+    operations: { root: 7 },
+  });
+  const stage1 = fakes.entities.addValueStage(value1.id);
+  const module1 = fakes.entities.addModule("text", {
+    fields: { content: [stage1.id] },
+  });
+
+  const value2 = fakes.entities.addFutureFunction("operation", undefined, {
+    operations: { root: 7 },
+  });
+  const stage2 = fakes.entities.addValueStage(value2.id);
+  const module2 = fakes.entities.addModule("text", {
+    fields: { content: [stage2.id] },
+  });
+
+  const store = createStore();
+
+  const first = new Promise((resolve) => {
+    store.data.setting(module1.id, "content").subscribe(resolve);
+  });
+
+  const second = new Promise((resolve) => {
+    store.data.setting(module2.id, "content").subscribe(resolve);
+  });
+
+  await Promise.all([first, second]);
+
+  expect(callback).toBeCalledTimes(1);
 });
 
 it("should throw an error when value is not found in registry", () => {

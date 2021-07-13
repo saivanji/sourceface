@@ -4,7 +4,11 @@ import faker from "faker";
 
 faker.seed(1);
 
-export default function execute(args, references) {
+export function identify(_args, references) {
+  return `operation:${references.operations.root}`;
+}
+
+export function execute(args, references) {
   const operationId = references?.operations?.root;
 
   if (typeof operationId === "undefined") {

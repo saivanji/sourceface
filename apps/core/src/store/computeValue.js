@@ -53,17 +53,39 @@ function computeAttributeValue(value, dependencies) {
  * Computes future function value.
  */
 function computeFutureValue(value, dependencies) {
-  const { futures } = dependencies;
-  const execute = futures[value.payload.kind];
+  const { futures, registry } = dependencies;
+  const { identify, execute } = futures[value.payload.kind];
 
   // TODO: restrict function calls
   return computeFunctionArgs(value.args, dependencies).pipe(
-    switchMap((args) =>
+    switchMap(
+      (args) => {
+        const identifier = identify(args, value.references);
+        const existing$ = registry.futures[identifier];
+
+        /**
+         * Leveraging existing stream to not duplicate async future
+         * requests.
+         */
+        if (!isNil(existing$)) {
+          return existing$;
+        }
+
+        const future$ = from(
+          execute(args, value.references).then((res) => res.data)
+        );
+
+        /**
+         * Adding stream to the registry so it's result can be cached.
+         */
+        registry.futures[identifier] = future$;
+
+        return future$;
+      }
       // TODO: each future should be globally identified(ex. "operation:4")
       // so we can avoid calling the same future multiple times if it's done
       // from different values by adding future streams to registry the same
-      // way we did with attributes and settings.
-      from(execute(args, value.references).then((res) => res.data))
+      // way we did with attributes and settings. Apply "shareReplay" as well.
     )
   );
 }

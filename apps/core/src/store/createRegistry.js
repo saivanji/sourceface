@@ -16,6 +16,7 @@ export default function createRegistry(entities, stock) {
     atoms: populateAtoms(entities.modules, stock),
     settings: {},
     attributes: {},
+    futures: {},
   };
 }
 

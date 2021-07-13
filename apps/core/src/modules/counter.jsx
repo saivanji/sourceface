@@ -9,13 +9,13 @@ export function Root() {
       <div className="grid grid-flow-col gap-2">
         <button
           className="px-2 border border-gray-400 bg-gray-200 shadow rounded"
-          onClick={() => setValue(value - 1)}
+          onClick={() => setValue((prev) => prev - 1)}
         >
           -
         </button>
         <button
           className="px-2 border border-gray-400 bg-gray-200 shadow rounded"
-          onClick={() => setValue(value + 1)}
+          onClick={() => setValue((prev) => prev + 1)}
         >
           +
         </button>
