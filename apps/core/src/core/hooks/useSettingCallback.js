@@ -23,6 +23,7 @@ export default function useSettingCallback(field) {
 
   const callback = useCallback(
     (input) =>
+      // TODO: how not to return Promise if computation is sync?
       new Promise((resolve) => {
         store.data.setting(moduleId, field, { input }).subscribe(resolve);
       }),
