@@ -126,10 +126,10 @@ it("should compute mount variable value", (done) => {
   fakes.stock.addDefinition("text");
   fakes.futures.addFuture("operation", identify, execute);
 
-  const value1 = fakes.entities.addFutureFunction("operation");
-  const stage1 = fakes.entities.addValueStage(value1.id);
+  const containerValue = fakes.entities.addFutureFunction("operation");
+  const containerStage = fakes.entities.addValueStage(containerValue.id);
   const container = fakes.entities.addModule("container", {
-    fields: { "@mount": [stage1.id] },
+    fields: { "@mount": [containerStage.id] },
   });
 
   const value = fakes.entities.addMountVariable(container.id);
