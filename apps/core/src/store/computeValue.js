@@ -2,6 +2,7 @@ import { path, isNil, map as mapCollection } from "ramda";
 import { of, throwError, combineLatest, from } from "rxjs";
 import { switchMap, map } from "rxjs/operators";
 import computeAttribute from "./computeAttribute";
+import computeSetting from "./computeSetting";
 import createMethod from "./createMethod";
 
 // TODO: some values should be labeled as "callback", so they can be computed only
@@ -68,6 +69,12 @@ function computeStageValue(value, scope) {
   return of(scope.stages[name]);
 }
 
+function computeMountValue(value, scope, dependencies) {
+  const moduleId = value.references.modules.module;
+
+  return computeSetting(moduleId, "@mount", scope, dependencies);
+}
+
 /**
  * Computes future function value.
  */
@@ -132,6 +139,7 @@ const categories = {
   "variable/attribute": computeAttributeValue,
   "variable/input": computeInputValue,
   "variable/stage": computeStageValue,
+  "variable/mount": computeMountValue,
   "function/future": computeFutureValue,
   "function/method": computeMethodValue,
 };

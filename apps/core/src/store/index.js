@@ -1,5 +1,5 @@
 // TODO:
-// - implement @mount field
+// - implement @mount field. most likely should be lazy and computed only if "variable/mount" is used
 // - implement future invalidations. restrict usage in non-callbacks. Make sure we have only last value cache. In future will exceed that limit
 // - implement stage interruption. ex. validation failed
 // - implement dictionary stage type
