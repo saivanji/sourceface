@@ -26,8 +26,8 @@ export default function createStore(entities, stock, futures) {
       atom(moduleId, key) {
         return registry.atoms[moduleId][key];
       },
-      modules() {
-        return registry.ids;
+      modules(parentId) {
+        return registry.ids[parentId || "_"];
       },
       module(moduleId) {
         return registry.entities.modules[moduleId];

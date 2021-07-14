@@ -35,7 +35,9 @@ export default class FakeEntities {
     this.entities[key][entityId] = data;
 
     return {
-      id: entityId,
+      // TODO: in future we might use "nanoid" for id generation, so keeping
+      // ids as strings for the ease of migration.
+      id: entityId + "",
       ...data,
     };
   }
@@ -56,9 +58,10 @@ export default class FakeEntities {
   /**
    * Adds new module
    */
-  addModule(type, { config, fields } = {}) {
+  addModule(type, { parentId, config, fields } = {}) {
     return this.addEntity("modules", {
       position: 0,
+      parentId,
       type,
       config,
       fields,

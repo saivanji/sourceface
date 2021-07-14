@@ -54,8 +54,20 @@ function populateEntity(items) {
 /**
  * Creates stream of module ids from modules data.
  */
-// TODO: maybe we need to group module ids by parent id if it would be
-// convenient to render.
 function populateIds(modules) {
-  return of(keys(modules));
+  const group = keys(modules).reduce((acc, moduleId) => {
+    const module = modules[moduleId];
+    /**
+     * Keeping top level modules without parent id under "_" key.
+     */
+    const parentId = module.parentId || "_";
+    const prev = acc[parentId] || [];
+
+    return {
+      ...acc,
+      [parentId]: [...prev, moduleId],
+    };
+  }, {});
+
+  return map(of, group);
 }

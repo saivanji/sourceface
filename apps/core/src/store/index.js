@@ -1,10 +1,10 @@
 // TODO:
-// - implement "container" module
 // - implement @mount field
-// - implement future invalidations. restrict usage in non-callbacks
+// - implement future invalidations. restrict usage in non-callbacks. Make sure we have only last value cache. In future will exceed that limit
 // - implement stage interruption. ex. validation failed
 // - implement dictionary stage type
 // - error handling
+// - performance check. extra re-renderings, profiling etc.
 // - typescript
 //
 //
@@ -50,4 +50,7 @@
 // In case of sync update/errors throw errors synchronously?
 //
 // Or have test helper to convert observable data to promise
+//
+//
+// TODO: may be module should not be in "references" since it's located at the same page. Rethink idea of references
 export { default as createStore } from "./createStore";

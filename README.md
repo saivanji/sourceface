@@ -44,3 +44,6 @@ SECRET=secret_phrase PORT=80 DATABASE_URL=postgresql://admin:admin@postgres:5432
 # Deploying to github
 
 # Deploying to dockerhub
+
+## TODO
+- Have monorepo for all front-end packages including front-end app. And have single docker image for that monorepo

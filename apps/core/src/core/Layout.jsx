@@ -1,13 +1,12 @@
 import { useContext, Suspense } from "react";
 import { useModuleIds, useModule } from "./hooks";
-import { stockContext, ModuleProvider } from "./providers";
+import { stockContext, moduleContext, ModuleProvider } from "./providers";
 
 export default function Layout() {
-  const moduleIds = useModuleIds();
+  const parentId = useContext(moduleContext);
+  const moduleIds = useModuleIds(parentId);
 
   return moduleIds.map((moduleId) => (
-    // TODO: pass Layout to the Module component so it can recursively render
-    // other layouts
     <Module key={moduleId} moduleId={moduleId} />
   ));
 }

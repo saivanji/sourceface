@@ -40,8 +40,13 @@ export const data = {
         text: "Create order",
       },
     },
-    943: {
+    5581: {
       position: 6,
+      type: "container",
+    },
+    943: {
+      parentId: 5581,
+      position: 0,
       type: "input",
     },
   },
