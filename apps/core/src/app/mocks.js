@@ -40,12 +40,13 @@ export const data = {
         text: "Create order",
       },
     },
-    5581: {
+    // TODO: have attribute of module, containing operation inside as @mount
+    981: {
       position: 6,
       type: "container",
     },
     943: {
-      parentId: 5581,
+      parentId: 981,
       position: 0,
       type: "input",
     },
