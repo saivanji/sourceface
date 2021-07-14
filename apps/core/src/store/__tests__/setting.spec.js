@@ -224,6 +224,14 @@ it("should not need to execute future function if the same future is executing a
   expect(callback).toBeCalledTimes(1);
 });
 
+// it("should compute method function value", () => {
+//   const { fakes, createStore } = init();
+
+//   const call = () => {}
+
+//   fakes.stock.addDefinition("input").addMethod("reveal", call, )
+// })
+
 it("should throw an error when value is not found in registry", () => {
   const { fakes, createStore } = init();
 

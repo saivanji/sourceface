@@ -1,5 +1,6 @@
 import computeSetting from "./computeSetting";
 import computeAttribute from "./computeAttribute";
+import createMethod from "./createMethod";
 import createRegistry from "./createRegistry";
 import updateAtom from "./updateAtom";
 import updateAtoms from "./updateAtoms";
@@ -18,6 +19,9 @@ export default function createStore(entities, stock, futures) {
       },
       attribute(moduleId, key) {
         return computeAttribute(moduleId, key, undefined, dependencies);
+      },
+      method(moduleId, key) {
+        return createMethod(moduleId, key, undefined, dependencies);
       },
       atom(moduleId, key) {
         return registry.atoms[moduleId][key];

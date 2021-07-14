@@ -52,7 +52,7 @@ export const attributes = {
 
 export const methods = {
   reveal: {
-    call: (args, { batch, atoms, settings, attributes }) => {},
+    call: (args, { updateAtoms, atoms, settings, attributes }) => {},
     settings: [],
     attributes: [],
     // most likely not needed since atoms can be provided directly to "call" function

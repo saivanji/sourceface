@@ -106,6 +106,12 @@ function computeFutureValue(value, scope, dependencies) {
 }
 
 /**
+ * Computes method function value.
+ */
+// TODO: most likely method can return Promise
+function computeMethodValue(value, scope, dependencies) {}
+
+/**
  * Computes function args object.
  */
 function computeFunctionArgs(args, scope, dependencies) {

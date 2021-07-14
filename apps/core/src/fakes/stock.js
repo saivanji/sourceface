@@ -32,6 +32,12 @@ class FakeDefinition {
     return this;
   }
 
+  addMethod(name, call, extras) {
+    set(this.content, ["methods", name], { call, ...extras });
+
+    return this;
+  }
+
   addInitialConfig(config) {
     this.content.initialConfig = config;
 

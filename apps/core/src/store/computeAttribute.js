@@ -1,4 +1,3 @@
-import { of, combineLatest } from "rxjs";
 import {
   map,
   switchMap,
@@ -7,7 +6,7 @@ import {
 } from "rxjs/operators";
 import { isNil } from "ramda";
 import { set } from "./utils";
-import computeSetting from "./computeSetting";
+import computeRequirements from "./computeRequirements";
 
 /**
  * Computes specific module attribute.
@@ -26,24 +25,14 @@ export default function computeAttribute(moduleId, key, scope, dependencies) {
 
   const attribute$ = module$.pipe(
     switchMap((module) => {
-      const { selector, settings, attributes, atoms } =
-        stock[module.type].attributes[key];
+      const { selector, ...requirements } = stock[module.type].attributes[key];
 
-      const settings$ = combineSafe(
-        settings?.map((field) =>
-          computeSetting(moduleId, field, scope, dependencies)
-        )
-      );
-      const attributes$ = combineSafe(
-        attributes?.map((key) =>
-          computeAttribute(moduleId, key, scope, dependencies)
-        )
-      );
-      const atoms$ = combineSafe(
-        atoms?.map((key) => registry.atoms[moduleId][key])
-      );
-
-      return combineLatest([settings$, attributes$, atoms$]).pipe(
+      return computeRequirements(
+        moduleId,
+        requirements,
+        scope,
+        dependencies
+      ).pipe(
         map(([settings, attributes, atoms]) =>
           selector({ settings, attributes, atoms })
         )
@@ -63,13 +52,4 @@ export default function computeAttribute(moduleId, key, scope, dependencies) {
   set(registry, ["attributes", moduleId, key], attribute$);
 
   return attribute$;
-}
-
-/**
- * Combines list with dependency streams into one stream which
- * emits array of dependency values. If nothing or empty array
- * supplied we emit empty array for the consistency.
- */
-function combineSafe(items) {
-  return items?.length ? combineLatest(items) : of([]);
 }

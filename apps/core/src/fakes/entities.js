@@ -139,4 +139,15 @@ export default class FakeEntities {
   addFutureFunction(kind, args, references) {
     return this.addFunction("future", { kind }, { args, references });
   }
+
+  /**
+   * Adds new method function
+   */
+  addMethodFunction(moduleId, property, args) {
+    return this.addFunction(
+      "method",
+      { property },
+      { args, references: { modules: { module: moduleId } } }
+    );
+  }
 }

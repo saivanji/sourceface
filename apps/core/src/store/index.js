@@ -3,26 +3,25 @@
 // - implement "container" module
 // - implement @mount field
 // - implement future invalidations. restrict usage in non-callbacks
-// - implement wildcard value. form_*.reveal(), form_*.value, have "wildcard" prop on value? Or it should be on payload and module specific?(better no). Should wildcard be implemented in the UI/controller level and not in the store. On the store side it might be just dictionary stage type. (what should happen if module will be renamed?)
+// - implement stage interruption. ex. validation failed
+// - implement dictionary stage type
 // - error handling
 // - typescript
 //
 //
 // Example of the flow:
+// [a] input5/value.foo.bar
+// [o] createOrder()
+// [i] foo
+// [c] "foobar"
+// [s] stage_1.foo.bar
+//
 // [attribute].input5.value
 // [attribute].input5.reveal()
 // [stage].stage_1
 // [constant]"foo"
 // [input].foo
 // [future].operations.createOrder() / [operation].createOrder()
-//
-// TODO: should module name be it's id?
-// TODO: probably value should have additional property "identifier" which will contain 1st level name, like "input5" or "stage1"
-// also value will have optional new property for the 2nd level name
-// both 1st and 2nd level names can contain wildcards.
-// TODO: what about 3rd+ level json props? Most likely it's "path" prop and it also contain wildcards.
-// {identifier}{name}{path...}
-//
 //
 //
 // TODO: have separate stream for editor updates, which will contain actions. modules/stages/values streams will subscribe

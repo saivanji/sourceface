@@ -21,3 +21,5 @@ export function init() {
     createStore: create,
   };
 }
+
+export function toPromise() {}
