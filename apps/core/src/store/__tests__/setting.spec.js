@@ -114,6 +114,37 @@ it("should compute input variable value", () => {
   expect(callback).toBeCalledWith(8);
 });
 
+it("should compute mount variable value", (done) => {
+  const { fakes, createStore } = init();
+
+  const identify = () => 3;
+  const execute = () => {
+    return { data: "foobar" };
+  };
+
+  fakes.stock.addDefinition("container");
+  fakes.stock.addDefinition("text");
+  fakes.futures.addFuture("operation", identify, execute);
+
+  const value1 = fakes.entities.addFutureFunction("operation");
+  const stage1 = fakes.entities.addValueStage(value1.id);
+  const container = fakes.entities.addModule("container", {
+    fields: { "@mount": [stage1.id] },
+  });
+
+  const value = fakes.entities.addMountVariable(container.id);
+  const stage = fakes.entities.addValueStage(value.id);
+  const module = fakes.entities.addModule("text", {
+    fields: { content: [stage.id] },
+  });
+
+  const store = createStore();
+  store.data.setting(module.id, "content").subscribe((data) => {
+    expect(data).toBe("foobar");
+    done();
+  });
+});
+
 it("should compute future function value", (done) => {
   const { fakes, createStore } = init();
 

@@ -137,6 +137,16 @@ export default class FakeEntities {
   }
 
   /**
+   * Adds new stage variable
+   */
+  addMountVariable(moduleId, path) {
+    return this.addVariable("mount", undefined, {
+      path,
+      references: { modules: { module: moduleId } },
+    });
+  }
+
+  /**
    * Adds new future function
    */
   addFutureFunction(kind, args, references) {
