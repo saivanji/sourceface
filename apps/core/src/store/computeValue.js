@@ -69,6 +69,9 @@ function computeStageValue(value, scope) {
   return of(scope.stages[name]);
 }
 
+/**
+ * Computes mount variable value.
+ */
 function computeMountValue(value, scope, dependencies) {
   const moduleId = value.references.modules.module;
 
