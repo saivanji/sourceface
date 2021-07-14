@@ -224,13 +224,29 @@ it("should not need to execute future function if the same future is executing a
   expect(callback).toBeCalledTimes(1);
 });
 
-// it("should compute method function value", () => {
-//   const { fakes, createStore } = init();
+it("should compute method function value", () => {
+  const { fakes, createStore } = init();
 
-//   const call = () => {}
+  fakes.stock.addDefinition("text");
+  fakes.stock
+    .addDefinition("input")
+    .addMethod("reveal", (args) => args.prefix + "bar");
 
-//   fakes.stock.addDefinition("input").addMethod("reveal", call, )
-// })
+  const refModule = fakes.entities.addModule("input");
+  const constant = fakes.entities.addConstantVariable("foo");
+  const value = fakes.entities.addMethodFunction(refModule.id, "reveal", {
+    prefix: constant.id,
+  });
+  const stage = fakes.entities.addValueStage(value.id);
+  const module = fakes.entities.addModule("text", {
+    fields: { content: [stage.id] },
+  });
+
+  const callback = jest.fn();
+  const store = createStore();
+  store.data.setting(module.id, "content").subscribe(callback);
+  expect(callback).toBeCalledWith("foobar");
+});
 
 it("should throw an error when value is not found in registry", () => {
   const { fakes, createStore } = init();

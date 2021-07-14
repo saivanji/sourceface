@@ -22,4 +22,4 @@ export function init() {
   };
 }
 
-export function toPromise() {}
+// export function toPromise() {}

@@ -34,14 +34,14 @@ it("should create module method when Promise is returned from definition", (done
 it("should create module method when args provided", () => {
   const { fakes, createStore } = init();
 
-  fakes.stock.addDefinition("input").addMethod("reveal", (x) => x + 5);
+  fakes.stock.addDefinition("input").addMethod("reveal", (args) => args.x + 5);
   const module = fakes.entities.addModule("input");
 
   const callback = jest.fn();
   const store = createStore();
 
   const method = store.data.method(module.id, "reveal");
-  method(4).subscribe(callback);
+  method({ x: 4 }).subscribe(callback);
   expect(callback).toBeCalledWith(9);
 });
 

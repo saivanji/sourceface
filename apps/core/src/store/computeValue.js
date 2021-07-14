@@ -2,6 +2,7 @@ import { path, isNil, map as mapCollection } from "ramda";
 import { of, throwError, combineLatest, from } from "rxjs";
 import { switchMap, map } from "rxjs/operators";
 import computeAttribute from "./computeAttribute";
+import createMethod from "./createMethod";
 
 // TODO: some values should be labeled as "callback", so they can be computed only
 // for the "callback" setting type, such as "method" or "effect"
@@ -74,7 +75,6 @@ function computeFutureValue(value, scope, dependencies) {
   const { futures, registry } = dependencies;
   const { identify, execute } = futures[value.payload.kind];
 
-  // TODO: restrict function calls
   return computeFunctionArgs(value.args, scope, dependencies).pipe(
     switchMap((args) => {
       const identifier = identify(args, value.references);
@@ -108,12 +108,20 @@ function computeFutureValue(value, scope, dependencies) {
 /**
  * Computes method function value.
  */
-// TODO: most likely method can return Promise
-function computeMethodValue(value, scope, dependencies) {}
+function computeMethodValue(value, scope, dependencies) {
+  const { property } = value.payload;
+  const moduleId = value.references.modules.module;
+  const method = createMethod(moduleId, property, scope, dependencies);
+
+  return computeFunctionArgs(value.args, scope, dependencies).pipe(
+    switchMap(method)
+  );
+}
 
 /**
  * Computes function args object.
  */
+// TODO: restrict function calls
 function computeFunctionArgs(args, scope, dependencies) {
   const argToValue = (valueId) => computeValue(valueId, scope, dependencies);
   return args ? combineLatest(mapCollection(argToValue, args)) : of({});
@@ -125,4 +133,5 @@ const categories = {
   "variable/input": computeInputValue,
   "variable/stage": computeStageValue,
   "function/future": computeFutureValue,
+  "function/method": computeMethodValue,
 };

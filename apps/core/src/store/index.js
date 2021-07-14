@@ -1,5 +1,4 @@
 // TODO:
-// - implement methods
 // - implement "container" module
 // - implement @mount field
 // - implement future invalidations. restrict usage in non-callbacks
