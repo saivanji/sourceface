@@ -4,8 +4,8 @@ import faker from "faker";
 
 faker.seed(1);
 
-export function identify(_args, references) {
-  return `operation:${references.operations.root}`;
+export function identify(references) {
+  return references.operations.root;
 }
 
 export function execute(args, references) {

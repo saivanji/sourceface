@@ -1,10 +1,14 @@
 // TODO:
-// - implement future invalidations. restrict usage in non-callbacks. Make sure we have only last value cache. In future will exceed that limit
-// - implement stage interruption. ex. validation failed
+// - implement cache limit for having the same future with different args. What if we have more futures executing at the same time than the limit?
 // - implement dictionary stage type
+// - implement stage interruption. ex. validation failed
 // - error handling
 // - performance check. extra re-renderings, profiling etc.
 // - typescript
+//
+// - restrict future invalidations usage in non-callbacks.
+// - restrict effect calls in non-callbacks
+// - restrict function calls in functions args
 //
 //
 // Example of the flow:
@@ -35,8 +39,6 @@
 //
 // TODO: spawn new thread in hook for subsequent recomputations
 //
-// TODO: migrate to ts
-//
 // TODO: when do not consuming errors as a second argument of "susbscribe" it's propagated somewhere so it can appear in another test
 // with "done" definition by a very strange reason. - https://github.com/ReactiveX/rxjs/blob/e04dc573c97cdba89d599fb0a5f4bf51ffd99e01/src/internal/Subscriber.ts#L199 might be useful
 //
@@ -51,5 +53,7 @@
 // Or have test helper to convert observable data to promise
 //
 //
-// TODO: may be module should not be in "references" since it's located at the same page. Rethink idea of references
+// TODO: may be module should not be in "references" since it's located at the same page. Rethink idea of references.
+// Think of the redirect case where value has "page" reference
 export { default as createStore } from "./createStore";
+export { toPromise } from "./utils";

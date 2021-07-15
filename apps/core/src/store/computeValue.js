@@ -1,9 +1,12 @@
+import stringify from "fast-json-stable-stringify";
 import { path, isNil, map as mapCollection } from "ramda";
 import { of, throwError, combineLatest, from } from "rxjs";
-import { switchMap, map } from "rxjs/operators";
+import { switchMap, map, shareReplay } from "rxjs/operators";
+import { set } from "./utils";
 import computeAttribute from "./computeAttribute";
 import computeSetting from "./computeSetting";
 import createMethod from "./createMethod";
+import Counter from "./counter";
 
 // TODO: some values should be labeled as "callback", so they can be computed only
 // for the "callback" setting type, such as "method" or "effect"
@@ -82,13 +85,16 @@ function computeMountValue(value, scope, dependencies) {
  * Computes future function value.
  */
 function computeFutureValue(value, scope, dependencies) {
+  const { kind } = value.payload;
   const { futures, registry } = dependencies;
-  const { identify, execute } = futures[value.payload.kind];
+  const { execute, identify } = futures[kind];
 
   return computeFunctionArgs(value.args, scope, dependencies).pipe(
     switchMap((args) => {
-      const identifier = identify(args, value.references);
-      const existing$ = registry.futures[identifier];
+      const id = identify(value.references);
+      const argsStr = stringify(args);
+      const existing$ = registry.futures[kind]?.[argsStr]?.[id];
+      const counter$ = registry.counters[kind]?.[id] || new Counter();
 
       /**
        * Leveraging existing stream to not duplicate async future
@@ -98,17 +104,37 @@ function computeFutureValue(value, scope, dependencies) {
         return existing$;
       }
 
-      // TODO: consider having counters(as BehaviourSubject's) in the registry
-      // which will be switchMapped to the stream below, so we can invalidate cache
-      // this way. Apply "shareReplay(1)" as well.
-      const future$ = from(
-        execute(args, value.references).then((res) => res.data)
+      const future$ = counter$.pipe(
+        switchMap(() =>
+          from(
+            execute(args, value.references).then((res) => {
+              if (res.stale) {
+                /**
+                 * Invalidating stale futures.
+                 */
+                for (let id of res.stale) {
+                  registry.counters[kind]?.[id]?.increment();
+                }
+              }
+
+              return res.data;
+            })
+          )
+        ),
+        shareReplay(1)
       );
 
       /**
        * Adding stream to the registry so it's result can be cached.
        */
-      registry.futures[identifier] = future$;
+      set(registry, ["futures", kind, argsStr, id], future$);
+
+      /**
+       * Adding counter to the registry if it does not exist.
+       */
+      if (isNil(registry.counters[kind]?.[id])) {
+        set(registry, ["counters", kind, id], counter$);
+      }
 
       return future$;
     })

@@ -117,7 +117,7 @@ it("should compute input variable value", () => {
 it("should compute mount variable value", (done) => {
   const { fakes, createStore } = init();
 
-  const identify = () => 3;
+  const identify = (references) => references.operations.root;
   const execute = () => {
     return { data: "foobar" };
   };
@@ -126,7 +126,13 @@ it("should compute mount variable value", (done) => {
   fakes.stock.addDefinition("text");
   fakes.futures.addFuture("operation", identify, execute);
 
-  const containerValue = fakes.entities.addFutureFunction("operation");
+  const containerValue = fakes.entities.addFutureFunction(
+    "operation",
+    undefined,
+    {
+      operations: { root: 7 },
+    }
+  );
   const containerStage = fakes.entities.addValueStage(containerValue.id);
   const container = fakes.entities.addModule("container", {
     fields: { "@mount": [containerStage.id] },
@@ -148,7 +154,7 @@ it("should compute mount variable value", (done) => {
 it("should compute future function value", (done) => {
   const { fakes, createStore } = init();
 
-  const identify = () => 3;
+  const identify = (references) => references.operations.root;
   const execute = (_args, references) => {
     if (references.operations.root === 7) {
       return { data: true };
@@ -176,7 +182,7 @@ it("should compute future function value", (done) => {
 it("should compute future function value with args", (done) => {
   const { fakes, createStore } = init();
 
-  const identify = () => 3;
+  const identify = (references) => references.operations.root;
   const execute = (args, references) => {
     if (args.content === "foo" && references.operations.root === 7) {
       return { data: true };
@@ -207,12 +213,116 @@ it("should compute future function value with args", (done) => {
   });
 });
 
+it("should invalidate computed future function value", (done) => {
+  const { fakes, createStore } = init();
+  let db = ["Alice"];
+
+  const identify = (references) => references.operations.root;
+  const execute = (_args, references) => {
+    if (references.operations.root === 7) {
+      return { data: db };
+    }
+
+    if (references.operations.root === 9) {
+      db.push("Bob");
+      return { stale: [7] };
+    }
+  };
+
+  fakes.stock.addDefinition("table");
+  fakes.futures.addFuture("operation", identify, execute);
+
+  const users = fakes.entities.addFutureFunction("operation", undefined, {
+    operations: { root: 7 },
+  });
+  const tableStage = fakes.entities.addValueStage(users.id);
+  const table = fakes.entities.addModule("table", {
+    fields: { items: [tableStage.id] },
+  });
+
+  const createUser = fakes.entities.addFutureFunction("operation", undefined, {
+    operations: { root: 9 },
+  });
+  const buttonStage = fakes.entities.addValueStage(createUser.id);
+  const button = fakes.entities.addModule("table", {
+    fields: { event: [buttonStage.id] },
+  });
+
+  const store = createStore();
+
+  let i = 0;
+  store.data.setting(table.id, "items").subscribe((data) => {
+    i++;
+
+    if (i === 1) {
+      store.data.setting(button.id, "event").subscribe().unsubscribe();
+      return;
+    }
+
+    expect(data).toEqual(["Alice", "Bob"]);
+    done();
+  });
+});
+
+it("should execute multiple futures at the same time with different arguments supplied", async () => {
+  const { fakes, createStore } = init();
+
+  const identify = (references) => references.operations.root;
+  const execute = (args, references) => {
+    if (references.operations.root === 7) {
+      return { data: args.x };
+    }
+  };
+
+  fakes.stock.addDefinition("text");
+  fakes.futures.addFuture("operation", identify, execute);
+
+  const constant1 = fakes.entities.addConstantVariable("foo");
+  const value1 = fakes.entities.addFutureFunction(
+    "operation",
+    { x: constant1.id },
+    {
+      operations: { root: 7 },
+    }
+  );
+  const stage1 = fakes.entities.addValueStage(value1.id);
+  const module1 = fakes.entities.addModule("text", {
+    fields: { content: [stage1.id] },
+  });
+
+  const constant2 = fakes.entities.addConstantVariable("bar");
+  const value2 = fakes.entities.addFutureFunction(
+    "operation",
+    { x: constant2.id },
+    {
+      operations: { root: 7 },
+    }
+  );
+  const stage2 = fakes.entities.addValueStage(value2.id);
+  const module2 = fakes.entities.addModule("text", {
+    fields: { content: [stage2.id] },
+  });
+
+  const store = createStore();
+
+  const first = new Promise((resolve) => {
+    store.data.setting(module1.id, "content").subscribe(resolve);
+  });
+
+  const second = new Promise((resolve) => {
+    store.data.setting(module2.id, "content").subscribe(resolve);
+  });
+
+  const result = await Promise.all([first, second]);
+  expect(result).toEqual(["foo", "bar"]);
+});
+
 it("should not need to execute future function if the same future is executing at the same time", async () => {
   const { fakes, createStore } = init();
 
   const callback = jest.fn();
 
-  const identify = () => 3;
+  const identify = (references) => references.operations.root;
   const execute = (_args, references) => {
     if (references.operations.root === 7) {
       callback();
