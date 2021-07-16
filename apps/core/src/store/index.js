@@ -1,6 +1,4 @@
 // TODO:
-// - implement dictionary stage type
-// - implement stage interruption. ex. validation failed
 // - error handling
 // - performance check. extra re-renderings, profiling etc.
 // - typescript
@@ -57,5 +55,6 @@
 // TODO: may be module should not be in "references" since it's located at the same page. Rethink idea of references.
 // Think of the redirect case where value has "page" reference
 export { default as createStore } from "./createStore";
-export { toPromise } from "./utils";
 export { default as Cache } from "./cache";
+export { default as Interruption } from "./interruption";
+export { toPromise } from "./utils";

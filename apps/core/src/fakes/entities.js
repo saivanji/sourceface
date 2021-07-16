@@ -88,6 +88,13 @@ export default class FakeEntities {
   }
 
   /**
+   * Adds new dictionary stage
+   */
+  addDictionaryStage(values, order) {
+    return this.addStage("dictionary", values, order);
+  }
+
+  /**
    * Adds new variable
    */
   addVariable(type, payload, extras) {

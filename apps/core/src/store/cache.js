@@ -1,26 +1,26 @@
-import { set } from "./utils";
-import { path as get, last } from "ramda";
-
 /**
  * Simple form of caching, stores value by provided path and invalidates it
  * when given ttl reached.
  */
 export default class Cache {
   constructor(ttl) {
-    this.cache = {};
+    this.cache = new Map();
+    this.timeouts = new Map();
     this.ttl = ttl;
-    this.timeouts = {};
   }
 
   get(path) {
-    return get(path, this.cache);
+    const key = this.key(path);
+    return this.cache.get(key);
   }
 
   set(path, value) {
+    const key = this.key(path);
+
     /**
      * Clearing previous invalidation timeout if exsits.
      */
-    const timeout = get(path, this.timeouts);
+    const timeout = this.timeouts.get(key);
     if (timeout) {
       clearTimeout(timeout);
     }
@@ -29,22 +29,14 @@ export default class Cache {
      * Removing data from cache when ttl expired.
      */
     const nextTimeout = setTimeout(() => {
-      this.invalidate(path);
+      this.cache.delete(key);
     }, this.ttl);
 
-    set(this.cache, path, value);
-    set(this.timeouts, path, nextTimeout);
+    this.cache.set(key, value);
+    this.timeouts.set(key, nextTimeout);
   }
 
-  invalidate(path) {
-    let current = this.cache;
-
-    for (var i = 0; i < path.length - 1; i++) {
-      const key = [path[i]];
-      current = current?.[key];
-    }
-
-    const key = last(path);
-    delete current[key];
+  key(path) {
+    return path.join("/");
   }
 }

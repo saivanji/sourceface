@@ -1,8 +1,9 @@
-import { of } from "rxjs";
-import { map, switchMap, shareReplay } from "rxjs/operators";
-import { isNil } from "ramda";
+import { of, combineLatest } from "rxjs";
+import { map, switchMap, shareReplay, catchError } from "rxjs/operators";
+import { isNil, map as mapCollection } from "ramda";
 import { set } from "./utils";
 import computeValue from "./computeValue";
+import Interruption from "./interruption";
 
 /**
  * Computes specific module setting field.
@@ -44,21 +45,32 @@ export default function computeSetting(moduleId, field, scope, dependencies) {
 }
 
 function computeStages(stageIds, acc$, scope, dependencies) {
-  if (stageIds.length === 0) {
-    return acc$.pipe(map((acc) => acc.prev[acc.name]));
-  }
+  return acc$.pipe(
+    switchMap((acc) => {
+      if (stageIds.length === 0) {
+        return of(acc.prev[acc.name]);
+      }
 
-  const [head, ...tail] = stageIds;
+      const [head, ...tail] = stageIds;
 
-  const nextAcc$ = acc$.pipe(
-    switchMap((acc) => computeStage(head, acc, scope, dependencies))
+      const nextAcc$ = computeStage(head, acc, scope, dependencies);
+      return computeStages(tail, nextAcc$, scope, dependencies);
+    }),
+    catchError((err) => {
+      /**
+       * Catching stage interruptions
+       */
+      if (err instanceof Interruption) {
+        return of(err);
+      }
+
+      throw err;
+    })
   );
-
-  return computeStages(tail, nextAcc$, scope, dependencies);
 }
 
 /**
- * Computes setting stage.
+ * Computes setting stage and returns next acc.
  */
 function computeStage(stageId, acc, scope, dependencies) {
   const { registry } = dependencies;
@@ -67,17 +79,42 @@ function computeStage(stageId, acc, scope, dependencies) {
   return stage$.pipe(
     switchMap((stage) => {
       const nextScope = { ...scope, stages: acc.prev };
+      const compute = stages[stage.type];
 
-      if (stage.type === "value") {
-        return computeValue(stage.values.root, nextScope, dependencies).pipe(
-          map((data) => ({
-            name: stage.name,
-            prev: { ...acc.prev, [stage.name]: data },
-          }))
-        );
+      if (isNil(compute)) {
+        throw new Error("Unrecognized stage type");
       }
 
-      throw new Error("Unrecognized stage type");
+      return compute(stage, nextScope, dependencies).pipe(
+        map((data) => ({
+          name: stage.name,
+          prev: { ...acc.prev, [stage.name]: data },
+        }))
+      );
     })
   );
 }
+
+/**
+ * Computes value stage type.
+ */
+function computeValueStage(stage, scope, dependencies) {
+  return computeValue(stage.values.root, scope, dependencies);
+}
+
+/**
+ * Computes dictionary stage type.
+ */
+function computeDictionaryStage(stage, scope, dependencies) {
+  const dict = mapCollection(
+    (valueId) => computeValue(valueId, scope, dependencies),
+    stage.values
+  );
+
+  return combineLatest(dict);
+}
+
+const stages = {
+  value: computeValueStage,
+  dictionary: computeDictionaryStage,
+};

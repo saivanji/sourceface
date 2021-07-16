@@ -43,6 +43,33 @@ it("should throw an error if unrecognized stage type provided", () => {
   expect(callback).toBeCalledWith(new Error("Unrecognized stage type"));
 });
 
+it("should not compute the next stages after Interruption is thrown", () => {
+  const { fakes, createStore, interruption } = init();
+
+  fakes.stock.addDefinition("text");
+  fakes.stock.addDefinition("input").addAttribute("value", () => {
+    throw interruption;
+  });
+
+  const input = fakes.entities.addModule("input");
+
+  const foo = fakes.entities.addConstantVariable("foo");
+  const value = fakes.entities.addAttributeVariable(input.id, "value");
+  const bar = fakes.entities.addConstantVariable("bar");
+
+  const stage1 = fakes.entities.addValueStage(foo.id, 0);
+  const stage2 = fakes.entities.addValueStage(value.id, 1);
+  const stage3 = fakes.entities.addValueStage(bar.id, 3);
+  const text = fakes.entities.addModule("text", {
+    fields: { content: [stage1.id, stage2.id, stage3.id] },
+  });
+
+  const callback = jest.fn();
+  const store = createStore();
+  store.data.setting(text.id, "content").subscribe(callback);
+  expect(callback).toBeCalledWith(interruption);
+});
+
 it("should compute constant variable value", () => {
   const { fakes, createStore } = init();
 
@@ -491,4 +518,30 @@ it("should not compute the same setting twice or more times", () => {
   store.data.setting(module.id, "content").subscribe(jest.fn);
 
   expect(callback).toBeCalledTimes(1);
+});
+
+it("should compute dictionary stage type", () => {
+  const { fakes, createStore } = init();
+
+  fakes.stock.addDefinition("text");
+  const value1 = fakes.entities.addConstantVariable("foo");
+  const value2 = fakes.entities.addConstantVariable("bar");
+  const value3 = fakes.entities.addConstantVariable("baz");
+  const stage = fakes.entities.addDictionaryStage({
+    x: value1.id,
+    y: value2.id,
+    z: value3.id,
+  });
+  const module = fakes.entities.addModule("text", {
+    fields: { content: [stage.id] },
+  });
+
+  const callback = jest.fn();
+  const store = createStore();
+  store.data.setting(module.id, "content").subscribe(callback);
+  expect(callback).toBeCalledWith({
+    x: "foo",
+    y: "bar",
+    z: "baz",
+  });
 });
