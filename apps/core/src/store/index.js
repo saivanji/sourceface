@@ -1,4 +1,11 @@
 // TODO:
+// - in case of interruption in dictionary stage, catch every value. Right now first throws block the rest dictionary fields
+//   interruptions should have messages so they could be handled further.
+// - do not need to catch in store. catching should happen on the level above. computation either succeeds, or fails with Interruption
+//   when interrupted in "value" - throw Interruption("value error message"), in dictionary - throw Interruption({ foo: "error message" })
+//   in future, will have "scope.error" when catch clause is selected, containing information from Interruption
+//
+// - should we differ callbacks and read settings? for example have them under different keys. read under "fields" and callbacks under "callbacks"?
 // - error handling
 // - performance check. extra re-renderings, profiling etc.
 // - typescript

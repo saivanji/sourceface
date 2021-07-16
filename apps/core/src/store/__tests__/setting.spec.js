@@ -70,6 +70,37 @@ it("should not compute the next stages after Interruption is thrown", () => {
   expect(callback).toBeCalledWith(interruption);
 });
 
+it("should throw Interruption in every value of dictionary stage", () => {
+  const { fakes, createStore, interruption } = init();
+
+  const callback = jest.fn();
+
+  fakes.stock.addDefinition("text");
+  fakes.stock.addDefinition("input").addAttribute("value", () => {
+    callback();
+    throw interruption;
+  });
+
+  const input1 = fakes.entities.addModule("input");
+  const input2 = fakes.entities.addModule("input");
+
+  const value1 = fakes.entities.addAttributeVariable(input1.id, "value");
+  const value2 = fakes.entities.addAttributeVariable(input2.id, "value");
+  const stage = fakes.entities.addDictionaryStage({
+    x: value1.id,
+    y: value2.id,
+  });
+  const module = fakes.entities.addModule("text", {
+    fields: { content: [stage.id] },
+  });
+
+  const store = createStore();
+  store.data.setting(module.id, "content").subscribe(callback);
+  expect(callback).toBeCalledTimes(2);
+
+  // TODO: what needs to be returned?
+});
+
 it("should compute constant variable value", () => {
   const { fakes, createStore } = init();
 

@@ -1,4 +1,10 @@
-import { useSetting, useAttribute, useAtom, useUpdateAtoms } from "../core";
+import {
+  useSetting,
+  useAttribute,
+  useAtom,
+  useUpdateAtoms,
+  Interruption,
+} from "../core";
 
 export function Root() {
   const placeholder = useSetting("placeholder");
@@ -52,11 +58,18 @@ export const attributes = {
 
 export const methods = {
   reveal: {
-    call: (args, { updateAtoms, atoms, settings, attributes }) => {},
-    settings: [],
-    attributes: [],
-    // most likely not needed since atoms can be provided directly to "call" function
-    atoms: [],
+    call: (_args, { updateAtoms, attributes: [value] }) => {
+      const error = validate(value);
+
+      if (error) {
+        updateAtoms({ error, revealed: true });
+        throw new Interruption(`Validation failed - ${error}`);
+      }
+
+      updateAtoms({ revealed: true });
+      return value;
+    },
+    attributes: ["value"],
   },
 };
 

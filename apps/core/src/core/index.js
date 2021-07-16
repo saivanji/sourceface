@@ -3,6 +3,7 @@
 export * from "./providers";
 export * from "./hooks";
 export { default as Layout } from "./Layout";
+export { Interruption } from '../store'
 
 // TODO: How to avoid duplicating cached data in operations and computations?
 // implement linking and global data caching

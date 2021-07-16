@@ -49,6 +49,28 @@ export const data = {
       parentId: 981,
       position: 0,
       type: "input",
+      config: {
+        placeholder: "Enter first name",
+      },
+    },
+    944: {
+      parentId: 981,
+      position: 1,
+      type: "input",
+      config: {
+        placeholder: "Enter last name",
+      },
+    },
+    945: {
+      parentId: 981,
+      position: 1,
+      type: "button",
+      config: {
+        text: "Create user",
+      },
+      fields: {
+        click: [8401],
+      },
     },
   },
   stages: {
@@ -74,6 +96,15 @@ export const data = {
       type: "value",
       values: {
         root: 819,
+      },
+    },
+    8401: {
+      order: 0,
+      name: "stage_1",
+      type: "dictionary",
+      values: {
+        first_name: 951,
+        last_name: 952,
       },
     },
   },
@@ -122,6 +153,28 @@ export const data = {
       references: {
         modules: {
           module: 109,
+        },
+      },
+    },
+    951: {
+      category: "function/method",
+      payload: {
+        property: "reveal",
+      },
+      references: {
+        modules: {
+          module: 943,
+        },
+      },
+    },
+    952: {
+      category: "function/method",
+      payload: {
+        property: "reveal",
+      },
+      references: {
+        modules: {
+          module: 944,
         },
       },
     },

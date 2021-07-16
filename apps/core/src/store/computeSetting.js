@@ -44,6 +44,7 @@ export default function computeSetting(moduleId, field, scope, dependencies) {
   return setting$;
 }
 
+// TODO: most likely revert to previous version
 function computeStages(stageIds, acc$, scope, dependencies) {
   return acc$.pipe(
     switchMap((acc) => {
