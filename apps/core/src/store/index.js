@@ -1,11 +1,29 @@
 // TODO:
 // - in case of interruption in dictionary stage, catch every value. Right now first throws block the rest dictionary fields
-//   interruptions should have messages so they could be handled further.
-// - do not need to catch in store. catching should happen on the level above. computation either succeeds, or fails with Interruption
-//   when interrupted in "value" - throw Interruption("value error message"), in dictionary - throw Interruption({ foo: "error message" })
-//   in future, will have "scope.error" when catch clause is selected, containing information from Interruption
-// - when stages could be failed apart from validation?
-//    - operation failure
+// - do not need to catch in store. catching should happen on the level above. computation either succeeds or throws
+//
+//   in case of any *unhandled* failure from computation, we should display generic error state for the module. In editor mode - we additionally display meta information of the error on hover. Should unhandled interruption errors in callbacks be ignored? Do we need to display specific user errors in "read" settings computation?
+//
+// - should we have different Interruption types? One for silent ignores(in callbacks) - SilentInterruption, another for the errors which needs to be displayed(either with notification or in module area), for example - "email already exists"
+//
+// - SilentInterruption can not appear on read, since it's thrown from method selector, which can only be called inside of callback. Catch SilentInterruption in hooks. We throw SilentInterruption in any stage type. For dictionary we execute all keys, and if one has that exception thrown - throw interruption.
+//   SilentInterruption have no message attached.
+//   SilentInterruption should be thrown ONLY from method selectors and ONLY when the error is handled by the module itself, for example the message is displayed in the UI.
+//   SilentInterruption should be catched in useSettingCallback hook only
+//   Have just Interruption name
+//
+// - No need to have "catch" construction in stages. If something went wrong - we just display message/notification. Complex orchestration cases should be resolved on a controller level. Since "stages" is conception for handling UI things.
+//
+// - how user will handle 4** errors from operations? for example "email already exists"?
+// operations should throw Exception with user-friendly message provided.
+// when thrown in read mode - display that message in module area with the same UI as generic error.
+// when thrown in callback mode - display notification
+//
+//
+//
+//
+//
+//
 //
 // - should we differ callbacks and read settings? for example have them under different keys. read under "fields" and callbacks under "callbacks"?
 // - error handling

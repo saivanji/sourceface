@@ -63,7 +63,7 @@ export const methods = {
 
       if (error) {
         updateAtoms({ error, revealed: true });
-        throw new Interruption(`Validation failed - ${error}`);
+        throw new Interruption();
       }
 
       updateAtoms({ revealed: true });
