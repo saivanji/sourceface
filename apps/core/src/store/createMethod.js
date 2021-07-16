@@ -1,6 +1,7 @@
 import { of, from } from "rxjs";
 import { switchMap } from "rxjs/operators";
 import computeRequirements from "./computeRequirements";
+import updateAtoms from "./updateAtoms";
 
 /**
  * Creates a module method function, which when called will perform computation and
@@ -22,7 +23,15 @@ export default function createMethod(moduleId, key, scope, dependencies) {
           dependencies
         ).pipe(
           switchMap(([settings, attributes, atoms]) => {
-            const result = call(args, { settings, attributes, atoms });
+            const update = (nextValues) =>
+              updateAtoms(moduleId, nextValues, dependencies);
+
+            const result = call(args, {
+              updateAtoms: update,
+              settings,
+              attributes,
+              atoms,
+            });
 
             /**
              * "call" function can return Promise, so we're explicitly creating

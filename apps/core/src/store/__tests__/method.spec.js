@@ -106,3 +106,24 @@ it("should create module method with atom dependency", () => {
   method().subscribe(callback);
   expect(callback).toBeCalledWith("foobar");
 });
+
+it("should update atoms inside of method selector", () => {
+  const { fakes, createStore } = init();
+
+  fakes.stock
+    .addDefinition("input")
+    .addMethod("reveal", (_args, { updateAtoms }) => {
+      updateAtoms({ revealed: true });
+    })
+    .addInitialAtoms({ revealed: false });
+  const module = fakes.entities.addModule("input");
+
+  const callback = jest.fn();
+  const store = createStore();
+
+  const method = store.data.method(module.id, "reveal");
+  method().subscribe(jest.fn);
+
+  store.data.atom(module.id, "revealed").subscribe(callback);
+  expect(callback).toBeCalledWith(true);
+});
