@@ -5,6 +5,7 @@
 //   when interrupted in "value" - throw Interruption("value error message"), in dictionary - throw Interruption({ foo: "error message" })
 //   in future, will have "scope.error" when catch clause is selected, containing information from Interruption
 // - when stages could be failed apart from validation?
+//    - operation failure
 //
 // - should we differ callbacks and read settings? for example have them under different keys. read under "fields" and callbacks under "callbacks"?
 // - error handling
