@@ -8,8 +8,8 @@ import updateAtoms from "./updateAtoms";
 /**
  * Creates new store based on initial entities data and stock definition.
  */
-export default function createStore(entities, stock, futures) {
-  const registry = createRegistry(entities, stock);
+export default function createStore(entities, stock, futures, config) {
+  const registry = createRegistry(entities, stock, config);
   const dependencies = { registry, stock, futures };
 
   return {

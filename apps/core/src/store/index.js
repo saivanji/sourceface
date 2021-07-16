@@ -1,15 +1,15 @@
 // TODO:
-// - implement cache limit for having the same future with different args. What if we have more futures executing at the same time than the limit? Maybe apply ttl(windowTime) instead of cache size limit? Might be better schedule interval in registry which will handle removing futures which exist too long. How to determine that? May be by creating Cache class, which will live on futures[kind][id], or just on futures(and will be instantiated upon registry creation) and will be responsible for adding new streams and scheduling timeout for removing them right after they added.
-// - how to spread futures cache across different pages? export Cache and accept it's instance upon store creation?
 // - implement dictionary stage type
 // - implement stage interruption. ex. validation failed
 // - error handling
 // - performance check. extra re-renderings, profiling etc.
 // - typescript
 //
+// TODO: handle all of that in hooks?
 // - restrict future invalidations usage in non-callbacks.
 // - restrict effect calls in non-callbacks
 // - restrict function calls in functions args
+// - do not have "callback" thing in "store".
 //
 //
 // Example of the flow:
@@ -58,3 +58,4 @@
 // Think of the redirect case where value has "page" reference
 export { default as createStore } from "./createStore";
 export { toPromise } from "./utils";
+export { default as Cache } from "./cache";

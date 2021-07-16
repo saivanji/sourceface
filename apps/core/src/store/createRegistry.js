@@ -1,11 +1,14 @@
 import { map, keys, isNil } from "ramda";
 import { of, BehaviorSubject } from "rxjs";
+import Cache from "./cache";
 
 /**
  * Creates registry of the streams used during the computation
  * process.
  */
-export default function createRegistry(entities, stock) {
+export default function createRegistry(entities, stock, config = {}) {
+  const { futuresCache = new Cache(3 * 60 * 1_000) } = config;
+
   return {
     entities: {
       modules: populateEntity(entities.modules),
@@ -14,10 +17,10 @@ export default function createRegistry(entities, stock) {
     },
     ids: populateIds(entities.modules),
     atoms: populateAtoms(entities.modules, stock),
+    futures: futuresCache,
     settings: {},
     attributes: {},
-    futures: {},
-    counters: {}
+    counters: {},
   };
 }
 

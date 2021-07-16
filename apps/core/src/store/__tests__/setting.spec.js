@@ -213,7 +213,7 @@ it("should compute future function value with args", (done) => {
   });
 });
 
-it("should invalidate computed future function value", (done) => {
+it("should invalidate computed future function value after another future executed", (done) => {
   const { fakes, createStore } = init();
   let db = ["Alice"];
 
@@ -262,6 +262,54 @@ it("should invalidate computed future function value", (done) => {
     expect(data).toEqual(["Alice", "Bob"]);
     done();
   });
+});
+
+it("should invalidate specific future data in cache after ttl timeout expired", async () => {
+  const { fakes, createStore } = init();
+
+  const callback = jest.fn();
+
+  const identify = (references) => references.operations.root;
+  const execute = (_args, references) => {
+    if (references.operations.root === 7) {
+      callback();
+
+      return { data: true };
+    }
+  };
+
+  fakes.stock.addDefinition("text");
+  fakes.futures.addFuture("operation", identify, execute);
+
+  const value1 = fakes.entities.addFutureFunction("operation", undefined, {
+    operations: { root: 7 },
+  });
+  const stage1 = fakes.entities.addValueStage(value1.id);
+  const module1 = fakes.entities.addModule("text", {
+    fields: { content: [stage1.id] },
+  });
+
+  const value2 = fakes.entities.addFutureFunction("operation", undefined, {
+    operations: { root: 7 },
+  });
+  const stage2 = fakes.entities.addValueStage(value2.id);
+  const module2 = fakes.entities.addModule("text", {
+    fields: { content: [stage2.id] },
+  });
+
+  const store = createStore({ futuresTTL: 1 });
+
+  await new Promise((resolve) => {
+    store.data.setting(module1.id, "content").subscribe(resolve);
+  });
+
+  await new Promise((resolve) => setTimeout(() => resolve(), 100));
+
+  await new Promise((resolve) => {
+    store.data.setting(module2.id, "content").subscribe(resolve);
+  });
+
+  expect(callback).toBeCalledTimes(2);
 });
 
 it("should execute multiple futures at the same time with different arguments supplied", async () => {

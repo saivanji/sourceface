@@ -1,7 +1,7 @@
 import FakeEntities from "../fakes/entities";
 import FakeStock from "../fakes/stock";
 import FakeFutures from "../fakes/futures";
-import { createStore } from "./";
+import { createStore, Cache } from "./";
 
 // TODO: will be moved to jest configuration
 export function init() {
@@ -9,8 +9,15 @@ export function init() {
   const stock = new FakeStock();
   const futures = new FakeFutures();
 
-  const create = () =>
-    createStore(entities.contents(), stock.contents(), futures.contents());
+  const create = ({ futuresTTL } = {}) =>
+    createStore(
+      entities.contents(),
+      stock.contents(),
+      futures.contents(),
+      futuresTTL && {
+        futuresCache: new Cache(futuresTTL),
+      }
+    );
 
   return {
     fakes: {

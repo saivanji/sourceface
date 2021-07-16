@@ -93,7 +93,9 @@ function computeFutureValue(value, scope, dependencies) {
     switchMap((args) => {
       const id = identify(value.references);
       const argsStr = stringify(args);
-      const existing$ = registry.futures[kind]?.[id]?.[argsStr];
+      const cachePath = [kind, id, argsStr];
+
+      const existing$ = registry.futures.get(cachePath);
       const counter$ = registry.counters[kind]?.[id] || new Counter();
 
       /**
@@ -127,7 +129,7 @@ function computeFutureValue(value, scope, dependencies) {
       /**
        * Adding stream to the registry so it's result can be cached.
        */
-      set(registry, ["futures", kind, id, argsStr], future$);
+      registry.futures.set(cachePath, future$);
 
       /**
        * Adding counter to the registry if it does not exist.
