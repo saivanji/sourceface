@@ -63,8 +63,6 @@
 // to the next update and use raw compute* without debouncing when we need initial value.
 // Alternatively, we can leave using debounceTime(0) and just leverage ReactDOM.unstable_batchedUpdates feature
 //
-// TODO: spawn new thread in hook for subsequent recomputations
-//
 // TODO: when do not consuming errors as a second argument of "susbscribe" it's propagated somewhere so it can appear in another test
 // with "done" definition by a very strange reason. - https://github.com/ReactiveX/rxjs/blob/e04dc573c97cdba89d599fb0a5f4bf51ffd99e01/src/internal/Subscriber.ts#L199 might be useful
 //

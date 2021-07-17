@@ -44,37 +44,6 @@ it("should throw an error if unrecognized stage type provided", () => {
   expect(callback).toBeCalledWith(new Error("Unrecognized stage type"));
 });
 
-it("should compute every value of dictionary stage regardless interruption", () => {
-  const { fakes, createStore } = init();
-
-  const callback = jest.fn();
-
-  fakes.stock.addDefinition("text");
-  fakes.stock.addDefinition("input").addAttribute("value", () => {
-    callback();
-    throw new Interruption();
-  });
-
-  const input1 = fakes.entities.addModule("input");
-  const input2 = fakes.entities.addModule("input");
-
-  const value1 = fakes.entities.addAttributeVariable(input1.id, "value");
-  const value2 = fakes.entities.addAttributeVariable(input2.id, "value");
-  const stage = fakes.entities.addDictionaryStage({
-    x: value1.id,
-    y: value2.id,
-  });
-  const module = fakes.entities.addModule("text", {
-    fields: { content: [stage.id] },
-  });
-
-  const store = createStore();
-  const errorCallback = jest.fn();
-  store.data.setting(module.id, "content").subscribe(jest.fn(), errorCallback);
-  expect(callback).toBeCalledTimes(2);
-  expect(errorCallback.mock.calls[0][0]).toBeInstanceOf(Interruption);
-});
-
 it("should compute constant variable value", () => {
   const { fakes, createStore } = init();
 
@@ -549,4 +518,68 @@ it("should compute dictionary stage type", () => {
     y: "bar",
     z: "baz",
   });
+});
+
+it("should compute every value of dictionary stage regardless interruption", () => {
+  const { fakes, createStore } = init();
+
+  const callback = jest.fn();
+
+  fakes.stock.addDefinition("text");
+  fakes.stock.addDefinition("input").addAttribute("value", () => {
+    callback();
+    throw new Interruption();
+  });
+
+  const input1 = fakes.entities.addModule("input");
+  const input2 = fakes.entities.addModule("input");
+
+  const value1 = fakes.entities.addAttributeVariable(input1.id, "value");
+  const value2 = fakes.entities.addAttributeVariable(input2.id, "value");
+  const stage = fakes.entities.addDictionaryStage({
+    x: value1.id,
+    y: value2.id,
+  });
+  const module = fakes.entities.addModule("text", {
+    fields: { content: [stage.id] },
+  });
+
+  const store = createStore();
+  const errorCallback = jest.fn();
+  store.data.setting(module.id, "content").subscribe(jest.fn(), errorCallback);
+  expect(callback).toBeCalledTimes(2);
+  expect(errorCallback.mock.calls[0][0]).toBeInstanceOf(Interruption);
+});
+
+it("should break dictionary execution when arbitrary error is thrown", () => {
+  const { fakes, createStore } = init();
+
+  const callback = jest.fn();
+
+  const error = new Error();
+
+  fakes.stock.addDefinition("text");
+  fakes.stock.addDefinition("input").addAttribute("value", () => {
+    callback();
+    throw error;
+  });
+
+  const input1 = fakes.entities.addModule("input");
+  const input2 = fakes.entities.addModule("input");
+
+  const value1 = fakes.entities.addAttributeVariable(input1.id, "value");
+  const value2 = fakes.entities.addAttributeVariable(input2.id, "value");
+  const stage = fakes.entities.addDictionaryStage({
+    x: value1.id,
+    y: value2.id,
+  });
+  const module = fakes.entities.addModule("text", {
+    fields: { content: [stage.id] },
+  });
+
+  const store = createStore();
+  const errorCallback = jest.fn();
+  store.data.setting(module.id, "content").subscribe(jest.fn(), errorCallback);
+  expect(callback).toBeCalledTimes(1);
+  expect(errorCallback).toBeCalledWith(error);
 });
