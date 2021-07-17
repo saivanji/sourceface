@@ -1,5 +1,6 @@
 import { useContext, useCallback } from "react";
 import { moduleContext, storeContext } from "../providers";
+import { Interruption } from "../../store";
 
 /**
  * Returns callback function which will resolve required setting field
@@ -25,7 +26,17 @@ export default function useSettingCallback(field) {
     (input) =>
       // TODO: how not to return Promise if computation is sync?
       new Promise((resolve) => {
-        store.data.setting(moduleId, field, { input }).subscribe(resolve);
+        store.data
+          .setting(moduleId, field, { input })
+          .subscribe(resolve, (err) => {
+            /**
+             * Ignoring interruptions, since the errors are displayed in the UI
+             * by the module definition.
+             */
+            if (!(err instanceof Interruption)) {
+              throw err;
+            }
+          });
       }),
     [moduleId, field, store]
   );

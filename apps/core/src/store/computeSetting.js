@@ -1,5 +1,5 @@
 import { of, combineLatest } from "rxjs";
-import { map, switchMap, shareReplay, catchError } from "rxjs/operators";
+import { tap, map, switchMap, shareReplay, catchError } from "rxjs/operators";
 import { isNil, map as mapCollection } from "ramda";
 import { set } from "./utils";
 import computeValue from "./computeValue";
@@ -44,30 +44,18 @@ export default function computeSetting(moduleId, field, scope, dependencies) {
   return setting$;
 }
 
-// TODO: most likely revert to previous version
 function computeStages(stageIds, acc$, scope, dependencies) {
-  return acc$.pipe(
-    switchMap((acc) => {
-      if (stageIds.length === 0) {
-        return of(acc.prev[acc.name]);
-      }
+  if (stageIds.length === 0) {
+    return acc$.pipe(map((acc) => acc.prev[acc.name]));
+  }
 
-      const [head, ...tail] = stageIds;
+  const [head, ...tail] = stageIds;
 
-      const nextAcc$ = computeStage(head, acc, scope, dependencies);
-      return computeStages(tail, nextAcc$, scope, dependencies);
-    }),
-    catchError((err) => {
-      /**
-       * Catching stage interruptions
-       */
-      if (err instanceof Interruption) {
-        return of(err);
-      }
-
-      throw err;
-    })
+  const nextAcc$ = acc$.pipe(
+    switchMap((acc) => computeStage(head, acc, scope, dependencies))
   );
+
+  return computeStages(tail, nextAcc$, scope, dependencies);
 }
 
 /**
@@ -107,12 +95,41 @@ function computeValueStage(stage, scope, dependencies) {
  * Computes dictionary stage type.
  */
 function computeDictionaryStage(stage, scope, dependencies) {
+  let isInterrupted = false;
+
   const dict = mapCollection(
-    (valueId) => computeValue(valueId, scope, dependencies),
+    (valueId) =>
+      computeValue(valueId, scope, dependencies).pipe(
+        catchError((err) => {
+          /**
+           * Catching Interruption errors to let other dictionary fields to be
+           * executed as well.
+           */
+          if (err instanceof Interruption) {
+            isInterrupted = true;
+            /**
+             * Dumb response, it won't be considered further.
+             */
+            return of(null);
+          }
+
+          throw err;
+        })
+      ),
     stage.values
   );
 
-  return combineLatest(dict);
+  return combineLatest(dict).pipe(
+    tap(() => {
+      /**
+       * Throwing Interruption if either one dictionary value execution was
+       * interrupted.
+       */
+      if (isInterrupted) {
+        throw new Interruption();
+      }
+    })
+  );
 }
 
 const stages = {

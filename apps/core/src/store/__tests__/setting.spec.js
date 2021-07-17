@@ -1,3 +1,4 @@
+import { Interruption } from "../";
 import { init } from "../fakes";
 
 it("should return module setting config field", () => {
@@ -39,46 +40,19 @@ it("should throw an error if unrecognized stage type provided", () => {
 
   const callback = jest.fn();
   const store = createStore();
-  store.data.setting(module.id, "content").subscribe(jest.fn, callback);
+  store.data.setting(module.id, "content").subscribe(jest.fn(), callback);
   expect(callback).toBeCalledWith(new Error("Unrecognized stage type"));
 });
 
-it("should not compute the next stages after Interruption is thrown", () => {
-  const { fakes, createStore, interruption } = init();
-
-  fakes.stock.addDefinition("text");
-  fakes.stock.addDefinition("input").addAttribute("value", () => {
-    throw interruption;
-  });
-
-  const input = fakes.entities.addModule("input");
-
-  const foo = fakes.entities.addConstantVariable("foo");
-  const value = fakes.entities.addAttributeVariable(input.id, "value");
-  const bar = fakes.entities.addConstantVariable("bar");
-
-  const stage1 = fakes.entities.addValueStage(foo.id, 0);
-  const stage2 = fakes.entities.addValueStage(value.id, 1);
-  const stage3 = fakes.entities.addValueStage(bar.id, 3);
-  const text = fakes.entities.addModule("text", {
-    fields: { content: [stage1.id, stage2.id, stage3.id] },
-  });
-
-  const callback = jest.fn();
-  const store = createStore();
-  store.data.setting(text.id, "content").subscribe(callback);
-  expect(callback).toBeCalledWith(interruption);
-});
-
-it("should throw Interruption in every value of dictionary stage", () => {
-  const { fakes, createStore, interruption } = init();
+it("should compute every value of dictionary stage regardless interruption", () => {
+  const { fakes, createStore } = init();
 
   const callback = jest.fn();
 
   fakes.stock.addDefinition("text");
   fakes.stock.addDefinition("input").addAttribute("value", () => {
     callback();
-    throw interruption;
+    throw new Interruption();
   });
 
   const input1 = fakes.entities.addModule("input");
@@ -95,10 +69,10 @@ it("should throw Interruption in every value of dictionary stage", () => {
   });
 
   const store = createStore();
-  store.data.setting(module.id, "content").subscribe(callback);
+  const errorCallback = jest.fn();
+  store.data.setting(module.id, "content").subscribe(jest.fn(), errorCallback);
   expect(callback).toBeCalledTimes(2);
-
-  // TODO: what needs to be returned?
+  expect(errorCallback.mock.calls[0][0]).toBeInstanceOf(Interruption);
 });
 
 it("should compute constant variable value", () => {
@@ -506,7 +480,7 @@ it("should throw an error when value is not found in registry", () => {
 
   const callback = jest.fn();
   const store = createStore();
-  store.data.setting(module.id, "content").subscribe(jest.fn, callback);
+  store.data.setting(module.id, "content").subscribe(jest.fn(), callback);
   expect(callback).toBeCalledWith(new Error("Can not find value in registry"));
 });
 
@@ -522,7 +496,7 @@ it("should throw an error when unrecognized value category supplied", () => {
 
   const callback = jest.fn();
   const store = createStore();
-  store.data.setting(module.id, "content").subscribe(jest.fn, callback);
+  store.data.setting(module.id, "content").subscribe(jest.fn(), callback);
   return expect(callback).toBeCalledWith(
     new Error("Unrecognized value category")
   );
