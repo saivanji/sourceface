@@ -4,6 +4,9 @@ export const Root = () => {
   const text = useSetting("text");
   const onClick = useSettingCallback("click");
 
+  // TODO: how to leverage "useTransition" and "isPending" for displaying "loading" state
+  // instead of relying on Promise result from "onClick"?
+
   return (
     <button
       onClick={onClick}
