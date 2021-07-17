@@ -1,7 +1,9 @@
 // TODO: how to leverage React concurrent mode at full capacity in core? Should interface of "store" be changed because of that?
+// Install alpha react and integrate Suspense, ErrorBoundary, useTransition and other new concurrent features.
 //
 //
 // TODO:
+// - interruption should be a Symbol
 // - in case of interruption in dictionary stage, catch every value. Right now first throws block the rest dictionary fields
 // - do not need to catch in store. catching should happen on the level above. computation either succeeds or throws
 //
