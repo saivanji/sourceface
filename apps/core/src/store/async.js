@@ -9,6 +9,9 @@ export function createAsyncStream(identifier, compute, dependencies) {
   const { registry } = dependencies;
 
   const wait$ = registry.waits.retrieve(identifier);
+  // TODO: the following approach of providing wait$ won't work since if the same future
+  // is calculated in different settings, the first future calculation will be cached and appear
+  // in second cached calculation which is wrong
   const stream$ = compute({ ...dependencies, wait$ });
 
   return merge(stream$, wait$).pipe(distinctUntilChanged());
