@@ -10,7 +10,7 @@ export default class Bucket {
     this.createEntry = createEntry;
   }
 
-  reveal(...path) {
+  retrieve(...path) {
     const key = this.key(path);
     let result = this.data.get(key);
 

@@ -2,7 +2,6 @@ import { path, isNil, map as mapCollection } from "ramda";
 import { of, throwError, combineLatest, from, tap } from "rxjs";
 import { switchMap, map, shareReplay } from "rxjs/operators";
 import stringify from "fast-json-stable-stringify";
-import { set } from "./utils";
 import computeAttribute from "./computeAttribute";
 import computeSetting from "./computeSetting";
 import createMethod from "./createMethod";
@@ -95,7 +94,7 @@ function computeFutureValue(value, scope, dependencies) {
       const cachePath = [kind, id, argsStr];
 
       const existing$ = registry.futures.get(cachePath);
-      const counter$ = registry.counters.reveal(kind, id);
+      const counter$ = registry.counters.retrieve(kind, id);
 
       /**
        * Leveraging existing stream to not duplicate async future
