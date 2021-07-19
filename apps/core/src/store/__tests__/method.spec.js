@@ -9,7 +9,7 @@ it("should create module method without dependencies", () => {
   const callback = jest.fn();
   const store = createStore();
 
-  const method = store.data.method(module.id, "reveal");
+  const method = store.actions.method(module.id, "reveal");
   method().subscribe(callback);
   expect(callback).toBeCalledWith("foo");
 });
@@ -24,7 +24,7 @@ it("should create module method when Promise is returned from definition", (done
 
   const store = createStore();
 
-  const method = store.data.method(module.id, "reveal");
+  const method = store.actions.method(module.id, "reveal");
   method().subscribe((data) => {
     expect(data).toBe("foo");
     done();
@@ -40,7 +40,7 @@ it("should create module method when args provided", () => {
   const callback = jest.fn();
   const store = createStore();
 
-  const method = store.data.method(module.id, "reveal");
+  const method = store.actions.method(module.id, "reveal");
   method({ x: 4 }).subscribe(callback);
   expect(callback).toBeCalledWith(9);
 });
@@ -63,7 +63,7 @@ it("should create module method with setting dependency", () => {
   const callback = jest.fn();
   const store = createStore();
 
-  const method = store.data.method(module.id, "reveal");
+  const method = store.actions.method(module.id, "reveal");
   method().subscribe(callback);
   expect(callback).toBeCalledWith("foobar");
 });
@@ -83,7 +83,7 @@ it("should create module method with attribute dependency", () => {
   const callback = jest.fn();
   const store = createStore();
 
-  const method = store.data.method(module.id, "reveal");
+  const method = store.actions.method(module.id, "reveal");
   method().subscribe(callback);
   expect(callback).toBeCalledWith("foobar");
 });
@@ -102,7 +102,7 @@ it("should create module method with atom dependency", () => {
   const callback = jest.fn();
   const store = createStore();
 
-  const method = store.data.method(module.id, "reveal");
+  const method = store.actions.method(module.id, "reveal");
   method().subscribe(callback);
   expect(callback).toBeCalledWith("foobar");
 });
@@ -121,7 +121,7 @@ it("should update atoms inside of method selector", () => {
   const callback = jest.fn();
   const store = createStore();
 
-  const method = store.data.method(module.id, "reveal");
+  const method = store.actions.method(module.id, "reveal");
   method().subscribe(jest.fn);
 
   store.data.atom(module.id, "revealed").subscribe(callback);

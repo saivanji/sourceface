@@ -36,6 +36,7 @@ export default class Cache {
     this.timeouts.set(key, nextTimeout);
   }
 
+  // type of path should be []string
   key(path) {
     return path.join("/");
   }

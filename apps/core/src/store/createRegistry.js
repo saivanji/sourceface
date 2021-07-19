@@ -1,6 +1,8 @@
 import { map, keys, isNil } from "ramda";
 import { of, BehaviorSubject } from "rxjs";
 import Cache from "./cache";
+import Counter from "./counter";
+import Bucket from "./bucket";
 
 /**
  * Creates registry of the streams used during the computation
@@ -18,9 +20,9 @@ export default function createRegistry(entities, stock, config = {}) {
     ids: populateIds(entities.modules),
     atoms: populateAtoms(entities.modules, stock),
     futures: futuresCache,
+    counters: new Bucket(() => new Counter()),
     settings: {},
     attributes: {},
-    counters: {},
   };
 }
 

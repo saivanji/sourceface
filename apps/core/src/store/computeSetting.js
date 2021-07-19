@@ -37,6 +37,7 @@ export default function computeSetting(moduleId, field, scope, dependencies) {
      * Avoiding re-computation of the same setting
      */
     shareReplay(1)
+    // TODO: should "distinctUntilChanged" be used here?
   );
 
   set(registry, ["settings", moduleId, field], setting$);

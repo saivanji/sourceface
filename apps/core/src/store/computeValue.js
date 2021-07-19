@@ -1,12 +1,11 @@
-import stringify from "fast-json-stable-stringify";
 import { path, isNil, map as mapCollection } from "ramda";
-import { of, throwError, combineLatest, from } from "rxjs";
+import { of, throwError, combineLatest, from, tap } from "rxjs";
 import { switchMap, map, shareReplay } from "rxjs/operators";
+import stringify from "fast-json-stable-stringify";
 import { set } from "./utils";
 import computeAttribute from "./computeAttribute";
 import computeSetting from "./computeSetting";
 import createMethod from "./createMethod";
-import Counter from "./counter";
 
 // TODO: some values should be labeled as "callback", so they can be computed only
 // for the "callback" setting type, such as "method" or "effect"
@@ -96,7 +95,7 @@ function computeFutureValue(value, scope, dependencies) {
       const cachePath = [kind, id, argsStr];
 
       const existing$ = registry.futures.get(cachePath);
-      const counter$ = registry.counters[kind]?.[id] || new Counter();
+      const counter$ = registry.counters.reveal(kind, id);
 
       /**
        * Leveraging existing stream to not duplicate async future
@@ -107,6 +106,7 @@ function computeFutureValue(value, scope, dependencies) {
       }
 
       const future$ = counter$.pipe(
+        tap(() => {}),
         switchMap(() =>
           from(
             execute(args, value.references).then((res) => {
@@ -115,7 +115,8 @@ function computeFutureValue(value, scope, dependencies) {
                  * Invalidating stale futures.
                  */
                 for (let id of res.stale) {
-                  registry.counters[kind]?.[id]?.increment();
+                  const counter$ = registry.counters.get(kind, id);
+                  counter$?.increment();
                 }
               }
 
@@ -130,13 +131,6 @@ function computeFutureValue(value, scope, dependencies) {
        * Adding stream to the registry so it's result can be cached.
        */
       registry.futures.set(cachePath, future$);
-
-      /**
-       * Adding counter to the registry if it does not exist.
-       */
-      if (isNil(registry.counters[kind]?.[id])) {
-        set(registry, ["counters", kind, id], counter$);
-      }
 
       return future$;
     })

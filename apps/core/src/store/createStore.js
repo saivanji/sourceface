@@ -20,9 +20,6 @@ export default function createStore(entities, stock, futures, config) {
       attribute(moduleId, key) {
         return computeAttribute(moduleId, key, undefined, dependencies);
       },
-      method(moduleId, key) {
-        return createMethod(moduleId, key, undefined, dependencies);
-      },
       atom(moduleId, key) {
         return registry.atoms[moduleId][key];
       },
@@ -33,7 +30,11 @@ export default function createStore(entities, stock, futures, config) {
         return registry.entities.modules[moduleId];
       },
     },
+    // TODO: rename to something like "effects"
     actions: {
+      method(moduleId, key) {
+        return createMethod(moduleId, key, undefined, dependencies);
+      },
       updateAtom(moduleId, key, nextValue) {
         return updateAtom(moduleId, key, nextValue, dependencies);
       },
