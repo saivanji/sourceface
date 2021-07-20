@@ -24,7 +24,7 @@ export default class Cache {
     this.version$.increment();
   }
 
-  getOr(key, exec, { start }) {
+  getOr(key, exec) {
     return this.version$.pipe(
       switchMap(() => {
         const cached = this.data.get(key);
@@ -33,7 +33,7 @@ export default class Cache {
           return of(cached);
         }
 
-        start?.();
+        //         start?.();
 
         return this.populate(key, exec);
       })
@@ -90,7 +90,7 @@ export default class Cache {
      */
     const nextTimeout = setTimeout(() => {
       // TODO: implement reference counting
-      this.cache.delete(key);
+      this.data.delete(key);
     }, this.ttl);
 
     this.data.set(key, value);

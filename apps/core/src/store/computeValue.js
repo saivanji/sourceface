@@ -92,7 +92,7 @@ function computeFutureValue(value, scope, dependencies) {
       if (mode === "write") {
         return from(execute(args, value.references)).pipe(
           tap((res) => {
-            if (res.stale) {
+            if (res.stale?.length > 0) {
               /**
                * Invalidating stale futures.
                */

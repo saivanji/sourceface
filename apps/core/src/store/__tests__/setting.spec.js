@@ -1,6 +1,7 @@
 import { Interruption } from "../";
 import { init } from "../fakes";
 
+// TODO: callbacks should be defined in the beginning of the test.
 it("should return module setting config field", () => {
   const { fakes, createStore } = init();
 
@@ -153,7 +154,26 @@ it("should compute mount variable value", (done) => {
   });
 });
 
-it("should compute future function value", (done) => {
+it("should throw if unrecognized future stage supplied", () => {
+  const { fakes, createStore } = init();
+
+  fakes.stock.addDefinition("text");
+  fakes.futures.addFuture("operation", jest.fn(), jest.fn());
+
+  const value = fakes.entities.addFutureFunction("unrecognized", "operation");
+  const stage = fakes.entities.addValueStage(value.id);
+  const module = fakes.entities.addModule("text", {
+    fields: { content: [stage.id] },
+  });
+
+  const callback = jest.fn();
+  const store = createStore();
+  store.data.setting(module.id, "content").subscribe(jest.fn(), callback);
+
+  expect(callback).toBeCalledWith(new Error("Unrecognized future mode"));
+});
+
+it("should compute read future function value", (done) => {
   const { fakes, createStore } = init();
 
   const identify = (references) => references.operations.root;
@@ -233,7 +253,7 @@ it("should invalidate computed future function value after another future execut
 
     if (references.operations.root === 9) {
       db.push("Bob");
-      return { stale: [7] };
+      return { stale: [7, 600] };
     }
   };
 
@@ -273,7 +293,7 @@ it("should invalidate computed future function value after another future execut
     i++;
 
     if (i === 1) {
-      store.data.setting(button.id, "event").subscribe().unsubscribe();
+      store.actions.setting(button.id, "event").subscribe().unsubscribe();
       return;
     }
 
@@ -282,7 +302,7 @@ it("should invalidate computed future function value after another future execut
   });
 });
 
-it("should invalidate specific future data in cache after ttl timeout expired", async () => {
+it("should delete specific future data from cache after ttl timeout expired", async () => {
   const { fakes, createStore } = init();
 
   const callback = jest.fn();
@@ -453,6 +473,59 @@ it("should not need to execute future function if the same future is executing a
   expect(callback).toBeCalledTimes(1);
 });
 
+it("should return cached future value", async () => {
+  const { fakes, createStore } = init();
+
+  const callback1 = jest.fn();
+  const callback2 = jest.fn();
+
+  const identify = (references) => references.operations.root;
+  const execute = (_args, references) => {
+    if (references.operations.root === 7) {
+      callback1();
+      return { data: true };
+    }
+  };
+
+  fakes.stock.addDefinition("text");
+  fakes.futures.addFuture("operation", identify, execute);
+
+  const value1 = fakes.entities.addFutureFunction(
+    "read",
+    "operation",
+    undefined,
+    {
+      operations: { root: 7 },
+    }
+  );
+  const stage1 = fakes.entities.addValueStage(value1.id);
+  const module1 = fakes.entities.addModule("text", {
+    fields: { content: [stage1.id] },
+  });
+
+  const value2 = fakes.entities.addFutureFunction(
+    "read",
+    "operation",
+    undefined,
+    {
+      operations: { root: 7 },
+    }
+  );
+  const stage2 = fakes.entities.addValueStage(value2.id);
+  const module2 = fakes.entities.addModule("text", {
+    fields: { content: [stage2.id] },
+  });
+
+  const store = createStore();
+  await new Promise((resolve) =>
+    store.data.setting(module1.id, "content").subscribe(resolve)
+  );
+  store.data.setting(module2.id, "content").subscribe(callback2);
+
+  expect(callback1).toBeCalledTimes(1);
+  expect(callback2).toBeCalledWith(true);
+});
+
 it("should compute method function value", () => {
   const { fakes, createStore } = init();
 
@@ -563,6 +636,7 @@ it("should compute every value of dictionary stage regardless interruption", () 
   const { fakes, createStore } = init();
 
   const callback = jest.fn();
+  const errorCallback = jest.fn();
 
   fakes.stock.addDefinition("text");
   fakes.stock.addDefinition("input").addAttribute("value", () => {
@@ -584,7 +658,6 @@ it("should compute every value of dictionary stage regardless interruption", () 
   });
 
   const store = createStore();
-  const errorCallback = jest.fn();
   store.data.setting(module.id, "content").subscribe(jest.fn(), errorCallback);
   expect(callback).toBeCalledTimes(2);
   expect(errorCallback.mock.calls[0][0]).toBeInstanceOf(Interruption);
@@ -594,6 +667,7 @@ it("should break dictionary execution when arbitrary error is thrown", () => {
   const { fakes, createStore } = init();
 
   const callback = jest.fn();
+  const errorCallback = jest.fn();
 
   const error = new Error();
 
@@ -617,7 +691,6 @@ it("should break dictionary execution when arbitrary error is thrown", () => {
   });
 
   const store = createStore();
-  const errorCallback = jest.fn();
   store.data.setting(module.id, "content").subscribe(jest.fn(), errorCallback);
   expect(callback).toBeCalledTimes(1);
   expect(errorCallback).toBeCalledWith(error);
