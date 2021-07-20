@@ -1,6 +1,8 @@
 import { map, keys, isNil } from "ramda";
 import { of, BehaviorSubject } from "rxjs";
 import { createCacheBucket } from "./utils";
+import Bucket from "./bucket";
+import Channel from "./channel";
 
 /**
  * Creates registry of the streams used during the computation
@@ -17,6 +19,7 @@ export default function createRegistry(entities, stock, config = {}) {
     },
     ids: populateIds(entities.modules),
     atoms: populateAtoms(entities.modules, stock),
+    channels: new Bucket(Channel),
     futures: futuresCache,
     settings: {},
     attributes: {},

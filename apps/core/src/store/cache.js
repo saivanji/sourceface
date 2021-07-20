@@ -24,7 +24,7 @@ export default class Cache {
     this.version$.increment();
   }
 
-  getOr(key, exec) {
+  getOr(key, exec, { onStart }) {
     return this.version$.pipe(
       switchMap(() => {
         const cached = this.data.get(key);
@@ -33,7 +33,7 @@ export default class Cache {
           return of(cached);
         }
 
-        //         start?.();
+        onStart();
 
         return this.populate(key, exec);
       })

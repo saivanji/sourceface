@@ -91,3 +91,4 @@
 export { default as createStore } from "./createStore";
 export { default as Interruption } from "./interruption";
 export { toPromise, createCacheBucket } from "./utils";
+export { FETCHING } from "./channel";

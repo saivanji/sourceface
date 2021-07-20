@@ -1,5 +1,6 @@
-import { Interruption } from "../";
-import { init, toSync, toPromise } from "../fakes";
+// // TODO: Interruption should be INTERRUPTION symbol
+import { Interruption, FETCHING } from "../";
+import { init, toSync, toAsyncSequence } from "../fakes";
 
 // TODO: callbacks should be defined in the beginning of the test.
 it("should return module setting config field", () => {
@@ -143,8 +144,11 @@ it("should compute mount variable value", async () => {
 
   const store = createStore();
 
-  const result = await toPromise(store.data.setting(module.id, "content"));
-  expect(result).toBe("foobar");
+  const result = await toAsyncSequence(
+    2,
+    store.data.setting(module.id, "content")
+  );
+  expect(result).toEqual([FETCHING, "foobar"]);
 });
 
 it("should throw if unrecognized future stage supplied", () => {
@@ -193,8 +197,11 @@ it("should compute read future function value", async () => {
   });
 
   const store = createStore();
-  const result = await toPromise(store.data.setting(module.id, "content"));
-  expect(result).toBe(true);
+  const result = await toAsyncSequence(
+    2,
+    store.data.setting(module.id, "content")
+  );
+  expect(result).toEqual([FETCHING, true]);
 });
 
 it("should compute future function value with args", async () => {
@@ -226,8 +233,11 @@ it("should compute future function value with args", async () => {
   });
 
   const store = createStore();
-  const result = await toPromise(store.data.setting(module.id, "content"));
-  expect(result).toBe(true);
+  const result = await toAsyncSequence(
+    2,
+    store.data.setting(module.id, "content")
+  );
+  expect(result).toEqual([FETCHING, true]);
 });
 
 it("should invalidate computed future function value after another future executed", async () => {
@@ -281,6 +291,10 @@ it("should invalidate computed future function value after another future execut
 
   await new Promise((resolve, reject) => {
     store.data.setting(table.id, "items").subscribe((data) => {
+      if (data === FETCHING) {
+        return;
+      }
+
       i++;
 
       if (i === 1) {
@@ -339,9 +353,9 @@ it("should delete specific future data from cache after ttl timeout expired", as
 
   const store = createStore({ futuresTTL: 1 });
 
-  await toPromise(store.data.setting(module1.id, "content"));
+  await toAsyncSequence(2, store.data.setting(module1.id, "content"));
   await new Promise((resolve) => setTimeout(() => resolve(), 100));
-  await toPromise(store.data.setting(module2.id, "content"));
+  await toAsyncSequence(2, store.data.setting(module2.id, "content"));
 
   expect(callback).toBeCalledTimes(2);
 });
@@ -389,11 +403,14 @@ it("should execute multiple futures at the same time with different arguments su
 
   const store = createStore();
 
-  const first = toPromise(store.data.setting(module1.id, "content"));
-  const second = toPromise(store.data.setting(module2.id, "content"));
+  const first = toAsyncSequence(2, store.data.setting(module1.id, "content"));
+  const second = toAsyncSequence(2, store.data.setting(module2.id, "content"));
 
   const result = await Promise.all([first, second]);
-  expect(result).toEqual(["foo", "bar"]);
+  expect(result).toEqual([
+    [FETCHING, "foo"],
+    [FETCHING, "bar"],
+  ]);
 });
 
 it("should not need to execute future function if the same future is executing at the same time", async () => {
@@ -441,8 +458,8 @@ it("should not need to execute future function if the same future is executing a
 
   const store = createStore();
 
-  const first = toPromise(store.data.setting(module1.id, "content"));
-  const second = toPromise(store.data.setting(module2.id, "content"));
+  const first = toAsyncSequence(2, store.data.setting(module1.id, "content"));
+  const second = toAsyncSequence(2, store.data.setting(module2.id, "content"));
 
   await Promise.all([first, second]);
 
@@ -492,7 +509,7 @@ it("should return cached future value", async () => {
   });
 
   const store = createStore();
-  await toPromise(store.data.setting(module1.id, "content"));
+  await toAsyncSequence(2, store.data.setting(module1.id, "content"));
 
   const result = toSync(store.data.setting(module2.id, "content"));
   expect(result).toBe(true);

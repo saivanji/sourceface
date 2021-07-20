@@ -84,7 +84,7 @@ function computeMountValue(value, scope, dependencies) {
  */
 function computeFutureValue(value, scope, dependencies) {
   const { kind, mode } = value.payload;
-  const { futures, registry } = dependencies;
+  const { futures, registry, report } = dependencies;
   const { execute, identify } = futures[kind];
 
   return computeFunctionArgs(value.args, scope, dependencies).pipe(
@@ -112,7 +112,9 @@ function computeFutureValue(value, scope, dependencies) {
         const cache = registry.futures.retrieve(kind, id);
 
         return cache
-          .getOr(key, () => execute(args, value.references))
+          .getOr(key, () => execute(args, value.references), {
+            onStart: report,
+          })
           .pipe(map((res) => res.data));
       }
 

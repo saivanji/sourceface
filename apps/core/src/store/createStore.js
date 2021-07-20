@@ -5,6 +5,7 @@ import createRegistry from "./createRegistry";
 import updateAtom from "./updateAtom";
 import updateAtoms from "./updateAtoms";
 import { toPromise } from "./utils";
+import { provideChannel } from "./channel";
 
 /**
  * Creates new store based on initial entities data and stock definition.
@@ -16,10 +17,14 @@ export default function createStore(entities, stock, futures, config) {
   return {
     data: {
       setting(moduleId, field, scope) {
-        return computeSetting(moduleId, field, scope, dependencies);
+        const compute = (dependencies) =>
+          computeSetting(moduleId, field, scope, dependencies);
+        return provideChannel(`${moduleId}/${field}`, compute, dependencies);
       },
       attribute(moduleId, key) {
-        return computeAttribute(moduleId, key, undefined, dependencies);
+        const compute = (dependencies) =>
+          computeAttribute(moduleId, key, undefined, dependencies);
+        return provideChannel(`${moduleId}/${key}`, compute, dependencies);
       },
       atom(moduleId, key) {
         return registry.atoms[moduleId][key];

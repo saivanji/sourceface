@@ -20,12 +20,7 @@ export default function useMethod(prop) {
   }
 
   const callback = useCallback(
-    (args) =>
-      new Promise((resolve) => {
-        const func = store.actions.method(moduleId, prop);
-
-        func(args).subscribe(resolve);
-      }),
+    (args) => store.actions.method(moduleId, prop)(args),
     [moduleId, prop, store]
   );
 

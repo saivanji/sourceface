@@ -29,12 +29,6 @@ export function init() {
   };
 }
 
-export function toPromise(value) {
-  return new Promise((resolve, reject) => {
-    value.subscribe(resolve, reject);
-  });
-}
-
 export function toSync(value) {
   return toSyncSequence(value)[0];
 }
@@ -55,4 +49,25 @@ export function toSyncSequence(value) {
   return result;
 }
 
-// TODO: toAsync sequence also should be a promise
+export function toAsyncSequence(n, value) {
+  let i = 0;
+  let result = [];
+
+  return new Promise((resolve, reject) => {
+    const subscriber = value.subscribe(
+      (data) => {
+        i++;
+        result.push(data);
+
+        if (n === i) {
+          subscriber.unsubscribe();
+          resolve(result);
+        }
+      },
+      (err) => {
+        /* istanbul ignore next */
+        reject(err);
+      }
+    );
+  });
+}
