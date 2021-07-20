@@ -103,7 +103,7 @@ function computeFutureValue(value, scope, dependencies) {
       // data streams but without emitting "WAITING".
       // Alternatively have data as static completed stream and keep reference counting on cached data and clear cache only when it has no references.
       //
-      // class AsyncCache() {
+      // class Cache() {
       //   constructor() {
       //     this.version$ = new Counter();
       //     this.data = new Map();
