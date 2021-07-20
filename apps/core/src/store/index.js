@@ -25,6 +25,7 @@
 // when thrown in callback mode - display notification
 //
 //
+// TODO: how to handle sync errors when we get initial value in React? Keep in mind that rxjs throws sync errors on another callstack.
 //
 //
 //
@@ -81,14 +82,12 @@
 //
 // Or have test helper to convert observable data to promise
 //
+// Most likely the solution is to put "done" as second argument of the subscribe
+//
 //
 // TODO: may be module should not be in "references" since it's located at the same page. Rethink idea of references.
 // Think of the redirect case where value has "page" reference
-import Bucket from "./bucket";
-import Cache from "./cache";
 
 export { default as createStore } from "./createStore";
 export { default as Interruption } from "./interruption";
-export { toPromise } from "./utils";
-
-export const createCacheBucket = (ttl) => new Bucket(Cache, ttl);
+export { toPromise, createCacheBucket } from "./utils";

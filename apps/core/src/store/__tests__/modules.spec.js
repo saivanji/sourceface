@@ -1,4 +1,4 @@
-import { init } from "../fakes";
+import { init, toSync } from "../fakes";
 
 it("should return top level modules", () => {
   const { fakes, createStore } = init();
@@ -9,11 +9,10 @@ it("should return top level modules", () => {
   const three = fakes.entities.addModule("text");
   const four = fakes.entities.addModule("text");
 
-  const callback = jest.fn();
   const store = createStore();
-  store.data.modules().subscribe(callback);
+  const result = toSync(store.data.modules());
 
-  expect(callback).toBeCalledWith([one.id, two.id, three.id, four.id]);
+  expect(result).toEqual([one.id, two.id, three.id, four.id]);
 });
 
 it("should return modules of parent", () => {
@@ -30,9 +29,8 @@ it("should return modules of parent", () => {
   const two = fakes.entities.addModule("text", { parentId: container.id });
   const three = fakes.entities.addModule("text", { parentId: container.id });
 
-  const callback = jest.fn();
   const store = createStore();
-  store.data.modules(container.id).subscribe(callback);
+  const result = toSync(store.data.modules(container.id));
 
-  expect(callback).toBeCalledWith([one.id, two.id, three.id]);
+  expect(result).toEqual([one.id, two.id, three.id]);
 });

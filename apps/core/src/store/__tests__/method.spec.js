@@ -1,4 +1,4 @@
-import { init } from "../fakes";
+import { init, toSync, toPromise } from "../fakes";
 
 it("should create module method without dependencies", () => {
   const { fakes, createStore } = init();
@@ -6,15 +6,14 @@ it("should create module method without dependencies", () => {
   fakes.stock.addDefinition("input").addMethod("reveal", () => "foo");
   const module = fakes.entities.addModule("input");
 
-  const callback = jest.fn();
   const store = createStore();
 
   const method = store.actions.method(module.id, "reveal");
-  method().subscribe(callback);
-  expect(callback).toBeCalledWith("foo");
+  const result = toSync(method());
+  expect(result).toBe("foo");
 });
 
-it("should create module method when Promise is returned from definition", (done) => {
+it("should create module method when Promise is returned from definition", async () => {
   const { fakes, createStore } = init();
 
   fakes.stock
@@ -25,10 +24,9 @@ it("should create module method when Promise is returned from definition", (done
   const store = createStore();
 
   const method = store.actions.method(module.id, "reveal");
-  method().subscribe((data) => {
-    expect(data).toBe("foo");
-    done();
-  });
+  const result = await toPromise(method());
+
+  expect(result).toBe("foo");
 });
 
 it("should create module method when args provided", () => {
@@ -37,12 +35,11 @@ it("should create module method when args provided", () => {
   fakes.stock.addDefinition("input").addMethod("reveal", (args) => args.x + 5);
   const module = fakes.entities.addModule("input");
 
-  const callback = jest.fn();
   const store = createStore();
 
   const method = store.actions.method(module.id, "reveal");
-  method({ x: 4 }).subscribe(callback);
-  expect(callback).toBeCalledWith(9);
+  const result = toSync(method({ x: 4 }));
+  expect(result).toBe(9);
 });
 
 it("should create module method with setting dependency", () => {
@@ -60,12 +57,11 @@ it("should create module method with setting dependency", () => {
     fields: { initial: [stage.id] },
   });
 
-  const callback = jest.fn();
   const store = createStore();
 
   const method = store.actions.method(module.id, "reveal");
-  method().subscribe(callback);
-  expect(callback).toBeCalledWith("foobar");
+  const result = toSync(method());
+  expect(result).toBe("foobar");
 });
 
 it("should create module method with attribute dependency", () => {
@@ -80,12 +76,11 @@ it("should create module method with attribute dependency", () => {
 
   const module = fakes.entities.addModule("input");
 
-  const callback = jest.fn();
   const store = createStore();
 
   const method = store.actions.method(module.id, "reveal");
-  method().subscribe(callback);
-  expect(callback).toBeCalledWith("foobar");
+  const result = toSync(method());
+  expect(result).toBe("foobar");
 });
 
 it("should create module method with atom dependency", () => {
@@ -99,12 +94,11 @@ it("should create module method with atom dependency", () => {
     .addInitialAtoms({ current: "bar" });
   const module = fakes.entities.addModule("input");
 
-  const callback = jest.fn();
   const store = createStore();
 
   const method = store.actions.method(module.id, "reveal");
-  method().subscribe(callback);
-  expect(callback).toBeCalledWith("foobar");
+  const result = toSync(method());
+  expect(result).toBe("foobar");
 });
 
 it("should update atoms inside of method selector", () => {
@@ -118,12 +112,11 @@ it("should update atoms inside of method selector", () => {
     .addInitialAtoms({ revealed: false });
   const module = fakes.entities.addModule("input");
 
-  const callback = jest.fn();
   const store = createStore();
 
   const method = store.actions.method(module.id, "reveal");
-  method().subscribe(jest.fn);
+  toSync(method());
 
-  store.data.atom(module.id, "revealed").subscribe(callback);
-  expect(callback).toBeCalledWith(true);
+  const result = toSync(store.data.atom(module.id, "revealed"));
+  expect(result).toBe(true);
 });

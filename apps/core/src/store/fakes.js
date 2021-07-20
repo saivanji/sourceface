@@ -28,3 +28,31 @@ export function init() {
     createStore: create,
   };
 }
+
+export function toPromise(value) {
+  return new Promise((resolve, reject) => {
+    value.subscribe(resolve, reject);
+  });
+}
+
+export function toSync(value) {
+  return toSyncSequence(value)[0];
+}
+
+export function toSyncSequence(value) {
+  let result = [];
+
+  value.subscribe(
+    (data) => {
+      result.push(data);
+    },
+    (err) => {
+      /* istanbul ignore next */
+      throw err;
+    }
+  );
+
+  return result;
+}
+
+// TODO: toAsync sequence also should be a promise

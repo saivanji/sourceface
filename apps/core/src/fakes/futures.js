@@ -11,9 +11,13 @@ export default class FakeFutures {
     this.futures[kind] = {
       identify,
       execute: (args, references) => {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
           setTimeout(() => {
-            resolve(execute(args, references));
+            try {
+              resolve(execute(args, references));
+            } catch (err) {
+              reject(err);
+            }
           }, 100);
         });
       },

@@ -1,14 +1,13 @@
-import { init } from "../fakes";
+import { init, toSync } from "../fakes";
 
-it("should return available module ids", () => {
+it("should return module data", () => {
   const { fakes, createStore } = init();
 
   fakes.stock.addDefinition("text");
   const { id, ...module } = fakes.entities.addModule("text");
 
-  const callback = jest.fn();
   const store = createStore();
-  store.data.module(id).subscribe(callback);
+  const result = toSync(store.data.module(id));
 
-  expect(callback).toBeCalledWith(module);
+  expect(result).toEqual(module);
 });

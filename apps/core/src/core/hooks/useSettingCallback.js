@@ -23,22 +23,17 @@ export default function useSettingCallback(field) {
   }
 
   const callback = useCallback(
-    (input) =>
-      // TODO: how not to return Promise if computation is sync?
-      new Promise((resolve) => {
-        store.actions
-          .setting(moduleId, field, { input })
-          .subscribe(resolve, (err) => {
-            /**
-             * Ignoring interruptions, since the errors are displayed in the UI
-             * by the module definition.
-             */
-            if (!(err instanceof Interruption)) {
-              throw err;
-            }
-          });
-        // TODO: use unsubscribe
-      }),
+    (input) => {
+      return store.actions.setting(moduleId, field, { input }).catch((err) => {
+        /**
+         * Ignoring interruptions, since the errors are displayed in the UI
+         * by the module definition.
+         */
+        if (!(err instanceof Interruption)) {
+          throw err;
+        }
+      });
+    },
     [moduleId, field, store]
   );
 

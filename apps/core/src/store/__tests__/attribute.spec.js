@@ -1,4 +1,4 @@
-import { init } from "../fakes";
+import { init, toSync, toSyncSequence } from "../fakes";
 
 it("should compute module attribute without dependencies", () => {
   const { fakes, createStore } = init();
@@ -6,10 +6,9 @@ it("should compute module attribute without dependencies", () => {
   fakes.stock.addDefinition("input").addAttribute("value", () => "foo");
   const module = fakes.entities.addModule("input");
 
-  const callback = jest.fn();
   const store = createStore();
-  store.data.attribute(module.id, "value").subscribe(callback);
-  expect(callback).toBeCalledWith("foo");
+  const result = toSync(store.data.attribute(module.id, "value"));
+  expect(result).toBe("foo");
 });
 
 it("should compute module attribute with config setting dependency", () => {
@@ -24,10 +23,9 @@ it("should compute module attribute with config setting dependency", () => {
     config: { initial: "default value" },
   });
 
-  const callback = jest.fn();
   const store = createStore();
-  store.data.attribute(module.id, "value").subscribe(callback);
-  expect(callback).toBeCalledWith("default value");
+  const result = toSync(store.data.attribute(module.id, "value"));
+  expect(result).toBe("default value");
 });
 
 it("should compute module attribute with computed setting dependency", () => {
@@ -44,10 +42,9 @@ it("should compute module attribute with computed setting dependency", () => {
     fields: { initial: [stage.id] },
   });
 
-  const callback = jest.fn();
   const store = createStore();
-  store.data.attribute(module.id, "value").subscribe(callback);
-  expect(callback).toBeCalledWith("foo");
+  const result = toSync(store.data.attribute(module.id, "value"));
+  expect(result).toBe("foo");
 });
 
 it("should compute module attribute with another attribute dependency", () => {
@@ -66,10 +63,9 @@ it("should compute module attribute with another attribute dependency", () => {
     .addAttribute("touched", () => true);
   const module = fakes.entities.addModule("input");
 
-  const callback = jest.fn();
   const store = createStore();
-  store.data.attribute(module.id, "error").subscribe(callback);
-  expect(callback).toBeCalledWith("This field is required");
+  const result = toSync(store.data.attribute(module.id, "error"));
+  expect(result).toBe("This field is required");
 });
 
 it("should compute module attribute with atom dependency", () => {
@@ -83,12 +79,10 @@ it("should compute module attribute with atom dependency", () => {
     .addInitialAtoms({ current: "foo" });
   const module = fakes.entities.addModule("input");
 
-  const callback = jest.fn();
   const store = createStore();
-  store.data.attribute(module.id, "value").subscribe(callback);
+  const result = toSyncSequence(store.data.attribute(module.id, "value"));
 
-  expect(callback).toBeCalledTimes(1);
-  expect(callback).toHaveBeenCalledWith("foo");
+  expect(result).toEqual(["foo"]);
 });
 
 it("should recompute module attribute when atom dependency changed", () => {
@@ -102,15 +96,12 @@ it("should recompute module attribute when atom dependency changed", () => {
     .addInitialAtoms({ current: "foo" });
   const module = fakes.entities.addModule("input");
 
-  const callback = jest.fn();
   const store = createStore();
-  store.data.attribute(module.id, "value").subscribe(callback);
+  const result = toSyncSequence(store.data.attribute(module.id, "value"));
 
   store.actions.updateAtom(module.id, "current", "bar");
 
-  expect(callback).toBeCalledTimes(2);
-  expect(callback.mock.calls[0][0]).toBe("foo");
-  expect(callback.mock.calls[1][0]).toBe("bar");
+  expect(result).toEqual(["foo", "bar"]);
 });
 
 it("should not emit if the next value is the same as the previous one", () => {
@@ -124,12 +115,11 @@ it("should not emit if the next value is the same as the previous one", () => {
     .addInitialAtoms({ current: "foo" });
   const module = fakes.entities.addModule("input");
 
-  const callback = jest.fn();
   const store = createStore();
-  store.data.attribute(module.id, "value").subscribe(callback);
+  const result = toSyncSequence(store.data.attribute(module.id, "value"));
 
   store.actions.updateAtom(module.id, "current", "foo");
-  expect(callback).toBeCalledTimes(1);
+  expect(result).toEqual(["foo"]);
 });
 
 it("should not compute the same attribute twice or more times", () => {
@@ -141,8 +131,8 @@ it("should not compute the same attribute twice or more times", () => {
   const module = fakes.entities.addModule("input");
 
   const store = createStore();
-  store.data.attribute(module.id, "value").subscribe(jest.fn);
-  store.data.attribute(module.id, "value").subscribe(jest.fn);
+  toSync(store.data.attribute(module.id, "value"));
+  toSync(store.data.attribute(module.id, "value"));
 
   expect(mock).toBeCalledTimes(1);
 });

@@ -1,4 +1,4 @@
-import { init } from "../fakes";
+import { init, toSync } from "../fakes";
 
 it("should update multiple atom values", () => {
   const { fakes, createStore } = init();
@@ -11,13 +11,11 @@ it("should update multiple atom values", () => {
   const store = createStore();
   store.actions.updateAtoms(module.id, { current: "bar", touched: true });
 
-  const callback1 = jest.fn();
-  store.data.atom(module.id, "current").subscribe(callback1);
-  expect(callback1).toBeCalledWith("bar");
+  const result1 = toSync(store.data.atom(module.id, "current"));
+  expect(result1).toBe("bar");
 
-  const callback2 = jest.fn();
-  store.data.atom(module.id, "touched").subscribe(callback2);
-  expect(callback2).toBeCalledWith(true);
+  const result2 = toSync(store.data.atom(module.id, "touched"));
+  expect(result2).toBe(true);
 });
 
 it("should update multiple atom values by providing a function", () => {
@@ -34,11 +32,9 @@ it("should update multiple atom values by providing a function", () => {
     touched: true,
   }));
 
-  const callback1 = jest.fn();
-  store.data.atom(module.id, "current").subscribe(callback1);
-  expect(callback1).toBeCalledWith("foobar");
+  const result1 = toSync(store.data.atom(module.id, "current"));
+  expect(result1).toBe("foobar");
 
-  const callback2 = jest.fn();
-  store.data.atom(module.id, "touched").subscribe(callback2);
-  expect(callback2).toBeCalledWith(true);
+  const result2 = toSync(store.data.atom(module.id, "touched"));
+  expect(result2).toBe(true);
 });

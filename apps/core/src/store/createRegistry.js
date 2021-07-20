@@ -1,14 +1,13 @@
 import { map, keys, isNil } from "ramda";
 import { of, BehaviorSubject } from "rxjs";
-import Cache from "./cache";
-import Bucket from "./bucket";
+import { createCacheBucket } from "./utils";
 
 /**
  * Creates registry of the streams used during the computation
  * process.
  */
 export default function createRegistry(entities, stock, config = {}) {
-  const { futuresCache = new Bucket(Cache, 3 * 60 * 1_000) } = config;
+  const { futuresCache = createCacheBucket(3 * 60 * 1_000) } = config;
 
   return {
     entities: {

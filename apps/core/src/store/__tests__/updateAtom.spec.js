@@ -1,4 +1,4 @@
-import { init } from "../fakes";
+import { init, toSync } from "../fakes";
 
 it("should update atom value", () => {
   const { fakes, createStore } = init();
@@ -9,9 +9,8 @@ it("should update atom value", () => {
   const store = createStore();
   store.actions.updateAtom(module.id, "current", "bar");
 
-  const callback = jest.fn();
-  store.data.atom(module.id, "current").subscribe(callback);
-  expect(callback).toBeCalledWith("bar");
+  const result = toSync(store.data.atom(module.id, "current"));
+  expect(result).toBe("bar");
 });
 
 it("should update atom value by providing a function", () => {
@@ -23,7 +22,6 @@ it("should update atom value by providing a function", () => {
   const store = createStore();
   store.actions.updateAtom(module.id, "current", (prev) => prev + "bar");
 
-  const callback = jest.fn();
-  store.data.atom(module.id, "current").subscribe(callback);
-  expect(callback).toBeCalledWith("foobar");
+  const result = toSync(store.data.atom(module.id, "current"));
+  expect(result).toBe("foobar");
 });

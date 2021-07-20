@@ -1,5 +1,5 @@
 import { Interruption } from "../";
-import { init } from "../fakes";
+import { init, toSync, toPromise } from "../fakes";
 
 // TODO: callbacks should be defined in the beginning of the test.
 it("should return module setting config field", () => {
@@ -10,10 +10,9 @@ it("should return module setting config field", () => {
     config: { content: "some text" },
   });
 
-  const callback = jest.fn();
   const store = createStore();
-  store.data.setting(module.id, "content").subscribe(callback);
-  expect(callback).toBeCalledWith("some text");
+  const result = toSync(store.data.setting(module.id, "content"));
+  expect(result).toBe("some text");
 });
 
 it("should return module initial setting config field", () => {
@@ -24,14 +23,14 @@ it("should return module initial setting config field", () => {
     .addInitialConfig({ content: "default value" });
   const module = fakes.entities.addModule("text");
 
-  const callback = jest.fn();
   const store = createStore();
-  store.data.setting(module.id, "content").subscribe(callback);
-  expect(callback).toBeCalledWith("default value");
+  const result = toSync(store.data.setting(module.id, "content"));
+  expect(result).toBe("default value");
 });
 
 it("should throw an error if unrecognized stage type provided", () => {
   const { fakes, createStore } = init();
+  const callback = jest.fn();
 
   fakes.stock.addDefinition("text");
   const stage = fakes.entities.addStage("wrong");
@@ -39,7 +38,6 @@ it("should throw an error if unrecognized stage type provided", () => {
     fields: { content: [stage.id] },
   });
 
-  const callback = jest.fn();
   const store = createStore();
   store.data.setting(module.id, "content").subscribe(jest.fn(), callback);
   expect(callback).toBeCalledWith(new Error("Unrecognized stage type"));
@@ -55,10 +53,9 @@ it("should compute constant variable value", () => {
     fields: { content: [stage.id] },
   });
 
-  const callback = jest.fn();
   const store = createStore();
-  store.data.setting(module.id, "content").subscribe(callback);
-  expect(callback).toBeCalledWith("foo");
+  const result = toSync(store.data.setting(module.id, "content"));
+  expect(result).toBe("foo");
 });
 
 it("should compute attribute variable value", () => {
@@ -74,10 +71,9 @@ it("should compute attribute variable value", () => {
     fields: { content: [stage.id] },
   });
 
-  const callback = jest.fn();
   const store = createStore();
-  store.data.setting(module.id, "content").subscribe(callback);
-  expect(callback).toBeCalledWith("some text");
+  const result = toSync(store.data.setting(module.id, "content"));
+  expect(result).toBe("some text");
 });
 
 it("should compute stage variable value", () => {
@@ -92,10 +88,9 @@ it("should compute stage variable value", () => {
     fields: { content: [stage1.id, stage2.id] },
   });
 
-  const callback = jest.fn();
   const store = createStore();
-  store.data.setting(module.id, "content").subscribe(callback);
-  expect(callback).toBeCalledWith("foo");
+  const result = toSync(store.data.setting(module.id, "content"));
+  expect(result).toBe("foo");
 });
 
 it("should compute input variable value", () => {
@@ -108,15 +103,14 @@ it("should compute input variable value", () => {
     fields: { content: [stage.id] },
   });
 
-  const callback = jest.fn();
   const store = createStore();
-  store.data
-    .setting(module.id, "content", { input: { x: 8 } })
-    .subscribe(callback);
-  expect(callback).toBeCalledWith(8);
+  const result = toSync(
+    store.data.setting(module.id, "content", { input: { x: 8 } })
+  );
+  expect(result).toBe(8);
 });
 
-it("should compute mount variable value", (done) => {
+it("should compute mount variable value", async () => {
   const { fakes, createStore } = init();
 
   const identify = (references) => references.operations.root;
@@ -148,14 +142,14 @@ it("should compute mount variable value", (done) => {
   });
 
   const store = createStore();
-  store.data.setting(module.id, "content").subscribe((data) => {
-    expect(data).toBe("foobar");
-    done();
-  });
+
+  const result = await toPromise(store.data.setting(module.id, "content"));
+  expect(result).toBe("foobar");
 });
 
 it("should throw if unrecognized future stage supplied", () => {
   const { fakes, createStore } = init();
+  const callback = jest.fn();
 
   fakes.stock.addDefinition("text");
   fakes.futures.addFuture("operation", jest.fn(), jest.fn());
@@ -166,14 +160,13 @@ it("should throw if unrecognized future stage supplied", () => {
     fields: { content: [stage.id] },
   });
 
-  const callback = jest.fn();
   const store = createStore();
   store.data.setting(module.id, "content").subscribe(jest.fn(), callback);
 
   expect(callback).toBeCalledWith(new Error("Unrecognized future mode"));
 });
 
-it("should compute read future function value", (done) => {
+it("should compute read future function value", async () => {
   const { fakes, createStore } = init();
 
   const identify = (references) => references.operations.root;
@@ -200,13 +193,11 @@ it("should compute read future function value", (done) => {
   });
 
   const store = createStore();
-  store.data.setting(module.id, "content").subscribe((value) => {
-    expect(value).toBe(true);
-    done();
-  });
+  const result = await toPromise(store.data.setting(module.id, "content"));
+  expect(result).toBe(true);
 });
 
-it("should compute future function value with args", (done) => {
+it("should compute future function value with args", async () => {
   const { fakes, createStore } = init();
 
   const identify = (references) => references.operations.root;
@@ -235,13 +226,11 @@ it("should compute future function value with args", (done) => {
   });
 
   const store = createStore();
-  store.data.setting(module.id, "content").subscribe((value) => {
-    expect(value).toBe(true);
-    done();
-  });
+  const result = await toPromise(store.data.setting(module.id, "content"));
+  expect(result).toBe(true);
 });
 
-it("should invalidate computed future function value after another future executed", (done) => {
+it("should invalidate computed future function value after another future executed", async () => {
   const { fakes, createStore } = init();
   let db = ["Alice"];
 
@@ -289,16 +278,19 @@ it("should invalidate computed future function value after another future execut
   const store = createStore();
 
   let i = 0;
-  store.data.setting(table.id, "items").subscribe((data) => {
-    i++;
 
-    if (i === 1) {
-      store.actions.setting(button.id, "event").subscribe().unsubscribe();
-      return;
-    }
+  await new Promise((resolve, reject) => {
+    store.data.setting(table.id, "items").subscribe((data) => {
+      i++;
 
-    expect(data).toEqual(["Alice", "Bob"]);
-    done();
+      if (i === 1) {
+        store.actions.setting(button.id, "event");
+        return;
+      }
+
+      expect(data).toEqual(["Alice", "Bob"]);
+      resolve();
+    }, reject);
   });
 });
 
@@ -347,15 +339,9 @@ it("should delete specific future data from cache after ttl timeout expired", as
 
   const store = createStore({ futuresTTL: 1 });
 
-  await new Promise((resolve) => {
-    store.data.setting(module1.id, "content").subscribe(resolve);
-  });
-
+  await toPromise(store.data.setting(module1.id, "content"));
   await new Promise((resolve) => setTimeout(() => resolve(), 100));
-
-  await new Promise((resolve) => {
-    store.data.setting(module2.id, "content").subscribe(resolve);
-  });
+  await toPromise(store.data.setting(module2.id, "content"));
 
   expect(callback).toBeCalledTimes(2);
 });
@@ -403,13 +389,8 @@ it("should execute multiple futures at the same time with different arguments su
 
   const store = createStore();
 
-  const first = new Promise((resolve) => {
-    store.data.setting(module1.id, "content").subscribe(resolve);
-  });
-
-  const second = new Promise((resolve) => {
-    store.data.setting(module2.id, "content").subscribe(resolve);
-  });
+  const first = toPromise(store.data.setting(module1.id, "content"));
+  const second = toPromise(store.data.setting(module2.id, "content"));
 
   const result = await Promise.all([first, second]);
   expect(result).toEqual(["foo", "bar"]);
@@ -460,13 +441,8 @@ it("should not need to execute future function if the same future is executing a
 
   const store = createStore();
 
-  const first = new Promise((resolve) => {
-    store.data.setting(module1.id, "content").subscribe(resolve);
-  });
-
-  const second = new Promise((resolve) => {
-    store.data.setting(module2.id, "content").subscribe(resolve);
-  });
+  const first = toPromise(store.data.setting(module1.id, "content"));
+  const second = toPromise(store.data.setting(module2.id, "content"));
 
   await Promise.all([first, second]);
 
@@ -476,13 +452,12 @@ it("should not need to execute future function if the same future is executing a
 it("should return cached future value", async () => {
   const { fakes, createStore } = init();
 
-  const callback1 = jest.fn();
-  const callback2 = jest.fn();
+  const callback = jest.fn();
 
   const identify = (references) => references.operations.root;
   const execute = (_args, references) => {
     if (references.operations.root === 7) {
-      callback1();
+      callback();
       return { data: true };
     }
   };
@@ -517,13 +492,11 @@ it("should return cached future value", async () => {
   });
 
   const store = createStore();
-  await new Promise((resolve) =>
-    store.data.setting(module1.id, "content").subscribe(resolve)
-  );
-  store.data.setting(module2.id, "content").subscribe(callback2);
+  await toPromise(store.data.setting(module1.id, "content"));
 
-  expect(callback1).toBeCalledTimes(1);
-  expect(callback2).toBeCalledWith(true);
+  const result = toSync(store.data.setting(module2.id, "content"));
+  expect(result).toBe(true);
+  expect(callback).toBeCalledTimes(1);
 });
 
 it("should compute method function value", () => {
@@ -544,14 +517,14 @@ it("should compute method function value", () => {
     fields: { content: [stage.id] },
   });
 
-  const callback = jest.fn();
   const store = createStore();
-  store.data.setting(module.id, "content").subscribe(callback);
-  expect(callback).toBeCalledWith("foobar");
+  const result = toSync(store.data.setting(module.id, "content"));
+  expect(result).toBe("foobar");
 });
 
 it("should throw an error when value is not found in registry", () => {
   const { fakes, createStore } = init();
+  const callback = jest.fn();
 
   fakes.stock.addDefinition("text");
   const stage = fakes.entities.addValueStage(5);
@@ -559,7 +532,6 @@ it("should throw an error when value is not found in registry", () => {
     fields: { content: [stage.id] },
   });
 
-  const callback = jest.fn();
   const store = createStore();
   store.data.setting(module.id, "content").subscribe(jest.fn(), callback);
   expect(callback).toBeCalledWith(new Error("Can not find value in registry"));
@@ -567,6 +539,7 @@ it("should throw an error when value is not found in registry", () => {
 
 it("should throw an error when unrecognized value category supplied", () => {
   const { fakes, createStore } = init();
+  const callback = jest.fn();
 
   fakes.stock.addDefinition("text");
   const value = fakes.entities.addValue("wrong");
@@ -575,7 +548,6 @@ it("should throw an error when unrecognized value category supplied", () => {
     fields: { content: [stage.id] },
   });
 
-  const callback = jest.fn();
   const store = createStore();
   store.data.setting(module.id, "content").subscribe(jest.fn(), callback);
   return expect(callback).toBeCalledWith(
@@ -622,10 +594,9 @@ it("should compute dictionary stage type", () => {
     fields: { content: [stage.id] },
   });
 
-  const callback = jest.fn();
   const store = createStore();
-  store.data.setting(module.id, "content").subscribe(callback);
-  expect(callback).toBeCalledWith({
+  const result = toSync(store.data.setting(module.id, "content"));
+  expect(result).toEqual({
     x: "foo",
     y: "bar",
     z: "baz",

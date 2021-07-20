@@ -4,6 +4,7 @@ import createMethod from "./createMethod";
 import createRegistry from "./createRegistry";
 import updateAtom from "./updateAtom";
 import updateAtoms from "./updateAtoms";
+import { toPromise } from "./utils";
 
 /**
  * Creates new store based on initial entities data and stock definition.
@@ -35,9 +36,8 @@ export default function createStore(entities, stock, futures, config) {
       method(moduleId, key) {
         return createMethod(moduleId, key, undefined, dependencies);
       },
-      // TODO: for use in "useSettingCallback" since it may change atoms.
       setting(moduleId, field, scope) {
-        return computeSetting(moduleId, field, scope, dependencies);
+        return toPromise(computeSetting(moduleId, field, scope, dependencies));
       },
       updateAtom(moduleId, key, nextValue) {
         return updateAtom(moduleId, key, nextValue, dependencies);

@@ -1,4 +1,4 @@
-import { init } from "../fakes";
+import { init, toSync } from "../fakes";
 
 it("should return atom value", () => {
   const { fakes, createStore } = init();
@@ -6,9 +6,8 @@ it("should return atom value", () => {
   fakes.stock.addDefinition("input").addInitialAtoms({ current: "foo" });
   const module = fakes.entities.addModule("input");
 
-  const callback = jest.fn();
   const store = createStore();
-  store.data.atom(module.id, "current").subscribe(callback);
 
-  expect(callback).toBeCalledWith("foo");
+  const result = toSync(store.data.atom(module.id, "current"));
+  expect(result).toBe("foo");
 });
