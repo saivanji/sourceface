@@ -20,7 +20,6 @@ export function provideChannel(identifier, compute, dependencies) {
   const { registry } = dependencies;
 
   const channel$ = registry.channels.retrieve(identifier);
-  // TODO: sync reports are not considered because they happened before the subscribe
   const stream$ = compute({ ...dependencies, report: () => channel$.report() });
 
   return merge(stream$, channel$).pipe(distinctUntilChanged());
