@@ -180,7 +180,7 @@ function computeFutureValue(value, scope, dependencies) {
       //
       // if (value.mode === "read") {
       //   TODO: should be side-effect free.
-      //   return cache.getOr(argsStr, () => execute(args, value.references)).pipe(
+      //   return cache.getOr(argsStr, () => execute(args, value.references), () => wait$.emit()).pipe(
       //     map(res => res.data)
       //   )
       // }
