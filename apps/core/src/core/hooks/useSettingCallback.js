@@ -26,7 +26,7 @@ export default function useSettingCallback(field) {
     (input) =>
       // TODO: how not to return Promise if computation is sync?
       new Promise((resolve) => {
-        store.data
+        store.actions
           .setting(moduleId, field, { input })
           .subscribe(resolve, (err) => {
             /**
@@ -37,6 +37,7 @@ export default function useSettingCallback(field) {
               throw err;
             }
           });
+        // TODO: use unsubscribe
       }),
     [moduleId, field, store]
   );

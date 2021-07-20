@@ -93,45 +93,137 @@ function computeFutureValue(value, scope, dependencies) {
       const argsStr = stringify(args);
       const cachePath = [kind, id, argsStr];
 
-      const existing$ = registry.futures.get(cachePath);
+      // TODO: most likely cache and counters need to be merged into a single data structure
+      // since they are similar.
+      // const cache = registry.futures[kind].?[id]
+      //
+      // TODO: with timeout cache invalidation, we might have the case when existing data is displayed, became
+      // stale and therefore deleted, new component rendered, fetched new data. So the new component will have
+      // new data and old will have the previous version of the data. In that case we need to refetch all existing
+      // data streams but without emitting "WAITING".
+      // Alternatively have data as static completed stream and keep reference counting on cached data and clear cache only when it has no references.
+      //
+      // class AsyncCache() {
+      //   constructor() {
+      //     this.version$ = new Counter();
+      //     this.data = new Map();
+      //     this.populations = new Map();
+      //   }
+      //
+      //   // TODO: what if we invalidate in the middle of population?
+      //   getOr(argsStr, populate, { start }) {
+      //     return this.version$.pipe(
+      //       switchMap(() => {
+      //         const cached = this.data.get(argsStr);
+      //
+      //         if (!isNil(cached)) {
+      //           return of(cached);
+      //         }
+      //
+      //         // TODO: combine "this.populations" with "this.data" since they share the similar
+      //         // concept? May be no, since we need to call "start()" only when data is populated
+      //         // and not when cached. With having "populations" only, we have no way of knowing
+      //         // either we currently executing or the data already cached.
+      //         let populated$ = this.populations.get(argsStr)
+      //
+      //         if (isNil(populated$)) {
+      //           p$ = from(populate()).pipe(
+      //             tap(value => {
+      //              this.populations.delete(argsStr)
+      //
+      //              // TODO: set invalidation timeout.
+      //
+      //               this.data.set(argsStr, value);
+      //             }),
+      //             shareReplay(1)
+      //           );
+      //
+      //           this.populations.set(argsStr, populated$);
+      //         }
+      //
+      //         start?.();
+      //
+      //         return populated$;
+      //       })
+      //     );
+      //   }
+      //
+      //   invalidate() {
+      //     this.data = new Map();
+      //     this.version$.increment()
+      //   }
+      // }
+
+      // TODO: that approach most likely will require loader implementation, since we don't
+      // share the same future execution in that case.
+      //
+      // Can we resolve that in RxJS land? Save populate$ in cache, apply shareReplay and accept
+      // extra function to getOr, like "onPopulate"? "wait$" logic can not be attached to populate$
+      // since it will be shared across different setting computations.
+
+      // if (value.mode === "write") {
+      //   return from(execute(args, value.references)).pipe(
+      //     tap(res => {
+      //       if (res.stale) {
+      //         /**
+      //          * Invalidating stale futures.
+      //          */
+      //         for (let id of res.stale) {
+      //           const cache = registry.futures[kind].?[id];
+      //           cache.invalidate();
+      //         }
+      //       }
+      //     }),
+      //     map(res => res.data)
+      //   );
+      // }
+      //
+      // if (value.mode === "read") {
+      //   TODO: should be side-effect free.
+      //   return cache.getOr(argsStr, () => execute(args, value.references)).pipe(
+      //     map(res => res.data)
+      //   )
+      // }
+      //
+      // throw new Error("Unrecofnized future mode")
+
       const counter$ = registry.counters.retrieve(kind, id);
+      const cached = registry.futures.get(cachePath);
 
-      /**
-       * Leveraging existing stream to not duplicate async future
-       * requests.
-       */
-      if (!isNil(existing$)) {
-        return existing$;
-      }
+      return counter$.pipe(
+        // tap(() => {}),
+        switchMap(() => {
+          if (!isNil(cached)) {
+            return of(cached);
+          }
 
-      const future$ = counter$.pipe(
-        tap(() => {}),
-        switchMap(() =>
-          from(
+          return from(
             execute(args, value.references).then((res) => {
-              if (res.stale) {
-                /**
-                 * Invalidating stale futures.
-                 */
-                for (let id of res.stale) {
-                  const counter$ = registry.counters.get(kind, id);
-                  counter$?.increment();
-                }
-              }
-
-              return res.data;
+              registry.futures.set(cachePath, res);
             })
-          )
-        ),
+          );
+        }),
+        // TODO: that part will be called multiple times after cache invalidation, which is undesired.
+        // call that part of code only when executing(cache has no data).
+        // have distinction between read and write futures.
+        // read futures - leverage cache, have no invalidation.
+        // write futures - do not use cache, have invalidations.
+        map((res) => {
+          if (res.stale) {
+            /**
+             * Invalidating stale futures.
+             */
+            for (let id of res.stale) {
+              const counter$ = registry.counters.get(kind, id);
+              counter$?.increment();
+            }
+          }
+
+          return res.data;
+        }),
+        // TODO: is that needed here?
         shareReplay(1)
       );
-
-      /**
-       * Adding stream to the registry so it's result can be cached.
-       */
-      registry.futures.set(cachePath, future$);
-
-      return future$;
     })
   );
 }

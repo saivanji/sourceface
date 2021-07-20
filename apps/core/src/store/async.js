@@ -5,6 +5,9 @@ import { distinctUntilChanged } from "rxjs/operators";
 
 export const WAITING = Symbol();
 
+// TODO: emit to the stream from the future, the similar way we do with counters.
+// TODO: merge counters and waits in a single stream, since they both share similar
+// conception.
 export function createAsyncStream(identifier, compute, dependencies) {
   const { registry } = dependencies;
 
