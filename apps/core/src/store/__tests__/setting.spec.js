@@ -128,6 +128,7 @@ it("should compute mount variable value", (done) => {
   fakes.futures.addFuture("operation", identify, execute);
 
   const containerValue = fakes.entities.addFutureFunction(
+    "read",
     "operation",
     undefined,
     {
@@ -165,9 +166,14 @@ it("should compute future function value", (done) => {
   fakes.stock.addDefinition("text");
   fakes.futures.addFuture("operation", identify, execute);
 
-  const value = fakes.entities.addFutureFunction("operation", undefined, {
-    operations: { root: 7 },
-  });
+  const value = fakes.entities.addFutureFunction(
+    "read",
+    "operation",
+    undefined,
+    {
+      operations: { root: 7 },
+    }
+  );
   const stage = fakes.entities.addValueStage(value.id);
   const module = fakes.entities.addModule("text", {
     fields: { content: [stage.id] },
@@ -195,6 +201,7 @@ it("should compute future function value with args", (done) => {
 
   const content = fakes.entities.addConstantVariable("foo");
   const value = fakes.entities.addFutureFunction(
+    "read",
     "operation",
     { content: content.id },
     {
@@ -233,17 +240,27 @@ it("should invalidate computed future function value after another future execut
   fakes.stock.addDefinition("table");
   fakes.futures.addFuture("operation", identify, execute);
 
-  const users = fakes.entities.addFutureFunction("operation", undefined, {
-    operations: { root: 7 },
-  });
+  const users = fakes.entities.addFutureFunction(
+    "read",
+    "operation",
+    undefined,
+    {
+      operations: { root: 7 },
+    }
+  );
   const tableStage = fakes.entities.addValueStage(users.id);
   const table = fakes.entities.addModule("table", {
     fields: { items: [tableStage.id] },
   });
 
-  const createUser = fakes.entities.addFutureFunction("operation", undefined, {
-    operations: { root: 9 },
-  });
+  const createUser = fakes.entities.addFutureFunction(
+    "write",
+    "operation",
+    undefined,
+    {
+      operations: { root: 9 },
+    }
+  );
   const buttonStage = fakes.entities.addValueStage(createUser.id);
   const button = fakes.entities.addModule("table", {
     fields: { event: [buttonStage.id] },
@@ -282,17 +299,27 @@ it("should invalidate specific future data in cache after ttl timeout expired", 
   fakes.stock.addDefinition("text");
   fakes.futures.addFuture("operation", identify, execute);
 
-  const value1 = fakes.entities.addFutureFunction("operation", undefined, {
-    operations: { root: 7 },
-  });
+  const value1 = fakes.entities.addFutureFunction(
+    "read",
+    "operation",
+    undefined,
+    {
+      operations: { root: 7 },
+    }
+  );
   const stage1 = fakes.entities.addValueStage(value1.id);
   const module1 = fakes.entities.addModule("text", {
     fields: { content: [stage1.id] },
   });
 
-  const value2 = fakes.entities.addFutureFunction("operation", undefined, {
-    operations: { root: 7 },
-  });
+  const value2 = fakes.entities.addFutureFunction(
+    "read",
+    "operation",
+    undefined,
+    {
+      operations: { root: 7 },
+    }
+  );
   const stage2 = fakes.entities.addValueStage(value2.id);
   const module2 = fakes.entities.addModule("text", {
     fields: { content: [stage2.id] },
@@ -328,6 +355,7 @@ it("should execute multiple futures at the same time with different arguments su
 
   const constant1 = fakes.entities.addConstantVariable("foo");
   const value1 = fakes.entities.addFutureFunction(
+    "read",
     "operation",
     { x: constant1.id },
     {
@@ -341,6 +369,7 @@ it("should execute multiple futures at the same time with different arguments su
 
   const constant2 = fakes.entities.addConstantVariable("bar");
   const value2 = fakes.entities.addFutureFunction(
+    "read",
     "operation",
     { x: constant2.id },
     {
@@ -383,17 +412,27 @@ it("should not need to execute future function if the same future is executing a
   fakes.stock.addDefinition("text");
   fakes.futures.addFuture("operation", identify, execute);
 
-  const value1 = fakes.entities.addFutureFunction("operation", undefined, {
-    operations: { root: 7 },
-  });
+  const value1 = fakes.entities.addFutureFunction(
+    "read",
+    "operation",
+    undefined,
+    {
+      operations: { root: 7 },
+    }
+  );
   const stage1 = fakes.entities.addValueStage(value1.id);
   const module1 = fakes.entities.addModule("text", {
     fields: { content: [stage1.id] },
   });
 
-  const value2 = fakes.entities.addFutureFunction("operation", undefined, {
-    operations: { root: 7 },
-  });
+  const value2 = fakes.entities.addFutureFunction(
+    "read",
+    "operation",
+    undefined,
+    {
+      operations: { root: 7 },
+    }
+  );
   const stage2 = fakes.entities.addValueStage(value2.id);
   const module2 = fakes.entities.addModule("text", {
     fields: { content: [stage2.id] },

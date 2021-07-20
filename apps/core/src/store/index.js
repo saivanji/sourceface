@@ -84,7 +84,11 @@
 //
 // TODO: may be module should not be in "references" since it's located at the same page. Rethink idea of references.
 // Think of the redirect case where value has "page" reference
+import Bucket from "./bucket";
+import Cache from "./cache";
+
 export { default as createStore } from "./createStore";
-export { default as Cache } from "./cache";
 export { default as Interruption } from "./interruption";
 export { toPromise } from "./utils";
+
+export const createCacheBucket = (ttl) => new Bucket(Cache, ttl);

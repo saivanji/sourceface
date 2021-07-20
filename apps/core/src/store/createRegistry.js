@@ -1,7 +1,6 @@
 import { map, keys, isNil } from "ramda";
 import { of, BehaviorSubject } from "rxjs";
 import Cache from "./cache";
-import Counter from "./counter";
 import Bucket from "./bucket";
 
 /**
@@ -9,7 +8,7 @@ import Bucket from "./bucket";
  * process.
  */
 export default function createRegistry(entities, stock, config = {}) {
-  const { futuresCache = new Cache(3 * 60 * 1_000) } = config;
+  const { futuresCache = new Bucket(Cache, 3 * 60 * 1_000) } = config;
 
   return {
     entities: {
@@ -20,7 +19,6 @@ export default function createRegistry(entities, stock, config = {}) {
     ids: populateIds(entities.modules),
     atoms: populateAtoms(entities.modules, stock),
     futures: futuresCache,
-    counters: new Bucket(() => new Counter()),
     settings: {},
     attributes: {},
   };

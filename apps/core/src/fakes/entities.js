@@ -156,8 +156,8 @@ export default class FakeEntities {
   /**
    * Adds new future function
    */
-  addFutureFunction(kind, args, references) {
-    return this.addFunction("future", { kind }, { args, references });
+  addFutureFunction(mode, kind, args, references) {
+    return this.addFunction("future", { mode, kind }, { args, references });
   }
 
   /**

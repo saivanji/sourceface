@@ -1,13 +1,9 @@
 import { isNil } from "ramda";
 
-/**
- * Read only data storage. When desired entry does not exists, a new one is
- * created with "createEntry" function.
- */
 export default class Bucket {
-  constructor(createEntry) {
+  constructor(Item, ...args) {
     this.data = new Map();
-    this.createEntry = createEntry;
+    this.create = () => new Item(...args);
   }
 
   retrieve(...path) {
@@ -15,7 +11,7 @@ export default class Bucket {
     let result = this.data.get(key);
 
     if (isNil(result)) {
-      result = this.createEntry();
+      result = this.create();
       this.data.set(key, result);
     }
 
