@@ -33,9 +33,9 @@ export default function createStore(entities, stock, futures, config) {
     },
     // TODO: rename to something like "effects"
     actions: {
-      // TODO: should method be a promise?
       method(moduleId, key) {
-        return createMethod(moduleId, key, undefined, dependencies);
+        return (args) =>
+          toPromise(createMethod(moduleId, key, undefined, dependencies)(args));
       },
       setting(moduleId, field, scope) {
         return toPromise(computeSetting(moduleId, field, scope, dependencies));

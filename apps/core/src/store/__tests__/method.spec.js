@@ -1,6 +1,6 @@
-import { init, toSync, toPromise } from "../fakes";
+import { init, toSync } from "../fakes";
 
-it("should create module method without dependencies", () => {
+it("should create module method without dependencies", async () => {
   const { fakes, createStore } = init();
 
   fakes.stock.addDefinition("input").addMethod("reveal", () => "foo");
@@ -9,8 +9,8 @@ it("should create module method without dependencies", () => {
   const store = createStore();
 
   const method = store.actions.method(module.id, "reveal");
-  const result = toSync(method());
-  expect(result).toBe("foo");
+  const result = method();
+  expect(await result).toBe("foo");
 });
 
 it("should create module method when Promise is returned from definition", async () => {
@@ -24,12 +24,12 @@ it("should create module method when Promise is returned from definition", async
   const store = createStore();
 
   const method = store.actions.method(module.id, "reveal");
-  const result = await toPromise(method());
+  const result = await method();
 
   expect(result).toBe("foo");
 });
 
-it("should create module method when args provided", () => {
+it("should create module method when args provided", async () => {
   const { fakes, createStore } = init();
 
   fakes.stock.addDefinition("input").addMethod("reveal", (args) => args.x + 5);
@@ -38,11 +38,11 @@ it("should create module method when args provided", () => {
   const store = createStore();
 
   const method = store.actions.method(module.id, "reveal");
-  const result = toSync(method({ x: 4 }));
+  const result = await method({ x: 4 });
   expect(result).toBe(9);
 });
 
-it("should create module method with setting dependency", () => {
+it("should create module method with setting dependency", async () => {
   const { fakes, createStore } = init();
 
   fakes.stock
@@ -60,11 +60,11 @@ it("should create module method with setting dependency", () => {
   const store = createStore();
 
   const method = store.actions.method(module.id, "reveal");
-  const result = toSync(method());
+  const result = await method();
   expect(result).toBe("foobar");
 });
 
-it("should create module method with attribute dependency", () => {
+it("should create module method with attribute dependency", async () => {
   const { fakes, createStore } = init();
 
   fakes.stock
@@ -79,11 +79,11 @@ it("should create module method with attribute dependency", () => {
   const store = createStore();
 
   const method = store.actions.method(module.id, "reveal");
-  const result = toSync(method());
+  const result = await method();
   expect(result).toBe("foobar");
 });
 
-it("should create module method with atom dependency", () => {
+it("should create module method with atom dependency", async () => {
   const { fakes, createStore } = init();
 
   fakes.stock
@@ -97,11 +97,11 @@ it("should create module method with atom dependency", () => {
   const store = createStore();
 
   const method = store.actions.method(module.id, "reveal");
-  const result = toSync(method());
+  const result = await method();
   expect(result).toBe("foobar");
 });
 
-it("should update atoms inside of method selector", () => {
+it("should update atoms inside of method selector", async () => {
   const { fakes, createStore } = init();
 
   fakes.stock
@@ -115,7 +115,7 @@ it("should update atoms inside of method selector", () => {
   const store = createStore();
 
   const method = store.actions.method(module.id, "reveal");
-  toSync(method());
+  await method();
 
   const result = toSync(store.data.atom(module.id, "revealed"));
   expect(result).toBe(true);

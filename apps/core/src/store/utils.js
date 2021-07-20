@@ -1,3 +1,4 @@
+import { first } from "rxjs/operators";
 import setWith from "lodash.setwith";
 import Bucket from "./bucket";
 import Cache from "./cache";
@@ -8,13 +9,8 @@ export const createCacheBucket = (ttl) => new Bucket(Cache, ttl);
 
 export function toPromise(stream) {
   return new Promise((resolve, reject) => {
-    const subscriber = stream.subscribe(
+    stream.pipe(first()).subscribe(
       (result) => {
-        /**
-         * Unsubscribing since we're interested only in first value.
-         */
-        subscriber.unsubscribe();
-
         resolve(result);
       },
       (err) => {
