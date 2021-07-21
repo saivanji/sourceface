@@ -19,6 +19,8 @@ export default class Cache {
     this.ttl = ttl;
     this.version$ = new Version();
 
+    // TODO: may be keep cached entries in some sort of stateful subjects so it can keep track of it's subscribers
+    // and allow deleting itself when it has no subscribers.
     this.data = new Map();
     this.populations = new Map();
     this.timeouts = new Map();
