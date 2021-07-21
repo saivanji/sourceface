@@ -11,6 +11,7 @@ export default function updateAtom(moduleId, key, nextValue, { registry }) {
      * Update is guaranteed to be sync since we subscribing on
      * BehaviourSubject.
      */
+    // TODO: may be we can use "getValue" here
     atom$
       .subscribe((value) => {
         prev = value;
