@@ -3,11 +3,12 @@ import { of, from } from "rxjs";
 import { switchMap, tap, shareReplay } from "rxjs/operators";
 import Version from "./version";
 
-class Rc {
-  constructor(data) {
-    this.data = of(data);
-  }
-}
+// TODO: should be some sort of stateful observable or subject
+// class Rc extends BehaviorSubject {
+//   constructor(data) {
+//     super(data);
+//   }
+// }
 
 // TODO: with timeout cache invalidation, we might have the case when existing data is displayed, became
 // stale and therefore deleted, new component rendered, fetched new data. So the new component will have
