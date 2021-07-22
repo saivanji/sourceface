@@ -1,5 +1,5 @@
 import { isNil } from "ramda";
-import { of, from } from "rxjs";
+import { of, from, BehaviorSubject } from "rxjs";
 import { switchMap, tap, shareReplay } from "rxjs/operators";
 import Version from "./version";
 
@@ -39,7 +39,7 @@ export default class Cache {
         const cached = this.data.get(key);
 
         if (!isNil(cached)) {
-          return of(cached);
+          return cached;
         }
 
         onStart();
@@ -60,14 +60,17 @@ export default class Cache {
     }
 
     const new$ = from(exec()).pipe(
-      tap((value) => {
+      switchMap((value) => {
         /**
          * Removing population since it's relevant only during execution to be shared
          * across multiple subscribers.
          */
         this.populations.delete(key);
 
-        this.set(key, value);
+        const data$ = new BehaviorSubject(value);
+        this.set(key, data$);
+
+        return data$;
       }),
       /**
        * Sharing observable across multiple subscribers. When cache value is accessed
@@ -101,7 +104,13 @@ export default class Cache {
      */
     const nextTimeout = setTimeout(() => {
       // TODO: implement reference counting
-      this.data.delete(key);
+      const data$ = this.data.get(key);
+
+      // TODO: by some reason we have observers even unsubscribe is called
+      console.log(data$.observers.length);
+      if (data$?.observers.length === 0) {
+        this.data.delete(key);
+      }
     }, this.ttl);
 
     this.data.set(key, value);
