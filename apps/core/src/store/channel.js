@@ -1,6 +1,8 @@
 import { ReplaySubject, merge } from "rxjs";
 import { distinctUntilChanged } from "rxjs/operators";
 
+// TODO: rename to Signal?
+
 export default class Channel extends ReplaySubject {
   report() {
     this.next(FETCHING);

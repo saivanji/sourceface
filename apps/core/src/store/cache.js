@@ -1,27 +1,14 @@
 import { isNil } from "ramda";
-import { of, from, BehaviorSubject } from "rxjs";
-import { switchMap, tap, shareReplay } from "rxjs/operators";
+import { from, BehaviorSubject } from "rxjs";
+import { switchMap } from "rxjs/operators";
+import { shareLatest } from "./operators";
 import Version from "./version";
 
-// TODO: should be some sort of stateful observable or subject
-// class Rc extends BehaviorSubject {
-//   constructor(data) {
-//     super(data);
-//   }
-// }
-
-// TODO: with timeout cache invalidation, we might have the case when existing data is displayed, became
-// stale and therefore deleted, new component rendered, fetched new data. So the new component will have
-// new data and old will have the previous version of the data. In that case we need to refetch all existing
-// data streams but without emitting "WAITING".
-// Alternatively have data as static completed stream and keep reference counting on cached data and clear cache only when it has no references.
 export default class Cache {
   constructor(ttl) {
     this.ttl = ttl;
     this.version$ = new Version();
 
-    // TODO: may be keep cached entries in some sort of stateful subjects so it can keep track of it's subscribers
-    // and allow deleting itself when it has no subscribers.
     this.data = new Map();
     this.populations = new Map();
     this.timeouts = new Map();
@@ -77,13 +64,11 @@ export default class Cache {
        * during population by multiple clients they'll share the same stream and side-effect
        * defined in "tap" operator above will be executed only once.
        */
-      shareReplay(1)
+      shareLatest()
     );
 
     this.populations.set(key, new$);
 
-    // TODO: if we'll decide to keep cached entries as ref counted subjects, then we need to
-    // return that cached subject from that function the same way we return cached data from "getOr"
     return new$;
   }
 
@@ -103,12 +88,9 @@ export default class Cache {
      * Removing data from cache when ttl expired.
      */
     const nextTimeout = setTimeout(() => {
-      // TODO: implement reference counting
       const data$ = this.data.get(key);
 
-      // TODO: by some reason we have observers even unsubscribe is called
-      console.log(data$.observers.length);
-      if (data$?.observers.length === 0) {
+      if (!data$?.observed) {
         this.data.delete(key);
       }
     }, this.ttl);

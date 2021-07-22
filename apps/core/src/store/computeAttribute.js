@@ -1,11 +1,7 @@
-import {
-  map,
-  switchMap,
-  shareReplay,
-  distinctUntilChanged,
-} from "rxjs/operators";
+import { map, switchMap, distinctUntilChanged } from "rxjs/operators";
 import { isNil } from "ramda";
 import { set } from "./utils";
+import { shareLatest } from "./operators";
 import computeRequirements from "./computeRequirements";
 
 /**
@@ -41,7 +37,7 @@ export default function computeAttribute(moduleId, key, scope, dependencies) {
     /**
      * Avoiding re-computation of the same attribute
      */
-    shareReplay(1),
+    shareLatest(),
     /**
      * Avoiding emitting to the subscribers when next value
      * is the same as current.

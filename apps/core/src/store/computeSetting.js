@@ -1,7 +1,8 @@
 import { of, combineLatest } from "rxjs";
-import { tap, map, switchMap, shareReplay, catchError } from "rxjs/operators";
+import { tap, map, switchMap, catchError } from "rxjs/operators";
 import { isNil, map as mapCollection } from "ramda";
 import { set } from "./utils";
+import { shareLatest } from "./operators";
 import computeValue from "./computeValue";
 import Interruption from "./interruption";
 
@@ -36,7 +37,7 @@ export default function computeSetting(moduleId, field, scope, dependencies) {
     /**
      * Avoiding re-computation of the same setting
      */
-    shareReplay(1)
+    shareLatest()
     // TODO: should "distinctUntilChanged" be used here?
   );
 
