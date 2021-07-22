@@ -1,6 +1,6 @@
 import { BehaviorSubject } from "rxjs";
 
-// TODO: When Subject is unsubscribed internally, different way from calling "unsubscribe" is used
+// TODO: "unsubscribe" is not called when extending from BehaviorSubject and "subscribe" is overwritten
 export default class Expirable extends BehaviorSubject {
   constructor(value, ttl, onExpire) {
     super(value);
@@ -9,24 +9,23 @@ export default class Expirable extends BehaviorSubject {
   }
 
   subscribe(...args) {
-    const subscription = super.subscribe(...args);
-
     clearTimeout(this.timeout);
 
-    console.log("sub");
+    const subscription = super.subscribe(...args);
+    const initial = subscription.unsubscribe.bind(subscription);
 
-    return {
-      ...subscription,
-      unsubscribe(...args) {
-        console.log("unsub");
-        const result = subscription.unsubscribe(...args);
+    subscription.unsubscribe = (...args) => {
+      console.log("unsub");
 
-        if (!this.observed) {
-          this.timeout = setTimeout(this.onExpire, this.ttl);
-        }
+      const result = initial(...args);
 
-        return result;
-      },
+      if (!this.observed) {
+        this.timeout = setTimeout(this.onExpire, this.ttl);
+      }
+
+      return result;
     };
+
+    return subscription;
   }
 }
