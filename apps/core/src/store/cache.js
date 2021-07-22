@@ -84,6 +84,9 @@ export default class Cache {
       clearTimeout(timeout);
     }
 
+    // TODO: set invalidation timeout only after data$ has no subscribers
+    // and remove timeout if at least one subscriber appears.
+
     /**
      * Removing data from cache when ttl expired.
      */
