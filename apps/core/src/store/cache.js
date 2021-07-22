@@ -1,8 +1,9 @@
 import { isNil } from "ramda";
-import { from, BehaviorSubject } from "rxjs";
+import { from } from "rxjs";
 import { switchMap } from "rxjs/operators";
 import { shareLatest } from "./operators";
 import Version from "./version";
+import Expirable from "./expirable";
 
 export default class Cache {
   constructor(ttl) {
@@ -54,7 +55,7 @@ export default class Cache {
          */
         this.populations.delete(key);
 
-        const data$ = new BehaviorSubject(value);
+        const data$ = new Expirable(value, this.ttl, () => this.delete(key));
         this.set(key, data$);
 
         return data$;
@@ -72,33 +73,11 @@ export default class Cache {
     return new$;
   }
 
-  /**
-   * Setting value to cache and scheduling timeout for that data removal.
-   */
   set(key, value) {
-    /**
-     * Clearing previous invalidation timeout if exsits.
-     */
-    const timeout = this.timeouts.get(key);
-    if (timeout) {
-      clearTimeout(timeout);
-    }
-
-    // TODO: set removal timeout only after data$ has no subscribers
-    // and remove timeout if at least one subscriber appears.
-
-    /**
-     * Removing data from cache when ttl expired.
-     */
-    const nextTimeout = setTimeout(() => {
-      const data$ = this.data.get(key);
-
-      if (!data$?.observed) {
-        this.data.delete(key);
-      }
-    }, this.ttl);
-
     this.data.set(key, value);
-    this.timeouts.set(key, nextTimeout);
+  }
+
+  delete(key) {
+    this.data.delete(key);
   }
 }
