@@ -79,6 +79,8 @@ export default class Cache {
 
     this.populations.set(key, new$);
 
+    // TODO: if we'll decide to keep cached entries as ref counted subjects, then we need to
+    // return that cached subject from that function the same way we return cached data from "getOr"
     return new$;
   }
 
