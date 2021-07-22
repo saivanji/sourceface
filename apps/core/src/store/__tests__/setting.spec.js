@@ -354,8 +354,8 @@ it("should delete specific future data from cache after ttl timeout expired", as
   const store = createStore({ futuresTTL: 100 });
 
   await toAsyncSequence(2, store.data.setting(module1.id, "content"));
-  // await new Promise((resolve) => setTimeout(() => resolve(), 500));
-  // await toAsyncSequence(2, store.data.setting(module2.id, "content"));
+  await new Promise((resolve) => setTimeout(() => resolve(), 500));
+  await toAsyncSequence(2, store.data.setting(module2.id, "content"));
 
   expect(callback).toBeCalledTimes(2);
 });

@@ -1,31 +1,24 @@
-import { BehaviorSubject } from "rxjs";
+import { Observable } from "rxjs";
 
-// TODO: "unsubscribe" is not called when extending from BehaviorSubject and "subscribe" is overwritten
-export default class Expirable extends BehaviorSubject {
+export default class Expirable extends Observable {
   constructor(value, ttl, onExpire) {
-    super(value);
-    this.ttl = ttl;
-    this.onExpire = onExpire;
-  }
+    const subscribe = (observer) => {
+      clearTimeout(this.timeout);
 
-  subscribe(...args) {
-    clearTimeout(this.timeout);
+      this.refCount++;
+      observer.next(value);
 
-    const subscription = super.subscribe(...args);
-    const initial = subscription.unsubscribe.bind(subscription);
+      return () => {
+        this.refCount--;
 
-    subscription.unsubscribe = (...args) => {
-      console.log("unsub");
-
-      const result = initial(...args);
-
-      if (!this.observed) {
-        this.timeout = setTimeout(this.onExpire, this.ttl);
-      }
-
-      return result;
+        if (this.refCount === 0) {
+          this.timeout = setTimeout(onExpire, ttl);
+        }
+      };
     };
 
-    return subscription;
+    super(subscribe);
+
+    this.refCount = 0;
   }
 }
