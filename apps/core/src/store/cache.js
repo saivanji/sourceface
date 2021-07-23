@@ -14,7 +14,6 @@ export default class Cache {
     this.populations = new Map();
   }
 
-  // TODO: what if we invalidate in the middle of population?
   invalidate() {
     this.data = new Map();
     this.version$.increment();
