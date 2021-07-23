@@ -24,7 +24,5 @@ export default class Expirable extends Observable {
     super(subscribe);
 
     this.refCount = 0;
-    // TODO: most likely will need to schedule expiration right in the constructor since it has 0 subscribers.
-    // It will be removed if in given ttl time frame someone will subscribe
   }
 }
