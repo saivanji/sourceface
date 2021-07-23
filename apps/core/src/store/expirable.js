@@ -1,5 +1,9 @@
 import { Observable } from "rxjs";
 
+/**
+ * Emits given value and counts the amount of subscribers. Executes
+ * onExpire function after provided ttl when stream reaches 0 subscribers.
+ */
 export default class Expirable extends Observable {
   constructor(value, ttl, onExpire) {
     const subscribe = (observer) => {
