@@ -12,7 +12,6 @@ export default class Cache {
 
     this.data = new Map();
     this.populations = new Map();
-    this.timeouts = new Map();
   }
 
   // TODO: what if we invalidate in the middle of population?
