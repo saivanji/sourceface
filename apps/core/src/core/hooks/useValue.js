@@ -1,8 +1,5 @@
 import { useObservableEagerState } from "observable-hooks";
 
-/**
- * Incapsulates usage of rxjs in store.
- */
-export default function useSubscription(stream) {
+export default function useValue(stream) {
   return useObservableEagerState(stream);
 }

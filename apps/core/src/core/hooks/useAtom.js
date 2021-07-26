@@ -1,6 +1,6 @@
 import { useContext, useCallback } from "react";
 import { moduleContext, storeContext } from "../providers";
-import useSubscription from "./useSubscription";
+import useValue from "./useValue";
 
 /**
  * Returns module atom value for a given key. To be used in module definitions.
@@ -19,7 +19,7 @@ export default function useAtom(key) {
     throw new Error("useAtom hook should be called inside of a module");
   }
 
-  const value = useSubscription(store.data.atom(moduleId, key));
+  const value = useValue(store.data.atom(moduleId, key));
 
   const setValue = useCallback(
     (nextValue) => store.actions.updateAtom(moduleId, key, nextValue),

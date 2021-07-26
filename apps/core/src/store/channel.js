@@ -5,15 +5,15 @@ import { distinctUntilChanged } from "rxjs/operators";
 
 export default class Channel extends ReplaySubject {
   report() {
-    this.next(FETCHING);
+    this.next(PENDING);
   }
 }
 
-export const FETCHING = Symbol();
+export const PENDING = Symbol();
 
 /**
  * Merges the stream created with "compute" with channel with
- * messages of FETCHING.
+ * messages of PENDING.
  *
  * Also provides "report" function to the dependencies list so it
  * can be called whenever async process is started.

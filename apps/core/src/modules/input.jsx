@@ -7,10 +7,10 @@ import {
 } from "../core";
 
 export function Root() {
-  const placeholder = useSetting("placeholder");
-  const value = useAttribute("value");
-  const update = useUpdateAtoms();
+  const [placeholder] = useSetting("placeholder");
+  const [value] = useAttribute("value");
   const [error] = useAtom("error");
+  const update = useUpdateAtoms();
 
   const change = (e) => {
     const { value } = e.target;

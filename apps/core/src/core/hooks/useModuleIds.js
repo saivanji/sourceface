@@ -1,9 +1,9 @@
 import { useContext } from "react";
 import { storeContext } from "../providers";
-import useSubscription from "./useSubscription";
+import useValue from "./useValue";
 
 export default function useModuleIds(parentId) {
   const store = useContext(storeContext);
 
-  return useSubscription(store.data.modules(parentId));
+  return useValue(store.data.modules(parentId));
 }

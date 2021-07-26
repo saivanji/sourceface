@@ -1,7 +1,7 @@
 import { useSetting } from "../core";
 
 export const Root = () => {
-  const content = useSetting("content");
+  const [content] = useSetting("content");
 
   return <span className="text-lg">{content}</span>;
 };

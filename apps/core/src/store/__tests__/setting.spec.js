@@ -1,5 +1,5 @@
 // // TODO: Interruption should be INTERRUPTION symbol
-import { Interruption, FETCHING } from "../";
+import { Interruption, PENDING } from "../";
 import { init, toSync, toAsyncSequence } from "../fakes";
 
 // TODO: callbacks should be defined in the beginning of the test.
@@ -148,7 +148,7 @@ it("should compute mount variable value", async () => {
     2,
     store.data.setting(module.id, "content")
   );
-  expect(result).toEqual([FETCHING, "foobar"]);
+  expect(result).toEqual([PENDING, "foobar"]);
 });
 
 it("should throw if unrecognized future mode supplied", () => {
@@ -201,7 +201,7 @@ it("should compute read future function value", async () => {
     2,
     store.data.setting(module.id, "content")
   );
-  expect(result).toEqual([FETCHING, true]);
+  expect(result).toEqual([PENDING, true]);
 });
 
 it("should compute future function value with args", async () => {
@@ -237,7 +237,7 @@ it("should compute future function value with args", async () => {
     2,
     store.data.setting(module.id, "content")
   );
-  expect(result).toEqual([FETCHING, true]);
+  expect(result).toEqual([PENDING, true]);
 });
 
 it("should invalidate computed future function value after another future executed", async () => {
@@ -291,7 +291,7 @@ it("should invalidate computed future function value after another future execut
 
   await new Promise((resolve, reject) => {
     store.data.setting(table.id, "items").subscribe((data) => {
-      if (data === FETCHING) {
+      if (data === PENDING) {
         return;
       }
 
@@ -405,7 +405,7 @@ it("should not delete future data from cache if someone is subscribed on it", as
   const store = createStore({ futuresTTL: 1 });
   await new Promise((resolve, reject) => {
     store.data.setting(module1.id, "content").subscribe((data) => {
-      if (data === FETCHING) {
+      if (data === PENDING) {
         return;
       }
 
@@ -470,8 +470,8 @@ it("should execute multiple futures at the same time with different arguments su
 
   const result = await Promise.all([first, second]);
   expect(result).toEqual([
-    [FETCHING, "foo"],
-    [FETCHING, "bar"],
+    [PENDING, "foo"],
+    [PENDING, "bar"],
   ]);
 });
 

@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { moduleContext, storeContext } from "../providers";
-import useSuspenseSubscription from "./useSuspenseSubscription";
+import useAsyncValue from "./useAsyncValue";
 
 /**
  * Returns computed module attribute data.
@@ -19,5 +19,5 @@ export default function useAttribute(key) {
     throw new Error("useAttribute hook should be called inside of a module");
   }
 
-  return useSuspenseSubscription(store.data.attribute(moduleId, key));
+  return useAsyncValue(store.data.attribute(moduleId, key));
 }

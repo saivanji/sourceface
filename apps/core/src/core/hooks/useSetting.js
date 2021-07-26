@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { moduleContext, storeContext } from "../providers";
-import useSuspenseSubscription from "./useSuspenseSubscription";
+import useAsyncValue from "./useAsyncValue";
 
 /**
  * Returns setting data of a specific field. Needs to be used inside
@@ -20,5 +20,5 @@ export default function useSetting(field) {
     throw new Error("useSetting hook should be called inside of a module");
   }
 
-  return useSuspenseSubscription(store.data.setting(moduleId, field));
+  return useAsyncValue(store.data.setting(moduleId, field));
 }

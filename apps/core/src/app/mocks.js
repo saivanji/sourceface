@@ -1,20 +1,20 @@
 export const data = {
   modules: {
-    832: {
-      position: 0,
-      type: "text",
-      config: {
-        content: "Hello world",
-      },
-    },
-    109: {
-      position: 1,
-      type: "text",
-      // TODO: have better name similar to "computations", "dynamic", "calcs" etc
-      fields: {
-        content: [1935],
-      },
-    },
+    // 832: {
+    //   position: 0,
+    //   type: "text",
+    //   config: {
+    //     content: "Hello world",
+    //   },
+    // },
+    // 109: {
+    //   position: 1,
+    //   type: "text",
+    //   // TODO: have better name similar to "computations", "dynamic", "calcs" etc
+    //   fields: {
+    //     content: [1935],
+    //   },
+    // },
     452: {
       position: 2,
       type: "text",
@@ -22,56 +22,56 @@ export const data = {
         content: [792],
       },
     },
-    813: {
-      position: 3,
-      type: "counter",
-    },
-    731: {
-      position: 4,
-      type: "text",
-      fields: {
-        content: [248],
-      },
-    },
-    931: {
-      position: 5,
-      type: "button",
-      config: {
-        text: "Create order",
-      },
-    },
-    // TODO: have attribute of module, containing operation inside as @mount
-    981: {
-      position: 6,
-      type: "container",
-    },
-    943: {
-      parentId: 981,
-      position: 0,
-      type: "input",
-      config: {
-        placeholder: "Enter first name",
-      },
-    },
-    944: {
-      parentId: 981,
-      position: 1,
-      type: "input",
-      config: {
-        placeholder: "Enter last name",
-      },
-    },
-    945: {
-      parentId: 981,
-      position: 1,
-      type: "button",
-      config: {
-        text: "Create user",
-      },
-      fields: {
-        click: [8401],
-      },
-    },
+    // 813: {
+    //   position: 3,
+    //   type: "counter",
+    // },
+    // 731: {
+    //   position: 4,
+    //   type: "text",
+    //   fields: {
+    //     content: [248],
+    //   },
+    // },
+    // 931: {
+    //   position: 5,
+    //   type: "button",
+    //   config: {
+    //     text: "Create order",
+    //   },
+    // },
+    // // TODO: have attribute of module, containing operation inside as @mount
+    // 981: {
+    //   position: 6,
+    //   type: "container",
+    // },
+    // 943: {
+    //   parentId: 981,
+    //   position: 0,
+    //   type: "input",
+    //   config: {
+    //     placeholder: "Enter first name",
+    //   },
+    // },
+    // 944: {
+    //   parentId: 981,
+    //   position: 1,
+    //   type: "input",
+    //   config: {
+    //     placeholder: "Enter last name",
+    //   },
+    // },
+    // 945: {
+    //   parentId: 981,
+    //   position: 1,
+    //   type: "button",
+    //   config: {
+    //     text: "Create user",
+    //   },
+    //   fields: {
+    //     click: [8401],
+    //   },
+    // },
   },
   stages: {
     1935: {
@@ -122,7 +122,7 @@ export const data = {
     },
     514: {
       category: "function/future",
-      payload: { kind: "operation" },
+      payload: { kind: "operation", mode: "read" },
       references: {
         operations: {
           root: 6,
